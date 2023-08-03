@@ -7,13 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E1FB2D282A76BF0200473AE1 /* InternxtDesktopApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D272A76BF0200473AE1 /* InternxtDesktopApp.swift */; };
+		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
 		E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D292A76BF0200473AE1 /* ContentView.swift */; };
 		E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
 		E1FB2D2F2A76BF0300473AE1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2E2A76BF0300473AE1 /* Preview Assets.xcassets */; };
 		E1FB2D3A2A76BF0300473AE1 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D392A76BF0300473AE1 /* InternxtDesktopTests.swift */; };
 		E1FB2D442A76BF0300473AE1 /* InternxtDesktopUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D432A76BF0300473AE1 /* InternxtDesktopUITests.swift */; };
 		E1FB2D462A76BF0300473AE1 /* InternxtDesktopUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D452A76BF0300473AE1 /* InternxtDesktopUITestsLaunchTests.swift */; };
+		E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FB2D6C2A76C3EC00473AE1 /* UniformTypeIdentifiers.framework */; };
+		E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */; };
+		E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */; };
+		E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
+		E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */; };
+		E1FB2D952A76D01B00473AE1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D942A76D01B00473AE1 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,11 +38,32 @@
 			remoteGlobalIDString = E1FB2D232A76BF0200473AE1;
 			remoteInfo = InternxtDesktop;
 		};
+		E1FB2D8C2A76C48600473AE1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E1FB2D802A76C48600473AE1;
+			remoteInfo = SyncExtension;
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		E1FB2D242A76BF0200473AE1 /* InternxtDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InternxtDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1FB2D272A76BF0200473AE1 /* InternxtDesktopApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopApp.swift; sourceTree = "<group>"; };
+		E112933E2A77221A003DEADF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		E1FB2D242A76BF0200473AE1 /* My Drive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Drive.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FB2D292A76BF0200473AE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E1FB2D2E2A76BF0300473AE1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -45,6 +73,15 @@
 		E1FB2D3F2A76BF0300473AE1 /* InternxtDesktopUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FB2D432A76BF0300473AE1 /* InternxtDesktopUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopUITests.swift; sourceTree = "<group>"; };
 		E1FB2D452A76BF0300473AE1 /* InternxtDesktopUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E1FB2D6C2A76C3EC00473AE1 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		E1FB2D812A76C48600473AE1 /* SyncExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SyncExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderExtension.swift; sourceTree = "<group>"; };
+		E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderItem.swift; sourceTree = "<group>"; };
+		E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderEnumerator.swift; sourceTree = "<group>"; };
+		E1FB2D8A2A76C48600473AE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1FB2D8B2A76C48600473AE1 /* SyncExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SyncExtension.entitlements; sourceTree = "<group>"; };
+		E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E1FB2D942A76D01B00473AE1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +106,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E1FB2D7E2A76C48600473AE1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,6 +123,8 @@
 				E1FB2D262A76BF0200473AE1 /* InternxtDesktop */,
 				E1FB2D382A76BF0300473AE1 /* InternxtDesktopTests */,
 				E1FB2D422A76BF0300473AE1 /* InternxtDesktopUITests */,
+				E1FB2D832A76C48600473AE1 /* SyncExtension */,
+				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,9 +132,10 @@
 		E1FB2D252A76BF0200473AE1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1FB2D242A76BF0200473AE1 /* InternxtDesktop.app */,
+				E1FB2D242A76BF0200473AE1 /* My Drive.app */,
 				E1FB2D352A76BF0300473AE1 /* InternxtDesktopTests.xctest */,
 				E1FB2D3F2A76BF0300473AE1 /* InternxtDesktopUITests.xctest */,
+				E1FB2D812A76C48600473AE1 /* SyncExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,11 +143,16 @@
 		E1FB2D262A76BF0200473AE1 /* InternxtDesktop */ = {
 			isa = PBXGroup;
 			children = (
-				E1FB2D272A76BF0200473AE1 /* InternxtDesktopApp.swift */,
+				E1FB2D942A76D01B00473AE1 /* Info.plist */,
+				E1FB2D542A76C03300473AE1 /* Views */,
+				E1FB2D532A76C02500473AE1 /* Utils */,
+				E1FB2D522A76C01B00473AE1 /* Services */,
 				E1FB2D292A76BF0200473AE1 /* ContentView.swift */,
 				E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */,
 				E1FB2D302A76BF0300473AE1 /* InternxtDesktop.entitlements */,
 				E1FB2D2D2A76BF0300473AE1 /* Preview Content */,
+				E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */,
+				E112933E2A77221A003DEADF /* Colors.xcassets */,
 			);
 			path = InternxtDesktop;
 			sourceTree = "<group>";
@@ -129,6 +182,47 @@
 			path = InternxtDesktopUITests;
 			sourceTree = "<group>";
 		};
+		E1FB2D522A76C01B00473AE1 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E1FB2D532A76C02500473AE1 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		E1FB2D542A76C03300473AE1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E1FB2D6B2A76C3EC00473AE1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E1FB2D6C2A76C3EC00473AE1 /* UniformTypeIdentifiers.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E1FB2D832A76C48600473AE1 /* SyncExtension */ = {
+			isa = PBXGroup;
+			children = (
+				E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */,
+				E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */,
+				E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */,
+				E1FB2D8A2A76C48600473AE1 /* Info.plist */,
+				E1FB2D8B2A76C48600473AE1 /* SyncExtension.entitlements */,
+			);
+			path = SyncExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -139,14 +233,16 @@
 				E1FB2D202A76BF0200473AE1 /* Sources */,
 				E1FB2D212A76BF0200473AE1 /* Frameworks */,
 				E1FB2D222A76BF0200473AE1 /* Resources */,
+				E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */,
 			);
 			name = InternxtDesktop;
 			productName = InternxtDesktop;
-			productReference = E1FB2D242A76BF0200473AE1 /* InternxtDesktop.app */;
+			productReference = E1FB2D242A76BF0200473AE1 /* My Drive.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E1FB2D342A76BF0300473AE1 /* InternxtDesktopTests */ = {
@@ -185,6 +281,23 @@
 			productReference = E1FB2D3F2A76BF0300473AE1 /* InternxtDesktopUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		E1FB2D802A76C48600473AE1 /* SyncExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1FB2D8F2A76C48600473AE1 /* Build configuration list for PBXNativeTarget "SyncExtension" */;
+			buildPhases = (
+				E1FB2D7D2A76C48600473AE1 /* Sources */,
+				E1FB2D7E2A76C48600473AE1 /* Frameworks */,
+				E1FB2D7F2A76C48600473AE1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SyncExtension;
+			productName = SyncExtension;
+			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -206,6 +319,9 @@
 						CreatedOnToolsVersion = 14.3.1;
 						TestTargetID = E1FB2D232A76BF0200473AE1;
 					};
+					E1FB2D802A76C48600473AE1 = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
 				};
 			};
 			buildConfigurationList = E1FB2D1F2A76BF0200473AE1 /* Build configuration list for PBXProject "InternxtDesktop" */;
@@ -224,6 +340,7 @@
 				E1FB2D232A76BF0200473AE1 /* InternxtDesktop */,
 				E1FB2D342A76BF0300473AE1 /* InternxtDesktopTests */,
 				E1FB2D3E2A76BF0300473AE1 /* InternxtDesktopUITests */,
+				E1FB2D802A76C48600473AE1 /* SyncExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -234,7 +351,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FB2D2F2A76BF0300473AE1 /* Preview Assets.xcassets in Resources */,
+				E112933F2A77221A003DEADF /* Colors.xcassets in Resources */,
 				E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */,
+				E1FB2D952A76D01B00473AE1 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +371,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E1FB2D7F2A76C48600473AE1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -259,8 +385,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
 				E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */,
-				E1FB2D282A76BF0200473AE1 /* InternxtDesktopApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +407,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E1FB2D7D2A76C48600473AE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
+				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
+				E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -293,6 +429,11 @@
 			isa = PBXTargetDependency;
 			target = E1FB2D232A76BF0200473AE1 /* InternxtDesktop */;
 			targetProxy = E1FB2D402A76BF0300473AE1 /* PBXContainerItemProxy */;
+		};
+		E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E1FB2D802A76C48600473AE1 /* SyncExtension */;
+			targetProxy = E1FB2D8C2A76C48600473AE1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -413,9 +554,11 @@
 		E1FB2D4A2A76BF0300473AE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -424,6 +567,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Internxt;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -431,7 +576,8 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = Internxt;
+				PRODUCT_NAME = "My Drive";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -440,9 +586,11 @@
 		E1FB2D4B2A76BF0300473AE1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -451,6 +599,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Internxt;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -458,7 +608,8 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = Internxt;
+				PRODUCT_NAME = "My Drive";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -536,6 +687,58 @@
 			};
 			name = Release;
 		};
+		E1FB2D902A76C48600473AE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SyncExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SyncExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.SyncExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E1FB2D912A76C48600473AE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SyncExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SyncExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.SyncExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -571,6 +774,15 @@
 			buildConfigurations = (
 				E1FB2D502A76BF0300473AE1 /* Debug */,
 				E1FB2D512A76BF0300473AE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1FB2D8F2A76C48600473AE1 /* Build configuration list for PBXNativeTarget "SyncExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1FB2D902A76C48600473AE1 /* Debug */,
+				E1FB2D912A76C48600473AE1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
