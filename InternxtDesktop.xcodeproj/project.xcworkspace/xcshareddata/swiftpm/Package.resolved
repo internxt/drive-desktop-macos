@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "idzswiftcommoncrypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iosdevzone/IDZSwiftCommonCrypto.git",
+      "state" : {
+        "revision" : "d824371e670bd57eb456bbc41139b4997f7207b8",
+        "version" : "0.13.1"
+      }
+    },
+    {
+      "identity" : "ripemd160-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MiclausCorp/ripemd160-Swift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "b7fae4fb357ee0cd7ab7f7efc0ccf66b58d49f32"
+      }
+    },
+    {
+      "identity" : "swift-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/internxt/swift-core",
+      "state" : {
+        "branch" : "feature/drive-api",
+        "revision" : "afbd3e194e00a060abe1fbb13cff4026e7641a77"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -7,7 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */; };
+		E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */; };
+		E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
+		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
+		E145E16A2A829C6B00B07E0B /* env.sample.json in Resources */ = {isa = PBXBuildFile; fileRef = E145E1692A829C6B00B07E0B /* env.sample.json */; };
+		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
+		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
+		E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
+		E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
+		E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
+		E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB295C2A7D64AB009036B8 /* WidgetHeaderView.swift */; };
+		E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB295E2A7D6A03009036B8 /* WidgetView.swift */; };
+		E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29602A7D6B80009036B8 /* WidgetContentView.swift */; };
+		E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29622A7D6BA5009036B8 /* WidgetFooterView.swift */; };
 		E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D292A76BF0200473AE1 /* ContentView.swift */; };
 		E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
 		E1FB2D2F2A76BF0300473AE1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2E2A76BF0300473AE1 /* Preview Assets.xcassets */; };
@@ -62,8 +77,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsUseCase.swift; sourceTree = "<group>"; };
+		E109717E2A81143A00ABED41 /* APIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIFactory.swift; sourceTree = "<group>"; };
+		E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderUseCase.swift; sourceTree = "<group>"; };
 		E112933E2A77221A003DEADF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
-		E1FB2D242A76BF0200473AE1 /* My Drive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Drive.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E145E1692A829C6B00B07E0B /* env.sample.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.sample.json; sourceTree = "<group>"; };
+		E1DB29532A7D56C4009036B8 /* AppTextInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextInput.swift; sourceTree = "<group>"; };
+		E1DB29552A7D5CD5009036B8 /* env.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.local.json; sourceTree = "<group>"; };
+		E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigLoader.swift; sourceTree = "<group>"; };
+		E1DB295C2A7D64AB009036B8 /* WidgetHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHeaderView.swift; sourceTree = "<group>"; };
+		E1DB295E2A7D6A03009036B8 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
+		E1DB29602A7D6B80009036B8 /* WidgetContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentView.swift; sourceTree = "<group>"; };
+		E1DB29622A7D6BA5009036B8 /* WidgetFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFooterView.swift; sourceTree = "<group>"; };
+		E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Internxt Drive.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FB2D292A76BF0200473AE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E1FB2D2E2A76BF0300473AE1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -89,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,12 +138,49 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
+				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E109717A2A81133C00ABED41 /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */,
+				E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */,
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
+		E109717D2A81142600ABED41 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E109717E2A81143A00ABED41 /* APIFactory.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		E1DB29522A7D5695009036B8 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				E1DB29532A7D56C4009036B8 /* AppTextInput.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
+		E1DB295B2A7D6424009036B8 /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+				E1DB295C2A7D64AB009036B8 /* WidgetHeaderView.swift */,
+				E1DB295E2A7D6A03009036B8 /* WidgetView.swift */,
+				E1DB29602A7D6B80009036B8 /* WidgetContentView.swift */,
+				E1DB29622A7D6BA5009036B8 /* WidgetFooterView.swift */,
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
 		E1FB2D1B2A76BF0200473AE1 = {
 			isa = PBXGroup;
 			children = (
@@ -132,7 +196,7 @@
 		E1FB2D252A76BF0200473AE1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1FB2D242A76BF0200473AE1 /* My Drive.app */,
+				E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */,
 				E1FB2D352A76BF0300473AE1 /* InternxtDesktopTests.xctest */,
 				E1FB2D3F2A76BF0300473AE1 /* InternxtDesktopUITests.xctest */,
 				E1FB2D812A76C48600473AE1 /* SyncExtension.appex */,
@@ -153,6 +217,8 @@
 				E1FB2D2D2A76BF0300473AE1 /* Preview Content */,
 				E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */,
 				E112933E2A77221A003DEADF /* Colors.xcassets */,
+				E1DB29552A7D5CD5009036B8 /* env.local.json */,
+				E145E1692A829C6B00B07E0B /* env.sample.json */,
 			);
 			path = InternxtDesktop;
 			sourceTree = "<group>";
@@ -185,6 +251,7 @@
 		E1FB2D522A76C01B00473AE1 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -199,6 +266,8 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E1DB295B2A7D6424009036B8 /* Widget */,
+				E1DB29522A7D5695009036B8 /* UIKit */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -214,6 +283,8 @@
 		E1FB2D832A76C48600473AE1 /* SyncExtension */ = {
 			isa = PBXGroup;
 			children = (
+				E109717D2A81142600ABED41 /* Utils */,
+				E109717A2A81133C00ABED41 /* UseCases */,
 				E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */,
 				E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */,
 				E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */,
@@ -241,8 +312,11 @@
 				E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */,
 			);
 			name = InternxtDesktop;
+			packageProductDependencies = (
+				E150884D2A7C55F20089BD57 /* InternxtSwiftCore */,
+			);
 			productName = InternxtDesktop;
-			productReference = E1FB2D242A76BF0200473AE1 /* My Drive.app */;
+			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E1FB2D342A76BF0300473AE1 /* InternxtDesktopTests */ = {
@@ -294,6 +368,9 @@
 			dependencies = (
 			);
 			name = SyncExtension;
+			packageProductDependencies = (
+				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
+			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -333,6 +410,9 @@
 				Base,
 			);
 			mainGroup = E1FB2D1B2A76BF0200473AE1;
+			packageReferences = (
+				E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */,
+			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -350,10 +430,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E145E16A2A829C6B00B07E0B /* env.sample.json in Resources */,
 				E1FB2D2F2A76BF0300473AE1 /* Preview Assets.xcassets in Resources */,
 				E112933F2A77221A003DEADF /* Colors.xcassets in Resources */,
 				E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */,
 				E1FB2D952A76D01B00473AE1 /* Info.plist in Resources */,
+				E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,6 +457,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,8 +468,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
+				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
 				E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */,
+				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
+				E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */,
+				E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */,
+				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,8 +501,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
+				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
+				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
 				E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */,
+				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
+				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,7 +670,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
-				PRODUCT_NAME = "My Drive";
+				PRODUCT_NAME = "Internxt Drive";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -609,7 +702,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
-				PRODUCT_NAME = "My Drive";
+				PRODUCT_NAME = "Internxt Drive";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -788,6 +881,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/internxt/swift-core";
+			requirement = {
+				branch = "feature/drive-api";
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		E150884D2A7C55F20089BD57 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E1FB2D1C2A76BF0200473AE1 /* Project object */;
 }

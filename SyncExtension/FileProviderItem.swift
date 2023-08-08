@@ -8,13 +8,12 @@
 import FileProvider
 import UniformTypeIdentifiers
 
-public enum RemoteItemType: String, Codable {
+public enum RemoteItemType: String {
     case file
     case folder
-    case root
-    case symlink
-    case alias
 }
+
+
 
 struct RemoteItem {
     public let id: String
@@ -27,32 +26,53 @@ class FileProviderItem: NSObject, NSFileProviderItem {
     // TODO: implement the accessors to return the values from your extension's backing model
     
     private let identifier: NSFileProviderItemIdentifier
-    
-    init(identifier: NSFileProviderItemIdentifier) {
+    private let parentIdentifier: NSFileProviderItemIdentifier
+    private let updatedAt: Date
+    private let createdAt: Date
+    private let itemExtension: String?
+    private let itemType: RemoteItemType
+    var filename: String
+    init(identifier: NSFileProviderItemIdentifier, filename: String, parentId: NSFileProviderItemIdentifier, createdAt: Date, updatedAt:Date, itemExtension: String?, itemType: RemoteItemType) {
         self.identifier = identifier
+        self.filename = filename
+        self.parentIdentifier = parentId
+        self.updatedAt = updatedAt
+        self.createdAt = createdAt
+        self.itemExtension = itemExtension
+        self.itemType = itemType
     }
     
     var itemIdentifier: NSFileProviderItemIdentifier {
         return identifier
     }
     
+    var contentPolicy: NSFileProviderContentPolicy {
+        return .inherited
+    }
+    
     var parentItemIdentifier: NSFileProviderItemIdentifier {
-        return .rootContainer
+        return self.parentIdentifier
     }
     
     var capabilities: NSFileProviderItemCapabilities {
         return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting, .allowsTrashing, .allowsDeleting]
     }
     
-    var itemVersion: NSFileProviderItemVersion {
-        NSFileProviderItemVersion(contentVersion: "a content version".data(using: .utf8)!, metadataVersion: "a metadata version".data(using: .utf8)!)
-    }
+   
     
-    var filename: String {
-        return identifier.rawValue
+    var itemVersion: NSFileProviderItemVersion {
+        return NSFileProviderItemVersion(contentVersion: Data("content".utf8), metadataVersion: Data("metadata".utf8))
     }
     
     var contentType: UTType {
-        return identifier == NSFileProviderItemIdentifier.rootContainer ? .folder : .plainText
+        if(self.itemType == RemoteItemType.folder) {
+            return .folder
+        }
+        
+        guard let itemExtension = self.itemExtension else {
+            return UTType.plainText
+        }
+        
+        return UTType(itemExtension) ?? UTType.plainText
     }
 }

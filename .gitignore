@@ -1,0 +1,3 @@
+# Project env
+env.local.json
+!env.sample.json
