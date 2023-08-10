@@ -14,6 +14,12 @@
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E145E16A2A829C6B00B07E0B /* env.sample.json in Resources */ = {isa = PBXBuildFile; fileRef = E145E1692A829C6B00B07E0B /* env.sample.json */; };
+		E145E16C2A82A21500B07E0B /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
+		E145E16D2A82A21500B07E0B /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
+		E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */; };
+		E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */; };
+		E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */; };
+		E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
 		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
 		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
 		E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
@@ -82,6 +88,11 @@
 		E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderUseCase.swift; sourceTree = "<group>"; };
 		E112933E2A77221A003DEADF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		E145E1692A829C6B00B07E0B /* env.sample.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.sample.json; sourceTree = "<group>"; };
+		E145E16B2A82A21500B07E0B /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderUseCase.swift; sourceTree = "<group>"; };
+		E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileUseCase.swift; sourceTree = "<group>"; };
+		E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderMetaUseCase.swift; sourceTree = "<group>"; };
+		E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFolderUseCase.swift; sourceTree = "<group>"; };
 		E1DB29532A7D56C4009036B8 /* AppTextInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextInput.swift; sourceTree = "<group>"; };
 		E1DB29552A7D5CD5009036B8 /* env.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.local.json; sourceTree = "<group>"; };
 		E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigLoader.swift; sourceTree = "<group>"; };
@@ -148,8 +159,8 @@
 		E109717A2A81133C00ABED41 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
-				E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */,
-				E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */,
+				E145E17E2A83A28A00B07E0B /* Files */,
+				E145E17D2A83A28100B07E0B /* Folders */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -160,6 +171,26 @@
 				E109717E2A81143A00ABED41 /* APIFactory.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		E145E17D2A83A28100B07E0B /* Folders */ = {
+			isa = PBXGroup;
+			children = (
+				E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */,
+				E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */,
+				E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */,
+				E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */,
+				E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */,
+			);
+			path = Folders;
+			sourceTree = "<group>";
+		};
+		E145E17E2A83A28A00B07E0B /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */,
+			);
+			path = Files;
 			sourceTree = "<group>";
 		};
 		E1DB29522A7D5695009036B8 /* UIKit */ = {
@@ -252,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
+				E145E16B2A82A21500B07E0B /* Time.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -474,6 +506,7 @@
 				E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */,
+				E145E16C2A82A21500B07E0B /* Time.swift in Sources */,
 				E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
 			);
@@ -504,8 +537,13 @@
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
+				E145E16D2A82A21500B07E0B /* Time.swift in Sources */,
 				E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */,
+				E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */,
+				E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
+				E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */,
+				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

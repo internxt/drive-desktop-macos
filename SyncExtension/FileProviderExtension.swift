@@ -18,10 +18,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     let config = ConfigLoader()
     required init(domain: NSFileProviderDomain) {
         config.load()
-        self.logger.info("Creating domain \(domain.displayName)")
-        // TODO: The containing application must create a domain using `NSFileProviderManager.add(_:, completionHandler:)`. The system will then launch the application extension process, call `FileProviderExtension.init(domain:)` to instantiate the extension for that domain, and call methods on the instance.
+        self.logger.info("Created extension with domain \(domain.displayName)")
         super.init()
     }
+    
+
     
     func invalidate() {
         // TODO: cleanup any resources
@@ -30,9 +31,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
         // resolve the given identifier to a record in the model
         
-        // TODO: implement the actual lookup
-        
-        
+        self.logger.info("Getting item metadata for \(identifier.rawValue)")
         if identifier == .trashContainer {
             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: .trashContainer))
             
@@ -44,39 +43,25 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
             
             return Progress()
         }
-        Task {
-            do {
-                let folderId = identifier == .rootContainer ? "69934033" : identifier.rawValue
-                let folderContent = try await self.driveAPI.getFolderContent(folderId: folderId, debug:true)
-                logger.info("Got folder content for item")
+        
+        if identifier == .rootContainer {
+            completionHandler(FileProviderItem(
+                identifier: identifier,
+                filename: "ROOT",
+                parentId: .rootContainer,
+                createdAt: Date(),
+                updatedAt: Date(),
+                itemExtension: nil,
+                itemType: .folder
                 
-                let createdAtDateFormatter = DateFormatter()
-                createdAtDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                
-                let updatedAtDateFormatter = DateFormatter()
-                updatedAtDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-              
-                let item = FileProviderItem(
-                    identifier: identifier,
-                    filename: folderContent.plain_name ?? folderContent.name,
-                    parentId: folderContent.parentId != nil ? NSFileProviderItemIdentifier(String(folderContent.parentId!)) : .rootContainer,
-                    createdAt: Date(),
-                    updatedAt: Date(),
-                    itemExtension: nil,
-                    itemType: .folder
-                )
-                
-                
-                completionHandler(item, nil)
-                logger.info("Sent folder content")
-            } catch {
-                logger.error("Got error while replying for item")
-                completionHandler(nil, error)
-            }
+            ), nil)
             
+            return Progress()
         }
         
-        return Progress()
+        // Assume is a folder
+        
+        return GetFolderMetaUseCase(identifier: identifier, completionHandler: completionHandler).run()
     }
     
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
@@ -88,38 +73,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         // TODO: a new item was created on disk, process the item's creation
-        self.logger.info("DRIVE CREATE NEW ITEM: \(itemTemplate.filename) \(itemTemplate.contentType?.identifier ?? "NO_TYPE") \(itemTemplate.parentItemIdentifier.rawValue)  ")
-        
+        // Create a folder
         if (itemTemplate.contentType == .folder) {
-            // TODO: Move this to CreateFolderUseCase
-            Task {
-                let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? "69934033" : itemTemplate.parentItemIdentifier.rawValue
-                
-                do {
-                    guard let parentFolderIdInt = Int(parentFolderId) else {
-                        throw CreateItemError.NoParentIdFound
-                    }
-                    let createdFolder = try await driveAPI.createFolder(parentFolderId: parentFolderIdInt, folderName: itemTemplate.filename, debug: true)
-                    self.logger.info("Folder created successfully: \(createdFolder.id)")
-                    
-                    
-                    completionHandler(FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
-                        filename: createdFolder.plain_name ?? createdFolder.name,
-                        parentId: itemTemplate.parentItemIdentifier,
-                        createdAt: Date(),
-                        updatedAt: Date(),
-                        itemExtension: nil,
-                        itemType: .folder
-                    ), [], false, nil)
-                } catch {
-                    
-                    self.logger.error("Failed to create folder: \(error.localizedDescription)")
-                    completionHandler(nil, [], false, error)
-                }
-                
-                
-            }
+            return CreateFolderUseCase(itemTemplate: itemTemplate, completionHandler: completionHandler).run()
         }
         
         return Progress()
@@ -129,41 +85,49 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
         
         self.logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
         
-        if changedFields.contains(.filename) {
-            // TODO: Move this task to an UseCase
-            self.logger.info("Modified filename, new one is \(item.filename)")
-            Task {
-                
-                do {
-                    try await driveAPI.updateFolder(folderId: item.itemIdentifier.rawValue, folderName:item.filename, debug: true)
-                    self.logger.info("Folder updated successfully")
-                    completionHandler(item, [], false, nil)
-                } catch {
-                    if error is APIClientError {
-                        let statusCode = (error as! APIClientError).statusCode
-                        // Local filename is conflicting with remote filename, we'll let it pass
-                        if statusCode == 409 {
-                            completionHandler(item, [], false, nil)
-                        }
-                       
-                    } else {
-                        self.logger.error("Failed to create folder: \(error.localizedDescription)")
-                        completionHandler(nil, [], false, error)
-                    }
-                    
-                }
-            }
-            return Progress()
+        
+        if changedFields.contains(.contents) {
+            self.logger.info("File content has changed")
         }
         
+        if changedFields.contains(.contentModificationDate) {
+            self.logger.info("File content modification date has changed")
+        }
+        
+        if changedFields.contains(.lastUsedDate) {
+            self.logger.info("File last used date has changed")
+        }
+        
+        // User moved item to trash
+        if changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType != nil {
+            switch item.contentType! {
+                case .folder:
+                    return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+                default:
+                    return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            }
+            
+        }
+        
+        // User renamed a folder
+        if changedFields.contains(.filename) && item.contentType == .folder {
+            self.logger.info("Modified folder filename, new one is \(item.filename)")
+            
+            return RenameFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if changedFields.contains(.filename) && item.contentType != .folder  {
+            self.logger.info("Modified file filename, new one is \(item.filename)")
+        }
                 
-        self.logger.info("Item modification wasn't handled if this message appear: item -> \(item.description)")
+        self.logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
         return Progress()
     }
     
     func deleteItem(identifier: NSFileProviderItemIdentifier, baseVersion version: NSFileProviderItemVersion, options: NSFileProviderDeleteItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (Error?) -> Void) -> Progress {
         self.logger.info("Delete request for item \(identifier.rawValue)")
         // TODO: an item was deleted on disk, process the item's deletion
+        
         
         completionHandler(NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError, userInfo:[:]))
         return Progress()

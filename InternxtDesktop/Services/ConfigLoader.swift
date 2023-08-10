@@ -11,6 +11,7 @@ import Security
 
 public struct JSONConfig: Codable {
     public let MNEMONIC: String
+    public let ROOT_FOLDER_ID: String
     public let LEGACY_AUTH_TOKEN: String?
     public let AUTH_TOKEN: String?
     public let DRIVE_API_URL: String

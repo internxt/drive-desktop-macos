@@ -21,9 +21,6 @@ struct RemoteItem {
 }
 
 class FileProviderItem: NSObject, NSFileProviderItem {
-
-    // TODO: implement an initializer to create an item from your extension's backing model
-    // TODO: implement the accessors to return the values from your extension's backing model
     
     private let identifier: NSFileProviderItemIdentifier
     private let parentIdentifier: NSFileProviderItemIdentifier
@@ -32,7 +29,18 @@ class FileProviderItem: NSObject, NSFileProviderItem {
     private let itemExtension: String?
     private let itemType: RemoteItemType
     var filename: String
-    init(identifier: NSFileProviderItemIdentifier, filename: String, parentId: NSFileProviderItemIdentifier, createdAt: Date, updatedAt:Date, itemExtension: String?, itemType: RemoteItemType) {
+    var documentSize: NSNumber?
+    
+    public static func getFilename(name: String, itemExtension: String?) -> String {
+        if itemExtension == nil {
+            return name
+        }
+        
+        return "\(name).\(itemExtension!)"
+    }
+    
+    // TODO: Overload this to provide a faster way to initialize an NSFileProviderItem, this seems too verbose
+    init(identifier: NSFileProviderItemIdentifier, filename: String, parentId: NSFileProviderItemIdentifier, createdAt: Date, updatedAt:Date, itemExtension: String?, itemType: RemoteItemType, size: Int = 0) {
         self.identifier = identifier
         self.filename = filename
         self.parentIdentifier = parentId
@@ -40,6 +48,7 @@ class FileProviderItem: NSObject, NSFileProviderItem {
         self.createdAt = createdAt
         self.itemExtension = itemExtension
         self.itemType = itemType
+        self.documentSize = NSNumber(value: size)
     }
     
     var itemIdentifier: NSFileProviderItemIdentifier {
@@ -61,18 +70,20 @@ class FileProviderItem: NSObject, NSFileProviderItem {
    
     
     var itemVersion: NSFileProviderItemVersion {
-        return NSFileProviderItemVersion(contentVersion: Data("content".utf8), metadataVersion: Data("metadata".utf8))
+        // We'll create a version from the updatedAt date, so if the item is updated, the version is too
+        return NSFileProviderItemVersion(contentVersion: Data(self.updatedAt.ISO8601Format().utf8), metadataVersion: Data(self.updatedAt.ISO8601Format().utf8))
     }
     
     var contentType: UTType {
+        
         if(self.itemType == RemoteItemType.folder) {
             return .folder
         }
-        
+                
         guard let itemExtension = self.itemExtension else {
             return UTType.plainText
         }
         
-        return UTType(itemExtension) ?? UTType.plainText
+        return UTType(tag: itemExtension, tagClass: .filenameExtension, conformingTo: nil) ?? UTType.plainText
     }
 }
