@@ -101,7 +101,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         }
-        // signalEnumeratorPeriodically()
+        
+        signalEnumeratorPeriodically()
         setupStatusBar()
    
     }

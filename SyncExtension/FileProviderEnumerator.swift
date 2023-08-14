@@ -56,47 +56,9 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
             return
         }
         
-        Task {
-            do {
-                self.logger.info("Fetching folder content: \(self.enumeratedItemIdentifier.rawValue)")
-                let folderId = self.enumeratedItemIdentifier == .rootContainer ? "69934033" : self.enumeratedItemIdentifier.rawValue
-                let folderContent = try await driveAPI.getFolderContent(folderId: folderId, debug: false)
-                
-                self.logger.info("Extension folder fetched: \(folderContent.id)")
-                
-                var items: Array<NSFileProviderItem> = Array()
-                
-                folderContent.children.forEach {(children) in
-                    // TODO: When moving to use case, create time formatting utilities
-                    let createdAtDateFormatter = DateFormatter()
-                    createdAtDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                    
-                    let updatedAtDateFormatter = DateFormatter()
-                    updatedAtDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                    let item = FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: String(children.id)),
-                        filename: children.name,
-                        parentId: self.enumeratedItemIdentifier,
-                        createdAt:createdAtDateFormatter.date(from:children.createdAt)!,
-                        updatedAt: updatedAtDateFormatter.date(from:children.updatedAt)!,
-                        itemExtension: nil,
-                        itemType: .folder
-                    )
-                    items.append(item)
-                }
-                
-                
-                observer.didEnumerate(items)
-                
-                observer.finishEnumerating(upTo: nil)
-            } catch {
-                self.logger.error("Got error fetching folder content: \(error)")
-                observer.finishEnumeratingWithError(error)
-            }
-        }
         
-        
-        
+        let suggestedPageSize: Int = observer.suggestedPageSize ?? 50
+        return EnumerateFolderItemsUseCase(enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize, offset: 0)
     }
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
@@ -112,43 +74,7 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
          - inform the observer when you have finished enumerating up to a subsequent sync anchor
          */
         // TODO: Move to usecase
-        Task {
-            do {
-                self.logger.info("Updating folder content: \(self.enumeratedItemIdentifier.rawValue)")
-                let folderId = self.enumeratedItemIdentifier == .rootContainer ? "69934033" : self.enumeratedItemIdentifier.rawValue
-                let folderContent = try await driveAPI.getFolderContent(folderId: folderId, debug: false)
-                
-                self.logger.info("Extension folder fetched: \(folderContent.id)")
-                
-                var items: Array<NSFileProviderItem> = Array()
-                
-                folderContent.children.forEach {(children) in
-                    let createdAtDateFormatter = DateFormatter()
-                    createdAtDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                    
-                    let updatedAtDateFormatter = DateFormatter()
-                    updatedAtDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                    self.logger.info("ParentID is \(String(children.parentId) ?? "NO PARENT")")
-                    let item = FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: String(children.id)),
-                        filename: children.name,
-                        parentId: self.enumeratedItemIdentifier,
-                        createdAt:createdAtDateFormatter.date(from:children.createdAt)!,
-                        updatedAt: updatedAtDateFormatter.date(from:children.updatedAt)!,
-                        itemExtension: nil,
-                        itemType: .folder
-                    )
-                    items.append(item)
-                }
-                
-                
-                observer.didUpdate(items)
-                
-            } catch {
-                self.logger.error("Got error fetching folder content: \(error)")
-                observer.finishEnumeratingWithError(error)
-            }
-        }
+        
         
         
         observer.finishEnumeratingChanges(upTo: anchor, moreComing: false)

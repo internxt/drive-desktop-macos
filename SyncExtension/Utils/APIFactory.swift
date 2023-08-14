@@ -13,6 +13,15 @@ enum APIFactoryError: Error {
 }
 struct APIFactory {
     
+    static var DriveNew: DriveAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        
+        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token)
+    }
+    
     static var Drive: DriveAPI {
         let configLoader = ConfigLoader()
         
@@ -20,5 +29,14 @@ struct APIFactory {
         let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
         
         return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token)
+    }
+    
+    static var Trash: TrashAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        
+        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token)
     }
 }
