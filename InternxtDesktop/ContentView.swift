@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var authManager: AuthManager
+    @Environment(\.openWindow) var openWindow
+    init() {
+    }
     var body: some View {
+        Button("Sign out", action: {
+            openWindow(id: "AuthWindow")
+        })
         WidgetView()
+       
     }
 }
 

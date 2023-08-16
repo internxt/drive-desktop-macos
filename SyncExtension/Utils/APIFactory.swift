@@ -13,6 +13,14 @@ enum APIFactoryError: Error {
 }
 struct APIFactory {
     
+    
+    static var Network: NetworkAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: config.NETWORK_AUTH)
+    }
+    
     static var DriveNew: DriveAPI {
         let configLoader = ConfigLoader()
         

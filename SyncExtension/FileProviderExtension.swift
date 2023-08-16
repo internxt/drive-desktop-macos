@@ -16,10 +16,27 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     let logger = Logger(subsystem: "com.internxt", category: "SyncExtension")
     let driveAPI: DriveAPI = APIFactory.Drive
     let config = ConfigLoader()
+    let manager: NSFileProviderManager
+    let tmpURL: URL
     required init(domain: NSFileProviderDomain) {
         config.load()
+        self.manager = NSFileProviderManager(for: domain)!
+        do {
+            self.tmpURL = try manager.temporaryDirectoryURL()
+        } catch {
+            fatalError("Cannot get tmp directory URL, file provider cannot work")
+        }
+        
         self.logger.info("Created extension with domain \(domain.displayName)")
         super.init()
+    }
+    
+    func makeTemporaryURL(_ purpose: String, _ ext: String? = nil) -> URL {
+        if let ext = ext {
+            return tmpURL.appendingPathComponent("\(purpose)-\(UUID().uuidString).\(ext)")
+        } else {
+            return tmpURL.appendingPathComponent("\(purpose)-\(UUID().uuidString)")
+        }
     }
     
 
@@ -73,9 +90,18 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         // TODO: a new item was created on disk, process the item's creation
+        
         // Create a folder
         if (itemTemplate.contentType == .folder) {
             return CreateFolderUseCase(itemTemplate: itemTemplate, completionHandler: completionHandler).run()
+        }
+        
+        if (itemTemplate.contentType != .folder && itemTemplate.contentType != .symbolicLink) {
+            guard let contentUrl = url else {
+                self.logger.error("Did not receive content to create file, cannot create")
+                return Progress()
+            }
+            return CreateFileUseCase(item: itemTemplate, url: contentUrl, encryptedFileDestination: makeTemporaryURL("encryption", "enc"), completionHandler: completionHandler).run()
         }
         
         return Progress()

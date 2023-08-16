@@ -10,9 +10,10 @@ import os.log
 import FileProvider
 struct CreateFolderUseCase {
     let logger = Logger(subsystem: "com.internxt", category: "CreateFolder")
-    let driveAPI = APIFactory.DriveNew
+    let driveAPI = APIFactory.Drive
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+    
     init(itemTemplate: NSFileProviderItem, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
         self.itemTemplate = itemTemplate
         self.completionHandler = completionHandler
@@ -27,7 +28,12 @@ struct CreateFolderUseCase {
                 guard let parentFolderIdInt = Int(parentFolderId) else {
                     throw CreateItemError.NoParentIdFound
                 }
-                let createdFolder = try await driveAPI.createFolder(parentFolderId: parentFolderIdInt, folderName: itemTemplate.filename, debug: true)
+                
+                let filename = itemTemplate.filename as NSString
+                
+                let createdFolder = try await driveAPI.createFolder(parentFolderId: parentFolderIdInt, folderName: filename.deletingPathExtension, debug: true)
+                
+                
                 self.logger.info("Folder created successfully: \(createdFolder.id)")
                 
                 
