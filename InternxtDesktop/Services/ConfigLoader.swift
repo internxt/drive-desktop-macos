@@ -16,7 +16,12 @@ public struct JSONConfig: Codable {
     public let AUTH_TOKEN: String?
     public let DRIVE_API_URL: String
     public let NETWORK_API_URL: String
+    public let NETWORK_AUTH: String
     public let DRIVE_NEW_API_URL: String
+    public let BUCKET_ID: String
+    public let MAGIC_IV_HEX: String
+    public let MAGIC_SALT_HEX: String
+    public let CRYPTO_SECRET2: String
 }
 
 enum ConfigLoaderError: Error {
@@ -51,6 +56,7 @@ public struct ConfigLoader {
             let decodedData = try JSONDecoder().decode(JSONConfig.self, from: data)
             loadedConfig = decodedData
         } catch {
+            print(error)
             fatalError(error.localizedDescription)
         }
         

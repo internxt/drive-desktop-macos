@@ -32,8 +32,48 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var popover: NSPopover!
     var statusBarItem: NSStatusItem!
     var domain: NSFileProviderDomain? = nil
+    let authManager = AuthManager()
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    }
+    
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        logger.info("App starting")
+        // Load the config, or die with a fatalError
+        config.load()
+        if(isPreview) {
+            // Running in preview mode
+            self.initPreviewMode()
+            logger.info("Preview mode did start succesfully")
+            return
+        }
+            
+        
+       
+        if authManager.isLoggedIn == false {
+            self.initNormalMode()
+        } else {
+            displayAuthWindow()
+        }
+        
+        
+        logger.info("App did start successfully")
+        
+    }
+    
+    func displayAuthWindow() {
+        let window = NSApp.windows.first!
+        window.makeKey()
+        window.orderFrontRegardless()
+    }
+    
+    func applicationWillTerminate(_ notification: Notification) {
+        if statusBarItem != nil {
+            NSStatusBar.system.removeStatusItem(statusBarItem)
+            statusBarItem = nil
+        }
+        
     }
     
     
@@ -137,29 +177,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         })
     }
     
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        logger.info("App starting")
-        // Load the config, or die with a fatalError
-        config.load()
-        
-        
-        if(isPreview) {
-            // Running in preview mode
-            self.initPreviewMode()
-            logger.info("Preview mode did start succesfully")
-            return
-        }
-            
     
-        self.initNormalMode()
-        logger.info("App did start successfully")
-        
-    }
-    
-    func applicationWillTerminate(_ notification: Notification) {
-        NSStatusBar.system.removeStatusItem(statusBarItem)
-        statusBarItem = nil
-    }
     
     
     
@@ -176,7 +194,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.popover.contentSize = NSSize(width: 300, height: 400)
         self.popover.behavior = .transient
         self.popover.setValue(true, forKeyPath: "shouldHideAnchor")
-        self.popover.contentViewController = NSHostingController(rootView: ContentView())
+        self.popover.contentViewController = NSHostingController(rootView: ContentView().environmentObject(self.authManager))
         
         NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) {
                    [weak self] event in

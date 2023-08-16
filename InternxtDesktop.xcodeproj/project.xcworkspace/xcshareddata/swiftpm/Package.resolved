@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/drive-api",
-        "revision" : "126e1fd39896be9a25cf7dd3359484863e24f2e8"
+        "branch" : "feature/upload-module",
+        "revision" : "80e558b90a79b78d4dc0c98cea2f065fca1c3834"
       }
     }
   ],
