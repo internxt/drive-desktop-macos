@@ -10,15 +10,12 @@ import Security
 
 
 public struct JSONConfig: Codable {
-    public let MNEMONIC: String
-    public let ROOT_FOLDER_ID: String
     public let LEGACY_AUTH_TOKEN: String?
     public let AUTH_TOKEN: String?
     public let DRIVE_API_URL: String
     public let NETWORK_API_URL: String
     public let NETWORK_AUTH: String
     public let DRIVE_NEW_API_URL: String
-    public let BUCKET_ID: String
     public let MAGIC_IV_HEX: String
     public let MAGIC_SALT_HEX: String
     public let CRYPTO_SECRET2: String
@@ -28,6 +25,8 @@ enum ConfigLoaderError: Error {
     case ConfigFileDoesntExists
     case CannotSaveAuthToken
     case CannotRetrieveAuthToken
+    case CannotSaveMnemonic
+    case CannotRemoveKey
 }
 
 public var loadedConfig: JSONConfig? = nil
@@ -70,11 +69,39 @@ public struct ConfigLoader {
         return self.getFromUserDefaults(key: "AuthToken")
     }
     
+    public func getMnemonic() -> String? {
+        return self.getFromUserDefaults(key: "Mnemonic")
+    }
+    
     public func setLegacyAuthToken(legacyAuthToken: String) throws -> Void {
         let saved = self.saveToUserDefaults(key: "LegacyAuthToken", value: legacyAuthToken)
         
         if saved == false {
             throw ConfigLoaderError.CannotSaveAuthToken
+        }
+    }
+    
+    public func removeLegacyAuthToken() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "LegacyAuthToken")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
+    public func setMnemonic(mnemonic: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: "Mnemonic", value: mnemonic)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveMnemonic
+        }
+    }
+    
+    public func removeMnemonic() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "Mnemonic")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
         }
     }
     
@@ -86,6 +113,14 @@ public struct ConfigLoader {
         }
     }
     
+    public func removeAuthToken() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "AuthToken")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
     public func get() -> JSONConfig {
         if(loadedConfig == nil) {
             self.load()
@@ -93,7 +128,7 @@ public struct ConfigLoader {
         return loadedConfig!
     }
     
-    private func saveToUserDefaults(key: String, value: String) -> Bool {
+    func saveToUserDefaults(key: String, value: String) -> Bool {
         
         guard let defaults = UserDefaults(suiteName: SUITE_NAME) else {
             return false
@@ -103,7 +138,17 @@ public struct ConfigLoader {
         return true
     }
     
-    private func getFromUserDefaults(key: String) -> String? {
+    func removeFromUserDefaults(key: String) -> Bool {
+        
+        guard let defaults = UserDefaults(suiteName: SUITE_NAME) else {
+            return false
+        }
+            
+        defaults.removeObject(forKey: key)
+        return true
+    }
+    
+    func getFromUserDefaults(key: String) -> String? {
         guard let defaults = UserDefaults(suiteName:SUITE_NAME) else {
             return nil
         }

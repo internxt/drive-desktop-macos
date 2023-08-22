@@ -2,7 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSUIElement</key>
-	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>internxt.InternxtDesktop</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>internxt</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fonts/NeueEinstellung-Regular.ttf</string>
+		<string>Fonts/NeueEinstellung-Medium.ttf</string>
+		<string>Fonts/NeueEinstellung-SemiBold.ttf</string>
+		<string>Fonts/NeueEinstellung-Bold.ttf</string>
+	</array>
 </dict>
 </plist>

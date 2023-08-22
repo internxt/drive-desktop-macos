@@ -14,8 +14,8 @@
             filePath = "SyncExtension/FileProviderExtension.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "item(for:request:completionHandler:)"
             landmarkType = "7">
             <Locations>
@@ -92,8 +92,8 @@
             filePath = "SyncExtension/FileProviderExtension.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
             landmarkName = "item(for:request:completionHandler:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -108,8 +108,8 @@
             filePath = "SyncExtension/FileProviderExtension.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
             landmarkName = "item(for:request:completionHandler:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -143,22 +143,6 @@
             startingLineNumber = "44"
             endingLineNumber = "44"
             landmarkName = "enumerateItems(for:startingAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "AE5EE3DE-88DD-4064-8379-8606E3D076C8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SyncExtension/FileProviderExtension.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "enumerator(for:request:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

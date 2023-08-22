@@ -9,20 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthManager
-    @Environment(\.openWindow) var openWindow
-    init() {
+    private var onLoginSuccess: () -> Void
+    init(onLoginSuccess: @escaping () -> Void) {
+        self.onLoginSuccess = onLoginSuccess
     }
+    
     var body: some View {
-        Button("Sign out", action: {
-            openWindow(id: "AuthWindow")
-        })
-        WidgetView()
-       
+        SignInWithBrowserView(onLoginSuccess: onLoginSuccess).environmentObject(authManager)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(onLoginSuccess: {})
     }
 }
