@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
-
+import InternxtSwiftCore
 struct WidgetHeaderView: View {
+    private let user: InternxtUser
+    init(user: InternxtUser?) {
+        self.user = user!
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center, spacing: 16) {
-                
+                AppText(user.email).font(AppTextFont["SM/Medium"])
             }.padding(.horizontal, 10)
                 .padding(.vertical, 0)
                 .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .leading)
@@ -24,6 +28,6 @@ struct WidgetHeaderView: View {
 
 struct WidgetHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetHeaderView()
+        WidgetHeaderView(user: nil)
     }
 }

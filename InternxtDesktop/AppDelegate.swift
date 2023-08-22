@@ -12,17 +12,7 @@ import SwiftUI
 import os.log
 import FileProvider
 import InternxtSwiftCore
-@main
-struct InternxtDesktopApp: App {
-    
-    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    
-    var body: some Scene {
-        Settings {
-            
-        }
-    }
-}
+import Combine
 
 let RESET_DOMAIN_ON_START = true
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -33,10 +23,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem!
     var domain: NSFileProviderDomain? = nil
     let authManager = AuthManager()
+    var listenToLoggedIn: AnyCancellable?
+    
+    
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
-    
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
@@ -48,33 +40,56 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             logger.info("Preview mode did start succesfully")
             return
         }
-            
         
-       
-        if authManager.isLoggedIn == false {
-            self.initNormalMode()
+        if authManager.isLoggedIn == true {
+           loginSuccess()
         } else {
             displayAuthWindow()
         }
-        
         
         logger.info("App did start successfully")
         
     }
     
-    func displayAuthWindow() {
-        let window = NSApp.windows.first!
-        window.makeKey()
-        window.orderFrontRegardless()
+    func getAuthWindow() -> NSWindow? {
+        return NSApp.windows.first{$0.title == "Internxt Drive"}
     }
     
-    func applicationWillTerminate(_ notification: Notification) {
-        if statusBarItem != nil {
-            NSStatusBar.system.removeStatusItem(statusBarItem)
-            statusBarItem = nil
+    func loginSuccess() {
+        authManager.initializeCurrentUser()
+        self.initFileProvider()
+        setupWidget()
+        self.logger.info("Login success")
+        openPopover(delayed: true)
+    }
+    
+    func logout() {
+        do {
+            try authManager.signOut()
+            
+            displayAuthWindow()
+        } catch {
+            print(error)
         }
         
     }
+        
+    
+    func displayAuthWindow() {
+        guard let window = getAuthWindow() else {
+            print("No auth window found")
+            return
+        }
+        NSApp.setActivationPolicy(.regular)
+        window.orderFrontRegardless()
+        window.makeKey()
+        NSApplication.shared.activate(ignoringOtherApps: true)
+    }
+    
+    func applicationWillTerminate(_ notification: Notification) {
+        destroyWidget()
+    }
+    
     
     
     private func initPreviewMode() {
@@ -92,33 +107,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    private func initDevMode() {
-        self.logger.info("Initializing dev mode")
-        
-        let loadedConfig = config.get()
-        
-        do {
-            guard let authToken = loadedConfig.AUTH_TOKEN else {
-                return
-            }
-            
-            try config.setAuthToken(authToken: authToken)
-            self.logger.info("Loaded auth token from env")
-            guard let legacyAuthToken = loadedConfig.LEGACY_AUTH_TOKEN else {
-                return
-            }
-            
-            try config.setLegacyAuthToken(legacyAuthToken: legacyAuthToken)
-            self.logger.info("Loaded legacy auth token from env")
-        } catch {
-            
-            self.logger.error("Failed to load dev mode: \(error)")
-        }
-        
-    }
-    
-    private func initNormalMode() {
-        self.initDevMode()
+    private func initFileProvider() {
         let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
         self.domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Drive")
         
@@ -133,6 +122,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.logger.info("Removing domain...")
                     NSFileProviderManager.remove(loadedDomain!, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
                         self.addDomain(domain: self.domain!)
+                        self.signalForIdentifier()
                     })
                     
                 } else {
@@ -142,10 +132,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         
-        signalEnumeratorPeriodically()
-        setupStatusBar()
-   
+        //signalEnumeratorPeriodically()
     }
+    
+    
     func signalForIdentifier() {
         
         if domain == nil {
@@ -177,12 +167,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         })
     }
     
+    func destroyWidget() {
+        if statusBarItem != nil {
+            NSStatusBar.system.removeStatusItem(statusBarItem)
+            statusBarItem = nil
+        }
+    }
     
-    
-    
-    
-    func setupStatusBar() {
+    func setupWidget() {
+        NSApp.setActivationPolicy(.accessory)
+        NSApp.hide(self)
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        
         
         if let button = statusBarItem.button {
             button.image = NSImage(named: "Icon")
@@ -194,23 +190,66 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.popover.contentSize = NSSize(width: 300, height: 400)
         self.popover.behavior = .transient
         self.popover.setValue(true, forKeyPath: "shouldHideAnchor")
-        self.popover.contentViewController = NSHostingController(rootView: ContentView().environmentObject(self.authManager))
+        self.popover.contentViewController = NSHostingController(rootView: WidgetView(onLogout: logout, openFileProviderRoot: openFileProviderRoot).environmentObject(self.authManager))
         
-        NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) {
-                   [weak self] event in
-                   self?.popover.performClose(event)
-               }
+     
+    }
+    
+    func openFileProviderRoot() {
+        Task{
+            do {
+                guard let fileProviderFolderURL = try await NSFileProviderManager(for: domain!)?.getUserVisibleURL(for: .rootContainer) else{
+                    print("No FileProvider URL found")
+                    return
+                }
+
+                fileProviderFolderURL.startAccessingSecurityScopedResource()
+                let openResult = NSWorkspace.shared.open(fileProviderFolderURL)
+                if !openResult {
+                    print("There was an error opening FileProvider Folder")
+                }
+                fileProviderFolderURL.stopAccessingSecurityScopedResource()
+            } catch {
+                print(error)
+            }
+            
+        }
     }
     
     @objc func togglePopover() {
         
-        if let button = statusBarItem.button {
+        if statusBarItem.button != nil {
+            if authManager.isLoggedIn == false {
+                displayAuthWindow()
+                return
+            }
             if popover.isShown {
                 popover.performClose(nil)
+                popover.contentViewController?.view.window?.resignKey()
             } else {
-                popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+               openPopover()
             }
         }
+    }
+    
+    func openPopover(delayed: Bool = false) {
+        func display() {
+            if let button = statusBarItem.button {
+                popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+                popover.contentViewController?.view.window?.makeKey()
+            }
+        }
+        
+        if delayed == true {
+            // Prevent
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                display()
+            }
+        } else {
+            display()
+        }
+        
+       
     }
    
     

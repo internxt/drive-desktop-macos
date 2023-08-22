@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/upload-module",
-        "revision" : "80e558b90a79b78d4dc0c98cea2f065fca1c3834"
+        "branch" : "feature/auth-and-usage-endpoints",
+        "revision" : "8dd587be7af0b295219dc50fa81bb871fd1f65bf"
       }
     }
   ],
