@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iosdevzone/IDZSwiftCommonCrypto.git",
       "state" : {
-        "revision" : "d824371e670bd57eb456bbc41139b4997f7207b8",
-        "version" : "0.13.1"
+        "revision" : "47f9747d12137cd59d783ab376e3ccab7206319b",
+        "version" : "0.16.1"
       }
     },
     {
