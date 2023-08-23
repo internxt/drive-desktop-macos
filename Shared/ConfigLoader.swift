@@ -7,18 +7,17 @@
 
 import Foundation
 import Security
-
+import InternxtSwiftCore
+import CryptoKit
 
 public struct JSONConfig: Codable {
-    public let LEGACY_AUTH_TOKEN: String?
-    public let AUTH_TOKEN: String?
     public let DRIVE_API_URL: String
     public let NETWORK_API_URL: String
-    public let NETWORK_AUTH: String
     public let DRIVE_NEW_API_URL: String
     public let MAGIC_IV_HEX: String
     public let MAGIC_SALT_HEX: String
     public let CRYPTO_SECRET2: String
+    public let SENTRY_DSN: String
 }
 
 enum ConfigLoaderError: Error {
@@ -27,12 +26,15 @@ enum ConfigLoaderError: Error {
     case CannotRetrieveAuthToken
     case CannotSaveMnemonic
     case CannotRemoveKey
+    case CannotSaveUser
+    case CannotRemoveUser
 }
 
 public var loadedConfig: JSONConfig? = nil
 public var loadedLegacyAuthToken: String? = nil
 public var loadedAuthToken: String? = nil
 public struct ConfigLoader {
+    
     // We hardcode this value, so no other team can sign with our teamID, this corresponds to our Apps Groups
     private let SUITE_NAME = "JR4S3SY396.group.internxt.desktop"
     public init() {
@@ -71,6 +73,41 @@ public struct ConfigLoader {
     
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: "Mnemonic")
+    }
+    
+    public func getNetworkAuth() -> String? {
+        guard let user = getUser() else {
+            return nil
+        }
+        var hasher = SHA256()
+        
+        hasher.update(data: user.userId.data(using: .utf8)!)
+        
+        let digest = hasher.finalize()
+        var result = [UInt8]()
+        digest.withUnsafeBytes {bytes in
+            result.append(contentsOf: bytes)
+        }
+       
+        let userAndPass = "\(user.bridgeUser):\(CryptoUtils().bytesToHexString(result))"
+        return userAndPass.data(using: .utf8)?.base64EncodedString()
+    }
+    
+    public func getUser() -> DriveUser? {
+        let userStr = self.getFromUserDefaults(key: "DriveUser")
+        guard let userData = userStr?.data(using: .utf8) else {
+            return nil
+        }
+        do {
+            let jsonData = try JSONDecoder().decode(DriveUser.self, from: userData)
+            return jsonData
+        } catch {
+            print(error)
+            return nil
+        }
+        
+        
+        
     }
     
     public func setLegacyAuthToken(legacyAuthToken: String) throws -> Void {
@@ -115,6 +152,27 @@ public struct ConfigLoader {
     
     public func removeAuthToken() throws -> Void  {
         let removed = self.removeFromUserDefaults(key: "AuthToken")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
+    public func setUser(user: DriveUser) throws -> Void {
+        let jsonData = try JSONEncoder().encode(user)
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw ConfigLoaderError.CannotSaveUser
+        }
+        
+        let saved = self.saveToUserDefaults(key: "DriveUser", value: jsonString)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveUser
+        }
+    }
+    
+    public func removeUser() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "DriveUser")
         
         if removed == false {
             throw ConfigLoaderError.CannotRemoveKey

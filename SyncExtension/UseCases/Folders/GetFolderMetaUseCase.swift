@@ -37,7 +37,7 @@ struct GetFolderMetaUseCase {
                 
                 var parentId: NSFileProviderItemIdentifier = .rootContainer
                 
-                if folderMeta.parentId != nil && String(folderMeta.parentId!) != nil {
+                if folderMeta.parentId != nil {
                     parentId = NSFileProviderItemIdentifier(String(folderMeta.parentId!))
                 }
                 
@@ -60,8 +60,10 @@ struct GetFolderMetaUseCase {
                 )
                 
                 completionHandler(folderItem, nil)
+                self.logger.info("✅ Got metadata for folder with name \(folderMeta.plainName ?? folderMeta.name)")
             } catch {
-                self.logger.error("Failed to get folder meta for \(identifier.rawValue): \(error.localizedDescription)")
+                error.reportToSentry()
+                self.logger.error("❌ Failed to get folder meta for \(identifier.rawValue): \(error.localizedDescription)")
                 completionHandler(nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

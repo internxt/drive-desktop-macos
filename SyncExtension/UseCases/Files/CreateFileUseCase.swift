@@ -29,13 +29,15 @@ struct CreateFileUseCase {
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     private let driveAPI = APIFactory.Drive
     private let config = ConfigLoader().get()
-    init(item: NSFileProviderItem, url: URL, encryptedFileDestination: URL, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    private let user: DriveUser
+    init(networkFacade: NetworkFacade, user: DriveUser, item: NSFileProviderItem, url: URL, encryptedFileDestination: URL, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
         self.item = item
         
         self.fileContent = url
         self.encryptedFileDestination = encryptedFileDestination
         self.completionHandler = completionHandler
-        self.networkFacade = NetworkFacade(mnemonic: config.MNEMONIC, networkAPI: APIFactory.Network)
+        self.networkFacade = networkFacade
+        self.user = user
     }
  
     public func run() -> Progress {
@@ -68,15 +70,15 @@ struct CreateFileUseCase {
                     input: inputStream,
                     encryptedOutput: encryptedFileDestination,
                     fileSize: sizeInt,
-                    bucketId: ConfigLoader().get().BUCKET_ID,
+                    bucketId: user.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
                 )
                 
                 self.logger.info("Upload completed with id \(result.id)")
-                let parentId = item.parentItemIdentifier == .rootContainer ? config.ROOT_FOLDER_ID : item.parentItemIdentifier.rawValue
-                guard let folderIdInt = Int(item.parentItemIdentifier == .rootContainer ? config.ROOT_FOLDER_ID : item.parentItemIdentifier.rawValue) else {
+                let parentId = item.parentItemIdentifier == .rootContainer ? user.root_folder_id.toString() : item.parentItemIdentifier.rawValue
+                guard let folderIdInt = item.parentItemIdentifier == .rootContainer ? user.root_folder_id : Int(item.parentItemIdentifier.rawValue) else {
                     throw CreateFileUseCaseError.InvalidParentId
                 }
                 
@@ -97,8 +99,16 @@ struct CreateFileUseCase {
                     plainName: filename.deletingPathExtension
                 ))
                 
-                completionHandler(FileProviderItem(
-                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFile.id)), filename: item.filename, parentId: NSFileProviderItemIdentifier(rawValue: parentId), createdAt: Time.dateFromISOString(createdFile.createdAt) ?? Date(), updatedAt: Time.dateFromISOString(createdFile.updatedAt) ?? Date(), itemExtension: createdFile.type, itemType: .file), [], false, nil )
+                let fileProviderItem = FileProviderItem(
+                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFile.fileId)),
+                    filename: item.filename,
+                    parentId: NSFileProviderItemIdentifier(rawValue: parentId),
+                    createdAt: Time.dateFromISOString(createdFile.createdAt) ?? Date(),
+                    updatedAt: Time.dateFromISOString(createdFile.updatedAt) ?? Date(),
+                    itemExtension: createdFile.type,
+                    itemType: .file
+                )
+                completionHandler(fileProviderItem, [], false, nil )
                 
             } catch {
                 print(error)

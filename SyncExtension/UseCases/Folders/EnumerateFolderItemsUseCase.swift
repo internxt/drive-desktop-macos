@@ -16,10 +16,12 @@ struct EnumerateFolderItemsUseCase {
     private let page: NSFileProviderPage
     private let driveAPI: DriveAPI = APIFactory.DriveNew
     private let enumeratedItemIdentifier: NSFileProviderItemIdentifier
-    init(enumeratedItemIdentifier: NSFileProviderItemIdentifier, for observer: NSFileProviderEnumerationObserver, from page: NSFileProviderPage) {
+    private let user: DriveUser
+    init(user: DriveUser, enumeratedItemIdentifier: NSFileProviderItemIdentifier, for observer: NSFileProviderEnumerationObserver, from page: NSFileProviderPage) {
         self.observer = observer
         self.page = page
         self.enumeratedItemIdentifier = enumeratedItemIdentifier
+        self.user = user
     }
     
     public func run(limit: Int = 50, offset: Int = 0) -> Void {
@@ -27,7 +29,7 @@ struct EnumerateFolderItemsUseCase {
             do {
                 self.logger.info("Fetching folder content: \(self.enumeratedItemIdentifier.rawValue)")
                 
-                let folderId = self.enumeratedItemIdentifier == .rootContainer ? ConfigLoader().get().ROOT_FOLDER_ID : self.enumeratedItemIdentifier.rawValue
+                let folderId = self.enumeratedItemIdentifier == .rootContainer ? user.root_folder_id.toString() : self.enumeratedItemIdentifier.rawValue
                 var items: Array<NSFileProviderItem> = Array()
                 
                 let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: offset, limit: limit , debug: false)
@@ -64,19 +66,19 @@ struct EnumerateFolderItemsUseCase {
                 
                 files.result.forEach{ (file) in
                     guard let createdAt = Time.dateFromISOString(file.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
+                        self.logger.error("Cannot create createdAt date for item \(file.fileId) with value \(file.createdAt)")
                         return
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for item \(file.fileId) with value \(file.updatedAt)")
                         return
                     }
                     
                     
 
                     let item = FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: String(file.id)),
+                        identifier: NSFileProviderItemIdentifier(rawValue: String(file.fileId)),
                         filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
                         parentId: self.enumeratedItemIdentifier,
                         createdAt: createdAt,
@@ -91,7 +93,8 @@ struct EnumerateFolderItemsUseCase {
                 
                 
                 self.observer.didEnumerate(items)
-                
+                self.logger.info("✅ Enumerated items correctly for container \(self.enumeratedItemIdentifier.rawValue)")
+
                 if hasMoreFiles || hasMoreFolders {
                     let nextOffset = limit + offset
                     // The next page is the offset we reached at the end of this page
@@ -103,7 +106,8 @@ struct EnumerateFolderItemsUseCase {
                 
                 
             } catch {
-                self.logger.error("Got error fetching folder content: \(error)")
+                error.reportToSentry()
+                self.logger.error("❌ Got error fetching folder content: \(error)")
                 observer.finishEnumeratingWithError(error)
             }
         }

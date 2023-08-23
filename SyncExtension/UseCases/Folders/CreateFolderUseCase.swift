@@ -8,21 +8,24 @@
 import Foundation
 import os.log
 import FileProvider
+import InternxtSwiftCore
+
 struct CreateFolderUseCase {
     let logger = Logger(subsystem: "com.internxt", category: "CreateFolder")
     let driveAPI = APIFactory.Drive
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
-    
-    init(itemTemplate: NSFileProviderItem, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    let user: DriveUser
+    init(user: DriveUser, itemTemplate: NSFileProviderItem, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
         self.itemTemplate = itemTemplate
+        self.user = user
         self.completionHandler = completionHandler
     }
     
     
     func run() -> Progress {
         Task {
-            let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? ConfigLoader().get().ROOT_FOLDER_ID : itemTemplate.parentItemIdentifier.rawValue
+            let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? user.root_folder_id.toString() : itemTemplate.parentItemIdentifier.rawValue
             
             do {
                 guard let parentFolderIdInt = Int(parentFolderId) else {
@@ -32,11 +35,7 @@ struct CreateFolderUseCase {
                 let filename = itemTemplate.filename as NSString
                 
                 let createdFolder = try await driveAPI.createFolder(parentFolderId: parentFolderIdInt, folderName: filename.deletingPathExtension, debug: true)
-                
-                
-                self.logger.info("Folder created successfully: \(createdFolder.id)")
-                
-                
+
                 completionHandler(FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
                     filename: createdFolder.plain_name ?? createdFolder.name,
@@ -47,8 +46,10 @@ struct CreateFolderUseCase {
                     itemType: .folder
                 ), [], false, nil)
                 
+                self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
             } catch {
-                self.logger.error("Failed to create folder: \(error.localizedDescription)")
+                error.reportToSentry()
+                self.logger.error("❌ Failed to create folder: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

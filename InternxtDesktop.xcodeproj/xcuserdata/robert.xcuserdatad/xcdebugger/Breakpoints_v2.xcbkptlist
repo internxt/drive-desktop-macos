@@ -14,10 +14,10 @@
             filePath = "SyncExtension/FileProviderExtension.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "item(for:request:completionHandler:)"
-            landmarkType = "7">
+            startingLineNumber = "70"
+            endingLineNumber = "70"
+            landmarkName = "FileProviderExtension"
+            landmarkType = "3">
             <Locations>
                <Location
                   uuid = "C1D91BBB-348C-4FE9-95AE-59220FC0DF56 - a4a2da44a26902e9"
@@ -92,9 +92,9 @@
             filePath = "SyncExtension/FileProviderExtension.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
-            landmarkName = "item(for:request:completionHandler:)"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "init(domain:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -108,9 +108,9 @@
             filePath = "SyncExtension/FileProviderExtension.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "item(for:request:completionHandler:)"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "init(domain:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

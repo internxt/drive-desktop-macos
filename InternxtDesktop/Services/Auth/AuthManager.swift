@@ -17,6 +17,7 @@ class AuthManager: ObservableObject {
     
     init() {
         self.isLoggedIn = checkIsLoggedIn()
+        self.user = config.getUser()
     }
     
     public var mnemonic: String? {
@@ -43,6 +44,12 @@ class AuthManager: ObservableObject {
         Task {
             do {
                 let refreshUserResponse = try await APIFactory.Drive.refreshUser()
+                ErrorUtils.identify(
+                    email:refreshUserResponse.user.email,
+                    uuid: refreshUserResponse.user.uuid
+                )
+                try config.setUser(user: refreshUserResponse.user)
+                
                 DispatchQueue.main.async{
                     self.user = refreshUserResponse.user
                 }
@@ -77,7 +84,7 @@ class AuthManager: ObservableObject {
         try config.removeAuthToken()
         try config.removeLegacyAuthToken()
         try config.removeMnemonic()
-        
+        ErrorUtils.clean()
         isLoggedIn = false
         self.logger.info("Auth details removed correctly, user is logged out")
     }

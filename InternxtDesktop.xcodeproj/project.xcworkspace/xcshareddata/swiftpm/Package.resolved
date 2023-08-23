@@ -19,12 +19,21 @@
       }
     },
     {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "d062d9b31ccabdec706134f2216476d1996caf11",
+        "version" : "8.10.0"
+      }
+    },
+    {
       "identity" : "swift-core",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "feature/auth-and-usage-endpoints",
-        "revision" : "8dd587be7af0b295219dc50fa81bb871fd1f65bf"
+        "revision" : "dcddc5619e3750d2d5e7bde705a6a8bf53e5bc50"
       }
     }
   ],

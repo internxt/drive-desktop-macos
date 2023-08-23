@@ -9,13 +9,14 @@ import FileProvider
 import os.log
 import InternxtSwiftCore
 class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
-    let logger = Logger(subsystem: "com.internxt", category: "SyncExtension")
+    let logger = Logger(subsystem: "com.internxt", category: "sync")
     private let enumeratedItemIdentifier: NSFileProviderItemIdentifier
     private let anchor = NSFileProviderSyncAnchor(NSUUID().uuidString.data(using: .utf8)!)
     private let driveAPI =  APIFactory.Drive
-    
-    init(enumeratedItemIdentifier: NSFileProviderItemIdentifier) {
+    private let user: DriveUser
+    init(user: DriveUser, enumeratedItemIdentifier: NSFileProviderItemIdentifier) {
         self.enumeratedItemIdentifier = enumeratedItemIdentifier
+        self.user = user
         super.init()
     }
 
@@ -58,8 +59,9 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
         
         
         let suggestedPageSize: Int = observer.suggestedPageSize ?? 50
-        return EnumerateFolderItemsUseCase(enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize, offset: 0)
+        return EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize, offset: 0)
     }
+    
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
         

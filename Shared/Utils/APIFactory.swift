@@ -18,7 +18,8 @@ struct APIFactory {
         let configLoader = ConfigLoader()
         
         let config = configLoader.get()
-        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: config.NETWORK_AUTH)
+        let networkAuth = configLoader.getNetworkAuth()
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!)
     }
     
     static var DriveNew: DriveAPI {
