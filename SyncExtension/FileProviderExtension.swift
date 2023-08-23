@@ -126,14 +126,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     }
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
-        // TODO: a new item was created on disk, process the item's creation
         
-        // Create a folder
-        if (itemTemplate.contentType == .folder) {
+        
+        // TODO: a new item was created on disk, process the item's creation
+        let shouldCreateFolder = itemTemplate.contentType == .folder
+        let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
+        
+        if shouldCreateFolder {
             return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()
         }
         
-        if (itemTemplate.contentType != .folder && itemTemplate.contentType != .symbolicLink) {
+        if shouldCreateFile {
             guard let contentUrl = url else {
                 self.logger.error("Did not receive content to create file, cannot create")
                 return Progress()
@@ -153,48 +156,54 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     
     func modifyItem(_ item: NSFileProviderItem, baseVersion version: NSFileProviderItemVersion, changedFields: NSFileProviderItemFields, contents newContents: URL?, options: NSFileProviderModifyItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         
+        
+        // Folder cases
+        let folderHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType == .folder
+        let folderHasBeenRenamed = changedFields.contains(.filename) && item.contentType == .folder
+        
+        // File cases
+        let fileHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType != .folder
+        let fileHasBeenRenamed = changedFields.contains(.filename) && item.contentType != .folder
+        
+        // File and folder cases
+        let contentHasChanged = changedFields.contains(.contents)
+        let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
+        let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
+        
         self.logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
         
         
-        if changedFields.contains(.contents) {
+        if contentHasChanged {
             self.logger.info("File content has changed, let it pass")
             completionHandler(item, [], false, nil)
             return Progress()
         }
         
-        if changedFields.contains(.contentModificationDate) {
+        if contentModificationDateHasChanged {
             self.logger.info("File content modification date has changed, let it pass")
             completionHandler(item, [], false, nil)
             return Progress()
         }
         
-        if changedFields.contains(.lastUsedDate) {
+        if lastUsedDateHasChanged {
             self.logger.info("File last used date has changed, let it pass")
             completionHandler(item, [], false, nil)
             return Progress()
         }
         
-        // User moved item to trash
-        if changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType != nil {
-            switch item.contentType! {
-                case .folder:
-                    return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-                default:
-                    return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-            }
-            
+        if fileHasBeenTrashed {
+            return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
-        // User renamed a folder
-        if changedFields.contains(.filename) && item.contentType == .folder {
-            self.logger.info("Modified folder filename, new one is \(item.filename)")
-            
+        if folderHasBeenTrashed {
+            return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if folderHasBeenRenamed {
             return RenameFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
-        // User renamed a file
-        if changedFields.contains(.filename) && item.contentType != .folder  {
-            self.logger.info("Modified file filename, new one is \(item.filename)")
+        if fileHasBeenRenamed  {
             return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
                 
