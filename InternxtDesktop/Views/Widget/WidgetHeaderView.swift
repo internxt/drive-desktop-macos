@@ -8,8 +8,8 @@
 import SwiftUI
 import InternxtSwiftCore
 struct WidgetHeaderView: View {
-    private let user: InternxtUser
-    init(user: InternxtUser?) {
+    private let user: DriveUser
+    init(user: DriveUser?) {
         self.user = user!
     }
     var body: some View {

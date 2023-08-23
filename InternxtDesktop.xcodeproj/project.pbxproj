@@ -18,6 +18,8 @@
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
+		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
+		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
 		E145E16A2A829C6B00B07E0B /* env.sample.json in Resources */ = {isa = PBXBuildFile; fileRef = E145E1692A829C6B00B07E0B /* env.sample.json */; };
 		E145E16C2A82A21500B07E0B /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
 		E145E16D2A82A21500B07E0B /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
@@ -27,6 +29,17 @@
 		E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
 		E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */; };
 		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
+		E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
+		E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
+		E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */; };
+		E1581DCF2A9629620051DD46 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
+		E1581DD02A9629620051DD46 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
+		E1581DD12A9629620051DD46 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
+		E1581DD22A9629620051DD46 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
+		E1581DD42A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
+		E1581DD52A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
+		E1581DD62A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
+		E1581DD72A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
 		E16310572A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E16310582A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E163105A2A8E67780072989E /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310592A8E67780072989E /* App.swift */; };
@@ -40,6 +53,8 @@
 		E16310932A8F8E8A0072989E /* NeueEinstellung-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E16310822A8F8E8A0072989E /* NeueEinstellung-Medium.ttf */; };
 		E16310942A8F8E8A0072989E /* NeueEinstellung-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E16310822A8F8E8A0072989E /* NeueEinstellung-Medium.ttf */; };
 		E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		E16ECC142A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
+		E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		E17AA02E2A8A826D00C7EE6E /* ExtensionAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */; };
 		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
@@ -117,6 +132,10 @@
 		E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderMetaUseCase.swift; sourceTree = "<group>"; };
 		E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFolderUseCase.swift; sourceTree = "<group>"; };
 		E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFileUseCase.swift; sourceTree = "<group>"; };
+		E1581DC92A95221D0051DD46 /* FileProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProvider.swift; sourceTree = "<group>"; };
+		E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileUseCase.swift; sourceTree = "<group>"; };
+		E1581DCE2A9629620051DD46 /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
+		E1581DD32A9629790051DD46 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		E16310562A8E66F70072989E /* URLDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLDictionary.swift; sourceTree = "<group>"; };
 		E16310592A8E67780072989E /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		E163105B2A8E6C830072989E /* AppText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppText.swift; sourceTree = "<group>"; };
@@ -124,6 +143,8 @@
 		E163107C2A8F8E8A0072989E /* NeueEinstellung-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NeueEinstellung-SemiBold.ttf"; sourceTree = "<group>"; };
 		E16310802A8F8E8A0072989E /* NeueEinstellung-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NeueEinstellung-Regular.ttf"; sourceTree = "<group>"; };
 		E16310822A8F8E8A0072989E /* NeueEinstellung-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NeueEinstellung-Medium.ttf"; sourceTree = "<group>"; };
+		E16ECC132A9508B10093D3ED /* ErrorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorUtils.swift; sourceTree = "<group>"; };
+		E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InternxtDesktopDebug.entitlements; sourceTree = "<group>"; };
 		E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ExtensionAssets.xcassets; sourceTree = "<group>"; };
 		E1DB29532A7D56C4009036B8 /* AppTextInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextInput.swift; sourceTree = "<group>"; };
@@ -162,6 +183,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
+				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +207,7 @@
 			files = (
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
+				E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				E109717E2A81143A00ABED41 /* APIFactory.swift */,
+				E16ECC132A9508B10093D3ED /* ErrorUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -212,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				E10B0FDC2A94143F00B97874 /* Int.swift */,
+				E1581DD32A9629790051DD46 /* Error.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -233,13 +258,24 @@
 			children = (
 				E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */,
 				E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */,
+				E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */,
 			);
 			path = Files;
+			sourceTree = "<group>";
+		};
+		E1581DC82A95220B0051DD46 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				E1581DC92A95221D0051DD46 /* FileProvider.swift */,
+				E1581DCE2A9629620051DD46 /* Generic.swift */,
+			);
+			path = Errors;
 			sourceTree = "<group>";
 		};
 		E163105D2A8F8A570072989E /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				E1581DC82A95220B0051DD46 /* Errors */,
 				E10B0FDB2A94142A00B97874 /* Extensions */,
 				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
 				E145E16B2A82A21500B07E0B /* Time.swift */,
@@ -324,6 +360,7 @@
 		E1FB2D262A76BF0200473AE1 /* InternxtDesktop */ = {
 			isa = PBXGroup;
 			children = (
+				E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */,
 				E1FB2D942A76D01B00473AE1 /* Info.plist */,
 				E1FB2D542A76C03300473AE1 /* Views */,
 				E1FB2D532A76C02500473AE1 /* Utils */,
@@ -425,6 +462,7 @@
 				E1FB2D212A76BF0200473AE1 /* Frameworks */,
 				E1FB2D222A76BF0200473AE1 /* Resources */,
 				E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */,
+				E1581DC72A95143F0051DD46 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -434,6 +472,7 @@
 			name = InternxtDesktop;
 			packageProductDependencies = (
 				E150884D2A7C55F20089BD57 /* InternxtSwiftCore */,
+				E1313D2E2A9501BB00C7ABF0 /* Sentry */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -490,6 +529,7 @@
 			name = SyncExtension;
 			packageProductDependencies = (
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
+				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -532,6 +572,7 @@
 			mainGroup = E1FB2D1B2A76BF0200473AE1;
 			packageReferences = (
 				E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */,
+				E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -591,6 +632,28 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		E1581DC72A95143F0051DD46 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n    # We should handle this better in a CI environment, this is a temporary solution\n    # until we automatize this task\n    source ~/.zshrc\n    export SENTRY_ORG=internxt-e56c74f0b\n    export SENTRY_PROJECT=desktop-macos\n    sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\"\n    echo \"Debug files uploaded to Sentry\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		E1FB2D202A76BF0200473AE1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -598,20 +661,24 @@
 			files = (
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
+				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
 				E163105C2A8E6C830072989E /* AppText.swift in Sources */,
 				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E163105A2A8E67780072989E /* App.swift in Sources */,
 				E1F616072A8D7DF8008C9E62 /* SignInWithBrowserView.swift in Sources */,
+				E16ECC142A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */,
+				E1581DCF2A9629620051DD46 /* Generic.swift in Sources */,
 				E145E16C2A82A21500B07E0B /* Time.swift in Sources */,
 				E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */,
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
+				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -620,6 +687,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1581DD52A9629790051DD46 /* Error.swift in Sources */,
+				E1581DD02A9629620051DD46 /* Generic.swift in Sources */,
 				E1FB2D3A2A76BF0300473AE1 /* InternxtDesktopTests.swift in Sources */,
 				E10B0FDE2A94143F00B97874 /* Int.swift in Sources */,
 			);
@@ -630,7 +699,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E10B0FDF2A94143F00B97874 /* Int.swift in Sources */,
+				E1581DD12A9629620051DD46 /* Generic.swift in Sources */,
 				E1FB2D442A76BF0300473AE1 /* InternxtDesktopUITests.swift in Sources */,
+				E1581DD62A9629790051DD46 /* Error.swift in Sources */,
 				E1FB2D462A76BF0300473AE1 /* InternxtDesktopUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -643,6 +714,7 @@
 				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
+				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
 				E145E16D2A82A21500B07E0B /* Time.swift in Sources */,
 				E10B0FE02A94143F00B97874 /* Int.swift in Sources */,
@@ -651,9 +723,13 @@
 				E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */,
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
+				E1581DD22A9629620051DD46 /* Generic.swift in Sources */,
 				E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */,
+				E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
+				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
+				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -712,6 +788,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -739,10 +816,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -756,10 +834,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -772,6 +851,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
@@ -790,6 +870,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -806,7 +887,8 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -818,8 +900,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.SyncExtension;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -860,7 +942,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -920,6 +1003,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -946,11 +1030,12 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktopDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -964,10 +1049,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -980,10 +1066,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -997,10 +1084,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1013,6 +1101,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
@@ -1032,6 +1121,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
@@ -1050,6 +1140,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -1067,6 +1158,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -1083,7 +1175,8 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1095,8 +1188,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.SyncExtension;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1109,7 +1202,8 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1121,8 +1215,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.SyncExtension;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1186,6 +1280,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
@@ -1201,6 +1303,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
 			productName = InternxtSwiftCore;
+		};
+		E1313D2E2A9501BB00C7ABF0 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+		E1313D3A2A9504D400C7ABF0 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 		E150884D2A7C55F20089BD57 /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;

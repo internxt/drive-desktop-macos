@@ -15,6 +15,8 @@ import InternxtSwiftCore
 import Combine
 
 let RESET_DOMAIN_ON_START = true
+
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(subsystem: "com.internxt", category: "App")
     let config = ConfigLoader()
@@ -31,6 +33,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        ErrorUtils.start()
+        
+        
+        if let user = authManager.user {
+            ErrorUtils.identify(
+                email:user.email,
+                uuid: user.uuid
+            )
+        }
+        
         logger.info("App starting")
         // Load the config, or die with a fatalError
         config.load()
@@ -69,7 +81,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
             displayAuthWindow()
         } catch {
-            print(error)
+            error.reportToSentry()
         }
         
     }
@@ -97,11 +109,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func addDomain(domain: NSFileProviderDomain) {
+        
         NSFileProviderManager.add(domain) { error in
             guard let error = error else {
-                self.logger.info("Domain added correctly: \(self.domain!.displayName)")
+                self.logger.info("Domain added correctly: \(domain.displayName)")
                 return
             }
+            
             
             self.logger.error("Error adding file provider domain: \(error.localizedDescription)")
         }
@@ -111,24 +125,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
         self.domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Drive")
         
+
         NSFileProviderManager.getDomainsWithCompletionHandler() { (domains, error) in
                        
-            let loadedDomain = domains.first
-            if(loadedDomain == nil) {
-                self.logger.info("No domain loaded, adding domain")
-                self.addDomain(domain: self.domain!)
-            } else {
+            if let loadedDomain = domains.first {
                 if(RESET_DOMAIN_ON_START) {
                     self.logger.info("Removing domain...")
-                    NSFileProviderManager.remove(loadedDomain!, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
+                    NSFileProviderManager.remove(loadedDomain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
                         self.addDomain(domain: self.domain!)
                         self.signalForIdentifier()
                     })
                     
                 } else {
-                    self.logger.info("Domain is already loaded")
-                    self.signalForIdentifier()
+                    self.logger.info("No domain loaded, adding domain")
+                    self.addDomain(domain: loadedDomain)
                 }
+                
+            } else {
+                self.logger.info("Domain is already loaded")
+                self.signalForIdentifier()
             }
         }
         
@@ -138,12 +153,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func signalForIdentifier() {
         
-        if domain == nil {
+        guard let domain = self.domain else {
             self.logger.error("Cannot signal, domain not found")
             return
         }
         
-        guard let manager = NSFileProviderManager(for: domain!) else {
+        guard let manager = NSFileProviderManager(for: domain) else {
             self.logger.error("Failed to get FileProviderManager")
             return
         }
@@ -198,19 +213,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func openFileProviderRoot() {
         Task{
             do {
-                guard let fileProviderFolderURL = try await NSFileProviderManager(for: domain!)?.getUserVisibleURL(for: .rootContainer) else{
-                    print("No FileProvider URL found")
-                    return
+                guard let fileProviderFolderURL = try await NSFileProviderManager(for: domain!)?.getUserVisibleURL(for: .rootContainer) else {
+                    throw FileProviderError.CannotOpenVisibleUrl
                 }
-
-                fileProviderFolderURL.startAccessingSecurityScopedResource()
-                let openResult = NSWorkspace.shared.open(fileProviderFolderURL)
-                if !openResult {
-                    print("There was an error opening FileProvider Folder")
-                }
+                
+                _ = fileProviderFolderURL.startAccessingSecurityScopedResource()
+                NSWorkspace.shared.open(fileProviderFolderURL)
                 fileProviderFolderURL.stopAccessingSecurityScopedResource()
             } catch {
-                print(error)
+                error.reportToSentry()
             }
             
         }

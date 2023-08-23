@@ -13,22 +13,59 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
-    let logger = Logger(subsystem: "com.internxt", category: "SyncExtension")
+    let logger = Logger(subsystem: "com.internxt", category: "sync")
     let driveAPI: DriveAPI = APIFactory.Drive
     let config = ConfigLoader()
     let manager: NSFileProviderManager
     let tmpURL: URL
+    let networkFacade: NetworkFacade
+    let user: DriveUser
+    let mnemonic: String
+    let authManager: AuthManager
     required init(domain: NSFileProviderDomain) {
-        config.load()
-        self.manager = NSFileProviderManager(for: domain)!
+        self.logger.info("Starting sync extension")
+
+        ErrorUtils.start()
+        
+        guard let manager = NSFileProviderManager(for: domain) else {
+            ErrorUtils.fatal("Cannot get FileProviderManager for domain")
+        }
+        
+        
+        
+        self.manager = manager
+        
+        self.authManager = AuthManager()
+        
+        guard let user = authManager.user else {
+            ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
+        }
+        
+        ErrorUtils.identify(email: user.email, uuid: user.uuid)
+        
+        self.user = user
+        
+        guard let mnemonic = authManager.mnemonic else {
+            ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")
+        }
+        
+        self.mnemonic = mnemonic
+        self.networkFacade = NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network)
+        
         do {
             self.tmpURL = try manager.temporaryDirectoryURL()
         } catch {
-            fatalError("Cannot get tmp directory URL, file provider cannot work")
+            ErrorUtils.fatal("Cannot get tmp directory URL, file provider cannot work")
         }
         
         self.logger.info("Created extension with domain \(domain.displayName)")
         super.init()
+    }
+    
+    func checkUpdates() {
+        manager.signalEnumerator(for: .rootContainer, completionHandler: {_ in
+            self.logger.info("Enumerator signaled")
+        })
     }
     
     func makeTemporaryURL(_ purpose: String, _ ext: String? = nil) -> URL {
@@ -89,19 +126,29 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     }
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
-        // TODO: a new item was created on disk, process the item's creation
         
-        // Create a folder
-        if (itemTemplate.contentType == .folder) {
-            return CreateFolderUseCase(itemTemplate: itemTemplate, completionHandler: completionHandler).run()
+        
+        // TODO: a new item was created on disk, process the item's creation
+        let shouldCreateFolder = itemTemplate.contentType == .folder
+        let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
+        
+        if shouldCreateFolder {
+            return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()
         }
         
-        if (itemTemplate.contentType != .folder && itemTemplate.contentType != .symbolicLink) {
+        if shouldCreateFile {
             guard let contentUrl = url else {
                 self.logger.error("Did not receive content to create file, cannot create")
                 return Progress()
             }
-            return CreateFileUseCase(item: itemTemplate, url: contentUrl, encryptedFileDestination: makeTemporaryURL("encryption", "enc"), completionHandler: completionHandler).run()
+            return CreateFileUseCase(
+                networkFacade: networkFacade,
+                user: user,
+                item: itemTemplate,
+                url: contentUrl,
+                encryptedFileDestination: makeTemporaryURL("encryption", "enc"),
+                completionHandler: completionHandler
+            ).run()
         }
         
         return Progress()
@@ -109,41 +156,55 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     
     func modifyItem(_ item: NSFileProviderItem, baseVersion version: NSFileProviderItemVersion, changedFields: NSFileProviderItemFields, contents newContents: URL?, options: NSFileProviderModifyItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         
+        
+        // Folder cases
+        let folderHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType == .folder
+        let folderHasBeenRenamed = changedFields.contains(.filename) && item.contentType == .folder
+        
+        // File cases
+        let fileHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType != .folder
+        let fileHasBeenRenamed = changedFields.contains(.filename) && item.contentType != .folder
+        
+        // File and folder cases
+        let contentHasChanged = changedFields.contains(.contents)
+        let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
+        let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
+        
         self.logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
         
         
-        if changedFields.contains(.contents) {
-            self.logger.info("File content has changed")
+        if contentHasChanged {
+            self.logger.info("File content has changed, let it pass")
+            completionHandler(item, [], false, nil)
+            return Progress()
         }
         
-        if changedFields.contains(.contentModificationDate) {
-            self.logger.info("File content modification date has changed")
+        if contentModificationDateHasChanged {
+            self.logger.info("File content modification date has changed, let it pass")
+            completionHandler(item, [], false, nil)
+            return Progress()
         }
         
-        if changedFields.contains(.lastUsedDate) {
-            self.logger.info("File last used date has changed")
+        if lastUsedDateHasChanged {
+            self.logger.info("File last used date has changed, let it pass")
+            completionHandler(item, [], false, nil)
+            return Progress()
         }
         
-        // User moved item to trash
-        if changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType != nil {
-            switch item.contentType! {
-                case .folder:
-                    return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-                default:
-                    return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-            }
-            
+        if fileHasBeenTrashed {
+            return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
-        // User renamed a folder
-        if changedFields.contains(.filename) && item.contentType == .folder {
-            self.logger.info("Modified folder filename, new one is \(item.filename)")
-            
+        if folderHasBeenTrashed {
+            return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if folderHasBeenRenamed {
             return RenameFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
-        if changedFields.contains(.filename) && item.contentType != .folder  {
-            self.logger.info("Modified file filename, new one is \(item.filename)")
+        if fileHasBeenRenamed  {
+            return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
                 
         self.logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
@@ -160,6 +221,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     }
     
     func enumerator(for containerItemIdentifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest) throws -> NSFileProviderEnumerator {
-        return FileProviderEnumerator(enumeratedItemIdentifier: containerItemIdentifier)
+        return FileProviderEnumerator(user:user,enumeratedItemIdentifier: containerItemIdentifier)
     }
+    
 }

@@ -64,6 +64,11 @@ class FileProviderItem: NSObject, NSFileProviderItem {
     }
     
     var capabilities: NSFileProviderItemCapabilities {
+        
+        if parentIdentifier == .trashContainer {
+            return [.allowsDeleting]
+        }
+        
         return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting, .allowsTrashing, .allowsDeleting]
     }
     

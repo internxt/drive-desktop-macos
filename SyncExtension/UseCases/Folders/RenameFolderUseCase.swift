@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Foundation
 import os.log
 import FileProvider
 import InternxtSwiftCore
@@ -37,10 +36,12 @@ struct RenameFolderUseCase {
                 itemType: .folder
             )
             do {
-                try await driveAPI.updateFolder(folderId: item.itemIdentifier.rawValue, folderName:item.filename, debug: false)
-                self.logger.info("Folder updated successfully")
+                _ = try await driveAPI.updateFolder(folderId: item.itemIdentifier.rawValue, folderName:item.filename, debug: false)
+                self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) renamed successfully")
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
             } catch {
+                error.reportToSentry()
+                
                 if error is APIClientError {
                     let statusCode = (error as! APIClientError).statusCode
                     self.logger.info("Received status code \(statusCode)")
@@ -50,11 +51,12 @@ struct RenameFolderUseCase {
                     if statusCode == 409 {
                         completionHandler(newItem, [], false, nil)
                     } else {
+                        self.logger.error("❌ Failed to rename folder: \(error.localizedDescription)")
                         completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                     }
                    
                 } else {
-                    self.logger.error("Failed to create folder: \(error.localizedDescription)")
+                    self.logger.error("❌ Failed to rename folder: \(error.localizedDescription)")
                     completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 }
                 

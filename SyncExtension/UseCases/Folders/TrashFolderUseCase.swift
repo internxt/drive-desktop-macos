@@ -14,6 +14,7 @@ import os.log
 enum TrashFolderUseCaseError: Error {
     case InvalidItemId
     case TrashRequestFailed
+    case RequestNotSuccessful
 }
 
 extension OptionSet {
@@ -61,13 +62,15 @@ struct TrashFolderUseCase {
                         itemExtension: nil,
                         itemType: .folder
                     )
+                    self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) trashed correctly")
                     completionHandler(newItem, changedFields.removing(.parentItemIdentifier), false, nil)
                 } else {
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                    throw TrashFolderUseCaseError.RequestNotSuccessful
                 }
                 
             } catch {
-                self.logger.error("Failed to trash folder: \(error.localizedDescription)")
+                error.reportToSentry()
+                self.logger.error("❌ Failed to trash folder: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }
