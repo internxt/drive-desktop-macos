@@ -10,4 +10,6 @@ import Foundation
 
 enum FileProviderError: Error {
     case CannotOpenVisibleUrl
+    case DomainNotLoaded
+    case CannotGetFileProviderManager
 }

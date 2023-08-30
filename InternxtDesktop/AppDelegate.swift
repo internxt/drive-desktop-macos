@@ -23,10 +23,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var clickOutsideWindowObserver: Any?
     var popover: NSPopover!
     var statusBarItem: NSStatusItem!
-    var domain: NSFileProviderDomain? = nil
+    var loadedDomain: NSFileProviderDomain? = nil
     let authManager = AuthManager()
     var listenToLoggedIn: AnyCancellable?
-    
     
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -44,8 +43,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         logger.info("App starting")
+        
         // Load the config, or die with a fatalError
         config.load()
+        
         if(isPreview) {
             // Running in preview mode
             self.initPreviewMode()
@@ -78,7 +79,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func logout() {
         do {
             try authManager.signOut()
-            
+            // Remove all the domains
+            if let loadedDomainUnwrapped = loadedDomain {
+                removeDomain(domain: loadedDomainUnwrapped, completionHandler: {_, error in
+                    if let unwrappedError = error {
+                        unwrappedError.reportToSentry()
+                    }
+                    self.loadedDomain = nil
+                    self.logger.info("Domain removed correctly")
+                })
+            }
             displayAuthWindow()
         } catch {
             error.reportToSentry()
@@ -108,6 +118,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Nothing to do here in preview mode
     }
     
+    private func removeDomain(domain: NSFileProviderDomain, completionHandler: @escaping (URL?, Error?) -> Void) {
+        NSFileProviderManager.remove(domain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler:completionHandler)
+    }
+    
     private func addDomain(domain: NSFileProviderDomain) {
         
         NSFileProviderManager.add(domain) { error in
@@ -123,7 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func initFileProvider() {
         let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
-        self.domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Drive")
+        let newDomain = NSFileProviderDomain(identifier: identifier, displayName: "")
         
 
         NSFileProviderManager.getDomainsWithCompletionHandler() { (domains, error) in
@@ -132,8 +146,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if(RESET_DOMAIN_ON_START) {
                     self.logger.info("Removing domain...")
                     NSFileProviderManager.remove(loadedDomain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
-                        self.addDomain(domain: self.domain!)
-                        self.signalForIdentifier()
+                        self.addDomain(domain: loadedDomain)
                     })
                     
                 } else {
@@ -143,44 +156,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 
             } else {
                 self.logger.info("Domain is already loaded")
-                self.signalForIdentifier()
             }
         }
-        
-        //signalEnumeratorPeriodically()
     }
     
-    
-    func signalForIdentifier() {
-        
-        guard let domain = self.domain else {
-            self.logger.error("Cannot signal, domain not found")
-            return
-        }
-        
-        guard let manager = NSFileProviderManager(for: domain) else {
-            self.logger.error("Failed to get FileProviderManager")
-            return
-        }
-        
-        
-        manager.signalEnumerator(for: NSFileProviderItemIdentifier.rootContainer, completionHandler: {(error) in
-            
-            if error != nil {
-                self.logger.error("Failed to signal: \(error)")
-            }
-            self.logger.info("Container signaled correctly")
-        })
-    }
-    
-    /// Signal the FileProvider extension periodically to trigger
-    /// root container refresh, this should be used in dev mode only,
-    /// in production we should go for a realtime solution
-    func signalEnumeratorPeriodically() {
-        Timer.scheduledTimer(withTimeInterval: 15, repeats: true, block: { _ in
-            self.signalForIdentifier()
-        })
-    }
+
     
     func destroyWidget() {
         if statusBarItem != nil {
@@ -213,13 +193,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func openFileProviderRoot() {
         Task{
             do {
-                guard let fileProviderFolderURL = try await NSFileProviderManager(for: domain!)?.getUserVisibleURL(for: .rootContainer) else {
+                guard let fileProviderFolderURL = try await NSFileProviderManager(for: loadedDomain!)?.getUserVisibleURL(for: .rootContainer) else {
                     throw FileProviderError.CannotOpenVisibleUrl
                 }
                 
                 _ = fileProviderFolderURL.startAccessingSecurityScopedResource()
                 NSWorkspace.shared.open(fileProviderFolderURL)
                 fileProviderFolderURL.stopAccessingSecurityScopedResource()
+                
             } catch {
                 error.reportToSentry()
             }
@@ -235,14 +216,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return
             }
             if popover.isShown {
-                popover.performClose(nil)
-                popover.contentViewController?.view.window?.resignKey()
+               closePopover()
             } else {
                openPopover()
             }
         }
     }
     
+    
+    func closePopover() {
+        popover.performClose(nil)
+        popover.contentViewController?.view.window?.resignKey()
+    }
     func openPopover(delayed: Bool = false) {
         func display() {
             if let button = statusBarItem.button {

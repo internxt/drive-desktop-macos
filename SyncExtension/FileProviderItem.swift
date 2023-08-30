@@ -31,6 +31,9 @@ class FileProviderItem: NSObject, NSFileProviderItem {
     var filename: String
     var documentSize: NSNumber?
     
+    public static func parentIdIsRootFolder(identifier: NSFileProviderItemIdentifier) -> Bool {
+        return identifier == .rootContainer
+    }
     public static func getFilename(name: String, itemExtension: String?) -> String {
         if itemExtension == nil {
             return name
@@ -69,15 +72,17 @@ class FileProviderItem: NSObject, NSFileProviderItem {
             return [.allowsDeleting]
         }
         
-        return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting, .allowsTrashing, .allowsDeleting]
+        // AllowDeleting and allowTrashing are disallowed right now
+        return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting]
     }
     
    
     
     var itemVersion: NSFileProviderItemVersion {
         // We'll create a version from the updatedAt date, so if the item is updated, the version is too
-        return NSFileProviderItemVersion(contentVersion: Data(self.updatedAt.ISO8601Format().utf8), metadataVersion: Data(self.updatedAt.ISO8601Format().utf8))
+        return NSFileProviderItemVersion(contentVersion: Data("STATIC".utf8), metadataVersion: Data("STATIC".utf8))
     }
+
     
     var contentType: UTType {
         

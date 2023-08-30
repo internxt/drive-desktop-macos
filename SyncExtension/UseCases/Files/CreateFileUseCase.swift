@@ -76,6 +76,7 @@ struct CreateFileUseCase {
                     }
                 )
                 
+                
                 self.logger.info("Upload completed with id \(result.id)")
                 let parentId = item.parentItemIdentifier == .rootContainer ? user.root_folder_id.toString() : item.parentItemIdentifier.rawValue
                 guard let folderIdInt = item.parentItemIdentifier == .rootContainer ? user.root_folder_id : Int(item.parentItemIdentifier.rawValue) else {
@@ -88,31 +89,34 @@ struct CreateFileUseCase {
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
+                let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
                 
                 let createdFile = try await driveAPI.createFile(createFile: CreateFileData(
                     fileId: result.id,
                     type: filename.pathExtension,
                     bucket: result.bucket,
                     size: result.size,
-                    folderId: folderIdInt,
+                    folderId: parentIdIsRootFolder ? user.root_folder_id : Int(item.parentItemIdentifier.rawValue)!,
                     name: encryptedFilename.base64EncodedString(),
                     plainName: filename.deletingPathExtension
                 ))
                 
+                
                 let fileProviderItem = FileProviderItem(
-                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFile.fileId)),
+                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFile.uuid)),
                     filename: item.filename,
-                    parentId: NSFileProviderItemIdentifier(rawValue: parentId),
+                    parentId: parentIdIsRootFolder ? .rootContainer : item.parentItemIdentifier,
                     createdAt: Time.dateFromISOString(createdFile.createdAt) ?? Date(),
                     updatedAt: Time.dateFromISOString(createdFile.updatedAt) ?? Date(),
                     itemExtension: createdFile.type,
-                    itemType: .file
+                    itemType: .file,
+                    size: result.size
                 )
-                completionHandler(fileProviderItem, [], false, nil )
                 
+                completionHandler(fileProviderItem, [], true, nil )
+                self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
             } catch {
-                print(error)
-                self.logger.error("Failed to create file: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

@@ -37,19 +37,16 @@ struct TrashFolderUseCase {
         self.changedFields = changedFields
     }
     
-    public func run( ) -> Progress {
+    public func run() -> Progress {
         self.logger.info("Moving item to trash")
         Task {
             do {
-                var items: Array<ItemToTrash> = Array()
+               
                 guard let id = Int(item.itemIdentifier.rawValue) else {
                     throw TrashFolderUseCaseError.InvalidItemId
                 }
-                items.append(ItemToTrash(
-                    id: id,
-                    type: .Folder
-                ))
-                let trashed: Bool = try await trashAPI.trashItems(itemsToTrash: AddItemsToTrashPayload(items: items))
+               
+                let trashed: Bool = try await trashAPI.trashFolders(itemsToTrash: [FolderToTrash(id: id)])
                 self.logger.info("Trashed item result is: \(trashed)")
                 if trashed == true {
                     let newItem = FileProviderItem(

@@ -1,61 +1,61 @@
 {
   "images" : [
     {
-      "filename" : "icns-beta-16.png",
+      "filename" : "internxt-beta@1x.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "icns-beta-32.png",
+      "filename" : "internxt-beta@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "icns-beta-32.png",
+      "filename" : "internxt-beta@1x 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "icns-beta-64.png",
+      "filename" : "internxt-beta@2x 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "icns-beta-128.png",
+      "filename" : "internxt-beta@1x 2.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "icns-beta-256.png",
+      "filename" : "internxt-beta@2x 2.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "icns-beta-256.png",
+      "filename" : "internxt-beta@1x 3.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
-      "filename" : "icns-beta-512.png",
+      "filename" : "internxt-beta@2x 3.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
-      "filename" : "icns-beta-512.png",
+      "filename" : " internxt-beta@1x.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "icns-beta-1024.png",
+      "filename" : " internxt-beta@2x - App Store.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"

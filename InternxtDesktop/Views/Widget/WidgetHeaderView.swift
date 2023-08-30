@@ -15,7 +15,7 @@ struct WidgetHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center, spacing: 16) {
-                AppText(user.email).font(AppTextFont["SM/Medium"])
+                AppText(user.email).font(AppTextFont["SM/Medium"]).foregroundColor(Color("Highlight"))
             }.padding(.horizontal, 10)
                 .padding(.vertical, 0)
                 .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .leading)

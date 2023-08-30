@@ -40,6 +40,10 @@
 		E1581DD52A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
 		E1581DD62A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
 		E1581DD72A9629790051DD46 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
+		E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */; };
+		E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */; };
+		E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */; };
+		E1581DE02A96835F0051DD46 /* FetchFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */; };
 		E16310572A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E16310582A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E163105A2A8E67780072989E /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310592A8E67780072989E /* App.swift */; };
@@ -57,6 +61,11 @@
 		E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		E17AA02E2A8A826D00C7EE6E /* ExtensionAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */; };
+		E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */; };
+		E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		E1CC520E2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
 		E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
 		E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
@@ -136,6 +145,10 @@
 		E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileUseCase.swift; sourceTree = "<group>"; };
 		E1581DCE2A9629620051DD46 /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
 		E1581DD32A9629790051DD46 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaUseCase.swift; sourceTree = "<group>"; };
+		E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileUseCase.swift; sourceTree = "<group>"; };
+		E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderUseCase.swift; sourceTree = "<group>"; };
+		E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFileContentUseCase.swift; sourceTree = "<group>"; };
 		E16310562A8E66F70072989E /* URLDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLDictionary.swift; sourceTree = "<group>"; };
 		E16310592A8E67780072989E /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		E163105B2A8E6C830072989E /* AppText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppText.swift; sourceTree = "<group>"; };
@@ -147,6 +160,8 @@
 		E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InternxtDesktopDebug.entitlements; sourceTree = "<group>"; };
 		E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ExtensionAssets.xcassets; sourceTree = "<group>"; };
+		E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileOrFolderUseCase.swift; sourceTree = "<group>"; };
+		E1CC520B2A98B460009DEEAA /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		E1DB29532A7D56C4009036B8 /* AppTextInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextInput.swift; sourceTree = "<group>"; };
 		E1DB29552A7D5CD5009036B8 /* env.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.local.json; sourceTree = "<group>"; };
 		E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigLoader.swift; sourceTree = "<group>"; };
@@ -217,6 +232,7 @@
 		E109717A2A81133C00ABED41 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
+				E1581DD82A9654770051DD46 /* All */,
 				E145E17E2A83A28A00B07E0B /* Files */,
 				E145E17D2A83A28100B07E0B /* Folders */,
 			);
@@ -237,6 +253,7 @@
 			children = (
 				E10B0FDC2A94143F00B97874 /* Int.swift */,
 				E1581DD32A9629790051DD46 /* Error.swift */,
+				E1CC520B2A98B460009DEEAA /* Bundle.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -249,6 +266,7 @@
 				E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */,
 				E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */,
 				E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */,
+				E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */,
 			);
 			path = Folders;
 			sourceTree = "<group>";
@@ -259,6 +277,8 @@
 				E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */,
 				E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */,
 				E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */,
+				E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */,
+				E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -270,6 +290,15 @@
 				E1581DCE2A9629620051DD46 /* Generic.swift */,
 			);
 			path = Errors;
+			sourceTree = "<group>";
+		};
+		E1581DD82A9654770051DD46 /* All */ = {
+			isa = PBXGroup;
+			children = (
+				E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */,
+				E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */,
+			);
+			path = All;
 			sourceTree = "<group>";
 		};
 		E163105D2A8F8A570072989E /* Shared */ = {
@@ -678,6 +707,7 @@
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
+				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
 			);
@@ -690,6 +720,7 @@
 				E1581DD52A9629790051DD46 /* Error.swift in Sources */,
 				E1581DD02A9629620051DD46 /* Generic.swift in Sources */,
 				E1FB2D3A2A76BF0300473AE1 /* InternxtDesktopTests.swift in Sources */,
+				E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E10B0FDE2A94143F00B97874 /* Int.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -699,6 +730,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E10B0FDF2A94143F00B97874 /* Int.swift in Sources */,
+				E1CC520E2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1581DD12A9629620051DD46 /* Generic.swift in Sources */,
 				E1FB2D442A76BF0300473AE1 /* InternxtDesktopUITests.swift in Sources */,
 				E1581DD62A9629790051DD46 /* Error.swift in Sources */,
@@ -712,9 +744,11 @@
 			files = (
 				E16310582A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
+				E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */,
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
+				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
 				E145E16D2A82A21500B07E0B /* Time.swift in Sources */,
 				E10B0FE02A94143F00B97874 /* Int.swift in Sources */,
@@ -723,14 +757,18 @@
 				E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */,
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
+				E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */,
 				E1581DD22A9629620051DD46 /* Generic.swift in Sources */,
 				E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */,
 				E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */,
+				E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */,
+				E1581DE02A96835F0051DD46 /* FetchFileContentUseCase.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */,
+				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,7 +857,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
@@ -834,7 +872,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -887,7 +925,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -900,7 +938,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1034,7 +1072,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
@@ -1049,7 +1087,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1069,7 +1107,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
@@ -1084,7 +1122,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1175,7 +1213,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1188,7 +1226,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1202,7 +1240,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1215,7 +1253,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1292,7 +1330,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/auth-and-usage-endpoints";
+				branch = "feature/download-and-decrypt";
 				kind = branch;
 			};
 		};
