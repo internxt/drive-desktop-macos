@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/auth-and-usage-endpoints",
-        "revision" : "dcddc5619e3750d2d5e7bde705a6a8bf53e5bc50"
+        "branch" : "feature/download-and-decrypt",
+        "revision" : "83a00db52259b513303e922d8341e767b351e110"
       }
     }
   ],

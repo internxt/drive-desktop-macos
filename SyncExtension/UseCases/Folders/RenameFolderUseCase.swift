@@ -37,6 +37,7 @@ struct RenameFolderUseCase {
             )
             do {
                 _ = try await driveAPI.updateFolder(folderId: item.itemIdentifier.rawValue, folderName:item.filename, debug: false)
+                
                 self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) renamed successfully")
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
             } catch {

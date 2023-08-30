@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Foundation
 import os.log
 import FileProvider
 import InternxtSwiftCore
@@ -14,6 +13,7 @@ import InternxtSwiftCore
 struct RenameFileUseCase {
     let logger = Logger(subsystem: "com.internxt", category: "RenameFile")
     let driveAPI = APIFactory.Drive
+    let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
@@ -28,7 +28,7 @@ struct RenameFileUseCase {
     
     func run() -> Progress {
         Task {
-            self.logger.info("Renaming file with id \(item.itemIdentifier.rawValue)")
+            self.logger.info("Renaming file with uuid \(item.itemIdentifier.rawValue)")
             let filename = (item.filename as NSString)
             let newItem = FileProviderItem(
                 identifier: item.itemIdentifier,
@@ -40,8 +40,12 @@ struct RenameFileUseCase {
                 itemType: .file
             )
             do {
+                
+                // Grab the file by the uuid, we need the fileId to update it
+                let file = try await driveNewAPI.getFileMetaByUuid(uuid: item.itemIdentifier.rawValue)
+                
                 _ = try await driveAPI.updateFile(
-                    fileId: item.itemIdentifier.rawValue,
+                    fileId: file.fileId,
                     bucketId:user.bucket,
                     newFilename: filename.deletingPathExtension,
                     debug: false

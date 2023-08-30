@@ -32,8 +32,11 @@ struct EnumerateFolderItemsUseCase {
                 let folderId = self.enumeratedItemIdentifier == .rootContainer ? user.root_folder_id.toString() : self.enumeratedItemIdentifier.rawValue
                 var items: Array<NSFileProviderItem> = Array()
                 
-                let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: offset, limit: limit , debug: false)
-                let files = try await driveAPI.getFolderFiles(folderId: folderId, offset: offset, limit: limit )
+                let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: offset, limit: limit , debug: true)
+                self.logger.info("FOLDERS OK")
+                let files = try await driveAPI.getFolderFiles(folderId: folderId, offset: offset, limit: limit)
+                
+                
                 
                 let hasMoreFiles = files.result.count == limit;
                 let hasMoreFolders = folders.result.count == limit
@@ -78,7 +81,7 @@ struct EnumerateFolderItemsUseCase {
                     
 
                     let item = FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: String(file.fileId)),
+                        identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
                         filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
                         parentId: self.enumeratedItemIdentifier,
                         createdAt: createdAt,

@@ -31,8 +31,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
             ErrorUtils.fatal("Cannot get FileProviderManager for domain")
         }
         
-        
-        
         self.manager = manager
         
         self.authManager = AuthManager()
@@ -113,16 +111,30 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
             return Progress()
         }
         
-        // Assume is a folder
-        
-        return GetFolderMetaUseCase(identifier: identifier, completionHandler: completionHandler).run()
+        // We cannot determine given an identifier if this is a folder or a file, so we try both
+        return GetFileOrFolderMetaUseCase(
+            user: user,
+            identifier: identifier,
+            completionHandler: completionHandler
+        ).run()
     }
+    
+
     
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
         // TODO: implement fetching of the contents for the itemIdentifier at the specified version
         
-        completionHandler(nil, nil, NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError, userInfo:[:]))
-        return Progress()
+        
+        let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
+        let destinationURL = makeTemporaryURL("plain")
+        return FetchFileContentUseCase(
+            networkFacade: networkFacade,
+            user: user,
+            itemIdentifier: itemIdentifier,
+            encryptedFileDestinationURL: encryptedFileDestinationURL,
+            destinationURL: destinationURL,
+            completionHandler: completionHandler
+        ).run()
     }
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
@@ -160,11 +172,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
         // Folder cases
         let folderHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType == .folder
         let folderHasBeenRenamed = changedFields.contains(.filename) && item.contentType == .folder
-        
+        let folderHasBeenMoved = changedFields.contains(.parentItemIdentifier) && item.contentType == .folder && !folderHasBeenTrashed
         // File cases
         let fileHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType != .folder
         let fileHasBeenRenamed = changedFields.contains(.filename) && item.contentType != .folder
-        
+        let fileHasBeenMoved = changedFields.contains(.parentItemIdentifier) && item.contentType != .folder &&  !fileHasBeenTrashed
+       
         // File and folder cases
         let contentHasChanged = changedFields.contains(.contents)
         let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
@@ -172,6 +185,32 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
         
         self.logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
         
+        
+        
+        
+        if folderHasBeenTrashed {
+            return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if folderHasBeenRenamed {
+            return RenameFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if folderHasBeenMoved {
+            return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if fileHasBeenTrashed {
+            return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if fileHasBeenRenamed  {
+            return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
+        
+        if fileHasBeenMoved {
+            return MoveFileUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
+        }
         
         if contentHasChanged {
             self.logger.info("File content has changed, let it pass")
@@ -186,25 +225,18 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
         }
         
         if lastUsedDateHasChanged {
-            self.logger.info("File last used date has changed, let it pass")
-            completionHandler(item, [], false, nil)
+            let itemExtension = (item.filename as NSString).pathExtension
+            let fileProviderItem = FileProviderItem(
+                identifier: item.itemIdentifier,
+                filename: item.filename,
+                parentId: item.parentItemIdentifier,
+                createdAt: (item.creationDate ?? Date()) ?? Date(),
+                updatedAt: Date(),
+                itemExtension: itemExtension,
+                itemType: item.contentType == .folder ? .folder : .file
+            )
+            completionHandler(fileProviderItem, [], false, nil)
             return Progress()
-        }
-        
-        if fileHasBeenTrashed {
-            return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-        }
-        
-        if folderHasBeenTrashed {
-            return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-        }
-        
-        if folderHasBeenRenamed {
-            return RenameFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
-        }
-        
-        if fileHasBeenRenamed  {
-            return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
                 
         self.logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
