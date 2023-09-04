@@ -35,7 +35,7 @@ struct SignInWithBrowserView: View {
                     }.padding(.top, 24)
                     
                 } else {
-                    AppText("You are now logged in, close this window").font(AppTextFont["2XL/Medium"]).foregroundColor(Color("H"))
+                    AppText("You are now logged in, close this window").font(AppTextFont["2XL/Medium"]).foregroundColor(Color("Surface"))
                     
                 }
                 

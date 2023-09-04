@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  InternxtDesktop
+
+  Created by Robert Garcia on 31/8/23.
+  
+*/
+
+
+"FilesUpToDate" = "Your files are up to date";
+"FilesUpToDateHint" = "Sync activity will show up here";
+
+// Widget settings menu
+"PreferencesOption" = "Preferences";
+"SendFeedbackOption" = "Send Feedback";
+"SupportOption" = "Support";
+"LogoutOption" = "Log out";
+"QuitOption" = "Quit";
+
+// Widget sync status
+"SyncStatusUpToDate" = "Everything is up to date";
+
+
+// Widget sync entry
+"OperationKindTrash" = "Moved to trash";
+"OperationKindDownloaded" = "Downloaded";
+"OperationKindUploaded" = "Uploaded";

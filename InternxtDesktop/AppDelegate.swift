@@ -13,7 +13,7 @@ import os.log
 import FileProvider
 import InternxtSwiftCore
 import Combine
-
+import ServiceManagement
 let RESET_DOMAIN_ON_START = true
 
 
@@ -23,17 +23,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var clickOutsideWindowObserver: Any?
     var popover: NSPopover!
     var statusBarItem: NSStatusItem!
+    var domainManager: DomainManager?
     var loadedDomain: NSFileProviderDomain? = nil
     let authManager = AuthManager()
     var listenToLoggedIn: AnyCancellable?
-    
+    var globalProgressTrack: Progress?
+    var progressObservation: NSKeyValueObservation?
+    var appXPCCommunicator: AppXPCCommunicator = AppXPCCommunicator.shared
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    }
+    
+    func getFileProviderManager() throws -> NSFileProviderManager {
+        guard let loadedDomain = self.loadedDomain else {
+            throw FileProviderError.DomainNotLoaded
+        }
+        guard let manager = NSFileProviderManager(for: loadedDomain) else {
+            throw FileProviderError.CannotGetFileProviderManager
+        }
+        return manager
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         ErrorUtils.start()
         
+        appXPCCommunicator.test(handler: {
+            self.logger.info("XPC message received")
+        })
+        
+       
         
         if let user = authManager.user {
             ErrorUtils.identify(
@@ -70,10 +88,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func loginSuccess() {
         authManager.initializeCurrentUser()
-        self.initFileProvider()
-        setupWidget()
+        self.initFileProvider(fileProviderReady: {
+            DispatchQueue.main.async {
+                self.setupWidget(domainManager: self.domainManager!)
+                self.openPopover(delayed: true)
+            }
+            
+        })
         self.logger.info("Login success")
-        openPopover(delayed: true)
+        
+        
     }
     
     func logout() {
@@ -122,11 +146,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSFileProviderManager.remove(domain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler:completionHandler)
     }
     
-    private func addDomain(domain: NSFileProviderDomain) {
+    private func addDomain(domain: NSFileProviderDomain, completionHandler: @escaping () -> Void) {
         
         NSFileProviderManager.add(domain) { error in
             guard let error = error else {
-                self.logger.info("Domain added correctly: \(domain.displayName)")
+                self.loadedDomain = domain
+                
+                do {
+                    let manager = try self.getFileProviderManager()
+                        
+                    self.domainManager = DomainManager(
+                        domain: self.loadedDomain!,
+                        uploadProgress: manager.globalProgress(for: .uploading),
+                        downloadProgress: manager.globalProgress(for: .downloading)
+                    )
+                    
+                    completionHandler()
+                    
+                    self.logger.info("Domain added correctly: \(domain.displayName)")
+                    
+                } catch {
+                    error.reportToSentry()
+                    self.logger.error("Failed to prepare progress")
+                }
+                
                 return
             }
             
@@ -135,27 +178,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    private func initFileProvider() {
+    private func initFileProvider(fileProviderReady: @escaping () -> Void) {
         let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
         let newDomain = NSFileProviderDomain(identifier: identifier, displayName: "")
         
-
         NSFileProviderManager.getDomainsWithCompletionHandler() { (domains, error) in
-                       
-            if let loadedDomain = domains.first {
-                if(RESET_DOMAIN_ON_START) {
-                    self.logger.info("Removing domain...")
-                    NSFileProviderManager.remove(loadedDomain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
-                        self.addDomain(domain: loadedDomain)
-                    })
-                    
-                } else {
-                    self.logger.info("No domain loaded, adding domain")
-                    self.addDomain(domain: loadedDomain)
-                }
-                
+                        
+            let firstDomain = domains.first
+            
+            
+            if(RESET_DOMAIN_ON_START && firstDomain != nil) {
+                self.logger.info("Removing domain...")
+                NSFileProviderManager.remove(firstDomain!, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
+                    self.addDomain(domain: newDomain, completionHandler: fileProviderReady)
+                })
             } else {
-                self.logger.info("Domain is already loaded")
+                self.logger.info("No domain loaded, adding domain")
+                self.addDomain(domain: newDomain, completionHandler: fileProviderReady)
             }
         }
     }
@@ -169,7 +208,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func setupWidget() {
+    func setupWidget(domainManager: DomainManager) {
         NSApp.setActivationPolicy(.accessory)
         NSApp.hide(self)
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -185,17 +224,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.popover.contentSize = NSSize(width: 300, height: 400)
         self.popover.behavior = .transient
         self.popover.setValue(true, forKeyPath: "shouldHideAnchor")
-        self.popover.contentViewController = NSHostingController(rootView: WidgetView(onLogout: logout, openFileProviderRoot: openFileProviderRoot).environmentObject(self.authManager))
-        
-     
+        self.popover.contentViewController = NSHostingController(
+            rootView: WidgetView(onLogout: logout, openFileProviderRoot: openFileProviderRoot)
+            .environmentObject(self.authManager)
+        )
     }
     
     func openFileProviderRoot() {
         Task{
             do {
-                guard let fileProviderFolderURL = try await NSFileProviderManager(for: loadedDomain!)?.getUserVisibleURL(for: .rootContainer) else {
-                    throw FileProviderError.CannotOpenVisibleUrl
-                }
+           
+                let fileProviderFolderURL = try await getFileProviderManager().getUserVisibleURL(for: .rootContainer)
                 
                 _ = fileProviderFolderURL.startAccessingSecurityScopedResource()
                 NSWorkspace.shared.open(fileProviderFolderURL)

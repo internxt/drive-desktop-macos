@@ -17,10 +17,11 @@
 	</array>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Fonts/NeueEinstellung-Regular.ttf</string>
-		<string>Fonts/NeueEinstellung-Medium.ttf</string>
-		<string>Fonts/NeueEinstellung-SemiBold.ttf</string>
-		<string>Fonts/NeueEinstellung-Bold.ttf</string>
+		<string>Fonts/Phosphor.ttf</string>
+		<string>Fonts/InstrumentSans-Regular.ttf</string>
+		<string>Fonts/InstrumentSans-Medium.ttf</string>
+		<string>Fonts/InstrumentSans-SemiBold.ttf</string>
+		<string>Fonts/InstrumentSans-Bold.ttf</string>
 	</array>
 </dict>
 </plist>
