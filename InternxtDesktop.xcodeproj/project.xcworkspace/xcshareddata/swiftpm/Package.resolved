@@ -35,6 +35,15 @@
         "branch" : "feature/download-and-decrypt",
         "revision" : "83a00db52259b513303e922d8341e767b351e110"
       }
+    },
+    {
+      "identity" : "swiftyxpc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CharlesJS/SwiftyXPC",
+      "state" : {
+        "revision" : "46df8f085fde1ccd7813cbc366c5910d84dcc2d7",
+        "version" : "0.5.0"
+      }
     }
   ],
   "version" : 2

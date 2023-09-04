@@ -22,9 +22,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
+    let appXPCCommunicator: AppXPCCommunicator = AppXPCCommunicator.shared
     required init(domain: NSFileProviderDomain) {
+        
         self.logger.info("Starting sync extension")
-
+        
         ErrorUtils.start()
         
         guard let manager = NSFileProviderManager(for: domain) else {
@@ -58,6 +60,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
         
         self.logger.info("Created extension with domain \(domain.displayName)")
         super.init()
+        
+        
     }
     
     func checkUpdates() {
@@ -123,7 +127,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
         // TODO: implement fetching of the contents for the itemIdentifier at the specified version
-        
+        Task {
+            do {
+                try await appXPCCommunicator.sendTest(value: "File extension ready")
+                self.logger.info("File extension ok sent")
+            } catch {
+                
+            }
+            
+        }
         
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")

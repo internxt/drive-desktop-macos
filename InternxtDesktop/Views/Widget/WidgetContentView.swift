@@ -6,12 +6,25 @@
 //
 
 import SwiftUI
+import FileProvider
 
 struct WidgetContentView: View {
     var body: some View {
-        HStack {
+        
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading,spacing: 0) {
+                ForEach([] as [DomainSyncEntry]) { syncEntry in
+                    WidgetSyncEntryView(filename: syncEntry.filename, operationKind: .upload, status: .finished)
+                }.listRowInsets(EdgeInsets()).frame(maxWidth: .infinity)
+            }.padding(.top, 8)
             
-        }.frame(maxHeight: .infinity)
+        }
+        .padding(.horizontal, 0)
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+
+            
+        
     }
 }
 

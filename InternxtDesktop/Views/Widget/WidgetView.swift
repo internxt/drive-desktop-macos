@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import FileProvider
 
 struct WidgetView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.openWindow) private var openWindow
+    var isEmpty: Bool = true
     var onLogout: () -> Void
     var openFileProviderRoot: () -> Void
     init(onLogout: @escaping () -> Void, openFileProviderRoot:  @escaping () -> Void) {
@@ -19,20 +21,27 @@ struct WidgetView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             
-            
-            
             if authManager.user != nil {
-                WidgetHeaderView(user: authManager.user!)
-                VStack {
-                    AppButton(title: "Logout", onClick: {
-                        openWindow(id: "Auth")
-                        onLogout()
-                    }).frame(maxWidth: .infinity)
-                    AppButton(title: "Open Virtual Drive", onClick: openFileProviderRoot)
-                    AppButton(title: "Quit App", onClick: {
-                        NSRunningApplication.current.terminate()
-                    })
-                }.frame(maxHeight: .infinity)
+                WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot).zIndex(100)
+                VStack(alignment: .center) {
+                    if true {
+                        Image("SyncedStack")
+                           .resizable()
+                           .scaledToFit()
+                           .frame(maxWidth: 128)
+                        VStack {
+                            AppText("FilesUpToDate")
+                                .font(AppTextFont["Base/Medium"])
+                                .foregroundColor(Color("Gray100"))
+                            AppText("FilesUpToDateHint")
+                                .font(AppTextFont["SM/Regular"])
+                                .foregroundColor(Color("Gray60"))
+                        }
+                        .padding(.top, 22)
+                    } else {
+                        WidgetContentView()
+                    }
+                }.frame(maxWidth: .infinity,maxHeight: .infinity)
                 WidgetFooterView()
             } else {
                 Spacer()
@@ -47,5 +56,10 @@ struct WidgetView: View {
 struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
         WidgetView(onLogout: {}, openFileProviderRoot: {})
+            .environmentObject(AuthManager())
+            .environmentObject(DomainManager(
+                domain: NSFileProviderDomain(identifier: NSFileProviderDomainIdentifier("demo"), displayName: "demo"),
+                uploadProgress: nil, downloadProgress: nil
+            ))
     }
 }
