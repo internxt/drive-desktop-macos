@@ -19,14 +19,18 @@ struct SettingsView: View {
     var body: some View {
         
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 4) {
-                TabItem(iconName: .Gear, label: "TabGeneral", id: .General)
-                TabItem(iconName: .At, label: "TabAccount", id: .Account)
+            VStack(spacing: 0) {
+                HStack(spacing: 4) {
+                    TabItem(iconName: .Gear, label: "TabGeneral", id: .General)
+                    TabItem(iconName: .At, label: "TabAccount", id: .Account)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(colorScheme == .dark ? Color("Gray5") :  Color("Surface"))
+                Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10")).zIndex(5)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(colorScheme == .dark ? Color("Gray5") :  Color("Surface"))
+            
             Tabcontent.background(Color("Gray1"))
         }.frame(width: 440, alignment: .topLeading)
         
@@ -55,7 +59,7 @@ struct SettingsView: View {
         
         .padding(.horizontal, 16)
         .padding(.vertical, 6)
-        .background(Color("Gray10").opacity(focusedTab == id ? 1 : 0))
+        .background(Color(colorScheme == .dark ? "Gray10" : "Gray5").opacity(focusedTab == id ? 1 : 0))
         .cornerRadius(8)
         .contentShape(Rectangle())
         .onTapGesture {

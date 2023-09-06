@@ -32,24 +32,5 @@ struct InternxtDesktopApp: App {
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.automatic)
-        
-       Settings {
-            SettingsView()
-                .frame(minWidth: 400, maxWidth: 400).toolbar(content: {
-                ToolbarItem(placement: .principal){
-                    AppText("Internxt Drive")
-                        .foregroundColor(Color("Highlight"))
-                        .font(AppTextFont["Base/Medium"])
-                }
-            })
-        }
-        .windowResizability(.contentSize)
-        .windowStyle(.hiddenTitleBar)
-        .windowToolbarStyle(.automatic)
-
-        
-       
     }
-    
-    
 }

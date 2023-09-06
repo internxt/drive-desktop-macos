@@ -29,7 +29,7 @@ struct GeneralTabView: View {
                     AppText("Internxt Drive v\(getVersion())")
                         .font(AppTextFont["SM/Medium"])
                         .foregroundColor(Color("Gray100"))
-                    AppText("Last checked:")
+                    AppText("Last checked: Feature not ready")
                         .font(AppTextFont["XS/Regular"])
                         .foregroundColor(Color("Gray60"))
                 }

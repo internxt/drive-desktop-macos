@@ -21,17 +21,13 @@ struct DeviceNameView: View {
                 if isEditingDeviceName {
                     HStack {
                         AppButton(title: "Cancel", onClick: {
-                            withAnimation {
-                                isEditingDeviceName = false
-                            }
+                            isEditingDeviceName = false
                         }, type: .secondaryWhite, size: .MD)
                         AppButton(title: "Save", onClick: handleSaveEditedName, type: .primary, size: .MD)
                     }
                 } else {
                     AppButton(title: "Edit", onClick: {
-                        withAnimation {
-                            isEditingDeviceName = true
-                        }
+                        isEditingDeviceName = true
                     }, type: .secondaryWhite, size: .MD)
                 }
                 

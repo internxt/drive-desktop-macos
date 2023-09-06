@@ -80,6 +80,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
                 self.loginSuccess()
             } else {
                 self.preferencesWindow?.performClose(nil)
+                self.destroyWidget()
                 self.openAuthWindow()
             }
         })
@@ -89,7 +90,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     }
     
     func getAuthWindow() -> NSWindow? {
-        return NSApp.windows.first{$0.title == "Internxt Drive"}
+        return NSApp.windows.first{$0.title == "Internxt Drive" && $0.identifier != nil}
     }
     
     func getSettingsWindow() -> NSWindow? {
@@ -111,7 +112,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
                 self.logger.info("Login success")
             } catch {
                 error.reportToSentry()
-                self.globalUIManager.setAppStatus(.failedToInit)
+                DispatchQueue.main.async {
+                    self.globalUIManager.setAppStatus(.failedToInit)
+                }
+               
             }
             
         }
@@ -142,8 +146,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     func openAuthWindow() {
         guard let window = getAuthWindow() else {
             self.logger.error("No auth window found")
+            NSApplication.shared.activate(ignoringOtherApps: true)
             return
         }
+        
+        
         NSApp.setActivationPolicy(.regular)
         window.orderFrontRegardless()
         window.makeKey()
@@ -228,7 +235,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
                 return
             }
             
-            
+            completionHandler(error)
             self.logger.error("Error adding file provider domain: \(error.localizedDescription)")
         }
     }
@@ -310,6 +317,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     }
     
     func openFileProviderRoot() {
+        closePopover()
         Task{
             do {
            
