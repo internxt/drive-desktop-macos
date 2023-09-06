@@ -49,7 +49,13 @@ let AppTextFont: [String: Font] = [
     "2XL/Medium": Font.custom("InstrumentSans-Medium", size: 24),
     "2XL/Semibold": Font.custom("InstrumentSans-SemiBold", size: 24),
     "2XL/SemiBold": Font.custom("InstrumentSans-SemiBold", size: 24),
-    "2XL/Bold": Font.custom("InstrumentSans-Bold", size: 24)
+    "2XL/Bold": Font.custom("InstrumentSans-Bold", size: 24),
+    // 3XL Size
+    "3XL/Regular": Font.custom("InstrumentSans-Regular", size: 30),
+    "3XL/Medium": Font.custom("InstrumentSans-Medium", size: 30),
+    "3XL/Semibold": Font.custom("InstrumentSans-SemiBold", size: 30),
+    "3XL/SemiBold": Font.custom("InstrumentSans-SemiBold", size: 30),
+    "3XL/Bold": Font.custom("InstrumentSans-Bold", size: 30)
 ]
 
 
@@ -75,7 +81,7 @@ struct AppText: View {
         self.text = text
     }
     var body: some View {
-        Text(LocalizedStringKey(text))
+        Text(LocalizedStringKey(text)).background(Color.clear)
     }
 }
 

@@ -10,6 +10,8 @@ import FileProvider
 
 struct WidgetView: View {
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var globalUIManager: GlobalUIManager
+    @EnvironmentObject var usageManager: UsageManager
     @Environment(\.openWindow) private var openWindow
     var isEmpty: Bool = true
     var onLogout: () -> Void
@@ -20,9 +22,9 @@ struct WidgetView: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            
             if authManager.user != nil {
-                WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot).zIndex(100)
+                
+                WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot).zIndex(100).environmentObject(self.globalUIManager).environmentObject(self.usageManager)
                 VStack(alignment: .center) {
                     if true {
                         Image("SyncedStack")
@@ -49,7 +51,7 @@ struct WidgetView: View {
                 Spacer()
             }
             
-        }.frame(width: 300, height: 400).background(Color("Surface")).cornerRadius(10)
+        }.frame(width: 330, height: 400).background(Color("Surface")).cornerRadius(10)
     }
 }
 

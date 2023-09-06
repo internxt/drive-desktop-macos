@@ -23,7 +23,7 @@ struct SignInWithBrowserView: View {
                 if authManager.isLoggedIn == false {
                     AppText("Welcome to Internxt").font(AppTextFont["2XL/Medium"]).foregroundColor(Color("Highlight"))
                     .padding(.bottom,12)
-                    AppButton(title: "Log in with browser", onClick: openSignInUrl).padding(.bottom, 24)
+                    AppButton(title: "Log in with browser", onClick: openSignInUrl, size: .LG).padding(.bottom, 24)
                     Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10")
                     )
                     HStack{

@@ -14,6 +14,7 @@ public struct JSONConfig: Codable {
     public let DRIVE_API_URL: String
     public let NETWORK_API_URL: String
     public let DRIVE_NEW_API_URL: String
+    public let PHOTOS_API_URL: String
     public let MAGIC_IV_HEX: String
     public let MAGIC_SALT_HEX: String
     public let CRYPTO_SECRET2: String
@@ -53,7 +54,7 @@ public struct ConfigLoader {
             
             let fileUrl = URL(fileURLWithPath: filePath)
             let data = try Data(contentsOf: fileUrl)
-                
+            
             let decodedData = try JSONDecoder().decode(JSONConfig.self, from: data)
             loadedConfig = decodedData
         } catch {
@@ -88,7 +89,7 @@ public struct ConfigLoader {
         digest.withUnsafeBytes {bytes in
             result.append(contentsOf: bytes)
         }
-       
+        
         let userAndPass = "\(user.bridgeUser):\(CryptoUtils().bytesToHexString(result))"
         return userAndPass.data(using: .utf8)?.base64EncodedString()
     }
@@ -191,7 +192,7 @@ public struct ConfigLoader {
         guard let defaults = UserDefaults(suiteName: SUITE_NAME) else {
             return false
         }
-            
+        
         defaults.set(value, forKey: key)
         return true
     }
@@ -201,7 +202,7 @@ public struct ConfigLoader {
         guard let defaults = UserDefaults(suiteName: SUITE_NAME) else {
             return false
         }
-            
+        
         defaults.removeObject(forKey: key)
         return true
     }
@@ -212,6 +213,10 @@ public struct ConfigLoader {
         }
         
         return defaults.string(forKey: key)
+    }
+    
+    public func getDeviceName() -> String? {
+        return Host.current().localizedName
     }
 }
 

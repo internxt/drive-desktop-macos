@@ -25,3 +25,19 @@
 "OperationKindTrash" = "Moved to trash";
 "OperationKindDownloaded" = "Downloaded";
 "OperationKindUploaded" = "Uploaded";
+
+
+// Settings
+"TabGeneral" = "General";
+"TabAccount" = "Account";
+"DeviceName" = "Device name";
+"StartOnLaunch" = "Start Internxt Drive on system startup";
+"LearnMoreAboutInternxtDrive" = "Learn more about Internxt Drive";
+
+// Common
+"Upgrade" = "Upgrade";
+"Logout" = "Log out";
+"CheckForUpdates" = "Check for updates";
+"Edit" = "Edit";
+"Cancel" = "Cancel";
+"Save" = "Save";

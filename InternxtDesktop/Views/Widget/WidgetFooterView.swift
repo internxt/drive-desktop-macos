@@ -16,9 +16,6 @@ struct WidgetFooterView: View {
                 .frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10"))
             HStack(alignment: .center, spacing: 16) {
                 DisplayStatus()
-                Spacer()
-                AppText(getVersion())
-                    .foregroundColor(Color("Highlight"))
             }.padding(.horizontal, 10)
                 .padding(.vertical, 0)
                 .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
@@ -37,16 +34,7 @@ struct WidgetFooterView: View {
         }
     }
     
-    func getVersion() -> String {
-        guard let version = Bundle.main.releaseVersionNumber else {
-            return "NO_VERSION"
-        }
-        guard let buildNumber = Bundle.main.buildVersionNumber else {
-            return "NO_BUILD_NUMBER"
-        }
-        
-        return "\(version) (\(buildNumber))"
-    }
+   
 }
 
 struct WidgetFooterView_Previews: PreviewProvider {
