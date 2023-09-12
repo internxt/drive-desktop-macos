@@ -87,11 +87,18 @@
 		E19136972AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
 		E19136982AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
 		E19136992AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
+		E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */; };
+		E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DD2AA9EA0A00107753 /* Utils.swift */; };
+		E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
+		E198D7E12AAA3A2800107753 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = E198D7E02AAA3A2800107753 /* SocketIO */; };
 		E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */; };
 		E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD03F2AA7229600D95694 /* AppAvatar.swift */; };
 		E1ADD0422AA7272100D95694 /* AccountUsageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0412AA7272100D95694 /* AccountUsageView.swift */; };
 		E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0432AA7367800D95694 /* UsageManager.swift */; };
 		E1ADD04C2AA7EF0F00D95694 /* AppSelectOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04B2AA7EF0F00D95694 /* AppSelectOption.swift */; };
+		E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
+		E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = E1ADD0512AA8D68D00D95694 /* SocketIO */; };
+		E1ADD0542AA8DBB600D95694 /* RemoteChangesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0532AA8DBB600D95694 /* RemoteChangesManager.swift */; };
 		E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */; };
 		E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
@@ -239,10 +246,14 @@
 		E19136902AA0FB4C00CAF0FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetIconButtonView.swift; sourceTree = "<group>"; };
 		E19136952AA108D200CAF0FA /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCase.swift; sourceTree = "<group>"; };
+		E198D7DD2AA9EA0A00107753 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		E1ADD03F2AA7229600D95694 /* AppAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAvatar.swift; sourceTree = "<group>"; };
 		E1ADD0412AA7272100D95694 /* AccountUsageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountUsageView.swift; sourceTree = "<group>"; };
 		E1ADD0432AA7367800D95694 /* UsageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageManager.swift; sourceTree = "<group>"; };
 		E1ADD04B2AA7EF0F00D95694 /* AppSelectOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelectOption.swift; sourceTree = "<group>"; };
+		E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeService.swift; sourceTree = "<group>"; };
+		E1ADD0532AA8DBB600D95694 /* RemoteChangesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteChangesManager.swift; sourceTree = "<group>"; };
 		E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileOrFolderUseCase.swift; sourceTree = "<group>"; };
 		E1CC520B2A98B460009DEEAA /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		E1CC52142AA0A676009DEEAA /* Phosphor.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Phosphor.ttf; sourceTree = "<group>"; };
@@ -295,6 +306,7 @@
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
+				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
 				E18300C92AA3D0BE00AD023C /* SwiftyXPC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,6 +332,7 @@
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
 				E18300D52AA3FEFC00AD023C /* SwiftyXPC in Frameworks */,
+				E198D7E12AAA3A2800107753 /* SocketIO in Frameworks */,
 				E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -397,6 +410,7 @@
 			children = (
 				E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */,
 				E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */,
+				E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */,
 			);
 			path = All;
 			sourceTree = "<group>";
@@ -408,6 +422,7 @@
 				E1581DC82A95220B0051DD46 /* Errors */,
 				E10B0FDB2A94142A00B97874 /* Extensions */,
 				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
+				E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */,
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E109717D2A81142600ABED41 /* Utils */,
 				E163105E2A8F8A610072989E /* Fonts */,
@@ -585,6 +600,7 @@
 				E18300A12AA161ED00AD023C /* DomainManager.swift */,
 				E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */,
 				E1ADD0432AA7367800D95694 /* UsageManager.swift */,
+				E1ADD0532AA8DBB600D95694 /* RemoteChangesManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -626,6 +642,7 @@
 				E1FB2D8A2A76C48600473AE1 /* Info.plist */,
 				E1FB2D8B2A76C48600473AE1 /* SyncExtension.entitlements */,
 				E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */,
+				E198D7DD2AA9EA0A00107753 /* Utils.swift */,
 			);
 			path = SyncExtension;
 			sourceTree = "<group>";
@@ -678,6 +695,7 @@
 				E1313D2E2A9501BB00C7ABF0 /* Sentry */,
 				E18300C82AA3D0BE00AD023C /* SwiftyXPC */,
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
+				E1ADD0512AA8D68D00D95694 /* SocketIO */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -736,6 +754,7 @@
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 				E18300D42AA3FEFC00AD023C /* SwiftyXPC */,
+				E198D7E02AAA3A2800107753 /* SocketIO */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -784,6 +803,7 @@
 				E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				E18300C72AA3D0BE00AD023C /* XCRemoteSwiftPackageReference "SwiftyXPC" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
+				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -939,6 +959,7 @@
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
+				E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */,
 				E19136942AA101DE00CAF0FA /* WidgetIconButtonView.swift in Sources */,
 				E163105A2A8E67780072989E /* App.swift in Sources */,
 				E1F616072A8D7DF8008C9E62 /* SignInWithBrowserView.swift in Sources */,
@@ -948,6 +969,7 @@
 				E1880BA22AA63CF2001FC171 /* AccountTabView.swift in Sources */,
 				E1880B9C2AA625D6001FC171 /* DeviceNameView.swift in Sources */,
 				E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */,
+				E1ADD0542AA8DBB600D95694 /* RemoteChangesManager.swift in Sources */,
 				E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
@@ -1012,6 +1034,8 @@
 				E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */,
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
+				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
+				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
@@ -1034,6 +1058,7 @@
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
+				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */,
 				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,
@@ -1157,7 +1182,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1223,7 +1248,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1447,7 +1472,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1482,7 +1507,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1586,7 +1611,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1613,7 +1638,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1720,6 +1745,14 @@
 				kind = branch;
 			};
 		};
+		E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1758,10 +1791,20 @@
 			package = E18300C72AA3D0BE00AD023C /* XCRemoteSwiftPackageReference "SwiftyXPC" */;
 			productName = SwiftyXPC;
 		};
+		E198D7E02AAA3A2800107753 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
+		};
 		E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;
 			productName = LaunchAtLogin;
+		};
+		E1ADD0512AA8D68D00D95694 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

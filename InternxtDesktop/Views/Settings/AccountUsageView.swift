@@ -16,7 +16,7 @@ struct AccountUsageView: View {
             HStack(alignment: .center, spacing: 0) {
                 CurrentPlanSpace()
                 Spacer()
-                AppButton(title: "Upgrade", onClick: {})
+                AppButton(title: "Upgrade", onClick: handleOpenUpgradePlan)
             }.padding(.bottom, 20)
             HStack {
                 AppText("Using \(usageManager.getFormattedTotalUsage()) of \(usageManager.format(bytes: usageManager.limit))")
@@ -122,6 +122,12 @@ struct AccountUsageView: View {
             .overlay(Rectangle()
                 .frame(width: 2, height: nil, alignment: .trailing).foregroundColor(Color("Surface")), alignment: .trailing)
 
+    }
+    
+    func handleOpenUpgradePlan() {
+        if let url = URL(string: URLDictionary.UPGRADE_PLAN) {
+               NSWorkspace.shared.open(url)
+        }
     }
     
     func PhotosUsageSegment(totalWidth: CGFloat) -> some View {

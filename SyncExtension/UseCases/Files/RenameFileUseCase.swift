@@ -54,7 +54,6 @@ struct RenameFileUseCase {
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
             } catch {
                 error.reportToSentry()
-                
                 self.logger.error("❌ Failed to rename file: \(error.localizedDescription)")
                 completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 
