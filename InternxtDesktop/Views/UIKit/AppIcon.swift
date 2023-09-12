@@ -12,6 +12,7 @@ enum AppIconName: String {
     case Gear = "EB43"
     case CheckCircle = "EA31"
     case Check = "EA30"
+    case At = "E989"
 }
 struct AppIcon: View {
     

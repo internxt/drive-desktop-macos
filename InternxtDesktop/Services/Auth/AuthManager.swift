@@ -40,32 +40,16 @@ class AuthManager: ObservableObject {
         return true
     }
     
-    func initializeCurrentUser() {
-        Task {
-            do {
-                let refreshUserResponse = try await APIFactory.Drive.refreshUser()
-                ErrorUtils.identify(
-                    email:refreshUserResponse.user.email,
-                    uuid: refreshUserResponse.user.uuid
-                )
-                try config.setUser(user: refreshUserResponse.user)
-                
-                DispatchQueue.main.async{
-                    self.user = refreshUserResponse.user
-                }
-            } catch {
-                self.logger.error("Failed to refresh current user: \(error)")
-               
-                print(error)
-                if error is APIClientError {
-                    let apiError = (error as! APIClientError)
-                    let body = String(data:(error as! APIClientError).responseBody, encoding: .utf8)
-                    self.logger.error("Refresh current user response: \(body!)")
-                }
-                
-                
-            }
-            
+    func initializeCurrentUser() async throws {
+        let refreshUserResponse = try await APIFactory.Drive.refreshUser()
+        ErrorUtils.identify(
+            email:refreshUserResponse.user.email,
+            uuid: refreshUserResponse.user.uuid
+        )
+        try config.setUser(user: refreshUserResponse.user)
+        
+        DispatchQueue.main.async{
+            self.user = refreshUserResponse.user
         }
     }
     
@@ -84,6 +68,7 @@ class AuthManager: ObservableObject {
         try config.removeAuthToken()
         try config.removeLegacyAuthToken()
         try config.removeMnemonic()
+        user = nil
         ErrorUtils.clean()
         isLoggedIn = false
         self.logger.info("Auth details removed correctly, user is logged out")

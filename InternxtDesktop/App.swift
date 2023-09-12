@@ -18,30 +18,19 @@ struct InternxtDesktopApp: App {
         appDelegate.loginSuccess()
     }
     var body: some Scene {
-        Settings {
-            EmptyView()
-        }
-        WindowGroup("Settings",  id: "Settings") {
-            
-        }
+        
+        
         WindowGroup("Internxt Drive",  id: "Auth") {
             ContentView(onLoginSuccess: onLoginSuccess).environmentObject(appDelegate.authManager)
                 .handlesExternalEvents(preferring: ["internxt"], allowing: ["internxt"])
                 .frame(minWidth: 480, maxWidth: 480, minHeight: 320, maxHeight: 320).toolbar(content: {
                     ToolbarItem(placement: .principal){
-                        AppText("Internxt Drive")
-                            .foregroundColor(Color("Highlight"))
-                            .font(AppTextFont["Base/Medium"])
+                       
                     }
                 })
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.automatic)
-
-        
-       
     }
-    
-    
 }

@@ -40,6 +40,15 @@ struct APIFactory {
         return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token)
     }
     
+    static var Photos: PhotosAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        
+        return PhotosAPI(baseUrl: config.PHOTOS_API_URL, authToken: token)
+    }
+    
     static var Trash: TrashAPI {
         let configLoader = ConfigLoader()
         

@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "launchatlogin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/LaunchAtLogin",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8e28b5e5a9561ace33a26c55d78f74963fbce6f9"
+      }
+    },
+    {
       "identity" : "ripemd160-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MiclausCorp/ripemd160-Swift.git",
@@ -23,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "d062d9b31ccabdec706134f2216476d1996caf11",
-        "version" : "8.10.0"
+        "revision" : "12998398eb51e2e8ff7098163fa97d305eee6d87",
+        "version" : "8.11.0"
       }
     },
     {
@@ -32,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/download-and-decrypt",
-        "revision" : "83a00db52259b513303e922d8341e767b351e110"
+        "branch" : "feature/usage-endpoints",
+        "revision" : "3dfc4107932dca77ed8777abe7bcb7c59098e979"
       }
     },
     {

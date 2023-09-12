@@ -14,7 +14,6 @@ enum CreateItemError: Error {
 }
 class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     let logger = Logger(subsystem: "com.internxt", category: "sync")
-    let driveAPI: DriveAPI = APIFactory.Drive
     let config = ConfigLoader()
     let manager: NSFileProviderManager
     let tmpURL: URL

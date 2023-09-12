@@ -19,6 +19,7 @@ struct AppTextInput: View {
 
 struct AppTextInput_Previews: PreviewProvider {
     static var previews: some View {
-        AppTextInput()
+        
+        AppTextInput().frame(width: 400).padding(20)
     }
 }
