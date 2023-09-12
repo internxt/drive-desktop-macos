@@ -77,6 +77,7 @@ struct FetchFileContentUseCase {
                 progressHandler(completedProgress: 1)
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
+                error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content: \(error.localizedDescription)")
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }

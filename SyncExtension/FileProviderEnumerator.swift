@@ -8,10 +8,15 @@
 import FileProvider
 import os.log
 import InternxtSwiftCore
+
+
+// Build anchor from this format: filesLasUpdatedAtDate;foldersLastUpdatedAtDate
+let initialAnchor = "\(dateToAnchor(Date()));\(dateToAnchor(Date()))"
+   
 class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     let logger = Logger(subsystem: "com.internxt", category: "sync")
     private let enumeratedItemIdentifier: NSFileProviderItemIdentifier
-    private let anchor = NSFileProviderSyncAnchor(NSUUID().uuidString.data(using: .utf8)!)
+    private let anchor = NSFileProviderSyncAnchor(initialAnchor.data(using: .utf8)!)
     private let driveAPI =  APIFactory.Drive
     private let user: DriveUser
     init(user: DriveUser, enumeratedItemIdentifier: NSFileProviderItemIdentifier) {
@@ -28,21 +33,9 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
 
 
     func enumerateItems(for observer: NSFileProviderEnumerationObserver, startingAt page: NSFileProviderPage) {
-        /* TODO:
-         - inspect the page to determine whether this is an initial or a follow-up request
-         
-         If this is an enumerator for a directory, the root container or all directories:
-         - perform a server request to fetch directory contents
-         If this is an enumerator for the active set:
-         - perform a server request to update your local database
-         - fetch the active set from your local database
-         
-         - inform the observer about the items returned by the server (possibly multiple times)
-         - inform the observer that you are finished with this page
-         */
+     
+        self.logger.info("🔵 Enumerating items for \(self.enumeratedItemIdentifier.rawValue)")
         
-        
-        logger.info("Item identifier \(self.enumeratedItemIdentifier.rawValue)")
         if self.enumeratedItemIdentifier == .workingSet {
             observer.didEnumerate([])
             
@@ -65,21 +58,8 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
         
-        self.logger.info("Enumerating Changes from: \(anchor.rawValue)")
-        /* TODO:
-         - query the server for updates since the passed-in sync anchor
-         
-         If this is an enumerator for the active set:
-         - note the changes in your local database
-         
-         - inform the observer about item deletions and updates (modifications + insertions)
-         - inform the observer when you have finished enumerating up to a subsequent sync anchor
-         */
-        // TODO: Move to usecase
-        
-        
-        
-        observer.finishEnumeratingChanges(upTo: anchor, moreComing: false)
+        self.logger.info("🔵 Enumerating Changes for \(self.enumeratedItemIdentifier.rawValue)")
+        return GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run()
     }
     
     func currentSyncAnchor(completionHandler: @escaping (NSFileProviderSyncAnchor?) -> Void) {

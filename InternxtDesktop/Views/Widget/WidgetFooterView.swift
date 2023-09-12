@@ -26,7 +26,7 @@ struct WidgetFooterView: View {
         return HStack(alignment: .center, spacing: 8){
             ZStack {
                 Circle().foregroundColor(Color("Primary")).frame(height: 20 )
-                AppIcon(iconName: .Check, size: 12, color: Color("Highlight"))
+                AppIcon(iconName: .Check, size: 12, color: Color.white)
                 
             }
             AppText("SyncStatusUpToDate").font(AppTextFont["SM/Medium"])

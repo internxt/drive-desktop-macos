@@ -116,6 +116,7 @@ struct CreateFileUseCase {
                 completionHandler(fileProviderItem, [], true, nil )
                 self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
             } catch {
+                error.reportToSentry()
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }

@@ -18,7 +18,7 @@ struct DeviceNameView: View {
                 VStack {
                     AppText(deviceNameUnwrapped).font(AppTextFont["LG/Medium"])
                 }.frame(height: 36)
-                if isEditingDeviceName {
+                /* if isEditingDeviceName {
                     HStack {
                         AppButton(title: "Cancel", onClick: {
                             isEditingDeviceName = false
@@ -29,7 +29,7 @@ struct DeviceNameView: View {
                     AppButton(title: "Edit", onClick: {
                         isEditingDeviceName = true
                     }, type: .secondaryWhite, size: .MD)
-                }
+                }*/
                 
             }
             

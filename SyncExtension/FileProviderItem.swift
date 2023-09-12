@@ -39,7 +39,7 @@ class FileProviderItem: NSObject, NSFileProviderItem {
             return name
         }
         
-        return "\(name).\(itemExtension!)"
+        return "\(name).\(itemExtension?.lowercased() ?? "")"
     }
     
     // TODO: Overload this to provide a faster way to initialize an NSFileProviderItem, this seems too verbose
@@ -49,7 +49,7 @@ class FileProviderItem: NSObject, NSFileProviderItem {
         self.parentIdentifier = parentId
         self.updatedAt = updatedAt
         self.createdAt = createdAt
-        self.itemExtension = itemExtension
+        self.itemExtension = itemExtension?.lowercased()
         self.itemType = itemType
         self.documentSize = NSNumber(value: size)
     }
@@ -72,15 +72,13 @@ class FileProviderItem: NSObject, NSFileProviderItem {
             return [.allowsDeleting]
         }
         
-        // AllowDeleting and allowTrashing are disallowed right now
-        return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting]
+        return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting, .allowsTrashing]
     }
     
    
     
     var itemVersion: NSFileProviderItemVersion {
-        // We'll create a version from the updatedAt date, so if the item is updated, the version is too
-        return NSFileProviderItemVersion(contentVersion: Data("STATIC".utf8), metadataVersion: Data("STATIC".utf8))
+        return NSFileProviderItemVersion(contentVersion: Data("STATIC".utf8), metadataVersion: Data("STATIC_\(filename)".utf8))
     }
 
     

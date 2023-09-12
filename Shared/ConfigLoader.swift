@@ -19,6 +19,7 @@ public struct JSONConfig: Codable {
     public let MAGIC_SALT_HEX: String
     public let CRYPTO_SECRET2: String
     public let SENTRY_DSN: String
+    public let NOTIFICATIONS_URL: String
 }
 
 enum ConfigLoaderError: Error {

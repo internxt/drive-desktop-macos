@@ -33,7 +33,6 @@ struct EnumerateFolderItemsUseCase {
                 var items: Array<NSFileProviderItem> = Array()
                 
                 let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: offset, limit: limit , debug: true)
-                self.logger.info("FOLDERS OK")
                 let files = try await driveAPI.getFolderFiles(folderId: folderId, offset: offset, limit: limit)
                 
                 
@@ -44,6 +43,10 @@ struct EnumerateFolderItemsUseCase {
                 
                 
                 folders.result.forEach{ (folder) in
+                    if folder.status != "EXISTS" || folder.deleted == true || folder.removed == true {
+                        return
+                    }
+                    
                     guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
                         self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
                         return
@@ -68,6 +71,10 @@ struct EnumerateFolderItemsUseCase {
                 }
                 
                 files.result.forEach{ (file) in
+                    if file.status != "EXISTS" || file.deleted == true || file.removed == true {
+                        return
+                    }
+                    
                     guard let createdAt = Time.dateFromISOString(file.createdAt) else {
                         self.logger.error("Cannot create createdAt date for item \(file.fileId) with value \(file.createdAt)")
                         return

@@ -16,7 +16,6 @@ import Combine
 import ServiceManagement
 let RESET_DOMAIN_ON_START = true
 
-
 class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowDelegate {
     let logger = Logger(subsystem: "com.internxt", category: "App")
     let config = ConfigLoader()
@@ -31,7 +30,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     var appXPCCommunicator: AppXPCCommunicator = AppXPCCommunicator.shared
     var globalUIManager: GlobalUIManager = GlobalUIManager()
     var preferencesWindow: NSWindow!
-
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
@@ -48,6 +46,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         ErrorUtils.start()
+        
+        checkVolumeAndEjectIfNeeded()
         
         appXPCCommunicator.test(handler: {
             self.logger.info("XPC message received")
@@ -94,10 +94,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     }
     
     func getSettingsWindow() -> NSWindow? {
-        
-       
-        return NSApp.windows.first{$0.identifier?.rawValue == "Settings-AppWindow-1"}
+        return NSApp.windows.first{$0.identifier?.rawValue.contains("Settings") ?? false}
     }
+    
+    func checkVolumeAndEjectIfNeeded() {
+        do {
+            let mountedVolumes = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [])
+            
+            if let matchedVolumeURL = mountedVolumes?.first(where: {$0.lastPathComponent.contains("Internxt")}) {
+                try NSWorkspace.shared.unmountAndEjectDevice(at: matchedVolumeURL)
+                self.logger.info("Installer ejected correctly")
+            } else {
+                self.logger.info("Internxt installer was not found")
+            }
+        } catch {
+            self.logger.error("Failed to eject the Internxt installer: \(error.localizedDescription)")
+        }
+    }
+    
+   
     
     func loginSuccess() {
         self.hideAllWindows()
@@ -108,7 +123,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
                 await usageManager.updateUsage()
                 
                 try await self.initFileProvider()
-                
                 self.logger.info("Login success")
             } catch {
                 error.reportToSentry()
@@ -124,22 +138,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     }
     
     func logout() {
-        do {
-            try authManager.signOut()
-            // Remove all the domains
-            if let loadedDomainUnwrapped = loadedDomain {
-                removeDomain(domain: loadedDomainUnwrapped, completionHandler: {_, error in
-                    if let unwrappedError = error {
-                        unwrappedError.reportToSentry()
-                    }
-                    self.loadedDomain = nil
-                    self.logger.info("Domain removed correctly")
-                })
-            }
-        } catch {
-            error.reportToSentry()
+        if let loadedDomainUnwrapped = loadedDomain {
+            removeDomain(domain: loadedDomainUnwrapped, completionHandler: {_, error in
+                if let unwrappedError = error {
+                    unwrappedError.reportToSentry()
+                }
+                self.loadedDomain = nil
+                self.logger.info("Domain removed correctly")
+            })
         }
-        
     }
         
     
