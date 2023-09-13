@@ -13,7 +13,7 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let useIntervalSignaller = true;
+let useIntervalSignaller = false;
 
 func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
     return Timer.publish(every: 5, on: .main, in: .common)
@@ -21,8 +21,8 @@ func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
 
 
 let logger = Logger(subsystem: "com.internxt", category: "sync")
-class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
-   
+class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
+    let fileProviderItemActions = FileProviderItemActionsManager()
     let config = ConfigLoader()
     let manager: NSFileProviderManager
     let tmpURL: URL
@@ -139,7 +139,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
 
     
     func invalidate() {
-        // TODO: cleanup any resources
+        fileProviderItemActions.clean()
     }
     
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
@@ -228,6 +228,23 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     func modifyItem(_ item: NSFileProviderItem, baseVersion version: NSFileProviderItemVersion, changedFields: NSFileProviderItemFields, contents newContents: URL?, options: NSFileProviderModifyItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         
         
+        if changedFields.contains(.extendedAttributes) {
+            logger.info("Checking extended attributes \(item.filename)")
+            let filename = item.filename as NSString
+            let item = FileProviderItem(
+                identifier: item.itemIdentifier,
+                filename: item.filename,
+                parentId: item.parentItemIdentifier,
+                createdAt: (item.creationDate ?? Date()) ?? Date(),
+                updatedAt: (item.contentModificationDate ?? Date()) ?? Date(),
+                itemExtension: filename.pathExtension,
+                itemType: item.contentType == .folder ? .folder : .file
+            )
+            completionHandler(item, [.parentItemIdentifier], false, nil)
+            
+            return Progress()
+        }
+        
         // Folder cases
         let folderHasBeenTrashed = changedFields.contains(.parentItemIdentifier) && item.parentItemIdentifier == .trashContainer && item.contentType == .folder
         let folderHasBeenRenamed = changedFields.contains(.filename) && item.contentType == .folder
@@ -304,13 +321,45 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension {
     func deleteItem(identifier: NSFileProviderItemIdentifier, baseVersion version: NSFileProviderItemVersion, options: NSFileProviderDeleteItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (Error?) -> Void) -> Progress {
         logger.info("Delete request for item \(identifier.rawValue)")
         // This should not happen as we don't allow this from the trash yet
-        
         completionHandler(NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError, userInfo:[:]))
         return Progress()
     }
     
     func enumerator(for containerItemIdentifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest) throws -> NSFileProviderEnumerator {
         return FileProviderEnumerator(user:user,enumeratedItemIdentifier: containerItemIdentifier)
+    }
+    
+    func performAction(identifier actionIdentifier: NSFileProviderExtensionActionIdentifier, onItemsWithIdentifiers itemIdentifiers: [NSFileProviderItemIdentifier], completionHandler: @escaping (Error?) -> Void) -> Progress {
+        
+        if actionIdentifier == FileProviderItemActionsManager.MakeAvailableOffline {
+            Task {
+                
+                for identifier in itemIdentifiers {
+                    fileProviderItemActions.makeAvailableOffline(identifier: identifier)
+                    try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                }
+                
+                completionHandler(nil)
+            }
+            
+            return Progress()
+        }
+        
+        if actionIdentifier == FileProviderItemActionsManager.MakeAvailableOnline {
+            Task {
+                for identifier in itemIdentifiers {
+                    fileProviderItemActions.makeAvailableOnlineOnly(identifier: identifier)
+                    try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                }
+                
+                completionHandler(nil)
+            }
+            
+            return Progress()
+        }
+        
+        
+        return Progress()
     }
     
 }

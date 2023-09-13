@@ -25,5 +25,62 @@
 		<string>Fonts/InstrumentSans-SemiBold.ttf</string>
 		<string>Fonts/InstrumentSans-Bold.ttf</string>
 	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.icon-decoration.badge</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Available offline ($(CURRENT_PROJECT_VERSION))</string>
+			<key>UTTypeGlyphName</key>
+			<string>availableOffline</string>
+			<key>UTTypeIconFile</key>
+			<string>availableOffline</string>
+			<key>UTTypeIcons</key>
+			<dict>
+				<key>UTTypeIconBackgroundName</key>
+				<string>availableOffline</string>
+				<key>UTTypeIconBadgeName</key>
+				<string>availableOffline</string>
+			</dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.internxt.icon-decorations.availableOffline</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>availableOffline</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.icon-decoration.badge</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Folder Available offline ($(CURRENT_PROJECT_VERSION))</string>
+			<key>UTTypeIconFile</key>
+			<string>availableOffline</string>
+			<key>UTTypeIcons</key>
+			<dict>
+				<key>UTTypeIconBackgroundName</key>
+				<string>availableOffline</string>
+				<key>UTTypeIconBadgeName</key>
+				<string>availableOffline</string>
+			</dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.internxt.icon-decorations.folderAvailableOffline</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>folderAvailableOffline</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

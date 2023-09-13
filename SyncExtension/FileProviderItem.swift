@@ -20,20 +20,24 @@ struct RemoteItem {
     public let type: RemoteItemType
 }
 
-class FileProviderItem: NSObject, NSFileProviderItem {
-    
+class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItemDecorating {
+    private let fileProviderItemActions = FileProviderItemActionsManager()
     private let identifier: NSFileProviderItemIdentifier
     private let parentIdentifier: NSFileProviderItemIdentifier
     private let updatedAt: Date
     private let createdAt: Date
     private let itemExtension: String?
     private let itemType: RemoteItemType
+    private let isAvailableOffline: Bool
     var filename: String
     var documentSize: NSNumber?
     
     public static func parentIdIsRootFolder(identifier: NSFileProviderItemIdentifier) -> Bool {
         return identifier == .rootContainer
     }
+    
+    static let decorationPrefix = Bundle.main.bundleIdentifier!
+
     public static func getFilename(name: String, itemExtension: String?) -> String {
         if itemExtension == nil {
             return name
@@ -52,6 +56,7 @@ class FileProviderItem: NSObject, NSFileProviderItem {
         self.itemExtension = itemExtension?.lowercased()
         self.itemType = itemType
         self.documentSize = NSNumber(value: size)
+        self.isAvailableOffline = fileProviderItemActions.isAvailableOffline(identifier: self.identifier) == true
     }
     
     var itemIdentifier: NSFileProviderItemIdentifier {
@@ -59,11 +64,30 @@ class FileProviderItem: NSObject, NSFileProviderItem {
     }
     
     var contentPolicy: NSFileProviderContentPolicy {
+        if isAvailableOffline {
+            return .downloadEagerlyAndKeepDownloaded
+        }
         return .inherited
     }
     
     var parentItemIdentifier: NSFileProviderItemIdentifier {
         return self.parentIdentifier
+    }
+    
+    
+    var decorations: [NSFileProviderItemDecorationIdentifier]? {
+        var decorations = [NSFileProviderItemDecorationIdentifier]()
+    
+        if  isAvailableOffline {
+            decorations.append(NSFileProviderItemDecorationIdentifier(rawValue: "availableOffline"))
+            decorations.append(NSFileProviderItemDecorationIdentifier(rawValue: "folderAvailableOffline"))
+        }
+        
+        return decorations
+    }
+    
+    var userInfo: [AnyHashable : Any]? {
+        return ["availableOffline": isAvailableOffline]
     }
     
     var capabilities: NSFileProviderItemCapabilities {
@@ -72,13 +96,24 @@ class FileProviderItem: NSObject, NSFileProviderItem {
             return [.allowsDeleting]
         }
         
-        return [.allowsReading, .allowsWriting, .allowsRenaming, .allowsReparenting, .allowsTrashing]
+        return [
+            .allowsAddingSubItems,
+            .allowsContentEnumerating,
+            .allowsTrashing,
+            .allowsReading,
+            .allowsRenaming,
+            .allowsReparenting,
+            .allowsWriting,
+        ]
     }
     
    
     
     var itemVersion: NSFileProviderItemVersion {
-        return NSFileProviderItemVersion(contentVersion: Data("STATIC".utf8), metadataVersion: Data("STATIC_\(filename)".utf8))
+        return NSFileProviderItemVersion(
+            contentVersion: Data("STATIC".utf8),
+            metadataVersion: Data("STATIC_\(filename)_\(isAvailableOffline ? "offline" : "online")".utf8)
+        )
     }
 
     

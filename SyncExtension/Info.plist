@@ -12,6 +12,48 @@
 	</dict>
 	<key>NSExtension</key>
 	<dict>
+		<key>NSFileProviderDecorations</key>
+		<array>
+			<dict>
+				<key>BadgeImageType</key>
+				<string>com.internxt.icon-decorations.folderAvailableOffline</string>
+				<key>Category</key>
+				<string>FolderBadge</string>
+				<key>Identifier</key>
+				<string>folderAvailableOffline</string>
+				<key>Label</key>
+				<string>AvailableOfflineLabel</string>
+			</dict>
+			<dict>
+				<key>Label</key>
+				<string>AvailableOfflineLabel</string>
+				<key>Identifier</key>
+				<string>availableOffline</string>
+				<key>Category</key>
+				<string>Badge</string>
+				<key>BadgeImageType</key>
+				<string>com.internxt.icon-decorations.availableOffline</string>
+			</dict>
+		</array>
+		<key>NSExtensionFileProviderActions</key>
+		<array>
+			<dict>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>AvailableOnlineOnly</string>
+				<key>NSExtensionFileProviderActionIdentifier</key>
+				<string>internxt.InternxtDesktop.sync.Action.AvailableOnlineOnly</string>
+				<key>NSExtensionFileProviderActionActivationRule</key>
+				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != NO &amp;&amp; $item.itemIdentifier != &quot;NSFileProviderRootContainerItemIdentifier&quot; ).@count &gt; 0</string>
+			</dict>
+			<dict>
+				<key>NSExtensionFileProviderActionActivationRule</key>
+				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != YES &amp;&amp; $item.itemIdentifier != &quot;NSFileProviderRootContainerItemIdentifier&quot; ).@count &gt; 0</string>
+				<key>NSExtensionFileProviderActionIdentifier</key>
+				<string>internxt.InternxtDesktop.sync.Action.AvailableOffline</string>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>AvailableOffline</string>
+			</dict>
+		</array>
 		<key>NSExtensionFileProviderDocumentGroup</key>
 		<string>$(TeamIdentifierPrefix)group.internxt.desktop</string>
 		<key>NSExtensionFileProviderSupportsEnumeration</key>
