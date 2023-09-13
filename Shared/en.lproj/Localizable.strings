@@ -41,3 +41,11 @@
 "Edit" = "Edit";
 "Cancel" = "Cancel";
 "Save" = "Save";
+
+
+// Context menu actions
+"AvailableOffline" = "Make available offline";
+"AvailableOnlineOnly" = "Make online only";
+
+// Decorations
+"AvailableOfflineLabel" = "Available offline";

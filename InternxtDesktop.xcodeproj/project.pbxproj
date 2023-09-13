@@ -78,6 +78,7 @@
 		E1880BA02AA63215001FC171 /* StartOnLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1880B9F2AA63215001FC171 /* StartOnLaunchView.swift */; };
 		E1880BA22AA63CF2001FC171 /* AccountTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1880BA12AA63CF2001FC171 /* AccountTabView.swift */; };
 		E1880BA42AA6973C001FC171 /* GlobalUIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */; };
+		E190AC4B2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */; };
 		E191368C2AA0FB4C00CAF0FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E19136912AA0FB4C00CAF0FA /* Localizable.strings */; };
 		E191368D2AA0FB4C00CAF0FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E19136912AA0FB4C00CAF0FA /* Localizable.strings */; };
 		E191368E2AA0FB4C00CAF0FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E19136912AA0FB4C00CAF0FA /* Localizable.strings */; };
@@ -98,7 +99,7 @@
 		E1ADD04C2AA7EF0F00D95694 /* AppSelectOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04B2AA7EF0F00D95694 /* AppSelectOption.swift */; };
 		E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
 		E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = E1ADD0512AA8D68D00D95694 /* SocketIO */; };
-		E1ADD0542AA8DBB600D95694 /* RemoteChangesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0532AA8DBB600D95694 /* RemoteChangesManager.swift */; };
+		E1BE23612AB0A06A00EAB152 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
 		E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */; };
 		E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
@@ -243,6 +244,7 @@
 		E1880B9F2AA63215001FC171 /* StartOnLaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartOnLaunchView.swift; sourceTree = "<group>"; };
 		E1880BA12AA63CF2001FC171 /* AccountTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTabView.swift; sourceTree = "<group>"; };
 		E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalUIManager.swift; sourceTree = "<group>"; };
+		E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderItemActionsManager.swift; sourceTree = "<group>"; };
 		E19136902AA0FB4C00CAF0FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetIconButtonView.swift; sourceTree = "<group>"; };
 		E19136952AA108D200CAF0FA /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
@@ -643,6 +645,7 @@
 				E1FB2D8B2A76C48600473AE1 /* SyncExtension.entitlements */,
 				E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */,
 				E198D7DD2AA9EA0A00107753 /* Utils.swift */,
+				E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */,
 			);
 			path = SyncExtension;
 			sourceTree = "<group>";
@@ -871,6 +874,7 @@
 				E191368F2AA0FB4C00CAF0FA /* Localizable.strings in Resources */,
 				E17AA02E2A8A826D00C7EE6E /* ExtensionAssets.xcassets in Resources */,
 				E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */,
+				E1BE23612AB0A06A00EAB152 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -969,7 +973,6 @@
 				E1880BA22AA63CF2001FC171 /* AccountTabView.swift in Sources */,
 				E1880B9C2AA625D6001FC171 /* DeviceNameView.swift in Sources */,
 				E1FB2D2A2A76BF0200473AE1 /* ContentView.swift in Sources */,
-				E1ADD0542AA8DBB600D95694 /* RemoteChangesManager.swift in Sources */,
 				E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
@@ -1043,6 +1046,7 @@
 				E10B0FE02A94143F00B97874 /* Int.swift in Sources */,
 				E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */,
 				E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */,
+				E190AC4B2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift in Sources */,
 				E18300D22AA3F97500AD023C /* CommandSet.swift in Sources */,
 				E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */,
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
@@ -1176,13 +1180,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = InternxtDesktop/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Internxt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1248,7 +1253,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1466,13 +1471,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = InternxtDesktop/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Internxt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1501,13 +1507,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = InternxtDesktop/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Internxt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1611,7 +1618,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1638,7 +1645,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
