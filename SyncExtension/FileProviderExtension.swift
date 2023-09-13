@@ -13,7 +13,7 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let useIntervalSignaller = false;
+let useIntervalSignaller = true;
 
 func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
     return Timer.publish(every: 5, on: .main, in: .common)
