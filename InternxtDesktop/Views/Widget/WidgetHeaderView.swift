@@ -29,18 +29,22 @@ struct WidgetHeaderView: View {
         VStack(alignment: .leading, spacing: 0) {
             
             HStack(alignment: .center, spacing: 0) {
-                AppAvatar(name: user?.name)
+                AppAvatar(name: user?.name, avatarURL: user?.avatar)
                 UserInfo().padding(.leading, 10)
                 Spacer()
                 RightActions()
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 0)
-            .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .leading).zIndex(10)
-            Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10")).zIndex(5)
+            .frame(maxWidth: .infinity, minHeight: 56, maxHeight: 56, alignment: .leading)
+            .zIndex(10)
+            Divider()
+                .frame(maxWidth: .infinity, maxHeight: 1)
+                .overlay(Color.Gray10)
+                .zIndex(5)
 
         }
-        .background(colorScheme == .dark ? Color("Gray5") :  Color("Gray1"))
+        .background(colorScheme == .dark ? Color.Gray5 :  Color.Gray1)
         .onChange(of: globalUIManager.widgetIsOpen, perform: {widgetIsOpen in
             if (widgetIsOpen == false) {
                 settingsMenuOpen = false
@@ -54,14 +58,12 @@ struct WidgetHeaderView: View {
         VStack(alignment: .leading, spacing:0) {
             // Disable email detection
             Text(verbatim: user?.email ?? "No user found")
-                .font(AppTextFont["SM/Medium"])
-                .foregroundColor(Color("Gray100"))
+                .font(.SMMedium)
+                .foregroundColor(.Gray100)
                 .lineLimit(1)
-            AppText("Using \(self.usageManager.getFormattedTotalUsage()) of \(self.usageManager.format(bytes: self.usageManager.limit))")
-                .font(AppTextFont["XS/Medium"])
-                .foregroundColor(Color("Gray50"))
-                
-            
+                .help(user?.email ?? "No user found")
+            Text("COMMON_USAGE_\(usageManager.getFormattedTotalUsage())_OF_\(usageManager.format(bytes: usageManager.limit))").font(.XSMedium)
+                .foregroundColor(.Gray50)
         }
         
     }

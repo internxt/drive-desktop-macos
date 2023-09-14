@@ -30,6 +30,7 @@ enum ConfigLoaderError: Error {
     case CannotRemoveKey
     case CannotSaveUser
     case CannotRemoveUser
+    case CannotSaveOnboardingIsCompleted
 }
 
 public var loadedConfig: JSONConfig? = nil
@@ -171,6 +172,20 @@ public struct ConfigLoader {
         if saved == false {
             throw ConfigLoaderError.CannotSaveUser
         }
+    }
+    
+    public func completeOnboarding() throws -> Void {
+        let saved = self.saveToUserDefaults(key: "OnboardingIsCompleted", value: "1")
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveOnboardingIsCompleted
+        }
+    }
+    
+    public func onboardingIsCompleted() -> Bool {
+        let completed = self.getFromUserDefaults(key: "OnboardingIsCompleted")
+
+        return completed == "1"
     }
     
     public func removeUser() throws -> Void  {

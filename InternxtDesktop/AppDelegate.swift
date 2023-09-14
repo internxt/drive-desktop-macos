@@ -20,8 +20,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     let logger = Logger(subsystem: "com.internxt", category: "App")
     let config = ConfigLoader()
     var clickOutsideWindowObserver: Any?
-    var popover: NSPopover!
-    var statusBarItem: NSStatusItem!
+    var popover: NSPopover?
+    var statusBarItem: NSStatusItem?
     var domainManager: DomainManager?
     var loadedDomain: NSFileProviderDomain? = nil
     let authManager = AuthManager()
@@ -30,9 +30,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     var appXPCCommunicator: AppXPCCommunicator = AppXPCCommunicator.shared
     var globalUIManager: GlobalUIManager = GlobalUIManager()
     var preferencesWindow: NSWindow!
+    var onboardingWindow: NSWindow!
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
+    
     
     func getFileProviderManager() throws -> NSFileProviderManager {
         guard let loadedDomain = self.loadedDomain else {
@@ -78,15 +80,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
             if(isLoggedIn) {
                 self.globalUIManager.setAppStatus(.loading)
                 self.loginSuccess()
+                self.closeSwiftUIWindows()
             } else {
                 self.preferencesWindow?.performClose(nil)
                 self.destroyWidget()
+                self.logout()
                 self.openAuthWindow()
             }
         })
         
         logger.info("App did start successfully")
         
+    }
+    
+    func closeSwiftUIWindows() {
+        NSApp.windows.forEach{window in
+            if window.identifier?.rawValue.contains("Auth-AppWindow") == true {
+                window.close()
+            }
+        }
     }
     
     func getAuthWindow() -> NSWindow? {
@@ -133,11 +145,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
             }
             
         }
-        self.setupWidget()
-        self.openPopover(delayed: true)
+        if config.onboardingIsCompleted() == true {
+            self.setupWidget()
+            self.openOnboardingWindow()
+        } else {
+            self.setupWidget()
+            self.openPopover(delayed: true)
+        }
+       
+    }
+    
+    func finishOrSkipOnboarding() {
+        onboardingWindow?.performClose(nil)
+        self.openFileProviderRoot()
     }
     
     func logout() {
+        
         if let loadedDomainUnwrapped = loadedDomain {
             removeDomain(domain: loadedDomainUnwrapped, completionHandler: {_, error in
                 if let unwrappedError = error {
@@ -152,25 +176,42 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     
     func openAuthWindow() {
         guard let window = getAuthWindow() else {
-            self.logger.error("No auth window found")
-            NSApplication.shared.activate(ignoringOtherApps: true)
+            let url = URL(string: "internxt://start-login")!
+            if NSWorkspace.shared.open(url) {
+                self.logger.info("Auth window not found, spawned one using a deeplink")
+                NSApp.setActivationPolicy(.regular)
+                if let spawnedWindow = getAuthWindow() {
+                    spawnedWindow.orderFrontRegardless()
+                    spawnedWindow.makeKeyAndOrderFront(nil)
+                    
+                }
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                
+            }
             return
         }
         
         
         NSApp.setActivationPolicy(.regular)
         window.orderFrontRegardless()
-        window.makeKey()
+        window.makeKeyAndOrderFront(nil)
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
     
     
     func windowWillClose(_ notification: Notification) {
-        hideAllWindows()
+        // If the user closed the onboarding window we'll mark it as completed and proceed
+        if (notification.object as? NSWindow)?.identifier?.rawValue == "OnboardingWindow" {
+            self.onboardingWindow = nil
+            finishOrSkipOnboarding()
+        } else {
+            hideAllWindows()
+        }
+        
     }
     
     @objc func openSettingsWindow() {
-        
+        self.closeSwiftUIWindows()
         if preferencesWindow == nil {
             let preferencesView = SettingsView()
                 .environmentObject(authManager)
@@ -178,9 +219,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
             preferencesWindow = NSWindow(
                 contentRect: NSRect(x: 20, y: 20, width: 400, height: 290),
                 styleMask: [.titled, .closable, .fullSizeContentView],
-                
                 backing: .buffered,
-                defer: false)
+                defer: false
+            )
             
             preferencesWindow.level = .floating
             preferencesWindow.backgroundColor = NSColor(Color("Gray5"))
@@ -193,9 +234,38 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
             preferencesWindow.setFrameAutosaveName("Preferences")
             preferencesWindow.contentView = NSHostingView(rootView: preferencesView)
         }
-        
-        preferencesWindow.makeKeyAndOrderFront(nil)
         preferencesWindow.orderFrontRegardless()
+        preferencesWindow.makeKeyAndOrderFront(nil)
+    }
+    
+    @objc func openOnboardingWindow() {
+        self.closeSwiftUIWindows()
+        if onboardingWindow == nil {
+            let onboardingView = OnboardingView(finishOrSkipOnboarding: finishOrSkipOnboarding)
+                
+            onboardingWindow = NSWindow(
+                contentRect: NSRect(x: 20, y: 20, width: 800, height: 470),
+                styleMask: [.titled, .closable, .fullSizeContentView],
+                backing: .buffered,
+                defer: false
+            )
+            
+            onboardingWindow.level = .floating
+            onboardingWindow.backgroundColor = NSColor(Color("Gray5"))
+            onboardingWindow.delegate = self
+            onboardingWindow.titlebarAppearsTransparent = true
+            onboardingWindow.toolbarStyle = .automatic
+            onboardingWindow.center()
+            onboardingWindow.identifier = NSUserInterfaceItemIdentifier("OnboardingWindow")
+            onboardingWindow.isReleasedWhenClosed = false
+            onboardingWindow.setFrameAutosaveName("Onboarding")
+            onboardingWindow.contentView = NSHostingView(rootView: onboardingView)
+        }
+        
+        self.logger.info("OPENING ONBOARDING")
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        onboardingWindow.makeKeyAndOrderFront(nil)
+        onboardingWindow.orderFrontRegardless()
     }
     
     func hideAllWindows() {
@@ -292,8 +362,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
 
     
     func destroyWidget() {
-        if statusBarItem != nil {
-            NSStatusBar.system.removeStatusItem(statusBarItem)
+        if let statusBarItemUnwrapped = self.statusBarItem {
+            NSStatusBar.system.removeStatusItem(statusBarItemUnwrapped)
             statusBarItem = nil
         }
     }
@@ -304,18 +374,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         
-        if let button = statusBarItem.button {
+        if let button = statusBarItem?.button {
             button.image = NSImage(named: "Icon")
             button.action = #selector(togglePopover)
         }
         
         self.popover = NSPopover()
-        self.popover.animates = false
-        self.popover.contentSize = NSSize(width: 300, height: 400)
-        self.popover.behavior = .transient
-        self.popover.delegate = self
-        self.popover.setValue(true, forKeyPath: "shouldHideAnchor")
-        self.popover.contentViewController = NSHostingController(
+        self.popover?.animates = false
+        self.popover?.contentSize = NSSize(width: 300, height: 400)
+        self.popover?.behavior = .transient
+        self.popover?.delegate = self
+        self.popover?.setValue(true, forKeyPath: "shouldHideAnchor")
+        self.popover?.contentViewController = NSHostingController(
             rootView: WidgetView(onLogout: logout, openFileProviderRoot: openFileProviderRoot)
             .environmentObject(self.authManager)
             .environmentObject(self.globalUIManager)
@@ -327,7 +397,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         closePopover()
         Task{
             do {
-           
                 let fileProviderFolderURL = try await getFileProviderManager().getUserVisibleURL(for: .rootContainer)
                 
                 _ = fileProviderFolderURL.startAccessingSecurityScopedResource()
@@ -342,24 +411,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     }
     
     @objc func togglePopover() {
-        if statusBarItem.button != nil {
+        if self.statusBarItem != nil {
             if authManager.isLoggedIn == false {
                 openAuthWindow()
                 return
             }
-            if popover.isShown {
-               closePopover()
-            } else {
-               openPopover()
+            
+            if let popoverUnwrapped = popover {
+                if popoverUnwrapped.isShown {
+                   closePopover()
+                } else {
+                   openPopover()
+                }
             }
+            
         }
     }
     
     
     func closePopover() {
         globalUIManager.setWidgetIsOpen(false)
-        popover.performClose(nil)
-        popover.contentViewController?.view.window?.resignKey()
+        popover?.performClose(nil)
+        popover?.contentViewController?.view.window?.resignKey()
     }
     
     func popoverWillShow(_ notification: Notification) {
@@ -374,9 +447,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     func openPopover(delayed: Bool = false) {
         func display() {
             
-            if let button = statusBarItem.button {
-                popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
-                popover.contentViewController?.view.window?.makeKey()
+            if let statusBarItemButton = self.statusBarItem?.button {
+                popover?.show(relativeTo: statusBarItemButton.bounds, of: statusBarItemButton, preferredEdge: NSRectEdge.minY)
+                popover?.contentViewController?.view.window?.makeKey()
             }
         }
         
@@ -391,6 +464,4 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         
        
     }
-   
-    
 }

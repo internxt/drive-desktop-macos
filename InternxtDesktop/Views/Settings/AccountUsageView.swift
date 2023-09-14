@@ -16,24 +16,23 @@ struct AccountUsageView: View {
             HStack(alignment: .center, spacing: 0) {
                 CurrentPlanSpace()
                 Spacer()
-                AppButton(title: "Upgrade", onClick: handleOpenUpgradePlan)
+                AppButton(title: "COMMON_UPGRADE", onClick: handleOpenUpgradePlan)
             }.padding(.bottom, 20)
             HStack {
-                AppText("Using \(usageManager.getFormattedTotalUsage()) of \(usageManager.format(bytes: usageManager.limit))")
-                    .font(AppTextFont["Base/Regular"])
-                    .foregroundColor(Color("Gray100"))
+                Text("COMMON_USAGE_\(usageManager.getFormattedTotalUsage())_OF_\(usageManager.format(bytes: usageManager.limit))").font(.BaseRegular)
+                    .foregroundColor(.Gray100)
                 Spacer()
                 AppText("\(usageManager.getUsedPercentage())")
-                    .font(AppTextFont["Base/Regular"])
-                    .foregroundColor(Color("Gray50"))
+                    .font(.BaseRegular)
+                    .foregroundColor(.Gray50)
             }
             
             
             UsageBar().cornerRadius(6).padding(.vertical, 8)
             HStack(alignment: .center, spacing: 16) {
-                UsageLegendItem(label: "Drive", color: Color("Primary"))
-                UsageLegendItem(label: "Backups", color: Color("Indigo"))
-                UsageLegendItem(label: "Photos", color: Color("Orange"))
+                UsageLegendItem(label: "Drive", color: .Primary)
+                UsageLegendItem(label: "Backups", color: .Indigo)
+                UsageLegendItem(label: "Photos", color: .Orange)
             }
         }
         
@@ -52,8 +51,8 @@ struct AccountUsageView: View {
     func CurrentPlanSpace() -> some View {
         let (number, suffix) = usageManager.formatParts(bytes: usageManager.limit)
         return HStack(alignment:.firstTextBaseline, spacing: 2) {
-            AppText(number).font(AppTextFont["3XL/Medium"])
-            AppText(suffix).font(AppTextFont["2XL/Medium"])
+            AppText(number).font(.XXXLMedium)
+            AppText(suffix).font(.XXLMedium)
         }
     }
     func UsageLegendItem(label: String, color: Color) -> some View {
@@ -61,7 +60,7 @@ struct AccountUsageView: View {
             Circle()
                 .fill(color)
                 .frame(width: 10, height: 10)
-            AppText(label).font(AppTextFont["SM/Regular"])
+            AppText(label).font(.SMRegular)
         }
     }
     

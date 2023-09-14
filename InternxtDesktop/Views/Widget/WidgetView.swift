@@ -32,26 +32,24 @@ struct WidgetView: View {
                            .scaledToFit()
                            .frame(maxWidth: 128)
                         VStack {
-                            AppText("FilesUpToDate")
-                                .font(AppTextFont["Base/Medium"])
-                                .foregroundColor(Color("Gray100"))
-                            AppText("FilesUpToDateHint")
-                                .font(AppTextFont["SM/Regular"])
-                                .foregroundColor(Color("Gray60"))
+                            AppText("FILES_UP_TO_DATE")
+                                .font(.BaseMedium)
+                                .foregroundColor(.Gray100)
+                            AppText("FILES_UP_TO_DATE_HINT")
+                                .font(.SMRegular)
+                                .foregroundColor(.Gray60)
                         }
                         .padding(.top, 22)
-                    } else {
-                        WidgetContentView()
                     }
                 }.frame(maxWidth: .infinity,maxHeight: .infinity)
                 WidgetFooterView()
             } else {
                 Spacer()
-                AppText("Loading user...").foregroundColor(Color("Highlight"))
+                AppText("Loading user...").foregroundColor(.Highlight)
                 Spacer()
             }
             
-        }.frame(width: 330, height: 400).background(Color("Surface")).cornerRadius(10)
+        }.frame(width: 330, height: 400).background(Color.Surface).cornerRadius(10)
     }
 }
 

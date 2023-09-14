@@ -43,15 +43,15 @@ struct WidgetSyncEntryView: View {
                     .shadow(color: .black.opacity(0.02), radius: 4, x: 0, y: 4)
                 VStack(alignment: .leading){
                     AppText(filename)
-                        .font(AppTextFont["SM/Medium"])
-                        .foregroundColor(Color("Gray100"))
+                        .font(.SMMedium)
+                        .foregroundColor(.Gray100)
                     EntryStatusSubtitle
                 }
                 
                 Spacer()
                 EntryStatus
             }.padding(.horizontal, 12).frame(height: 56)
-            Divider().foregroundColor(Color("Gray1"))
+            Divider().foregroundColor(.Gray1)
         }
         
     }
@@ -60,11 +60,11 @@ struct WidgetSyncEntryView: View {
     var EntryStatusSubtitle: some View {
         switch self.operationKind {
         case .trash:
-            AppText("OperationKindTrash").font(AppTextFont["XS/Medium"]).foregroundColor(Color("Gray50"))
+            AppText("SYNC_ENTRY_KIND_TRASHED").font(.XSMedium).foregroundColor(.Gray50)
         case .download:
-            AppText("OperationKindDownloaded").font(AppTextFont["XS/Medium"]).foregroundColor(Color("Gray50"))
+            AppText("SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
         case .upload:
-            AppText("OperationKindUploaded").font(AppTextFont["XS/Medium"]).foregroundColor(Color("Gray50"))
+            AppText("SYNC_ENTRY_KIND_UPLOADED").font(.XSMedium).foregroundColor(.Gray50)
         default:
             EmptyView()
         }
@@ -74,7 +74,7 @@ struct WidgetSyncEntryView: View {
     var EntryStatus: some View {
         switch self.status {
         case .finished:
-            AppIcon(iconName: .Check, size: 24, color: Color("GreenDark"))
+            AppIcon(iconName: .Check, size: 24, color: .GreenDark)
         default:
             EmptyView()
         }
