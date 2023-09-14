@@ -44,11 +44,11 @@ func getPaddingBySize(size: AppButtonSize) -> CGFloat {
 func getTextFontBySize(size: AppButtonSize) -> Font? {
     switch size {
     case .SM:
-        return AppTextFont["SM/Medium"]
+        return .SMMedium
     case .MD:
-        return AppTextFont["Base/Medium"]
+        return .BaseMedium
     case .LG:
-        return AppTextFont["Base/Medium"]
+        return .BaseMedium
     }
 }
 
@@ -62,7 +62,7 @@ struct PrimaryAppButtonStyle: ButtonStyle {
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
             .foregroundColor(configuration.isPressed ? Color.white : Color.white)
-            .background(configuration.isPressed ? Color("PrimaryDark") : Color("Primary"))
+            .background(configuration.isPressed ? Color.PrimaryDark : Color.Primary)
             .cornerRadius(8)
             .font(getTextFontBySize(size: self.size))
     }
@@ -72,12 +72,12 @@ struct PrimaryAppButtonStyle: ButtonStyle {
 struct SecondaryWhiteAppButtonStyle: ButtonStyle {
     public var size: AppButtonSize
     func makeBody(configuration: Self.Configuration) -> some View {
-        let bgColor = Color("Secondary")
-        let bgColorPressed = Color("Secondary")
+        let bgColor = Color.Secondary
+        let bgColorPressed = Color.Secondary
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
-            .foregroundColor(Color("Gray80"))
+            .foregroundColor(.Gray80)
             .background(configuration.isPressed ? bgColorPressed : bgColor)
             .cornerRadius(8)
             .font(getTextFontBySize(size: self.size))
@@ -85,7 +85,7 @@ struct SecondaryWhiteAppButtonStyle: ButtonStyle {
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .inset(by: -0.5)
-                    .stroke(Color("Gray10"), lineWidth: 1)
+                    .stroke(Color.Gray10, lineWidth: 1)
             )
             
     }

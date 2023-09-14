@@ -27,12 +27,7 @@ struct AppCheckboxStyle: ToggleStyle {
                 
                     
             }
-            
-            
-           
-            
-            configuration.label.font(AppTextFont["Base/Medium"])
-            
+            configuration.label.font(.BaseMedium)
         }
         .onTapGesture { configuration.isOn.toggle() }
 

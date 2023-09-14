@@ -13,23 +13,23 @@ struct WidgetFooterView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
-                .frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10"))
+                .frame(maxWidth: .infinity, maxHeight: 1).overlay(Color.Gray10)
             HStack(alignment: .center, spacing: 16) {
                 DisplayStatus()
             }.padding(.horizontal, 10)
                 .padding(.vertical, 0)
                 .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
-        }.background(colorScheme == .dark ? Color("Gray1") :  Color("Gray1"))
+        }.background(colorScheme == .dark ? Color.Gray1 :  Color.Gray1)
     }
     
     func DisplayStatus() -> some View {
         return HStack(alignment: .center, spacing: 8){
             ZStack {
-                Circle().foregroundColor(Color("Primary")).frame(height: 20 )
+                Circle().foregroundColor(.Primary).frame(height: 20 )
                 AppIcon(iconName: .Check, size: 12, color: Color.white)
                 
             }
-            AppText("SyncStatusUpToDate").font(AppTextFont["SM/Medium"])
+            AppText("SYNC_STATUS_UP_TO_DATE").font(.SMMedium)
             
         }
     }

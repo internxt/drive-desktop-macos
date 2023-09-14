@@ -15,27 +15,40 @@ struct SignInWithBrowserView: View {
         self.onLoginSuccess = onLoginSuccess
     }
     var body: some View {
-        Color("Surface")
+        Color.Surface
         .ignoresSafeArea(.all)
         
         .overlay(
             VStack(alignment: .center, spacing: 0) {
                 if authManager.isLoggedIn == false {
-                    AppText("Welcome to Internxt").font(AppTextFont["2XL/Medium"]).foregroundColor(Color("Highlight"))
-                    .padding(.bottom,12)
-                    AppButton(title: "Log in with browser", onClick: openSignInUrl, size: .LG).padding(.bottom, 24)
-                    Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10")
-                    )
+                    AppText("AUTH_WELCOME_TITLE")
+                        .font(.XXLMedium)
+                        .foregroundColor(.Highlight)
+                        .padding(.bottom,12)
+                    AppButton(title: "AUTH_USE_BROWSER", onClick: openSignInUrl, size: .LG)
+                        .padding(.bottom, 24)
+                    Divider()
+                        .frame(maxWidth: .infinity, maxHeight: 1).overlay(Color.Gray10)
                     HStack{
-                        AppText("Don't have an account?").font(AppTextFont["Base/Medium"]).foregroundColor(Color("Gray60"))
+                        AppText("AUTH_DONT_HAVE_ACCOUNT")
+                            .font(.BaseMedium)
+                            .foregroundColor(.Gray60)
                         
-                        AppText("Create account").font(AppTextFont["Base/Medium"]).foregroundColor(Color("Primary")).onTapGesture {self.openSignUpUrl()}
+                        AppText("AUTH_CREATE_ACCOUNT")
+                            .font(.BaseMedium)
+                            .foregroundColor(.Primary)
+                            .onTapGesture {self.openSignUpUrl()}
                         
                         
                     }.padding(.top, 24)
                     
                 } else {
-                    AppText("You are now logged in, close this window").font(AppTextFont["2XL/Medium"]).foregroundColor(Color("Surface"))
+                    HStack {
+                        AppText("You are now logged in, close this window")
+                            .font(.LGMedium)
+                            .foregroundColor(.Gray100)
+                    }
+                    
                     
                 }
                 

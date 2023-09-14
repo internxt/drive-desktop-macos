@@ -25,16 +25,16 @@ struct WidgetIconButtonView: View {
                 .shadow(color: .black.opacity(0.1), radius: 1.5, x: 0, y: 1)
                 .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                 
-            RoundedRectangle(cornerRadius: 8).stroke(Color("Gray20").opacity(hovering ? 1 : 0), lineWidth: 2)
+            RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20.opacity(hovering ? 1 : 0), lineWidth: 2)
             VStack {
 
                 VStack {
-                    AppIcon(iconName: iconName, size: 22, color: Color("Gray80")).padding(.horizontal, 5)
+                    AppIcon(iconName: iconName, size: 22, color: .Gray80).padding(.horizontal, 5)
                 }
                 .frame(height: 32, alignment: .center)
             }
             .frame(width: 32, height: 32)
-            .background(hovering ? colorScheme == .dark ? Color("Gray10"): Color("Surface") :  colorScheme == .dark ? Color("Gray5") : Color("Gray1"))
+            .background(hovering ? colorScheme == .dark ? Color.Gray10 : Color.Surface :  colorScheme == .dark ? Color.Gray5 : Color.Gray1)
             .cornerRadius(8)
             .opacity(1)
                         

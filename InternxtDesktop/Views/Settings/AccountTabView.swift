@@ -16,17 +16,19 @@ struct AccountTabView: View {
             VStack(alignment: .leading, spacing: 32) {
                 VStack {
                     HStack(alignment: .center, spacing: 16) {
-                        AppAvatar(size: 48)
+                        AppAvatar( size: 48, font: .XLSemibold, avatarURL: user.avatar)
                         VStack(alignment: .leading, spacing: 0) {
                             AppText("\(user.name) \(user.lastname)")
-                                .font(AppTextFont["LG/Medium"])
+                                .font(.LGMedium)
                                 .foregroundColor(Color("Gray100"))
                             Text(verbatim: "\(user.email)")
-                                .font(AppTextFont["SM/Regular"])
+                                .font(.SMRegular)
                                 .foregroundColor(Color("Gray60"))
+                                .lineLimit(1)
+                                .help(user.email)
                         }
                         Spacer()
-                        AppButton(title: "Logout", onClick: handleLogout, type: .secondaryWhite, size: .MD )
+                        AppButton(title: "COMMON_LOGOUT", onClick: handleLogout, type: .secondaryWhite, size: .MD )
                     }
                 }
                 

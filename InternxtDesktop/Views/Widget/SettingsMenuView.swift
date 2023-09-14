@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SettingsMenuView: View {
+    @Environment(\.openWindow) var openWindow
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
     var isPreview: Bool = false;
@@ -19,20 +20,20 @@ struct SettingsMenuView: View {
         GeometryReader { proxy in
             ZStack {
                 VStack(alignment: .leading, spacing: 0) {
-                    SettingsMenuOption(label: "PreferencesOption", onPress: handleOpenPreferences)
-                    SettingsMenuOption(label: "SendFeedbackOption", onPress: handleSendFeedback)
-                    SettingsMenuOption(label: "SupportOption", onPress: handleOpenSupport)
-                    SettingsMenuOption(label: "LogoutOption", onPress: handleLogout)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_SEND_FEEDBACK_OPTION", onPress: handleSendFeedback)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)
                     .frame(width: 140, height: 1)
-                    .background(Color("Gray10"))
-                    SettingsMenuOption(label: "QuitOption", onPress: handleQuitApp)
+                    .background(Color.Gray10)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_QUIT_OPTION", onPress: handleQuitApp)
                 }
                 .padding(.vertical, 6).overlay {
-                    RoundedRectangle(cornerRadius: 8).stroke(Color("Gray20"), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
                 }
-                .background(Color("Gray1"))
+                .background(Color.Gray1)
                 .cornerRadius(8)
                 .shadow(color: .black.opacity(0.1), radius: 12.5, x: 0, y: 20)
                 .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 8)
@@ -84,13 +85,13 @@ struct SettingsMenuOption: View {
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
             AppText(label)
-                .font(AppTextFont["SM/Regular"])
+                .font(.SMRegular)
                 .padding(.horizontal, 12)
                 .frame(height: 32)
         }
         .contentShape(Rectangle())
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color("Gray5").opacity(isHovering ? 1: 0))
+        .background(Color.Gray5.opacity(isHovering ? 1: 0))
         .onTapGesture {
             withAnimation{
                 onPress()

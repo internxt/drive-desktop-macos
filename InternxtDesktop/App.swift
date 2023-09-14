@@ -19,7 +19,7 @@ struct InternxtDesktopApp: App {
     }
     var body: some Scene {
         
-        
+        Settings{}
         WindowGroup("Internxt Drive",  id: "Auth") {
             ContentView(onLoginSuccess: onLoginSuccess).environmentObject(appDelegate.authManager)
                 .handlesExternalEvents(preferring: ["internxt"], allowing: ["internxt"])

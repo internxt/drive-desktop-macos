@@ -12,11 +12,12 @@ struct GeneralTabView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .center, spacing: 0) {
                 AppText("DeviceName")
-                    .font(AppTextFont["SM/Medium"])
+                    .font(.SMMedium)
                     .background(Color.clear)
                 DeviceNameView()
             }.frame(maxWidth: .infinity)
-            Divider().background(Color("Gray10")).padding(.vertical, 24)
+            Divider()
+                .background(Color("Gray10")).padding(.vertical, 24)
             VStack(alignment: .leading,spacing: 0) {
                 StartOnLaunchView()
                 HStack(spacing:24) {
@@ -27,10 +28,10 @@ struct GeneralTabView: View {
             HStack {
                 VStack(alignment: .leading) {
                     AppText("Internxt Drive v\(getVersion())")
-                        .font(AppTextFont["SM/Medium"])
+                        .font(.SMMedium)
                         .foregroundColor(Color("Gray100"))
                     AppText("Last checked: Feature not ready")
-                        .font(AppTextFont["XS/Regular"])
+                        .font(.XSRegular)
                         .foregroundColor(Color("Gray60"))
                 }
                 Spacer()
@@ -42,7 +43,7 @@ struct GeneralTabView: View {
                 .onTapGesture{
                     handleOpenLearnMore()
                 }
-                .font(AppTextFont["Base/Regular"])
+                .font(.BaseRegular)
                 .foregroundColor(Color("Primary"))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -54,7 +54,7 @@ struct SettingsView: View {
     func TabItem(iconName: AppIconName, label: String, id: TabView) -> some View {
         return VStack(alignment: .center, spacing:2) {
             AppIcon(iconName: iconName, color: Color("Gray100"))
-            AppText(label).font(AppTextFont["XS/Medium"])
+            AppText(label).font(.XSMedium)
         }
         
         .padding(.horizontal, 16)

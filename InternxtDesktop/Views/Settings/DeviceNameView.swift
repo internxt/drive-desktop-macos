@@ -16,7 +16,7 @@ struct DeviceNameView: View {
         if let deviceNameUnwrapped = deviceName {
             VStack(alignment: .center, spacing: 6) {
                 VStack {
-                    AppText(deviceNameUnwrapped).font(AppTextFont["LG/Medium"])
+                    AppText(deviceNameUnwrapped).font(.LGMedium)
                 }.frame(height: 36)
                 /* if isEditingDeviceName {
                     HStack {
