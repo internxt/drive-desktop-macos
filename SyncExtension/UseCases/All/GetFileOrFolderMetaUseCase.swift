@@ -54,10 +54,12 @@ struct GetFileOrFolderMetaUseCase {
                         self.logger.error("Cannot get size for file \(fileMeta.id) with size value \(fileMeta.size)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidSize
                     }
+                    
                     let fileItem = FileProviderItem(
                         identifier: self.identifier,
                         // TODO: Decrypt the name if needed
-                        filename: fileMeta.plainName ?? fileMeta.name,
+                        filename: FileProviderItem.getFilename(name: fileMeta.plainName ?? fileMeta.name, itemExtension: fileMeta.type)
+                        ,
                         parentId: parentIsRootContainer ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(fileMeta.folderId)),
                         createdAt: createdAt,
                         updatedAt: updatedAt,

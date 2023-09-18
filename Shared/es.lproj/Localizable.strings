@@ -6,5 +6,98 @@
   
 */
 
+// Auth
+"AUTH_WELCOME_TITLE" = "Welcome to Internxt";
+"AUTH_USE_BROWSER" = "Log in with browser";
+"AUTH_DONT_HAVE_ACCOUNT" = "Don't have an account?";
+"AUTH_CREATE_ACCOUNT" = "Create account";
 
+// Widget activity
 "FILES_UP_TO_DATE" = "Your files are up to date";
+"FILES_UP_TO_DATE_HINT" = "Sync activity will show up here";
+
+// Widget settings menu
+"WIDGET_SETTINGS_PREFERENCES_OPTION" = "Preferences";
+"WIDGET_SETTINGS_SEND_FEEDBACK_OPTION" = "Send Feedback";
+"WIDGET_SETTINGS_SUPPORT_OPTION" = "Support";
+"WIDGET_SETTINGS_LOGOUT_OPTION" = "Log out";
+"WIDGET_SETTINGS_QUIT_OPTION" = "Quit";
+
+// Widget sync status
+"SYNC_STATUS_UP_TO_DATE" = "Everything is up to date";
+
+// Widget sync entry
+"SYNC_ENTRY_KIND_TRASHED" = "Moved to trash";
+"SYNC_ENTRY_KIND_DOWNLOADED" = "Downloaded";
+"SYNC_ENTRY_KIND_UPLOADED" = "Uploaded";
+
+// Settings
+"SETTINGS_TAB_GENERAL_TITLE" = "General";
+"SETTINGS_TAB_ACCOUNT_TITLE" = "Account";
+"SETTINGS_DEVICE_NAME" = "Device name";
+"SETTINGS_CHECK_FOR_UPDATES" = "Check for updates";
+"SETTINGS_START_ON_LAUNCH" = "Start Internxt Drive on system startup";
+"SETTINGS_LEARN_MORE" = "Learn more about Internxt Drive";
+
+// Common
+"COMMON_UPGRADE" = "Upgrade";
+"COMMON_LOGOUT" = "Log out";
+"COMMON_EDIT" = "Edit";
+"COMMON_CANCEL" = "Cancel";
+"COMMON_SAVE" = "Save";
+"COMMON_SKIP" = "Skip";
+"COMMON_CONTINUE" = "Continue";
+"COMMON_USAGE_%@_OF_%@" = "Using %@ of %@";
+"COMMON_CLOSE" = "Close";
+
+// Context menu actions
+"CONTEXT_MENU_AVAILABLE_OFFLINE" = "Make Available Offline";
+"CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Make Online Only";
+
+// Decorations
+"AvailableOfflineLabel" = "Available offline";
+
+// Onboarding common
+"PAGE_INDICATOR_%lld_OF_%lld" = "%lld of %lld";
+
+// Onboarding > Slide 1
+"ONBOARDING_SLIDE_1_TITLE" = "Internxt Desktop";
+"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Welcome to Internxt Drive!";
+"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Let's start by backing up all of your important files and folders in your finder's sidebar.";
+"ONBOARDING_SLIDE_1_ACTION" = "Take a tour";
+
+// Onboarding > Slide 2
+"ONBOARDING_SLIDE_2_TITLE" = "Access and organize all of your stored files from the sidebar";
+"ONBOARDING_SLIDE_2_SUBTITLE" = "Your personal Internxt Drive folder is located in your Finder sidebar";
+
+// Onboarding > Slide 3
+"ONBOARDING_SLIDE_3_TITLE" = "Save space on your device with smart download";
+"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Store non-essential files as **online only** to save local drive space";
+"ONBOARDING_SLIDE_3_SUBTITLE_2" = "By saving as online only, files are automatically removed from your device and uploaded to the cloud";
+
+// Onboarding > Slide 4
+"ONBOARDING_SLIDE_4_TITLE" = "Sync across devices and access files offline";
+"ONBOARDING_SLIDE_4_SUBTITLE_1" = "Store essential files as **available offline** to always have them on hand";
+"ONBOARDING_SLIDE_4_SUBTITLE_2" = "By saving as available offline, files are stored locally and automatically sync across your devices";
+
+// Onboarding > Slide 5
+"ONBOARDING_SLIDE_5_TITLE" = "Organize your files with just one click";
+"ONBOARDING_SLIDE_5_SUBTITLE_1" = "Simply right-click one or more files and select how you want them stored";
+"ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Label files **available offline** to access them anytime, with or without internet";
+"ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Label files **online only** to save physical hard drive space";
+
+// Onboarding > Finish
+"ONBOARDING_FINISH_TITLE" = "You're all set, enjoy your privacy!";
+"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive is ready";
+"ONBOARDING_FINISH_SUBTITLE_2" = "Access your stored files from your Finder’s sidebar";
+"ONBOARDING_FINISH_ACTION" = "Open Internxt Drive";
+
+
+// Share feedback
+
+"SHARE_FEEDBACK_TITLE" = "Share feedback with Internxt";
+"SHARE_FEEDBACK_SUBTITLE" = "Your feedback makes Internxt improve and helps us to create better product experiences";
+"SHARE_FEEDBACK_PLACEHOLDER" = "Let us know what’s in your mind, what you’d like to improve or describe the bug or issue";
+"SHARE_FEEDBACK_ACTION" = "Send feedback";
+"SHARE_FEEDBACK_SUCCESS_TITLE" = "Thank you for sharing your feedback";
+"SHARE_FEEDBACK_SUBTITLE" = "We really appreciate your time and effort to help us improve our services.";

@@ -19,12 +19,39 @@
       }
     },
     {
+      "identity" : "realm-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-core.git",
+      "state" : {
+        "revision" : "1eb93c9619f6a05b5a91c2719690606016802e0b",
+        "version" : "13.20.1"
+      }
+    },
+    {
+      "identity" : "realm-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-swift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "ecee9c56d1ce79a56aab3e8ad24cacaa0f14fcce"
+      }
+    },
+    {
       "identity" : "ripemd160-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MiclausCorp/ripemd160-Swift.git",
       "state" : {
         "branch" : "master",
         "revision" : "b7fae4fb357ee0cd7ab7f7efc0ccf66b58d49f32"
+      }
+    },
+    {
+      "identity" : "rudder-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rudderlabs/rudder-sdk-ios",
+      "state" : {
+        "revision" : "17627074e149b024a960e7a475747b90743bb6ab",
+        "version" : "2.4.2"
       }
     },
     {
@@ -60,16 +87,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "feature/usage-endpoints",
-        "revision" : "62a81b0fe7ca2d90cc6ff7c9de0d36ead92ebe71"
-      }
-    },
-    {
-      "identity" : "swiftyxpc",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CharlesJS/SwiftyXPC",
-      "state" : {
-        "revision" : "46df8f085fde1ccd7813cbc366c5910d84dcc2d7",
-        "version" : "0.5.0"
+        "revision" : "5e04168e60aa59f00947e5697f253a5a27e583f7"
       }
     }
   ],

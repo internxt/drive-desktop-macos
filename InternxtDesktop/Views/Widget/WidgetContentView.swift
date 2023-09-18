@@ -7,29 +7,38 @@
 
 import SwiftUI
 import FileProvider
-
+import RealmSwift
 struct WidgetContentView: View {
+    
+    @Binding var activityEntries: [ActivityEntry]
+
     var body: some View {
         
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading,spacing: 0) {
-                ForEach([] as [DomainSyncEntry]) { syncEntry in
-                    WidgetSyncEntryView(filename: syncEntry.filename, operationKind: .upload, status: .finished)
+                ForEach(activityEntries) { activityEntry in
+                   WidgetSyncEntryView(
+                    filename: activityEntry.filename,
+                    operationKind: activityEntry.kind,
+                    status: activityEntry.status
+                   )
                 }.listRowInsets(EdgeInsets()).frame(maxWidth: .infinity)
             }.padding(.top, 8)
             
         }
         .padding(.horizontal, 0)
         .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-
-            
+        .ifAvailable {
+            if #available(macOS 13.0, *) {
+                $0.scrollContentBackground(.hidden)
+            }
+        }
         
     }
 }
 
 struct WidgetContentView_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetContentView()
+        WidgetContentView(activityEntries: .constant([]))
     }
 }

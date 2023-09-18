@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct SettingsMenuView: View {
-    @Environment(\.openWindow) var openWindow
+    
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
+    var openSendFeedback: () -> Void
     var isPreview: Bool = false;
     
-    init(isPreview: Bool = false) {
+    init(openSendFeedback: @escaping () -> Void, isPreview: Bool = false) {
         self.isPreview = isPreview
+        self.openSendFeedback = openSendFeedback
     }
     var body: some View {
         GeometryReader { proxy in
@@ -22,7 +24,7 @@ struct SettingsMenuView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SEND_FEEDBACK_OPTION", onPress: handleSendFeedback)
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
+                    //SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)
@@ -61,7 +63,9 @@ struct SettingsMenuView: View {
         
     }
     
-    func handleSendFeedback() -> Void {}
+    func handleSendFeedback() -> Void {
+        self.openSendFeedback()
+    }
     
     func handleQuitApp() -> Void {
         NSApp.terminate(self)
@@ -108,6 +112,6 @@ struct SettingsMenuOption: View {
 
 struct SettingsMenu_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsMenuView(isPreview: true).frame(height: 400)
+        SettingsMenuView(openSendFeedback: {}, isPreview: true).frame(height: 400)
     }
 }

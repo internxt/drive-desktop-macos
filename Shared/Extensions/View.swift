@@ -11,7 +11,7 @@ import SwiftUI
 struct EdgeBorder: Shape {
     var width: CGFloat
     var edges: [Edge]
-
+    
     func path(in rect: CGRect) -> Path {
         edges.map { edge -> Path in
             switch edge {
@@ -27,6 +27,15 @@ struct EdgeBorder: Shape {
 extension View {
     public func border(width: CGFloat, edges: [Edge], color: Color) -> some View {
         overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
+    }
+    
+    @ViewBuilder
+    func ifAvailable(@ViewBuilder _ transform: (Self) -> (some View)?) -> some View {
+        if let view = transform(self), !(view is EmptyView) {
+            view
+        } else {
+            self
+        }
     }
     
     public func cursor(_ cursor: NSCursor) -> some View {

@@ -6,40 +6,128 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct ActivityEntry: Codable {
-    let name: String
-    let date: Date
-    let kind: String
-    let status: String;
-    let error: String?
+
+enum RealmError: Error {
+    case URLNotFound
 }
 
-struct ActivityManager {
+class ActivityManager: ObservableObject {
+    static let realmURL: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ConfigLoader.GroupName)!.appendingPathComponent("internxt_desktop.realm")
     private let activityActionsLimit = 50
-    let userDefaults = UserDefaults(suiteName: "JR4S3SY396.group.internxt.desktop")
+    private var notificationToken: NotificationToken?
+    @Published var activityEntries: [ActivityEntry] = []
     
     
-    func saveActivityEntry(entry: ActivityEntry) {
-        // TODO: Add the activity entry checking the limit to the user defaults
-    }
-    
-    func getLatestActivityEntries() -> [ActivityEntry] {
-        let latestActivity = userDefaults?.array(forKey: "latest_activity") as? Data
-        
-        if let latestActivityUnwrapped = latestActivity {
-            do {
-                let latestActivityEntries = try JSONDecoder().decode([ActivityEntry].self, from: latestActivityUnwrapped)
-                
-                return latestActivityEntries.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-            } catch {
-                return []
-            }
-            
-        } else {
-            return []
+    private func getRealm() -> Realm {
+        do {
+            return try Realm(fileURL: ActivityManager.realmURL)
+        } catch {
+            error.reportToSentry()
+            fatalError("Unable to open Realm")
         }
         
     }
     
+    func clean() throws {
+        activityEntries = []
+        let realm = getRealm()
+        try realm.write{
+            realm.deleteAll()
+        }
+        
+        
+    }
+    
+    func saveActivityEntry(entry: ActivityEntry) {
+        
+        do {
+            let realm = getRealm()
+            try realm.write {
+                realm.add(entry)
+            }
+        } catch {
+            error.reportToSentry()
+        }
+        
+        
+    }
+    
+    func updateActivityEntries() {
+        let entries = getRealm().objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
+        
+        var newEntries: [ActivityEntry] = []
+        for i in 0..<activityActionsLimit {
+            if i + 1 <= entries.count {
+                newEntries.append(entries[i])
+            }
+            
+        }
+        
+        DispatchQueue.main.async {
+            self.activityEntries = newEntries
+        }
+        
+    }
+    
+    func observeLatestActivityEntries() -> Void {
+        if self.notificationToken == nil {
+            let result = getRealm().objects(ActivityEntry.self)
+            self.notificationToken = result.observe{[weak self] (changes: RealmCollectionChange) in
+                switch changes {
+                    case .initial:
+                        self?.updateActivityEntries()
+                    case .update:
+                        self?.updateActivityEntries()
+                    case .error(let error):
+                        fatalError("\(error)")
+                    }
+            }
+        }
+    }
+}
+
+
+
+
+
+class ActivityEntry: Object {
+    @Persisted(primaryKey: true) var _id: ObjectId
+    @Persisted var filename: String
+    @Persisted var createdAt: Date
+    @Persisted var kind: ActivityEntryOperationKind
+    @Persisted var status: ActivityEntryStatus
+    
+    convenience init(
+        filename: String,
+        kind: ActivityEntryOperationKind,
+        status: ActivityEntryStatus
+    ) {
+        self.init()
+        self.filename = filename
+        self.createdAt = Date()
+        self.kind = kind
+        self.status = status
+    }
+}
+
+extension ActivityEntry: Identifiable {
+    var id: String {
+        return _id.stringValue
+    }
+}
+
+enum ActivityEntryOperationKind: String, PersistableEnum {
+    case trash
+    case delete
+    case download
+    case upload
+    case move
+}
+
+enum ActivityEntryStatus: String, PersistableEnum {
+    case failed
+    case finished
+    case inProgress
 }

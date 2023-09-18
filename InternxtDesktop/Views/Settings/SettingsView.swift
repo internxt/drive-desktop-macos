@@ -21,17 +21,17 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: 0) {
                 HStack(spacing: 4) {
-                    TabItem(iconName: .Gear, label: "TabGeneral", id: .General)
-                    TabItem(iconName: .At, label: "TabAccount", id: .Account)
+                    TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
+                    TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(colorScheme == .dark ? Color("Gray5") :  Color("Surface"))
-                Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color("Gray10")).zIndex(5)
+                .background(colorScheme == .dark ? Color.Gray5 :  Color.Surface)
+                Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color.Gray10).zIndex(5)
             }
             
-            Tabcontent.background(Color("Gray1"))
+            Tabcontent.background(Color.Gray1)
         }.frame(width: 440, alignment: .topLeading)
         
     }

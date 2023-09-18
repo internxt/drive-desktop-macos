@@ -13,14 +13,16 @@ struct WidgetHeaderView: View {
     @EnvironmentObject var globalUIManager: GlobalUIManager
     @EnvironmentObject var usageManager: UsageManager
     @Environment(\.colorScheme) var colorScheme
-    @Environment(\.openWindow) var openWindow
+
     @State var settingsMenuOpen = false
     private let user: DriveUser?
     private let openFileProviderRoot: () -> Void
+    private let openSendFeedback: () -> Void
     private var listenWidgetClose: AnyCancellable?
-    init(user: DriveUser?, openFileProviderRoot: @escaping () -> Void) {
+    init(user: DriveUser?, openFileProviderRoot: @escaping () -> Void, openSendFeedback: @escaping () -> Void) {
         self.user = user
         self.openFileProviderRoot = openFileProviderRoot
+        self.openSendFeedback = openSendFeedback
     }
     
   
@@ -75,7 +77,7 @@ struct WidgetHeaderView: View {
             WidgetIconButtonView(iconName: .FolderSimple, onClick: self.openFileProviderRoot)
                 .padding(.horizontal, 1)
             WidgetIconButtonView(iconName: .Gear, onClick: self.openSettings).overlay(alignment: .bottomLeading) {
-                SettingsMenuView().opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+                SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
                 
             }
         
@@ -101,7 +103,7 @@ struct WidgetHeaderView: View {
 struct WidgetHeaderView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(alignment: .leading) {
-            WidgetHeaderView(user: nil, openFileProviderRoot: {})
+            WidgetHeaderView(user: nil, openFileProviderRoot: {}, openSendFeedback: {})
                 .environmentObject(GlobalUIManager())
                 .environmentObject(UsageManager())
         }.frame(width: 300, height: 300)

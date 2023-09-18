@@ -22,14 +22,22 @@ struct FetchFileContentUseCase {
     private let destinationURL: URL
     private let encryptedFileDestinationURL: URL
     private let itemIdentifier: NSFileProviderItemIdentifier
-    
-    init(networkFacade: NetworkFacade, user: DriveUser, itemIdentifier: NSFileProviderItemIdentifier, encryptedFileDestinationURL: URL, destinationURL: URL, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) {
+    private let activityManager: ActivityManager
+    init(networkFacade: NetworkFacade,
+         user: DriveUser,
+         activityManager: ActivityManager,
+         itemIdentifier: NSFileProviderItemIdentifier,
+         encryptedFileDestinationURL: URL,
+         destinationURL: URL,
+         completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void
+    ) {
         self.completionHandler = completionHandler
         self.networkFacade = networkFacade
         self.user = user
         self.destinationURL = destinationURL
         self.itemIdentifier = itemIdentifier
         self.encryptedFileDestinationURL = encryptedFileDestinationURL
+        self.activityManager = activityManager
     }
  
     public func run() -> Progress {
@@ -57,11 +65,11 @@ struct FetchFileContentUseCase {
                         progressHandler(completedProgress: completedProgress * maxProgress)
                     }
                 )
-                
+                let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
                 let parentIsRootFolder = file.folderId == user.root_folder_id
                 let fileProviderItem = FileProviderItem(
                     identifier: itemIdentifier,
-                    filename: FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type),
+                    filename: filename,
                     parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(file.folderId)),
                     createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
                     updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
@@ -75,6 +83,7 @@ struct FetchFileContentUseCase {
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
                 // Finish
                 progressHandler(completedProgress: 1)
+                activityManager.saveActivityEntry(entry: ActivityEntry(filename: filename, kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
                 error.reportToSentry()

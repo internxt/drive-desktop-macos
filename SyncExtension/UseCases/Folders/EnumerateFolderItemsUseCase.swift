@@ -87,9 +87,13 @@ struct EnumerateFolderItemsUseCase {
                     
                     
 
+                    let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type
+                    )
+                    
+                    print("FILENAME", filename)
                     let item = FileProviderItem(
                         identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
-                        filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
+                        filename: filename,
                         parentId: self.enumeratedItemIdentifier,
                         createdAt: createdAt,
                         updatedAt: updatedAt,

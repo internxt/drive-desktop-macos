@@ -20,6 +20,8 @@ public struct JSONConfig: Codable {
     public let CRYPTO_SECRET2: String
     public let SENTRY_DSN: String
     public let NOTIFICATIONS_URL: String
+    public let RUDDERSTACK_WRITE_KEY: String
+    public let RUDDERSTACK_DATA_PLANE_URL: String
 }
 
 enum ConfigLoaderError: Error {
@@ -37,9 +39,11 @@ public var loadedConfig: JSONConfig? = nil
 public var loadedLegacyAuthToken: String? = nil
 public var loadedAuthToken: String? = nil
 public struct ConfigLoader {
+    static let shared: ConfigLoader = ConfigLoader()
     
+    static let GroupName = "JR4S3SY396.group.internxt.desktop"
     // We hardcode this value, so no other team can sign with our teamID, this corresponds to our Apps Groups
-    private let SUITE_NAME = "JR4S3SY396.group.internxt.desktop"
+    private let SUITE_NAME = ConfigLoader.GroupName
     public init() {
         
     }

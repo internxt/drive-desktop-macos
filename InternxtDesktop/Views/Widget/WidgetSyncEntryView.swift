@@ -7,28 +7,12 @@
 
 import SwiftUI
 
-enum WidgetSyncEntryOperationKind {
-    case trash
-    case delete
-    case download
-    case upload
-    case move
-}
 
-enum WidgetSyncEntryStatus {
-    case failed
-    case finished
-    case inProgress
-}
 struct WidgetSyncEntryView: View {
-    private let filename: String
-    private let operationKind: WidgetSyncEntryOperationKind
-    private let status: WidgetSyncEntryStatus
-    init(filename: String, operationKind: WidgetSyncEntryOperationKind, status: WidgetSyncEntryStatus) {
-        self.filename = filename
-        self.operationKind = operationKind
-        self.status = status
-    }
+    let filename: String
+    let operationKind: ActivityEntryOperationKind
+    let status: ActivityEntryStatus
+    
     var body: some View {
         VStack(alignment: .center, spacing: 0){
             HStack(alignment: .center, spacing: 10){
@@ -42,7 +26,7 @@ struct WidgetSyncEntryView: View {
                     .shadow(color: .black.opacity(0.02), radius: 8, x: 0, y: 8)
                     .shadow(color: .black.opacity(0.02), radius: 4, x: 0, y: 4)
                 VStack(alignment: .leading){
-                    AppText(filename)
+                    Text(verbatim: filename)
                         .font(.SMMedium)
                         .foregroundColor(.Gray100)
                     EntryStatusSubtitle
@@ -51,7 +35,7 @@ struct WidgetSyncEntryView: View {
                 Spacer()
                 EntryStatus
             }.padding(.horizontal, 12).frame(height: 56)
-            Divider().foregroundColor(.Gray1)
+            Divider().foregroundColor(.Gray1).frame(height:1)
         }
         
     }

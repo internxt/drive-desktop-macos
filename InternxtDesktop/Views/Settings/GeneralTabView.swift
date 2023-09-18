@@ -11,40 +11,40 @@ struct GeneralTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .center, spacing: 0) {
-                AppText("DeviceName")
+                AppText("SETTINGS_DEVICE_NAME")
                     .font(.SMMedium)
                     .background(Color.clear)
                 DeviceNameView()
             }.frame(maxWidth: .infinity)
             Divider()
-                .background(Color("Gray10")).padding(.vertical, 24)
+                .background(Color.Gray10).padding(.vertical, 24)
             VStack(alignment: .leading,spacing: 0) {
                 StartOnLaunchView()
                 HStack(spacing:24) {
                     
                 }.padding(.top, 20)
             }
-            Divider().background(Color("Gray10")).padding(.vertical, 24)
+            Divider().background(Color.Gray10).padding(.vertical, 24)
             HStack {
                 VStack(alignment: .leading) {
                     AppText("Internxt Drive v\(getVersion())")
                         .font(.SMMedium)
-                        .foregroundColor(Color("Gray100"))
+                        .foregroundColor(Color.Gray100)
                     AppText("Last checked: Feature not ready")
                         .font(.XSRegular)
-                        .foregroundColor(Color("Gray60"))
+                        .foregroundColor(Color.Gray60)
                 }
                 Spacer()
-                AppButton(title: "CheckForUpdates", onClick: handleCheckUpdates, type: .secondaryWhite, size: .MD)
+                AppButton(title: "SETTINGS_CHECK_FOR_UPDATES", onClick: handleCheckUpdates, type: .secondaryWhite, size: .MD)
                 
             }.padding(.bottom, 16)
-            AppText("LearnMoreAboutInternxtDrive")
+            AppText("SETTINGS_LEARN_MORE")
                 .contentShape(Rectangle())
                 .onTapGesture{
                     handleOpenLearnMore()
                 }
                 .font(.BaseRegular)
-                .foregroundColor(Color("Primary"))
+                .foregroundColor(Color.Primary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(20)

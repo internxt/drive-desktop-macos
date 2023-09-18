@@ -75,10 +75,12 @@ struct GetRemoteChangesUseCase {
                 hasMoreFiles = updatedFiles.count == self.enumeratedChangesLimit
                 updatedFiles.forEach{ (file) in
                     
-                    if file.status != "EXISTS" {
+                    if file.status == "REMOVED" {
                         deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
                         
-                    } else {
+                    }
+                    
+                    if file.status == "EXISTS" {
                         guard let createdAt = Time.dateFromISOString(file.createdAt) else {
                             self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
                             return
@@ -121,10 +123,12 @@ struct GetRemoteChangesUseCase {
                 
                 hasMoreFolders = updatedFolders.count == self.enumeratedChangesLimit
                 updatedFolders.forEach{ (folder) in
-                    if folder.status != "EXISTS" {
+                    if folder.status == "REMOVED" {
                         deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
                         
-                    } else {
+                    }
+                    
+                    if folder.status == "EXISTS" {
                         guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
                             self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
                             return

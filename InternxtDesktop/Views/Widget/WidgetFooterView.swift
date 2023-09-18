@@ -14,11 +14,12 @@ struct WidgetFooterView: View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
                 .frame(maxWidth: .infinity, maxHeight: 1).overlay(Color.Gray10)
-            HStack(alignment: .center, spacing: 16) {
+            HStack(alignment: .center, spacing: 0) {
                 DisplayStatus()
-            }.padding(.horizontal, 10)
-                .padding(.vertical, 0)
-                .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 0)
+            .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44, alignment: .leading)
         }.background(colorScheme == .dark ? Color.Gray1 :  Color.Gray1)
     }
     
@@ -28,7 +29,7 @@ struct WidgetFooterView: View {
                 Circle().foregroundColor(.Primary).frame(height: 20 )
                 AppIcon(iconName: .Check, size: 12, color: Color.white)
                 
-            }
+            }.padding(2)
             AppText("SYNC_STATUS_UP_TO_DATE").font(.SMMedium)
             
         }

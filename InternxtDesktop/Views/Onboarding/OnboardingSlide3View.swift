@@ -13,17 +13,19 @@ struct OnboardingSlide3View: View {
     public let totalSlides: Int
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AppText("ONBOARDING_SLIDE_3_TITLE")
-                .font(.XXXLSemibold)
-                .foregroundColor(.Gray100)
-                .padding(.bottom, 36)
-            AppText("ONBOARDING_SLIDE_3_SUBTITLE_1")
-                .font(.LGRegular)
-                .foregroundColor(.Gray100)
-                .padding(.bottom, 10)
-            AppText("ONBOARDING_SLIDE_3_SUBTITLE_2")
-                .font(.LGRegular)
-                .foregroundColor(.Gray100)
+            Group {
+                AppText("ONBOARDING_SLIDE_3_TITLE")
+                    .font(.XXXLSemibold)
+                    .foregroundColor(.Gray100)
+                    .padding(.bottom, 36)
+                AppText("ONBOARDING_SLIDE_3_SUBTITLE_1")
+                    .font(.LGRegular)
+                    .foregroundColor(.Gray100)
+                    .padding(.bottom, 10)
+                AppText("ONBOARDING_SLIDE_3_SUBTITLE_2")
+                    .font(.LGRegular)
+                    .foregroundColor(.Gray100)
+            }.transition(.onboardingText)
             Spacer()
             HStack(spacing: 8) {
                 AppButton(title: "COMMON_CONTINUE", onClick: goToNextSlide, size: .LG)

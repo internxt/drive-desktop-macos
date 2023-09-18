@@ -9,11 +9,13 @@ import FileProvider
 import os.log
 import InternxtSwiftCore
 import Combine
+import Foundation
+
 enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let useIntervalSignaller = true;
+let useIntervalSignaller = false;
 
 func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
     return Timer.publish(every: 5, on: .main, in: .common)
@@ -30,15 +32,16 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
-    let appXPCCommunicator: AppXPCCommunicator = AppXPCCommunicator.shared
     let realtimeFallbackTimer: AnyCancellable
     let realtime: RealtimeService
+    let activityManager: ActivityManager
     required init(domain: NSFileProviderDomain) {
         
         logger.info("Starting sync extension with version \(Bundle.version())")
         
         ErrorUtils.start()
         
+        self.activityManager = ActivityManager()
         guard let manager = NSFileProviderManager(for: domain) else {
             ErrorUtils.fatal("Cannot get FileProviderManager for domain")
         }
@@ -76,8 +79,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         self.realtime = realtime
         
+        
         // If the realtime service gets disconnected, this system will keep signalling on an interval
         self.realtimeFallbackTimer = createFallbackRealtimeInterval().autoconnect().sink(receiveValue: {_ in
+           
             if realtime.isConnected == false || useIntervalSignaller {
                 manager.signalEnumerator(for: .workingSet, completionHandler: {error in
                     if error != nil {
@@ -191,6 +196,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         return FetchFileContentUseCase(
             networkFacade: networkFacade,
             user: user,
+            activityManager: activityManager,
             itemIdentifier: itemIdentifier,
             encryptedFileDestinationURL: encryptedFileDestinationURL,
             destinationURL: destinationURL,
@@ -212,13 +218,27 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 logger.error("Did not receive content to create file, cannot create")
                 return Progress()
             }
+            
+            let filename = NSString(string:itemTemplate.filename)
+            print("FILE", filename.pathExtension)
+            let fileCopy = makeTemporaryURL("plain", filename.pathExtension)
+            try! FileManager.default.copyItem(at: contentUrl, to: fileCopy)
+            
+            func completionHandlerInternal(_ item: NSFileProviderItem?, _ fields: NSFileProviderItemFields, _ shouldFetch:Bool, _ error:Error?) -> Void {
+                
+                
+                completionHandler(item, fields, shouldFetch, error)
+            }
             return CreateFileUseCase(
                 networkFacade: networkFacade,
                 user: user,
+                activityManager: activityManager,
                 item: itemTemplate,
-                url: contentUrl,
-                encryptedFileDestination: makeTemporaryURL("encryption", "enc"),
-                completionHandler: completionHandler
+                url: fileCopy,
+                encryptedFileDestination: makeTemporaryURL("encrypted", "enc"),
+                thumbnailFileDestination: makeTemporaryURL("thumbnail", "jpg"),
+                encryptedThumbnailFileDestination: makeTemporaryURL("encrypted_thumbnail", "enc"),
+                completionHandler: completionHandlerInternal
             ).run()
         }
         
@@ -320,8 +340,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func deleteItem(identifier: NSFileProviderItemIdentifier, baseVersion version: NSFileProviderItemVersion, options: NSFileProviderDeleteItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (Error?) -> Void) -> Progress {
         logger.info("Delete request for item \(identifier.rawValue)")
-        // This should not happen as we don't allow this from the trash yet
-        completionHandler(NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError, userInfo:[:]))
+        
+        completionHandler(NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.deletionRejected.rawValue))
         return Progress()
     }
     
@@ -336,7 +356,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 
                 for identifier in itemIdentifiers {
                     fileProviderItemActions.makeAvailableOffline(identifier: identifier)
-                    try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    if #available(macOSApplicationExtension 13.0, *) {
+                        try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    } else {
+                        // Nothing we can do here
+                    }
                 }
                 
                 completionHandler(nil)
@@ -349,7 +373,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             Task {
                 for identifier in itemIdentifiers {
                     fileProviderItemActions.makeAvailableOnlineOnly(identifier: identifier)
-                    try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    if #available(macOSApplicationExtension 13.0, *) {
+                        try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    } else {
+                        // Nothing we can do here
+                    }
                 }
                 
                 completionHandler(nil)

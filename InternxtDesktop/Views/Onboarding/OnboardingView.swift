@@ -14,17 +14,13 @@ struct OnboardingView: View {
     var body: some View {
         HStack(alignment: .top,spacing: 0){
             VStack(alignment: .leading,spacing:0) {
-                CurrentSlideView
-                    .transition(AnyTransition.asymmetric(insertion: .opacity, removal: .opacity))
-                    .animation(.easeIn.delay(1), value: currentSlideIndex)
-                    .zIndex(1)
+                CurrentSlideView.transition(.onboardingText)
             }
-            
             .padding(.top, 64)
             .padding(.horizontal, 32)
             .padding(.bottom, 32)
             .frame(minWidth: 0, maxWidth: .infinity,minHeight: 0, maxHeight: .infinity)
-            .background(Color("Gray1"))
+            .background(Color.Gray1)
             
             Divider()
                 .frame(maxWidth: 1, maxHeight: .infinity)
@@ -32,10 +28,10 @@ struct OnboardingView: View {
                 .zIndex(5)
             HStack(alignment: .top) {
                 CurrentSlideImage
-                    .transition(AnyTransition.asymmetric(insertion: .offset(y:0), removal: .offset(y:-32)).combined(with: .opacity)).zIndex(1)
+                    .transition(.onboardingImage)
             }
             .frame(maxWidth: 400, maxHeight: .infinity, alignment: .topLeading)
-            .background(Color("Gray5"))
+            .background(Color.Gray5)
         }
     }
     
@@ -113,7 +109,7 @@ struct OnboardingView: View {
     }
     
     func handleGoToNextSlide() {
-        withAnimation{
+        withAnimation(.easeIn(duration: 0.35).delay(0.5)) {
             currentSlideIndex = currentSlideIndex + 1
         }
         
