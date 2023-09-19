@@ -29,6 +29,8 @@ struct WidgetSyncEntryView: View {
                     Text(verbatim: filename)
                         .font(.SMMedium)
                         .foregroundColor(.Gray100)
+                        .lineLimit(1)
+                        .help(filename)
                     EntryStatusSubtitle
                 }
                 

@@ -86,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/usage-endpoints",
-        "revision" : "5e04168e60aa59f00947e5697f253a5a27e583f7"
+        "branch" : "main",
+        "revision" : "962c412b55520f386286c8e9b113f56d2ba6ba26"
       }
     }
   ],

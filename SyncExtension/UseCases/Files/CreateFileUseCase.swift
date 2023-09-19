@@ -161,16 +161,14 @@ struct CreateFileUseCase {
     
     func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL) async -> CreateThumbnailResponse? {
         do {
-            let dimensions = CGSize(width: 512, height: 512)
-            let thumbnailURL = try await ThumbnailGenerator.shared.generateThumbnail(
+            let thumbnailGenerationResult = try await ThumbnailGenerator.shared.generateThumbnail(
                 for: fileURL,
-                destinationURL: destinationURL,
-                size: dimensions
+                destinationURL: destinationURL
             )
             
-            let size = thumbnailURL.fileSize
+            let size = thumbnailGenerationResult.url.fileSize
             
-            guard let inputStream = InputStream(url: thumbnailURL) else {
+            guard let inputStream = InputStream(url: thumbnailGenerationResult.url) else {
                 throw CreateFileUseCaseError.CannotOpenInputStream
             }
             
@@ -185,9 +183,9 @@ struct CreateFileUseCase {
             )
             var fileExtension: String = ""
             if #available(macOSApplicationExtension 13.0, *) {
-                fileExtension = NSString(string: thumbnailURL.path()).pathExtension
+                fileExtension = NSString(string: thumbnailGenerationResult.url.path()).pathExtension
             } else {
-                fileExtension = NSString(string: thumbnailURL.path).pathExtension
+                fileExtension = NSString(string: thumbnailGenerationResult.url.path).pathExtension
             }
             
             
@@ -195,8 +193,8 @@ struct CreateFileUseCase {
                 bucketFile: result.id,
                 bucketId: result.bucket,
                 fileId: driveItemId,
-                height: Int(dimensions.height),
-                width: Int(dimensions.width),
+                height: thumbnailGenerationResult.height,
+                width: thumbnailGenerationResult.width,
                 size: Int64(size),
                 type: fileExtension)
             )

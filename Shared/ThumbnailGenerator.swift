@@ -9,29 +9,36 @@ import Foundation
 import QuickLookThumbnailing
 import ImageIO
 
+struct GeneratedThumbnailResult {
+    public let width: Int
+    public let height: Int
+    public let url: URL
+}
+
+var DEFAULT_THUMBNAIL_SIZE: CGFloat = 256
 class ThumbnailGenerator {
     static var shared = ThumbnailGenerator()
-    private var defaultThumbnailSize:CGFloat = 512
-    func generateThumbnail(for fileURL: URL, destinationURL: URL ,size: CGSize) async throws -> URL {
+    
+    func generateThumbnail(for fileURL: URL, destinationURL: URL ,size: CGFloat = DEFAULT_THUMBNAIL_SIZE) async throws -> GeneratedThumbnailResult {
         
         let originalDimensions = getImageDimensions(url: fileURL)
         
         var idealSize = CGSize(
-            width: self.defaultThumbnailSize,
-            height: self.defaultThumbnailSize
+            width: size,
+            height: size
         )
         
         if let originalDimensions = originalDimensions {
             let isHorizontal = originalDimensions.width >= originalDimensions.height
 
             if isHorizontal {
-                let idealHeight = (self.defaultThumbnailSize * originalDimensions.height) / originalDimensions.width
+                let idealHeight = (size * originalDimensions.height) / originalDimensions.width
                 // Generate height maintaining aspect ratio
-                idealSize = CGSize(width: self.defaultThumbnailSize, height: idealHeight)
+                idealSize = CGSize(width: size, height: idealHeight)
             } else {
-                let idealWidth = (self.defaultThumbnailSize * originalDimensions.width) / originalDimensions.height
+                let idealWidth = (size * originalDimensions.width) / originalDimensions.height
                 // Generate width maintaining aspect ratio
-                idealSize = CGSize(width: idealWidth, height: self.defaultThumbnailSize)
+                idealSize = CGSize(width: idealWidth, height: size)
             }
         }
         
@@ -41,7 +48,7 @@ class ThumbnailGenerator {
         
         try await QLThumbnailGenerator.shared.saveBestRepresentation(for: request, to: destinationURL, contentType: UTType.jpeg.identifier)
         
-        return destinationURL
+        return GeneratedThumbnailResult(width: Int(idealSize.width), height: Int(idealSize.height), url: destinationURL)
     }
     
     private func getImageDimensions(url: URL) -> CGSize? {

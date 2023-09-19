@@ -1665,7 +1665,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/usage-endpoints";
+				branch = main;
 				kind = branch;
 			};
 		};

@@ -38,9 +38,9 @@ struct DomainManager {
         let domains = try await self.getDomains()
         
         let firstDomain = domains.first
+        let noDomain = firstDomain == nil
         
-        // There's no domain, we should add one
-        if firstDomain == nil {
+        if noDomain {
             self.logger.info("No domain was found, adding one")
             try await NSFileProviderManager.add(newDomain)
             self.logger.info("Domain added successfully")

@@ -113,7 +113,13 @@ class WindowsManager:NSObject, NSWindowDelegate {
             window.orderFrontRegardless()
             window.makeKeyAndOrderFront(nil)
         } else {
-            self.logger.error("Cannot open window with id \(id) since it was not found, create it first")
+            let initialWindowConfig = initialWindows.first(where: {$0.id == id})
+            if  let initialWindowConfig = initialWindowConfig {
+                self.createWindow(config: initialWindowConfig)
+                self.openWindow(id: id)
+            } else {
+                self.logger.error("Cannot open window with id \(id) since it was not found, create it first")
+            }
         }
     }
     

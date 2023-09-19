@@ -14,7 +14,7 @@ class AuthManager: ObservableObject {
     @Published public var isLoggedIn = false
     @Published public var user: DriveUser? = nil
     public let config = ConfigLoader()
-    
+    public let cryptoUtils = CryptoUtils()
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
@@ -121,8 +121,15 @@ class AuthManager: ObservableObject {
             return false
         }
         
+        let plainMnemonic = String(data: decodedMnemonic, encoding: .utf8)!
+        let validMnemonic = cryptoUtils.validate(mnemonic: plainMnemonic)
+        
+        if validMnemonic == false {
+            self.logger.info("The decoded mnemonic is not valid")
+            return false
+        }
         try self.storeAuthDetails(
-            plainMnemonic: String(data: decodedMnemonic, encoding: .utf8)!,
+            plainMnemonic: plainMnemonic,
             authToken: String(data: decodedToken, encoding: .utf8)!,
             legacyAuthToken: String(data: decodedLegacyToken, encoding: .utf8)!
         )
