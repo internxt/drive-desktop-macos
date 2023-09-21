@@ -7,13 +7,16 @@
 
 import SwiftUI
 enum AppIconName: String {
-    case Globe = "EB5B"
+    case Globe = "EB5A"
     case FolderSimple = "EB2C"
-    case Gear = "EB43"
-    case CheckCircle = "EA31"
-    case Check = "EA30"
+    case Gear = "EB44"
+    case CheckCircle = "EA30"
+    case Check = "EA32"
     case At = "E989"
+    case ChatCircle = "EA29"
 }
+
+
 struct AppIcon: View {
     
     private var iconName: AppIconName
@@ -31,7 +34,7 @@ struct AppIcon: View {
         return String(c)
     }
     var body: some View {
-        Text(iconName.rawValue.unicode).font(.custom("Phosphor", size: CGFloat(size))).foregroundColor(color)
+        Text(iconName.rawValue.unicode).font(.custom("Phosphor-Light", size: CGFloat(size))).foregroundColor(color)
     }
 }
 

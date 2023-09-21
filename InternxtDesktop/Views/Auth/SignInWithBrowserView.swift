@@ -42,15 +42,11 @@ struct SignInWithBrowserView: View {
     }
     
     func openSignUpUrl() {
-        if let url = URL(string: URLDictionary.WEB_AUTH_SIGNUP) {
-               NSWorkspace.shared.open(url)
-        }
+        URLDictionary.WEB_AUTH_SIGNUP.open()
     }
     
     func openSignInUrl() {
-        if let url = URL(string: URLDictionary.WEB_AUTH_SIGNIN) {
-               NSWorkspace.shared.open(url)
-        }
+        URLDictionary.WEB_AUTH_SIGNIN.open()
     }
 }
 

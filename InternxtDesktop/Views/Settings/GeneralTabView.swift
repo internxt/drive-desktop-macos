@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import Sparkle
 
 struct GeneralTabView: View {
+    public var updater: SPUUpdater? = nil
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .center, spacing: 0) {
@@ -30,12 +32,14 @@ struct GeneralTabView: View {
                     AppText("Internxt Drive v\(getVersion())")
                         .font(.SMMedium)
                         .foregroundColor(Color.Gray100)
-                    AppText("Last checked: Feature not ready")
+                    Text("SETTINGS_LAST_UPDATE_CHECK_\(getLastUpdateCheck())")
                         .font(.XSRegular)
                         .foregroundColor(Color.Gray60)
                 }
                 Spacer()
-                AppButton(title: "SETTINGS_CHECK_FOR_UPDATES", onClick: handleCheckUpdates, type: .secondaryWhite, size: .MD)
+                if let updater = updater {
+                    CheckForUpdatesView(updater: updater)
+                }
                 
             }.padding(.bottom, 16)
             AppText("SETTINGS_LEARN_MORE")
@@ -51,6 +55,14 @@ struct GeneralTabView: View {
         
     }
     
+    func getLastUpdateCheck() -> String {
+        if let lastCheck = updater?.lastUpdateCheckDate {
+            return lastCheck.timeAgoDisplay()
+        } else {
+            return ""
+        }
+    }
+    
     func getVersion() -> String {
         guard let version = Bundle.main.releaseVersionNumber else {
             return "NO_VERSION"
@@ -62,9 +74,7 @@ struct GeneralTabView: View {
         return "\(version).\(buildNumber)"
     }
     func handleOpenLearnMore() {
-        if let url = URL(string: URLDictionary.LEARN_MORE_ABOUT_INTERNXT_DRIVE) {
-               NSWorkspace.shared.open(url)
-        }
+        URLDictionary.LEARN_MORE_ABOUT_INTERNXT_DRIVE.open()
     }
     func handleCheckUpdates() {}
 }

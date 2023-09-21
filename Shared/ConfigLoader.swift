@@ -22,6 +22,8 @@ public struct JSONConfig: Codable {
     public let NOTIFICATIONS_URL: String
     public let RUDDERSTACK_WRITE_KEY: String
     public let RUDDERSTACK_DATA_PLANE_URL: String
+    public let LEGACY_AUTH_TOKEN: String?
+    public let AUTH_TOKEN: String?
 }
 
 enum ConfigLoaderError: Error {
@@ -47,6 +49,21 @@ public struct ConfigLoader {
     public init() {
         
     }
+    
+    static var isDevMode: Bool {
+        #if DEBUG
+            return true
+        #else
+            return false
+        #endif
+    }
+    
+    static var isReleaseMode: Bool {
+        !ConfigLoader.isDevMode
+    }
+    
+   
+    
     public static func build() -> ConfigLoader {
         return ConfigLoader()
     }

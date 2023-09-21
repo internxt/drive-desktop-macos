@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Sparkle
 
 enum TabView {
     case General
@@ -16,6 +17,7 @@ struct SettingsView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
     @State var focusedTab: TabView = .General
+    public var updater: SPUUpdater? = nil
     var body: some View {
         
         VStack(alignment: .leading, spacing: 0) {
@@ -40,7 +42,7 @@ struct SettingsView: View {
     var Tabcontent: some View {
         switch self.focusedTab {
         case .General:
-            GeneralTabView()
+            GeneralTabView(updater: updater)
         case .Account:
             AccountTabView()
                 .environmentObject(authManager)

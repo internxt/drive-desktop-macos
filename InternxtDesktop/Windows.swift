@@ -7,13 +7,13 @@
 
 import Foundation
 import SwiftUI
-
+import Sparkle
 
 
 /// Return the default windows config, this
 /// windows will be available without needing to explicitly
 /// creating them
-func defaultWindows(authManager: AuthManager, usageManager: UsageManager, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
+func defaultWindows(authManager: AuthManager, usageManager: UsageManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
     let windows = [
         WindowConfig(
             view: AnyView(SignInWithBrowserView().environmentObject(authManager)),
@@ -24,9 +24,10 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, finish
             fixedToFront: false
         ),
         WindowConfig(
-            view:  AnyView(SettingsView()
+            view:  AnyView(SettingsView(updater: updater)
                 .environmentObject(authManager)
-                .environmentObject(usageManager)),
+                .environmentObject(usageManager)
+            ),
             title: "Internxt Drive",
             id: "settings",
             width: 400,
@@ -39,7 +40,7 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, finish
             height: 470
         ),
         WindowConfig(
-            view: AnyView(SendFeedbackView()),
+            view: AnyView(SendFeedbackView(closeWindow: closeSendFeedbackWindow )),
             title: "Internxt Desktop Feedback",
             id: "send-feedback",
             width: 380,

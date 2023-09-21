@@ -50,8 +50,6 @@ struct FetchFileContentUseCase {
                 func progressHandler(completedProgress: Double) {
                     let progressPercentage = completedProgress * 100
                     progress.completedUnitCount = Int64(progressPercentage)
-                    //let progressStr =  String(format: "%.1f", progressPercentage)
-                    //self.logger.info("⬇️ Downloading file \(file.plainName ?? file.name)...\(progressStr)%")
                 }
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
                 let file = try await driveNewAPI.getFileMetaByUuid(uuid: itemIdentifier.rawValue)

@@ -75,9 +75,8 @@ struct GetRemoteChangesUseCase {
                 hasMoreFiles = updatedFiles.count == self.enumeratedChangesLimit
                 updatedFiles.forEach{ (file) in
                     
-                    if file.status == "REMOVED" {
+                    if file.status == "REMOVED" || file.status == "TRASHED" {
                         deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
-                        
                     }
                     
                     if file.status == "EXISTS" {
@@ -123,7 +122,7 @@ struct GetRemoteChangesUseCase {
                 
                 hasMoreFolders = updatedFolders.count == self.enumeratedChangesLimit
                 updatedFolders.forEach{ (folder) in
-                    if folder.status == "REMOVED" {
+                    if folder.status == "REMOVED" || folder.status == "TRASHED" {
                         deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
                         
                     }

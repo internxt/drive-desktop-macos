@@ -14,15 +14,13 @@ struct AppCheckboxStyle: ToggleStyle {
             
             ZStack {
                 RoundedRectangle(cornerRadius: 4)
-                    .strokeBorder(Color("Gray30"), lineWidth: 1)
+                    .strokeBorder(configuration.isOn ? Color.clear : Color.Gray30, lineWidth: 1)
                     .frame(width:20, height:20)
-                AppIcon(
-                    iconName: .Check,
-                    size: 16,
-                    color:configuration.isOn ? Color.white : Color.clear
-                )
+                    .zIndex(10)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12.0).bold()).foregroundColor(configuration.isOn ? Color.white : Color.clear)
                 .frame(width: 20, height: 20)
-                .background(configuration.isOn ? Color("Primary") : Color.clear)
+                .background(configuration.isOn ? Color.Primary : Color.Surface)
                 .cornerRadius(4)
                 
                     
@@ -48,7 +46,10 @@ struct AppCheckbox: View {
 struct AppCheckbox_Previews: PreviewProvider {
     
     static var previews: some View {
-        AppCheckbox(label: "I'm checked", checked: .constant(true))
-        AppCheckbox(label: "I'm unchecked", checked: .constant(false))
+        Group{
+            AppCheckbox(label: "I'm checked", checked: .constant(true))
+            AppCheckbox(label: "I'm unchecked", checked: .constant(false))
+        }.padding(15)
+        
     }
 }

@@ -26,6 +26,7 @@ struct Analytics {
     private func getAppContextProperties() -> [String: String] {
         return [
             "name": "drive-desktop",
+            "isNativeMacOS": "1",
             "version": "\(Bundle.main.releaseVersionNumber).\(Bundle.main.buildVersionNumber)"
         ]
         

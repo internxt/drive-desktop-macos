@@ -52,7 +52,8 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
         
         
         let suggestedPageSize: Int = observer.suggestedPageSize ?? 50
-        return EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize, offset: 0)
+        
+        return EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize)
     }
     
     

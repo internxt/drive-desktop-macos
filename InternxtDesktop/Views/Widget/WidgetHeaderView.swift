@@ -85,9 +85,7 @@ struct WidgetHeaderView: View {
     }
     
     func openDriveWeb() {
-        if let url = URL(string: URLDictionary.DRIVE_WEB) {
-               NSWorkspace.shared.open(url)
-        }
+        URLDictionary.DRIVE_WEB.open()
     }
     
     func openSettings() {

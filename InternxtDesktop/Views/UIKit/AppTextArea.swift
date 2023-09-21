@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AppTextArea: View {
     var placeholder: String
-    @State var text: String = ""
+    @Binding var text: String
     
     @FocusState private var isFocused: Bool
 
@@ -27,15 +27,9 @@ struct AppTextArea: View {
                 .frame(maxWidth: .infinity)
                 .ifAvailable {
                     if #available(macOS 13.0, *) {
-                        $0.scrollContentBackground(.hidden).scrollContentBackground(.hidden)
+                        $0.scrollDisabled(true).scrollContentBackground(.hidden)
                     }
                 }
-                .ifAvailable {
-                    if #available(macOS 13.0, *) {
-                        $0.scrollContentBackground(.hidden)
-                    }
-                }
-                
         }
         
         .padding(.vertical, 10)
@@ -51,6 +45,6 @@ struct AppTextArea: View {
 
 struct AppTextArea_Previews: PreviewProvider {
     static var previews: some View {
-        AppTextArea(placeholder: "Your input goes here").frame(width: 300, height: 300).padding(16)
+        AppTextArea(placeholder: "Your input goes here", text: .constant("Test")).frame(width: 300, height: 300).padding(16)
     }
 }

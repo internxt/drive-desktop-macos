@@ -130,8 +130,8 @@ class AuthManager: ObservableObject {
         }
         try self.storeAuthDetails(
             plainMnemonic: plainMnemonic,
-            authToken: String(data: decodedToken, encoding: .utf8)!,
-            legacyAuthToken: String(data: decodedLegacyToken, encoding: .utf8)!
+            authToken: config.get().AUTH_TOKEN ?? String(data: decodedToken, encoding: .utf8)!,
+            legacyAuthToken: config.get().LEGACY_AUTH_TOKEN ?? String(data: decodedLegacyToken, encoding: .utf8)!
         )
         
         return true

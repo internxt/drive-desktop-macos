@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
+		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
+		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
+		E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4612AB9FD6300E3BF7A /* URL.swift */; };
+		E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
+		E106D4652ABAEE4400E3BF7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
+		E106D4662ABAEE4400E3BF7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
+		E106D4672ABAEE4400E3BF7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
 		E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */; };
 		E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */; };
@@ -138,10 +146,6 @@
 		E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		E1CC520E2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
-		E1CC52152AA0A676009DEEAA /* Phosphor.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1CC52142AA0A676009DEEAA /* Phosphor.ttf */; };
-		E1CC52162AA0A676009DEEAA /* Phosphor.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1CC52142AA0A676009DEEAA /* Phosphor.ttf */; };
-		E1CC52172AA0A676009DEEAA /* Phosphor.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1CC52142AA0A676009DEEAA /* Phosphor.ttf */; };
-		E1CC52182AA0A676009DEEAA /* Phosphor.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1CC52142AA0A676009DEEAA /* Phosphor.ttf */; };
 		E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52192AA0A695009DEEAA /* AppIcon.swift */; };
 		E1CC521C2AA0A884009DEEAA /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC521B2AA0A884009DEEAA /* String.swift */; };
 		E1CC521D2AA0A894009DEEAA /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC521B2AA0A884009DEEAA /* String.swift */; };
@@ -210,6 +214,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
+		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
+		E106D4612AB9FD6300E3BF7A /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		E106D4632ABAEE4400E3BF7A /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsUseCase.swift; sourceTree = "<group>"; };
 		E109717E2A81143A00ABED41 /* APIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIFactory.swift; sourceTree = "<group>"; };
 		E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderUseCase.swift; sourceTree = "<group>"; };
@@ -284,7 +292,6 @@
 		E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeService.swift; sourceTree = "<group>"; };
 		E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileOrFolderUseCase.swift; sourceTree = "<group>"; };
 		E1CC520B2A98B460009DEEAA /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
-		E1CC52142AA0A676009DEEAA /* Phosphor.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Phosphor.ttf; sourceTree = "<group>"; };
 		E1CC52192AA0A695009DEEAA /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		E1CC521B2AA0A884009DEEAA /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		E1CC52202AA0B4FE009DEEAA /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
@@ -325,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
+				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				E1A0AC4E2AB3A27F005E71D6 /* Realm in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1A0AC502AB3A27F005E71D6 /* RealmSwift in Frameworks */,
@@ -395,6 +403,8 @@
 				E17C84BD2AB2880B00A58414 /* Color.swift */,
 				E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */,
 				E1A0AC712AB89B1B005E71D6 /* AnyTransition.swift */,
+				E106D4612AB9FD6300E3BF7A /* URL.swift */,
+				E106D4632ABAEE4400E3BF7A /* Date.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -464,11 +474,11 @@
 		E163105E2A8F8A610072989E /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */,
 				E18300AB2AA21E7200AD023C /* InstrumentSans-Medium.ttf */,
 				E18300A92AA21E3600AD023C /* InstrumentSans-Bold.ttf */,
 				E18300A62AA21E1B00AD023C /* InstrumentSans-Regular.ttf */,
 				E18300A52AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf */,
-				E1CC52142AA0A676009DEEAA /* Phosphor.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -505,6 +515,7 @@
 				E1880B9F2AA63215001FC171 /* StartOnLaunchView.swift */,
 				E1880BA12AA63CF2001FC171 /* AccountTabView.swift */,
 				E1ADD0412AA7272100D95694 /* AccountUsageView.swift */,
+				E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -712,6 +723,7 @@
 				E1A0AC4D2AB3A27F005E71D6 /* Realm */,
 				E1A0AC4F2AB3A27F005E71D6 /* RealmSwift */,
 				E1A0AC632AB884F0005E71D6 /* Rudder */,
+				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -822,6 +834,7 @@
 				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
 				E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */,
+				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -846,7 +859,7 @@
 				E1FB2D2F2A76BF0300473AE1 /* Preview Assets.xcassets in Resources */,
 				E112933F2A77221A003DEADF /* Colors.xcassets in Resources */,
 				E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */,
-				E1CC52152AA0A676009DEEAA /* Phosphor.ttf in Resources */,
+				E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */,
 				E18300A72AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf in Resources */,
 				E18300A82AA21E1B00AD023C /* InstrumentSans-Regular.ttf in Resources */,
 				E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */,
@@ -859,7 +872,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1CC52162AA0A676009DEEAA /* Phosphor.ttf in Resources */,
 				E191368D2AA0FB4C00CAF0FA /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -868,7 +880,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1CC52172AA0A676009DEEAA /* Phosphor.ttf in Resources */,
 				E191368E2AA0FB4C00CAF0FA /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -877,7 +888,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1CC52182AA0A676009DEEAA /* Phosphor.ttf in Resources */,
 				E191368F2AA0FB4C00CAF0FA /* Localizable.strings in Resources */,
 				E17AA02E2A8A826D00C7EE6E /* ExtensionAssets.xcassets in Resources */,
 				E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */,
@@ -948,10 +958,13 @@
 				E163105C2A8E6C830072989E /* AppText.swift in Sources */,
 				E17C84B42AB2315D00A58414 /* OnboardingSlideIndicator.swift in Sources */,
 				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
+				E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
+				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
+				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
@@ -1008,6 +1021,7 @@
 				E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1A0AC6E2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E17C84BF2AB2880B00A58414 /* Color.swift in Sources */,
+				E106D4652ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E19136972AA108D200CAF0FA /* View.swift in Sources */,
 				E1A0AC672AB88507005E71D6 /* Analytics.swift in Sources */,
 				E10B0FDE2A94143F00B97874 /* Int.swift in Sources */,
@@ -1020,6 +1034,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E19136982AA108D200CAF0FA /* View.swift in Sources */,
+				E106D4662ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E10B0FDF2A94143F00B97874 /* Int.swift in Sources */,
 				E1A0AC792AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
 				E1A0AC742AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
@@ -1051,6 +1066,7 @@
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
+				E106D4672ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E1A0AC752AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
 				E145E16D2A82A21500B07E0B /* Time.swift in Sources */,
 				E10B0FE02A94143F00B97874 /* Int.swift in Sources */,
@@ -1165,6 +1181,10 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				"OTHER_CFLAGS[arch=*]" = (
+					"-D",
+					BETA,
+				);
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -1181,7 +1201,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
@@ -1198,7 +1218,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1251,7 +1271,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1265,7 +1285,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1330,6 +1350,10 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_CFLAGS[arch=*]" = (
+					"-D",
+					DEBUG,
+				);
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1385,6 +1409,10 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				"OTHER_CFLAGS[arch=*]" = (
+					"-D",
+					RELEASE,
+				);
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -1401,7 +1429,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
@@ -1418,7 +1446,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1438,7 +1466,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = JR4S3SY396;
@@ -1455,7 +1483,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -1546,7 +1574,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1560,7 +1588,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1574,7 +1602,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 26;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1588,7 +1616,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1653,6 +1681,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
@@ -1704,6 +1740,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
 		E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
