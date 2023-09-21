@@ -69,5 +69,8 @@ struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
         WidgetView(openFileProviderRoot: {}, openSendFeedback: {})
             .environmentObject(AuthManager())
+            .environmentObject(GlobalUIManager())
+            .environmentObject(UsageManager())
+            .environmentObject(ActivityManager())
     }
 }

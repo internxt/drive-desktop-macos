@@ -15,7 +15,7 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let useIntervalSignaller = false;
+let useIntervalSignaller = true;
 
 func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
     return Timer.publish(every: 5, on: .main, in: .common)
@@ -38,7 +38,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     required init(domain: NSFileProviderDomain) {
         
         logger.info("Starting sync extension with version \(Bundle.version())")
-        
         ErrorUtils.start()
         
         self.activityManager = ActivityManager()
@@ -46,8 +45,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot get FileProviderManager for domain")
         }
         
-        
-        
+
         self.manager = manager
         
         self.authManager = AuthManager()

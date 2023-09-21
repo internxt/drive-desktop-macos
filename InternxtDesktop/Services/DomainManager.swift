@@ -24,7 +24,7 @@ struct DomainManager {
     let logger = Logger(subsystem: "com.internxt", category: "DomainManager")
     lazy var manager: NSFileProviderManager? = nil
     var managerDomain: NSFileProviderDomain? = nil
-    let resetDomainOnStart: Bool = true
+    let resetDomainOnStart: Bool = ConfigLoader.isDevMode ? true : false
     
     private func getDomains() async throws -> [NSFileProviderDomain] {
         try await NSFileProviderManager.domains()

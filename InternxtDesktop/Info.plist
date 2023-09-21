@@ -17,9 +17,23 @@
 			</array>
 		</dict>
 	</array>
+	<key>SUAutomaticallyUpdate</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUEnableDownloaderService</key>
+	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://internxt.github.io/drive-desktop-macos/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>GnCaC4F6fdZw43QuFHnPfOrQQVHGSd5fmWYqK4XcVAU=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>21600</integer>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Fonts/Phosphor.ttf</string>
+		<string>Fonts/Phosphor-Light.ttf</string>
 		<string>Fonts/InstrumentSans-Regular.ttf</string>
 		<string>Fonts/InstrumentSans-Medium.ttf</string>
 		<string>Fonts/InstrumentSans-SemiBold.ttf</string>

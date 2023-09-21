@@ -7,97 +7,98 @@
 */
 
 // Auth
-"AUTH_WELCOME_TITLE" = "Welcome to Internxt";
-"AUTH_USE_BROWSER" = "Log in with browser";
-"AUTH_DONT_HAVE_ACCOUNT" = "Don't have an account?";
-"AUTH_CREATE_ACCOUNT" = "Create account";
+"AUTH_WELCOME_TITLE" = "Bienvenido a Internxt";
+"AUTH_USE_BROWSER" = "Inicia sesión con el navegador";
+"AUTH_DONT_HAVE_ACCOUNT" = "¿No tienes cuenta?";
+"AUTH_CREATE_ACCOUNT" = "Crear cuenta";
 
 // Widget activity
-"FILES_UP_TO_DATE" = "Your files are up to date";
-"FILES_UP_TO_DATE_HINT" = "Sync activity will show up here";
+"FILES_UP_TO_DATE" = "Tus archivos están actualizados";
+"FILES_UP_TO_DATE_HINT" = "La actividad de sincronización se mostrará aquí";
 
 // Widget settings menu
-"WIDGET_SETTINGS_PREFERENCES_OPTION" = "Preferences";
-"WIDGET_SETTINGS_SEND_FEEDBACK_OPTION" = "Send Feedback";
-"WIDGET_SETTINGS_SUPPORT_OPTION" = "Support";
-"WIDGET_SETTINGS_LOGOUT_OPTION" = "Log out";
-"WIDGET_SETTINGS_QUIT_OPTION" = "Quit";
+"WIDGET_SETTINGS_PREFERENCES_OPTION" = "Preferencias";
+"WIDGET_SETTINGS_SEND_FEEDBACK_OPTION" = "Enviar opinión";
+"WIDGET_SETTINGS_SUPPORT_OPTION" = "Soporte";
+"WIDGET_SETTINGS_LOGOUT_OPTION" = "Cerrar sesión";
+"WIDGET_SETTINGS_QUIT_OPTION" = "Salir";
 
 // Widget sync status
-"SYNC_STATUS_UP_TO_DATE" = "Everything is up to date";
+"SYNC_STATUS_UP_TO_DATE" = "Todo está actualizado";
 
 // Widget sync entry
-"SYNC_ENTRY_KIND_TRASHED" = "Moved to trash";
-"SYNC_ENTRY_KIND_DOWNLOADED" = "Downloaded";
-"SYNC_ENTRY_KIND_UPLOADED" = "Uploaded";
+"SYNC_ENTRY_KIND_TRASHED" = "Movido a la papelera";
+"SYNC_ENTRY_KIND_DOWNLOADED" = "Descargado";
+"SYNC_ENTRY_KIND_UPLOADED" = "Subido";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
-"SETTINGS_TAB_ACCOUNT_TITLE" = "Account";
-"SETTINGS_DEVICE_NAME" = "Device name";
-"SETTINGS_CHECK_FOR_UPDATES" = "Check for updates";
-"SETTINGS_START_ON_LAUNCH" = "Start Internxt Drive on system startup";
-"SETTINGS_LEARN_MORE" = "Learn more about Internxt Drive";
+"SETTINGS_TAB_ACCOUNT_TITLE" = "Cuenta";
+"SETTINGS_DEVICE_NAME" = "Nombre del dispositivo";
+"SETTINGS_CHECK_FOR_UPDATES" = "Buscar actualizaciones";
+"SETTINGS_LAST_UPDATE_CHECK_%@" = "Última comprobación %@";
+"SETTINGS_START_ON_LAUNCH" = "Iniciar Internxt Drive al arrancar el sistema";
+"SETTINGS_LEARN_MORE" = "Más información sobre Internxt Drive";
 
 // Common
-"COMMON_UPGRADE" = "Upgrade";
-"COMMON_LOGOUT" = "Log out";
-"COMMON_EDIT" = "Edit";
-"COMMON_CANCEL" = "Cancel";
-"COMMON_SAVE" = "Save";
-"COMMON_SKIP" = "Skip";
-"COMMON_CONTINUE" = "Continue";
-"COMMON_USAGE_%@_OF_%@" = "Using %@ of %@";
-"COMMON_CLOSE" = "Close";
+"COMMON_UPGRADE" = "Comprar espacio";
+"COMMON_LOGOUT" = "Cerrar sesión";
+"COMMON_EDIT" = "Editar";
+"COMMON_CANCEL" = "Cancelar";
+"COMMON_SAVE" = "Guardar";
+"COMMON_SKIP" = "Saltar";
+"COMMON_CONTINUE" = "Continuar";
+"COMMON_USAGE_%@_OF_%@" = "Usado %@ de %@";
+"COMMON_CLOSE" = "Cerrar";
 
 // Context menu actions
-"CONTEXT_MENU_AVAILABLE_OFFLINE" = "Make Available Offline";
-"CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Make Online Only";
+"CONTEXT_MENU_AVAILABLE_OFFLINE" = "Cambiar a disponible offline";
+"CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Cambiar a disponible sólo online";
 
 // Decorations
-"AvailableOfflineLabel" = "Available offline";
+"AvailableOfflineLabel" = "Disponible sin conexión";
 
 // Onboarding common
-"PAGE_INDICATOR_%lld_OF_%lld" = "%lld of %lld";
+"PAGE_INDICATOR_%lld_OF_%lld" = "%lld de %lld";
 
 // Onboarding > Slide 1
 "ONBOARDING_SLIDE_1_TITLE" = "Internxt Desktop";
-"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Welcome to Internxt Drive!";
-"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Let's start by backing up all of your important files and folders in your finder's sidebar.";
-"ONBOARDING_SLIDE_1_ACTION" = "Take a tour";
+"ONBOARDING_SLIDE_1_SUBTITLE_1" = "¡Bienvenido a Internxt Drive!";
+"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Empecemos haciendo una copia de seguridad de todos tus archivos y carpetas importantes en la barra lateral de tu buscador";
+"ONBOARDING_SLIDE_1_ACTION" = "Hacer recorrido";
 
 // Onboarding > Slide 2
-"ONBOARDING_SLIDE_2_TITLE" = "Access and organize all of your stored files from the sidebar";
-"ONBOARDING_SLIDE_2_SUBTITLE" = "Your personal Internxt Drive folder is located in your Finder sidebar";
+"ONBOARDING_SLIDE_2_TITLE" = "Accede y organiza todos tus archivos almacenados desde la barra lateral";
+"ONBOARDING_SLIDE_2_SUBTITLE" = "Tu carpeta personal de Internxt Drive se encuentra en la barra lateral del Finder";
 
 // Onboarding > Slide 3
-"ONBOARDING_SLIDE_3_TITLE" = "Save space on your device with smart download";
-"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Store non-essential files as **online only** to save local drive space";
-"ONBOARDING_SLIDE_3_SUBTITLE_2" = "By saving as online only, files are automatically removed from your device and uploaded to the cloud";
+"ONBOARDING_SLIDE_3_TITLE" = "Ahorra espacio en tu dispositivo con la descarga inteligente";
+"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Almacena los archivos no esenciales como **sólo en línea** para ahorrar espacio en la unidad local";
+"ONBOARDING_SLIDE_3_SUBTITLE_2" = "Al guardar como sólo en línea, los archivos se eliminan automáticamente del dispositivo y se suben a la nube";
 
 // Onboarding > Slide 4
-"ONBOARDING_SLIDE_4_TITLE" = "Sync across devices and access files offline";
-"ONBOARDING_SLIDE_4_SUBTITLE_1" = "Store essential files as **available offline** to always have them on hand";
-"ONBOARDING_SLIDE_4_SUBTITLE_2" = "By saving as available offline, files are stored locally and automatically sync across your devices";
+"ONBOARDING_SLIDE_4_TITLE" = "Sincroniza entre dispositivos y accede a los archivos sin conexión";
+"ONBOARDING_SLIDE_4_SUBTITLE_1" = "Almacena archivos esenciales como **disponibles sin conexión** para tenerlos siempre a mano";
+"ONBOARDING_SLIDE_4_SUBTITLE_2" = "Al guardar como disponibles sin conexión, los archivos se almacenan localmente y se sincronizan automáticamente en todos tus dispositivos";
 
 // Onboarding > Slide 5
-"ONBOARDING_SLIDE_5_TITLE" = "Organize your files with just one click";
-"ONBOARDING_SLIDE_5_SUBTITLE_1" = "Simply right-click one or more files and select how you want them stored";
-"ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Label files **available offline** to access them anytime, with or without internet";
-"ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Label files **online only** to save physical hard drive space";
+"ONBOARDING_SLIDE_5_TITLE" = "Organiza tus archivos con un solo clic";
+"ONBOARDING_SLIDE_5_SUBTITLE_1" = "Simplemente haz clic con el botón derecho en uno o más archivos y selecciona cómo quieres almacenarlos";
+"ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Etiqueta los archivos **disponibles sin conexión** para acceder a ellos en cualquier momento, con o sin internet";
+"ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Etiqueta archivos **sólo en línea** para ahorrar espacio físico en el disco duro";
 
 // Onboarding > Finish
-"ONBOARDING_FINISH_TITLE" = "You're all set, enjoy your privacy!";
-"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive is ready";
-"ONBOARDING_FINISH_SUBTITLE_2" = "Access your stored files from your Finder’s sidebar";
-"ONBOARDING_FINISH_ACTION" = "Open Internxt Drive";
+"ONBOARDING_FINISH_TITLE" = "¡Ya está todo listo, disfruta de tu privacidad!";
+"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive está listo";
+"ONBOARDING_FINISH_SUBTITLE_2" = "Accede a tus archivos guardados desde la barra lateral del Finder";
+"ONBOARDING_FINISH_ACTION" = "Abrir Internxt Drive";
 
 
-// Share feedback
+// Compartir comentarios
 
-"SHARE_FEEDBACK_TITLE" = "Share feedback with Internxt";
-"SHARE_FEEDBACK_SUBTITLE" = "Your feedback makes Internxt improve and helps us to create better product experiences";
-"SHARE_FEEDBACK_PLACEHOLDER" = "Let us know what’s in your mind, what you’d like to improve or describe the bug or issue";
-"SHARE_FEEDBACK_ACTION" = "Send feedback";
-"SHARE_FEEDBACK_SUCCESS_TITLE" = "Thank you for sharing your feedback";
-"SHARE_FEEDBACK_SUBTITLE" = "We really appreciate your time and effort to help us improve our services.";
+"SHARE_FEEDBACK_TITLE" = "Compartir comentarios con Internxt";
+"SHARE_FEEDBACK_SUBTITLE" = "Tus comentarios hacen que Internxt mejore y nos ayudan a crear mejores experiencias de producto";
+"SHARE_FEEDBACK_PLACEHOLDER" = "Haznos saber lo que tienes en mente, lo que mejorarías o describe el error o problema";
+"SHARE_FEEDBACK_ACTION" = "Enviar comentarios";
+"SHARE_FEEDBACK_SUCCESS_TITLE" = "Gracias por compartir tus comentarios";
+"SHARE_FEEDBACK_SUCCESS_SUBTITLE" = "Agradecemos mucho tu tiempo y esfuerzo para ayudarnos a mejorar nuestros servicios";

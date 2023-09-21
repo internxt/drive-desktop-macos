@@ -29,7 +29,7 @@ struct WelcomeSlideView: View {
             Spacer()
             HStack(spacing: 8) {
                 AppButton(title: "ONBOARDING_SLIDE_1_ACTION", onClick: goToNextSlide, size: .LG)
-                AppButton(title: "COMMON_SKIP", onClick: skipOnboarding, type: .secondaryWhite,size: .LG)
+                AppButton(title: "COMMON_SKIP", onClick: skipOnboarding, type: .secondary,size: .LG)
             }
         }.frame(minWidth: 0, maxWidth: .infinity,minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
     }

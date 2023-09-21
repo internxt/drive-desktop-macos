@@ -16,7 +16,7 @@ enum AppButtonSize {
 
 enum AppButtonType {
     case primary
-    case secondaryWhite
+    case secondary
 }
 
 func getHeightBySize(size: AppButtonSize) -> CGFloat {
@@ -69,16 +69,24 @@ struct PrimaryAppButtonStyle: ButtonStyle {
 }
 
 
-struct SecondaryWhiteAppButtonStyle: ButtonStyle {
+struct SecondaryAppButtonStyle: ButtonStyle {
+    @Environment(\.colorScheme) var colorScheme
     public var size: AppButtonSize
+    
+    private func getForegroundColor(_ config: Self.Configuration) -> Color {
+        if colorScheme == .dark {
+            return config.isPressed ? Color.Gray10 : Color.Gray5
+        } else {
+            return config.isPressed ? Color.Gray1 : Color.Surface
+        }
+    }
     func makeBody(configuration: Self.Configuration) -> some View {
-        let bgColor = Color.Secondary
-        let bgColorPressed = Color.Secondary
+        
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
-            .foregroundColor(.Gray80)
-            .background(configuration.isPressed ? bgColorPressed : bgColor)
+            .background(getForegroundColor(configuration))
+            .foregroundColor(Color.Gray80)
             .cornerRadius(8)
             .font(getTextFontBySize(size: self.size))
             .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
@@ -106,11 +114,11 @@ struct AppButton: View {
                 self.onClick()
             }
             .buttonStyle(PrimaryAppButtonStyle(size: self.size))
-        case .secondaryWhite:
+        case .secondary:
             Button(LocalizedStringKey(self.title)) {
                 self.onClick()
             }
-            .buttonStyle(SecondaryWhiteAppButtonStyle(size: self.size))
+            .buttonStyle(SecondaryAppButtonStyle(size: self.size))
         }
         
        
@@ -129,9 +137,9 @@ struct AppButton_Previews: PreviewProvider {
             }.padding(20)
             VStack(alignment: .leading) {
                 AppText("Secondary white button")
-                AppButton(title: "Button SM", onClick: {}, type: .secondaryWhite, size: .SM)
-                AppButton(title: "Button MD", onClick: {},type: .secondaryWhite, size: .MD)
-                AppButton(title: "Button LG", onClick: {}, type: .secondaryWhite, size: .LG)
+                AppButton(title: "Button SM", onClick: {}, type: .secondary, size: .SM)
+                AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD)
+                AppButton(title: "Button LG", onClick: {}, type: .secondary, size: .LG)
             }.padding(20)
         }
     

@@ -14,6 +14,7 @@ import FileProvider
 import InternxtSwiftCore
 import Combine
 import ServiceManagement
+import Sparkle
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillShow(_ notification: Notification) {
@@ -28,7 +29,9 @@ extension AppDelegate: NSPopoverDelegate {
 class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(subsystem: "com.internxt", category: "App")
     let config = ConfigLoader()
-    
+    private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+
+
     // Managers
     var windowsManager: WindowsManager! = nil
     var domainManager = DomainManager()
@@ -49,18 +52,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
         ErrorUtils.start()
+    
         checkVolumeAndEjectIfNeeded()
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow,  finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
         if let user = authManager.user {
+            Analytics.shared.identify(
+                userId: user.uuid,
+                email: user.email
+            )
             ErrorUtils.identify(
                 email:user.email,
                 uuid: user.uuid
             )
         }
+        
+        
         self.activityManager.observeLatestActivityEntries()
         
         // Load the config, or die with a fatalError
@@ -88,9 +98,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 } catch {
                     error.reportToSentry()
                 }
-                
             }
+           
         })
+        if self.updaterController.updater.canCheckForUpdates == true {
+            self.updaterController.updater.checkForUpdatesInBackground()
+        }
         
         logger.info("App did start successfully")
         
@@ -123,6 +136,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             
         }
+    }
+    
+    func closeSendFeedbackWindow() {
+        self.windowsManager.closeWindow(id: "send-feedback")
     }
     
     func checkVolumeAndEjectIfNeeded() {

@@ -33,7 +33,7 @@
       "location" : "https://github.com/realm/realm-swift.git",
       "state" : {
         "branch" : "master",
-        "revision" : "ecee9c56d1ce79a56aab3e8ad24cacaa0f14fcce"
+        "revision" : "987523254e28254652cab86b4e558a96231bbfe3"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "12998398eb51e2e8ff7098163fa97d305eee6d87",
-        "version" : "8.11.0"
+        "revision" : "14aa6e47b03b820fd2b338728637570b9e969994",
+        "version" : "8.12.0"
       }
     },
     {
@@ -70,6 +70,15 @@
       "state" : {
         "branch" : "master",
         "revision" : "175da8b5156f6b132436f0676cc84c2f6a766b6e"
+      }
+    },
+    {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "revision" : "f0ceaf5cc9f3f23daa0ccb6dcebd79fc96ccc7d9",
+        "version" : "2.5.0"
       }
     },
     {
@@ -87,7 +96,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "main",
-        "revision" : "962c412b55520f386286c8e9b113f56d2ba6ba26"
+        "revision" : "5605887b7f30b3473f2a5eea00a3122ccfdfb2d5"
       }
     }
   ],

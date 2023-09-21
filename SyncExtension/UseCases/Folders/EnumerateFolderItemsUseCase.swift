@@ -24,7 +24,24 @@ struct EnumerateFolderItemsUseCase {
         self.user = user
     }
     
-    public func run(limit: Int = 50, offset: Int = 0) -> Void {
+    private func getOffset() -> Int {
+        let isInitial: Bool = self.page == NSFileProviderPage.initialPageSortedByDate as NSFileProviderPage || self.page == NSFileProviderPage.initialPageSortedByName as NSFileProviderPage
+        
+        if isInitial {
+            return 0
+        } else {
+            guard let offsetString = String(data: self.page.rawValue, encoding: .utf8) else {
+                return 0
+            }
+            
+            guard let offset = Int(offsetString) else {
+                return 0
+            }
+            
+            return offset
+        }
+    }
+    public func run(limit: Int = 50) -> Void {
         Task {
             do {
                 self.logger.info("Fetching folder content: \(self.enumeratedItemIdentifier.rawValue)")
@@ -32,8 +49,8 @@ struct EnumerateFolderItemsUseCase {
                 let folderId = self.enumeratedItemIdentifier == .rootContainer ? user.root_folder_id.toString() : self.enumeratedItemIdentifier.rawValue
                 var items: Array<NSFileProviderItem> = Array()
                 
-                let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: offset, limit: limit , debug: true)
-                let files = try await driveAPI.getFolderFiles(folderId: folderId, offset: offset, limit: limit)
+                let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: self.getOffset(), limit: limit)
+                let files = try await driveAPI.getFolderFiles(folderId: folderId, offset: self.getOffset(), limit: limit)
                 
                 
                 
@@ -90,7 +107,6 @@ struct EnumerateFolderItemsUseCase {
                     let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type
                     )
                     
-                    print("FILENAME", filename)
                     let item = FileProviderItem(
                         identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
                         filename: filename,
@@ -110,7 +126,7 @@ struct EnumerateFolderItemsUseCase {
                 self.logger.info("✅ Enumerated items correctly for container \(self.enumeratedItemIdentifier.rawValue)")
 
                 if hasMoreFiles || hasMoreFolders {
-                    let nextOffset = limit + offset
+                    let nextOffset = limit + getOffset()
                     // The next page is the offset we reached at the end of this page
                     observer.finishEnumerating(upTo: NSFileProviderPage(rawValue: Data(String(nextOffset).utf8)))
                 } else {

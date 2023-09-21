@@ -124,9 +124,7 @@ struct AccountUsageView: View {
     }
     
     func handleOpenUpgradePlan() {
-        if let url = URL(string: URLDictionary.UPGRADE_PLAN) {
-               NSWorkspace.shared.open(url)
-        }
+        URLDictionary.UPGRADE_PLAN.open()
     }
     
     func PhotosUsageSegment(totalWidth: CGFloat) -> some View {

@@ -28,7 +28,7 @@ struct AccountTabView: View {
                                 .help(user.email)
                         }
                         Spacer()
-                        AppButton(title: "COMMON_LOGOUT", onClick: handleLogout, type: .secondaryWhite, size: .MD )
+                        AppButton(title: "COMMON_LOGOUT", onClick: handleLogout, type: .secondary, size: .MD )
                     }
                 }
                 
