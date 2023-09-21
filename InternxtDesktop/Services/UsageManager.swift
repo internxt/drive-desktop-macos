@@ -29,8 +29,7 @@ class UsageManager: ObservableObject {
         do {
             let limit = try await APIFactory.Drive.getLimit()
             
-            
-            let driveUsage = try await APIFactory.Drive.getUsage(debug: true)
+            let driveUsage = try await APIFactory.Drive.getUsage()
             let photosUsage = try await APIFactory.Photos.getUsage()
             
             DispatchQueue.main.async{

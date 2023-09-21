@@ -20,7 +20,7 @@
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.AvailableOnlineOnly</string>
 				<key>NSExtensionFileProviderActionName</key>
-				<string>AvailableOnlineOnly</string>
+				<string>CONTEXT_MENU_AVAILABLE_ONLINE_ONLY</string>
 			</dict>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
@@ -28,7 +28,7 @@
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.AvailableOffline</string>
 				<key>NSExtensionFileProviderActionName</key>
-				<string>AvailableOffline</string>
+				<string>CONTEXT_MENU_AVAILABLE_OFFLINE</string>
 			</dict>
 		</array>
 		<key>NSExtensionFileProviderDocumentGroup</key>

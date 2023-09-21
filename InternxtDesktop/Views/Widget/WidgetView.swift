@@ -7,26 +7,32 @@
 
 import SwiftUI
 import FileProvider
+import RealmSwift
 
 struct WidgetView: View {
+    @EnvironmentObject var activityManager: ActivityManager
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var globalUIManager: GlobalUIManager
     @EnvironmentObject var usageManager: UsageManager
-    @Environment(\.openWindow) private var openWindow
+    
+    
     var isEmpty: Bool = true
-    var onLogout: () -> Void
     var openFileProviderRoot: () -> Void
-    init(onLogout: @escaping () -> Void, openFileProviderRoot:  @escaping () -> Void) {
-        self.onLogout = onLogout
+    var openSendFeedback: () -> Void
+    init(openFileProviderRoot:  @escaping () -> Void,openSendFeedback:  @escaping () -> Void) {
         self.openFileProviderRoot = openFileProviderRoot
+        self.openSendFeedback = openSendFeedback
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if authManager.user != nil {
                 
-                WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot).zIndex(100).environmentObject(self.globalUIManager).environmentObject(self.usageManager)
+                WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot, openSendFeedback: self.openSendFeedback)
+                    .zIndex(100)
+                    .environmentObject(self.globalUIManager)
+                    .environmentObject(self.usageManager)
                 VStack(alignment: .center) {
-                    if true {
+                    if $activityManager.activityEntries.count == 0 {
                         Image("SyncedStack")
                            .resizable()
                            .scaledToFit()
@@ -40,6 +46,8 @@ struct WidgetView: View {
                                 .foregroundColor(.Gray60)
                         }
                         .padding(.top, 22)
+                    } else {
+                        WidgetContentView(activityEntries: $activityManager.activityEntries)
                     }
                 }.frame(maxWidth: .infinity,maxHeight: .infinity)
                 WidgetFooterView()
@@ -49,17 +57,17 @@ struct WidgetView: View {
                 Spacer()
             }
             
-        }.frame(width: 330, height: 400).background(Color.Surface).cornerRadius(10)
+        }
+        .frame(width: 330, height: 400)
+        .background(Color.Surface)
+        .cornerRadius(10)
+        
     }
 }
 
 struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetView(onLogout: {}, openFileProviderRoot: {})
+        WidgetView(openFileProviderRoot: {}, openSendFeedback: {})
             .environmentObject(AuthManager())
-            .environmentObject(DomainManager(
-                domain: NSFileProviderDomain(identifier: NSFileProviderDomainIdentifier("demo"), displayName: "demo"),
-                uploadProgress: nil, downloadProgress: nil
-            ))
     }
 }

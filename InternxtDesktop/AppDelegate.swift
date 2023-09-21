@@ -14,57 +14,54 @@ import FileProvider
 import InternxtSwiftCore
 import Combine
 import ServiceManagement
-let RESET_DOMAIN_ON_START = true
 
-class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowDelegate {
+extension AppDelegate: NSPopoverDelegate {
+    func popoverWillShow(_ notification: Notification) {
+        globalUIManager.setWidgetIsOpen(true)
+    }
+    
+    func popoverWillClose(_ notification: Notification) {
+        globalUIManager.setWidgetIsOpen(false)
+    }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(subsystem: "com.internxt", category: "App")
     let config = ConfigLoader()
-    var clickOutsideWindowObserver: Any?
-    var popover: NSPopover?
-    var statusBarItem: NSStatusItem?
-    var domainManager: DomainManager?
-    var loadedDomain: NSFileProviderDomain? = nil
+    
+    // Managers
+    var windowsManager: WindowsManager! = nil
+    var domainManager = DomainManager()
     let authManager = AuthManager()
     let usageManager = UsageManager()
+    let activityManager = ActivityManager()
+    var globalUIManager = GlobalUIManager()
+    
+    var popover: NSPopover?
+    var statusBarItem: NSStatusItem?
+    
     var listenToLoggedIn: AnyCancellable?
-    var appXPCCommunicator: AppXPCCommunicator = AppXPCCommunicator.shared
-    var globalUIManager: GlobalUIManager = GlobalUIManager()
-    var preferencesWindow: NSWindow!
-    var onboardingWindow: NSWindow!
+    
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
     
-    
-    func getFileProviderManager() throws -> NSFileProviderManager {
-        guard let loadedDomain = self.loadedDomain else {
-            throw FileProviderError.DomainNotLoaded
-        }
-        guard let manager = NSFileProviderManager(for: loadedDomain) else {
-            throw FileProviderError.CannotGetFileProviderManager
-        }
-        return manager
-    }
-    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        logger.info("App starting")
         ErrorUtils.start()
-        
         checkVolumeAndEjectIfNeeded()
-        
-        appXPCCommunicator.test(handler: {
-            self.logger.info("XPC message received")
-        })
-        
-       
-        
+        self.windowsManager = WindowsManager(
+            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            onWindowClose: receiveOnWindowClose
+        )
+        self.windowsManager.loadInitialWindows()
         if let user = authManager.user {
             ErrorUtils.identify(
                 email:user.email,
                 uuid: user.uuid
             )
         }
-        
-        logger.info("App starting")
+        self.activityManager.observeLatestActivityEntries()
         
         // Load the config, or die with a fatalError
         config.load()
@@ -78,14 +75,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         
         self.listenToLoggedIn = authManager.$isLoggedIn.sink(receiveValue: {isLoggedIn in
             if(isLoggedIn) {
+                self.logger.info("User is logged in, starting session")
                 self.globalUIManager.setAppStatus(.loading)
                 self.loginSuccess()
-                self.closeSwiftUIWindows()
             } else {
-                self.preferencesWindow?.performClose(nil)
+                self.logger.info("User is logged out, closing session")
+                self.globalUIManager.setAppStatus(.loading)
                 self.destroyWidget()
-                self.logout()
-                self.openAuthWindow()
+                self.logoutSuccess()
+                do {
+                    try self.activityManager.clean()
+                } catch {
+                    error.reportToSentry()
+                }
+                
             }
         })
         
@@ -93,20 +96,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         
     }
     
-    func closeSwiftUIWindows() {
-        NSApp.windows.forEach{window in
-            if window.identifier?.rawValue.contains("Auth-AppWindow") == true {
-                window.close()
+    func application(_ application: NSApplication, open urls: [URL]) {
+        if let url = urls.first {
+            do {
+                let success = try authManager.handleSignInDeeplink(url: url)
+                
+                if success == true {
+                    NSApp.activate(ignoringOtherApps: true)
+                    self.windowsManager.closeWindow(id: "auth")
+                }
+            } catch {
+                error.reportToSentry()
             }
+            
         }
+        
     }
     
-    func getAuthWindow() -> NSWindow? {
-        return NSApp.windows.first{$0.title == "Internxt Drive" && $0.identifier != nil}
-    }
-    
-    func getSettingsWindow() -> NSWindow? {
-        return NSApp.windows.first{$0.identifier?.rawValue.contains("Settings") ?? false}
+    func receiveOnWindowClose(id: String) {
+        if id == "onboarding" && authManager.isLoggedIn == true {
+            do {
+                try config.completeOnboarding()
+                openFileProviderRoot()
+            } catch {
+                error.reportToSentry()
+            }
+            
+        }
     }
     
     func checkVolumeAndEjectIfNeeded() {
@@ -124,159 +140,83 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         }
     }
     
-   
+    
+    
+    
+    
+    func finishOrSkipOnboarding() {
+        do {
+            self.openFileProviderRoot()
+            self.windowsManager.closeWindow(id: "onboarding")
+            try config.completeOnboarding()
+        } catch {
+            error.reportToSentry()
+        }
+        
+    }
     
     func loginSuccess() {
-        self.hideAllWindows()
+        self.windowsManager.hideDockIcon()
+        self.windowsManager.closeWindow(id: "auth")
+        
         Task {
             do {
                 try await authManager.initializeCurrentUser()
                 // If usage fails to load, we'll let the user pass
                 await usageManager.updateUsage()
-                
-                try await self.initFileProvider()
+                try await domainManager.initFileProvider()
                 self.logger.info("Login success")
             } catch {
                 error.reportToSentry()
                 DispatchQueue.main.async {
                     self.globalUIManager.setAppStatus(.failedToInit)
                 }
-               
             }
-            
         }
-        if config.onboardingIsCompleted() == true {
-            self.setupWidget()
+        
+        self.setupWidget()
+        if config.onboardingIsCompleted() == false {
             self.openOnboardingWindow()
         } else {
-            self.setupWidget()
-            self.openPopover(delayed: true)
+            self.openWidget(delayed: true)
         }
-       
+        
     }
     
-    func finishOrSkipOnboarding() {
-        onboardingWindow?.performClose(nil)
-        self.openFileProviderRoot()
+    func logoutSuccess() {
+        self.windowsManager.displayDockIcon()
+        self.openAuthWindow()
+        self.windowsManager.closeAll(except: ["auth"])
+        Task {
+            do {
+                try await domainManager.exitDomain()
+            } catch {
+                error.reportToSentry()
+            }
+        }
+        
     }
     
-    func logout() {
-        
-        if let loadedDomainUnwrapped = loadedDomain {
-            removeDomain(domain: loadedDomainUnwrapped, completionHandler: {_, error in
-                if let unwrappedError = error {
-                    unwrappedError.reportToSentry()
-                }
-                self.loadedDomain = nil
-                self.logger.info("Domain removed correctly")
-            })
-        }
-    }
-        
     
     func openAuthWindow() {
-        guard let window = getAuthWindow() else {
-            let url = URL(string: "internxt://start-login")!
-            if NSWorkspace.shared.open(url) {
-                self.logger.info("Auth window not found, spawned one using a deeplink")
-                NSApp.setActivationPolicy(.regular)
-                if let spawnedWindow = getAuthWindow() {
-                    spawnedWindow.orderFrontRegardless()
-                    spawnedWindow.makeKeyAndOrderFront(nil)
-                    
-                }
-                NSApplication.shared.activate(ignoringOtherApps: true)
-                
-            }
-            return
-        }
-        
-        
-        NSApp.setActivationPolicy(.regular)
-        window.orderFrontRegardless()
-        window.makeKeyAndOrderFront(nil)
-        NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-    
-    
-    func windowWillClose(_ notification: Notification) {
-        // If the user closed the onboarding window we'll mark it as completed and proceed
-        if (notification.object as? NSWindow)?.identifier?.rawValue == "OnboardingWindow" {
-            self.onboardingWindow = nil
-            finishOrSkipOnboarding()
-        } else {
-            hideAllWindows()
-        }
-        
+        self.windowsManager.openWindow(id: "auth")
     }
     
     @objc func openSettingsWindow() {
-        self.closeSwiftUIWindows()
-        if preferencesWindow == nil {
-            let preferencesView = SettingsView()
-                .environmentObject(authManager)
-                .environmentObject(usageManager)
-            preferencesWindow = NSWindow(
-                contentRect: NSRect(x: 20, y: 20, width: 400, height: 290),
-                styleMask: [.titled, .closable, .fullSizeContentView],
-                backing: .buffered,
-                defer: false
-            )
-            
-            preferencesWindow.level = .floating
-            preferencesWindow.backgroundColor = NSColor(Color("Gray5"))
-            preferencesWindow.title = "Internxt Drive"
-            preferencesWindow.delegate = self
-            preferencesWindow.titlebarAppearsTransparent = true
-            preferencesWindow.toolbarStyle = .automatic
-            preferencesWindow.center()
-            preferencesWindow.isReleasedWhenClosed = false
-            preferencesWindow.setFrameAutosaveName("Preferences")
-            preferencesWindow.contentView = NSHostingView(rootView: preferencesView)
-        }
-        preferencesWindow.orderFrontRegardless()
-        preferencesWindow.makeKeyAndOrderFront(nil)
+        self.windowsManager.openWindow(id: "settings")
     }
     
     @objc func openOnboardingWindow() {
-        self.closeSwiftUIWindows()
-        if onboardingWindow == nil {
-            let onboardingView = OnboardingView(finishOrSkipOnboarding: finishOrSkipOnboarding)
-                
-            onboardingWindow = NSWindow(
-                contentRect: NSRect(x: 20, y: 20, width: 800, height: 470),
-                styleMask: [.titled, .closable, .fullSizeContentView],
-                backing: .buffered,
-                defer: false
-            )
-            
-            onboardingWindow.level = .floating
-            onboardingWindow.backgroundColor = NSColor(Color("Gray5"))
-            onboardingWindow.delegate = self
-            onboardingWindow.titlebarAppearsTransparent = true
-            onboardingWindow.toolbarStyle = .automatic
-            onboardingWindow.center()
-            onboardingWindow.identifier = NSUserInterfaceItemIdentifier("OnboardingWindow")
-            onboardingWindow.isReleasedWhenClosed = false
-            onboardingWindow.setFrameAutosaveName("Onboarding")
-            onboardingWindow.contentView = NSHostingView(rootView: onboardingView)
-        }
-        
-        self.logger.info("OPENING ONBOARDING")
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        onboardingWindow.makeKeyAndOrderFront(nil)
-        onboardingWindow.orderFrontRegardless()
+        self.windowsManager.openWindow(id: "onboarding")
     }
     
-    func hideAllWindows() {
-        NSApplication.shared.hide(self)
+    @objc func openSendFeedbackWindow() {
+        self.windowsManager.openWindow(id: "send-feedback")
     }
     
     func applicationWillTerminate(_ notification: Notification) {
         destroyWidget()
     }
-    
-    
     
     private func initPreviewMode() {
         // Nothing to do here in preview mode
@@ -285,81 +225,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     private func removeDomain(domain: NSFileProviderDomain, completionHandler: @escaping (URL?, Error?) -> Void) {
         NSFileProviderManager.remove(domain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler:completionHandler)
     }
-    
-    private func addDomain(domain: NSFileProviderDomain, completionHandler: @escaping (_ error: Error?) -> Void) {
-        
-        NSFileProviderManager.add(domain) { error in
-            guard let error = error else {
-                self.loadedDomain = domain
-                
-                do {
-                    let manager = try self.getFileProviderManager()
-                        
-                    self.domainManager = DomainManager(
-                        domain: self.loadedDomain!,
-                        uploadProgress: manager.globalProgress(for: .uploading),
-                        downloadProgress: manager.globalProgress(for: .downloading)
-                    )
-                    
-                    completionHandler(nil)
-                    
-                    self.logger.info("Domain added correctly: \(domain.displayName)")
-                    
-                } catch {
-                    completionHandler(error)
-                }
-                
-                return
-            }
-            
-            completionHandler(error)
-            self.logger.error("Error adding file provider domain: \(error.localizedDescription)")
-        }
-    }
-    
-    private func initFileProvider() async throws {
-        
-        return try await withCheckedThrowingContinuation {continuation in
-            let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
-            let newDomain = NSFileProviderDomain(identifier: identifier, displayName: "")
-            
-            NSFileProviderManager.getDomainsWithCompletionHandler() { (domains, error) in
-                            
-                let firstDomain = domains.first
-                
-                if let errorUnwrapped = error {
-                    continuation.resume(throwing: errorUnwrapped)
-                    return
-                }
-                
-                if(RESET_DOMAIN_ON_START && firstDomain != nil) {
-                    self.logger.info("Removing domain...")
-                    NSFileProviderManager.remove(firstDomain!, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler: {_,_ in
-                        self.addDomain(domain: newDomain, completionHandler: { error in
-                            if let errorUnwrapped = error {
-                                continuation.resume(throwing: errorUnwrapped)
-                                return
-                            } else {
-                                continuation.resume()
-                            }
-                        })
-                    })
-                } else {
-                    self.logger.info("No domain loaded, adding domain")
-                    self.addDomain(domain: newDomain, completionHandler: { error in
-                        if let errorUnwrapped = error {
-                            continuation.resume(throwing: errorUnwrapped)
-                            return
-                        } else {
-                            continuation.resume()
-                        }
-                    })
-                }
-            }
-        }
-    }
-    
-
     
     func destroyWidget() {
         if let statusBarItemUnwrapped = self.statusBarItem {
@@ -386,18 +251,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         self.popover?.delegate = self
         self.popover?.setValue(true, forKeyPath: "shouldHideAnchor")
         self.popover?.contentViewController = NSHostingController(
-            rootView: WidgetView(onLogout: logout, openFileProviderRoot: openFileProviderRoot)
-            .environmentObject(self.authManager)
-            .environmentObject(self.globalUIManager)
-            .environmentObject(self.usageManager)
+            rootView: WidgetView(openFileProviderRoot: openFileProviderRoot, openSendFeedback: openSendFeedbackWindow)
+                .environmentObject(self.authManager)
+                .environmentObject(self.globalUIManager)
+                .environmentObject(self.usageManager)
+                .environmentObject(self.activityManager)
         )
     }
     
     func openFileProviderRoot() {
-        closePopover()
+        closeWidget()
         Task{
             do {
-                let fileProviderFolderURL = try await getFileProviderManager().getUserVisibleURL(for: .rootContainer)
+                guard let fileProviderManager = domainManager.manager else {
+                    throw FileProviderError.CannotGetFileProviderManager
+                }
+                let fileProviderFolderURL = try await fileProviderManager.getUserVisibleURL(for: .rootContainer)
                 
                 _ = fileProviderFolderURL.startAccessingSecurityScopedResource()
                 NSWorkspace.shared.open(fileProviderFolderURL)
@@ -419,9 +288,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
             
             if let popoverUnwrapped = popover {
                 if popoverUnwrapped.isShown {
-                   closePopover()
+                    closeWidget()
                 } else {
-                   openPopover()
+                    openWidget()
                 }
             }
             
@@ -429,22 +298,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
     }
     
     
-    func closePopover() {
+    func closeWidget() {
         globalUIManager.setWidgetIsOpen(false)
-        popover?.performClose(nil)
-        popover?.contentViewController?.view.window?.resignKey()
+        if popover?.isShown == true {
+            popover?.performClose(nil)
+            popover?.contentViewController?.view.window?.resignKey()
+        }
+        
     }
     
-    func popoverWillShow(_ notification: Notification) {
-        globalUIManager.setWidgetIsOpen(true)
-    }
-    
-    func popoverWillClose(_ notification: Notification) {
-        globalUIManager.setWidgetIsOpen(false)
-    }
-    
-    
-    func openPopover(delayed: Bool = false) {
+    func openWidget(delayed: Bool = false) {
         func display() {
             
             if let statusBarItemButton = self.statusBarItem?.button {
@@ -461,7 +324,5 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowD
         } else {
             display()
         }
-        
-       
     }
 }

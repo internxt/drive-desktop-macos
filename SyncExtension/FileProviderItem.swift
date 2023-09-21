@@ -63,6 +63,7 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
         return identifier
     }
     
+    @available(macOSApplicationExtension 13.0, *)
     var contentPolicy: NSFileProviderContentPolicy {
         if isAvailableOffline {
             return .downloadEagerlyAndKeepDownloaded
@@ -103,7 +104,6 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
             .allowsReading,
             .allowsRenaming,
             .allowsReparenting,
-            .allowsWriting,
         ]
     }
     

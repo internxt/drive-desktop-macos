@@ -11,7 +11,7 @@ struct StartOnLaunchView: View {
     @State var willStartOnLaunch: Bool = LaunchAtLogin.isEnabled
     var body: some View {
         VStack(alignment: .leading,spacing:0) {
-            AppCheckbox(label: "StartOnLaunch", checked: $willStartOnLaunch)
+            AppCheckbox(label: "SETTINGS_START_ON_LAUNCH", checked: $willStartOnLaunch)
             .onChange(of: willStartOnLaunch, perform: {willStartOnLaunch in
                 LaunchAtLogin.isEnabled = willStartOnLaunch
             })

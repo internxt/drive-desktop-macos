@@ -20,10 +20,10 @@ struct AccountTabView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             AppText("\(user.name) \(user.lastname)")
                                 .font(.LGMedium)
-                                .foregroundColor(Color("Gray100"))
+                                .foregroundColor(Color.Gray100)
                             Text(verbatim: "\(user.email)")
                                 .font(.SMRegular)
-                                .foregroundColor(Color("Gray60"))
+                                .foregroundColor(Color.Gray60)
                                 .lineLimit(1)
                                 .help(user.email)
                         }

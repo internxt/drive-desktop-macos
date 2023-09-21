@@ -12,17 +12,20 @@ struct WelcomeSlideView: View {
     public let skipOnboarding: () -> Void
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AppText("ONBOARDING_SLIDE_1_TITLE")
-                .font(.XXXLSemibold)
-                .foregroundColor(.Gray100)
-                .padding(.bottom, 36)
-            AppText("ONBOARDING_SLIDE_1_SUBTITLE_1")
-                .font(.LGRegular)
-                .foregroundColor(.Gray100)
-                .padding(.bottom, 10)
-            AppText("ONBOARDING_SLIDE_1_SUBTITLE_2")
-                .foregroundColor(.Gray100)
-                .font(.LGRegular)
+            Group {
+                AppText("ONBOARDING_SLIDE_1_TITLE")
+                    .font(.XXXLSemibold)
+                    .foregroundColor(.Gray100)
+                    .padding(.bottom, 36)
+                AppText("ONBOARDING_SLIDE_1_SUBTITLE_1")
+                    .font(.LGRegular)
+                    .foregroundColor(.Gray100)
+                    .padding(.bottom, 10)
+                AppText("ONBOARDING_SLIDE_1_SUBTITLE_2")
+                    .foregroundColor(.Gray100)
+                    .font(.LGRegular)
+            }.transition(.onboardingText)
+            
             Spacer()
             HStack(spacing: 8) {
                 AppButton(title: "ONBOARDING_SLIDE_1_ACTION", onClick: goToNextSlide, size: .LG)
