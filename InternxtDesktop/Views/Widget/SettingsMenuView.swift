@@ -32,8 +32,18 @@ struct SettingsMenuView: View {
                     .background(Color.Gray10)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_QUIT_OPTION", onPress: handleQuitApp)
                 }
-                .padding(.vertical, 6).overlay {
-                    RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
+                .padding(.vertical, 6).ifAvailable{view in
+                    
+                    if #available(macOS 12, *) {
+                        view.overlay{
+                            RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
+                        }
+                    } else {
+                        view.overlay(
+                            RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
+                            , alignment: .top)
+                    }
+                    
                 }
                 .background(Color.Gray1)
                 .cornerRadius(8)
@@ -112,6 +122,6 @@ struct SettingsMenuOption: View {
 
 struct SettingsMenu_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsMenuView(openSendFeedback: {}, isPreview: true).frame(height: 400)
+        SettingsMenuView(openSendFeedback: {}, isPreview: true).frame(height: 200).padding(10)
     }
 }

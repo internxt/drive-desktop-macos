@@ -240,7 +240,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func removeDomain(domain: NSFileProviderDomain, completionHandler: @escaping (URL?, Error?) -> Void) {
-        NSFileProviderManager.remove(domain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler:completionHandler)
+        if #available(macOS 12.0, *) {
+            NSFileProviderManager.remove(domain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler:completionHandler)
+        } else {
+            NSFileProviderManager.remove(domain, completionHandler: {error in
+                completionHandler(nil, error)
+            })
+        }
     }
     
     func destroyWidget() {
