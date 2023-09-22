@@ -17,6 +17,7 @@ struct ErrorUtils {
         SentrySDK.start { options in
             options.dsn = ConfigLoader().get().SENTRY_DSN
             options.debug = false
+            options.enableAppHangTracking = false
             options.tracesSampleRate = 1.0
         }
     }

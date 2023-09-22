@@ -10,8 +10,9 @@ import SwiftUI
 struct SendFeedbackView: View {
     @State var feedback: String = ""
     @State var feedbackSent: Bool = false
+    @State var isDisabled: Bool = false
     let charactersLimit = 1000
-    var charactersCount = 0
+    @State var charactersCount = 0
     let closeWindow: () -> Void
     init(closeWindow: @escaping () -> Void) {
         self.closeWindow = closeWindow
@@ -45,7 +46,15 @@ struct SendFeedbackView: View {
                     AppButton(title: "SHARE_FEEDBACK_ACTION", onClick: handleSendFeedback, size: .MD)
                 }
             }
-        }.padding(20).frame(width: 380, height: 320)
+        }.padding(20).frame(width: 380, height: 320).onChange(of: feedback, perform: {newFeedbackText in
+            if newFeedbackText.count >= charactersLimit {
+                isDisabled = true
+            } else {
+                isDisabled = false
+            }
+            
+            charactersCount = feedback.count
+        })
     }
     
     func handleSendFeedback() {

@@ -52,7 +52,11 @@ struct DomainManager {
             
             if self.resetDomainOnStart {
                 self.logger.info("Resetting domain on start")
-                try await NSFileProviderManager.remove(loadedDomain, mode: .removeAll)
+                if #available(macOS 12.0, *) {
+                    try await NSFileProviderManager.remove(loadedDomain, mode: .removeAll)
+                } else {
+                    try await NSFileProviderManager.remove(loadedDomain)
+                }
                 self.logger.info("Domain removed")
                 try await NSFileProviderManager.add(newDomain)
                 self.logger.info("Domain added successfully")

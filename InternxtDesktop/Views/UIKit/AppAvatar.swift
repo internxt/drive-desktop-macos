@@ -16,8 +16,8 @@ struct AppAvatar: View {
     public var avatarURL: String?
     var body: some View {
         HStack(alignment: .center){
-            if let urlUnwrapped = avatarURL {
-                AppCachedAsyncImage(url: URL(string: urlUnwrapped)){ phase in
+            if avatarURL != nil, #available(macOS 12, *) {
+                AppCachedAsyncImage(url: URL(string: avatarURL!)){ phase in
                     switch phase {
                     case .empty:
                         ProgressView().controlSize(.small)
@@ -35,7 +35,6 @@ struct AppAvatar: View {
                         EmptyView()
                     }
                 }
-
             } else {
                 AppText(String(name?.first ?? "M"))
                     .font(font)

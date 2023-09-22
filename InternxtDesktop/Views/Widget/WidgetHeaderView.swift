@@ -76,9 +76,17 @@ struct WidgetHeaderView: View {
                 
             WidgetIconButtonView(iconName: .FolderSimple, onClick: self.openFileProviderRoot)
                 .padding(.horizontal, 1)
-            WidgetIconButtonView(iconName: .Gear, onClick: self.openSettings).overlay(alignment: .bottomLeading) {
-                SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+            WidgetIconButtonView(iconName: .Gear, onClick: self.openSettings).ifAvailable{view in
                 
+                if #available(macOS 12, *) {
+                    view.overlay(alignment: .bottomLeading) {
+                        SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+                    }
+                } else {
+                    view.overlay(SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+                                 ,alignment: .bottomLeading)
+                }
+                    
             }
         
         }
