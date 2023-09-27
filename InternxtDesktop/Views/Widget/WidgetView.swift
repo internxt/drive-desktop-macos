@@ -32,7 +32,8 @@ struct WidgetView: View {
                     .environmentObject(self.globalUIManager)
                     .environmentObject(self.usageManager)
                 VStack(alignment: .center) {
-                    if $activityManager.activityEntries.count == 0 {
+                    
+                    if activityManager.activityEntries.isEmpty {
                         Image("SyncedStack")
                            .resizable()
                            .scaledToFit()

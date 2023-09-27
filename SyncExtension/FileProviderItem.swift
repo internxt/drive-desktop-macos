@@ -63,6 +63,18 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
         return identifier
     }
     
+    var creationDate: Date? {
+        return self.createdAt
+    }
+    
+    var contentModificationDate: Date? {
+        // We should use here something like contentModificationDate from the backend
+        // since this doesn't exists yet, we'll fallback to the creation date
+        // NOTE: We cannot use updatedAt field here, cause that field is modified
+        // with renames, trashing etc, this date is the date of the LAST CONTENT MODIFICATION
+        return self.createdAt
+    }
+    
     @available(macOSApplicationExtension 13.0, *)
     var contentPolicy: NSFileProviderContentPolicy {
         if isAvailableOffline {
@@ -97,7 +109,7 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
             return [.allowsDeleting]
         }
         
-        return [
+        return [            
             .allowsAddingSubItems,
             .allowsContentEnumerating,
             .allowsTrashing,

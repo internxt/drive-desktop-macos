@@ -32,33 +32,12 @@ struct TrashFileUseCase {
     }
     
     public func run( ) -> Progress {
-        self.logger.info("Moving file to trash with id \(item.itemIdentifier.rawValue)")
         Task {
             do {
-                
-                let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: item.itemIdentifier.rawValue)
-              
-                self.logger.info("Trashing file with fileId \(fileMeta.fileId)")
-                let trashed: Bool = try await trashAPI.trashFiles(itemsToTrash: [FileToTrash(
-                    id: fileMeta.fileId
-                )])
-                self.logger.info("Trashed file result is: \(trashed)")
-                if trashed == true {
-                    let newItem = FileProviderItem(
-                        identifier: item.itemIdentifier,
-                        filename: item.filename,
-                        parentId: item.parentItemIdentifier,
-                        createdAt: (item.creationDate ?? Date()) ?? Date(),
-                        updatedAt: (item.contentModificationDate ?? Date()) ?? Date(),
-                        itemExtension: item.contentType?.preferredFilenameExtension,
-                        itemType: .file
-                    )
-                    self.logger.info("✅ File with id \(item.itemIdentifier.rawValue) trashed correctly")
-                    completionHandler(newItem, changedFields.removing(.parentItemIdentifier), false, nil)
-                    
-                } else {
-                    throw TrashFileUseCaseError.TrashRequestFailed
-                }
+                self.logger.info("Trashing file with id \(item.itemIdentifier.rawValue)")
+                let driveFileTrashed = try await DriveFileService.shared.trashFile(uuid: item.itemIdentifier.rawValue)
+                self.logger.info("✅ File with id \(item.itemIdentifier.rawValue) trashed correctly")
+                completionHandler(driveFileTrashed.fileProviderItem, changedFields.removing(.parentItemIdentifier), false, nil)
                 
             } catch {
                 error.reportToSentry()

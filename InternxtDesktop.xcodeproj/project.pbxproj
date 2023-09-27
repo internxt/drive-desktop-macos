@@ -28,6 +28,14 @@
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
 		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
+		E140C32A2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
+		E140C32B2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
+		E140C32C2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
+		E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
+		E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C32F2AC3778200A88B9F /* DriveFile.swift */; };
+		E140C3332AC379AA00A88B9F /* DriveFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3322AC379AA00A88B9F /* DriveFileService.swift */; };
+		E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3322AC379AA00A88B9F /* DriveFileService.swift */; };
+		E140C3362AC37E5500A88B9F /* DeleteFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */; };
 		E145E16A2A829C6B00B07E0B /* env.sample.json in Resources */ = {isa = PBXBuildFile; fileRef = E145E1692A829C6B00B07E0B /* env.sample.json */; };
 		E145E16C2A82A21500B07E0B /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
 		E145E16D2A82A21500B07E0B /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
@@ -223,6 +231,10 @@
 		E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderUseCase.swift; sourceTree = "<group>"; };
 		E10B0FDC2A94143F00B97874 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		E112933E2A77221A003DEADF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		E140C3292AC376AE00A88B9F /* Drive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drive.swift; sourceTree = "<group>"; };
+		E140C32F2AC3778200A88B9F /* DriveFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveFile.swift; sourceTree = "<group>"; };
+		E140C3322AC379AA00A88B9F /* DriveFileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveFileService.swift; sourceTree = "<group>"; };
+		E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileUseCase.swift; sourceTree = "<group>"; };
 		E145E1692A829C6B00B07E0B /* env.sample.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.sample.json; sourceTree = "<group>"; };
 		E145E16B2A82A21500B07E0B /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderUseCase.swift; sourceTree = "<group>"; };
@@ -409,6 +421,30 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		E140C3282AC3769C00A88B9F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E140C3292AC376AE00A88B9F /* Drive.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E140C32E2AC3776500A88B9F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E140C32F2AC3778200A88B9F /* DriveFile.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E140C3312AC3798B00A88B9F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E140C3322AC379AA00A88B9F /* DriveFileService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		E145E17D2A83A28100B07E0B /* Folders */ = {
 			isa = PBXGroup;
 			children = (
@@ -430,6 +466,7 @@
 				E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */,
 				E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */,
 				E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */,
+				E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -456,6 +493,8 @@
 		E163105D2A8F8A570072989E /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				E140C3312AC3798B00A88B9F /* Services */,
+				E140C3282AC3769C00A88B9F /* Models */,
 				E1581DC82A95220B0051DD46 /* Errors */,
 				E10B0FDB2A94142A00B97874 /* Extensions */,
 				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
@@ -682,6 +721,7 @@
 		E1FB2D832A76C48600473AE1 /* SyncExtension */ = {
 			isa = PBXGroup;
 			children = (
+				E140C32E2AC3776500A88B9F /* Extensions */,
 				E109717A2A81133C00ABED41 /* UseCases */,
 				E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */,
 				E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */,
@@ -974,6 +1014,8 @@
 				E1F616072A8D7DF8008C9E62 /* SignInWithBrowserView.swift in Sources */,
 				E1ADD0422AA7272100D95694 /* AccountUsageView.swift in Sources */,
 				E1880BA42AA6973C001FC171 /* GlobalUIManager.swift in Sources */,
+				E140C3332AC379AA00A88B9F /* DriveFileService.swift in Sources */,
+				E140C32A2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E16ECC142A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E1880BA22AA63CF2001FC171 /* AccountTabView.swift in Sources */,
 				E1880B9C2AA625D6001FC171 /* DeviceNameView.swift in Sources */,
@@ -1018,6 +1060,7 @@
 				E1581DD02A9629620051DD46 /* Generic.swift in Sources */,
 				E1FB2D3A2A76BF0300473AE1 /* InternxtDesktopTests.swift in Sources */,
 				E1A0AC732AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
+				E140C32B2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1CC520D2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1A0AC6E2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E17C84BF2AB2880B00A58414 /* Color.swift in Sources */,
@@ -1033,6 +1076,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E140C32C2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E19136982AA108D200CAF0FA /* View.swift in Sources */,
 				E106D4662ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E10B0FDF2A94143F00B97874 /* Int.swift in Sources */,
@@ -1064,6 +1108,7 @@
 				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
 				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
+				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
 				E106D4672ABAEE4400E3BF7A /* Date.swift in Sources */,
@@ -1086,15 +1131,18 @@
 				E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1581DE02A96835F0051DD46 /* FetchFileContentUseCase.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
+				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
+				E140C3362AC37E5500A88B9F /* DeleteFileUseCase.swift in Sources */,
 				E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */,
 				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,
 				E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E1A0AC7A2AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
+				E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
