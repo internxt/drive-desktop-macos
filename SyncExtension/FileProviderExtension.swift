@@ -15,7 +15,9 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let useIntervalSignaller = true;
+let enableInternvalSignallerInDevMode = false
+
+let useIntervalSignaller = ConfigLoader.isDevMode ? enableInternvalSignallerInDevMode : true;
 
 func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
     return Timer.publish(every: 5, on: .main, in: .common)
@@ -206,6 +208,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         let shouldCreateFolder = itemTemplate.contentType == .folder
         let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
+                
         
         if shouldCreateFolder {
             return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()
@@ -218,7 +221,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
             
             let filename = NSString(string:itemTemplate.filename)
-            print("FILE", filename.pathExtension)
             let fileCopy = makeTemporaryURL("plain", filename.pathExtension)
             try! FileManager.default.copyItem(at: contentUrl, to: fileCopy)
             
@@ -337,10 +339,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func deleteItem(identifier: NSFileProviderItemIdentifier, baseVersion version: NSFileProviderItemVersion, options: NSFileProviderDeleteItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (Error?) -> Void) -> Progress {
-        logger.info("Delete request for item \(identifier.rawValue)")
         
-        completionHandler(NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.deletionRejected.rawValue))
-        return Progress()
+        return DeleteFileUseCase(identifier: identifier, completionHandler: completionHandler).run()
     }
     
     func enumerator(for containerItemIdentifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest) throws -> NSFileProviderEnumerator {
