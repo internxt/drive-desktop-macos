@@ -339,11 +339,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func deleteItem(identifier: NSFileProviderItemIdentifier, baseVersion version: NSFileProviderItemVersion, options: NSFileProviderDeleteItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (Error?) -> Void) -> Progress {
-        logger.info("Delete request for item \(identifier.rawValue)")
-        print(request.description)
-        print(request.isSystemRequest)
-        print(request.isFileViewerRequest)
-        request.
+        
         return DeleteFileUseCase(identifier: identifier, completionHandler: completionHandler).run()
     }
     
