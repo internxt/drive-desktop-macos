@@ -15,7 +15,9 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let useIntervalSignaller = false;
+let enableInternvalSignallerInDevMode = false
+
+let useIntervalSignaller = ConfigLoader.isDevMode ? enableInternvalSignallerInDevMode : true;
 
 func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
     return Timer.publish(every: 5, on: .main, in: .common)
@@ -206,9 +208,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         let shouldCreateFolder = itemTemplate.contentType == .folder
         let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
-        
-        let shouldReplaceFileContent = shouldCreateFile && url != nil
-        
+                
         
         if shouldCreateFolder {
             return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()

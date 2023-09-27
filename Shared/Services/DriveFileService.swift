@@ -79,7 +79,7 @@ struct DriveFileService {
         
         return DriveFile(
             uuid: fileMeta.uuid,
-            plainName: fileMeta.plainName,
+            plainName: updated.plain_name,
             name: fileMeta.name,
             type: fileMeta.type,
             size: Int(fileMeta.size) ?? 0,
