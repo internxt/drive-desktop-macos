@@ -191,8 +191,25 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
         
         
+        
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")
+        
+        func internalCompletionHandler(url: URL?, item: NSFileProviderItem?, error: Error?) -> Void {
+            
+            completionHandler(url, item, error)
+            do {
+                
+                let tmpFolderSize = tmpURL.getFolderSize()
+                
+                print("FOLDER SIZE IS ", tmpFolderSize, tmpURL.path)
+                try FileManager.default.removeItem(at: encryptedFileDestinationURL)
+                try FileManager.default.removeItem(at: destinationURL)
+            } catch {
+                error.reportToSentry()
+            }
+            
+        }
         return FetchFileContentUseCase(
             networkFacade: networkFacade,
             user: user,
@@ -200,9 +217,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             itemIdentifier: itemIdentifier,
             encryptedFileDestinationURL: encryptedFileDestinationURL,
             destinationURL: destinationURL,
-            completionHandler: completionHandler
+            completionHandler: internalCompletionHandler
         ).run()
     }
+    
+    
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         

@@ -79,6 +79,7 @@ struct FetchFileContentUseCase {
                 self.logger.info("Fetching file \(fileProviderItem.itemIdentifier.rawValue) inside of \(fileProviderItem.parentItemIdentifier.rawValue)")
                 
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
+                throw FileProviderError.DomainNotLoaded
                 // Finish
                 progressHandler(completedProgress: 1)
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: filename, kind: .download, status: .finished))
