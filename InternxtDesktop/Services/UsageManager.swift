@@ -10,6 +10,7 @@ import Foundation
 
 class UsageManager: ObservableObject {
     
+    @Published var loadingUsage: Bool = true
     @Published var usageError: Error? = nil
     // Just to avoid accidentally dividing by 0
     @Published var limit: Int64 = 1
@@ -27,6 +28,9 @@ class UsageManager: ObservableObject {
     
     public func updateUsage() async {
         do {
+            DispatchQueue.main.sync {
+                self.loadingUsage = true
+            }
             let limit = try await APIFactory.Drive.getLimit()
             
             let driveUsage = try await APIFactory.Drive.getUsage()
@@ -37,6 +41,7 @@ class UsageManager: ObservableObject {
                 self.driveUsage = driveUsage.drive
                 self.backupsUsage = driveUsage.backups
                 self.photosUsage = photosUsage.usage
+                self.loadingUsage = false
             }
             
             
@@ -44,6 +49,7 @@ class UsageManager: ObservableObject {
             error.reportToSentry()
             DispatchQueue.main.async {
                 self.usageError = error
+                self.loadingUsage = false
             }
         }
     }

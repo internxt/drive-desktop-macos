@@ -51,6 +51,9 @@
 "COMMON_USAGE_%@_OF_%@" = "Using %@ of %@";
 "COMMON_CLOSE" = "Close";
 
+// Usage
+"USAGE_LOADING" = "Loading your usage";
+
 // Context menu actions
 "CONTEXT_MENU_AVAILABLE_OFFLINE" = "Make Available Offline";
 "CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Make Online Only";

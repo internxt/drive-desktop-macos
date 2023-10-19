@@ -51,6 +51,9 @@
 "COMMON_USAGE_%@_OF_%@" = "Usado %@ de %@";
 "COMMON_CLOSE" = "Cerrar";
 
+// Usage
+"USAGE_LOADING" = "Cargando espacio usado";
+
 // Context menu actions
 "CONTEXT_MENU_AVAILABLE_OFFLINE" = "Cambiar a disponible offline";
 "CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Cambiar a disponible sólo online";
