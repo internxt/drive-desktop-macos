@@ -48,5 +48,5 @@ jobs:
       #  run: |
       #   xcodebuild -project InternxtDesktop.xcodeproj -scheme Release -configuration Release CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Your Code Signing Identity" PROVISIONING_PROFILE="Your Provisioning Profile"
       - name: Clean Up Runner
-        run: security delete-keychain ~/Library/Keychains/build.keychain
+        run: security delete-keychain $KEYCHAIN_PATH
         
