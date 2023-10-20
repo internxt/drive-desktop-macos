@@ -20,7 +20,7 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 14.x
+          xcode-version: latest-stable
       
       - name: Install the Apple certificate and provisioning profile
         env:
