@@ -23,15 +23,23 @@ platform :mac do
   desc "Build release from CI"
   lane :release_ci do
     update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "InternxtDesktop.xcodeproj",
+      team_id: "JR4S3SY396",
+      code_sign_identity: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)",
+      profile_name: "internxt_desktop_ci_profile",
+    )
+
+
+    update_code_signing_settings(
       use_automatic_signing: true,
-      path: "InternxtDesktop.xcodeproj"
+      path: ""
     )
     # add actions here: https://docs.fastlane.tools/actions
     build_mac_app(
       output_directory: 'build',
       scheme: "InternxtDesktop",
       export_method: 'mac-application',
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM='JR4S3SY396'"
     )
   end
 end
