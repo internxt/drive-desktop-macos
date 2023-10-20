@@ -116,6 +116,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         logger.info("Created extension with domain \(domain.displayName)")
         super.init()
         
+        do {
+            try self.cleanTmpDirectory()
+            logger.info("✅ TMP directory cleaned")
+        } catch{
+            logger.error("Failed to clean TMP directory before starting")
+            error.reportToSentry()
+        }
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
                 logger.error("Failed to signal enumerator")
@@ -125,6 +132,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
             
         })
+    }
+    
+    func cleanTmpDirectory() throws {
+        let files = try FileManager.default.contentsOfDirectory(at: tmpURL, includingPropertiesForKeys: nil)
+        
+        try files.forEach{fileUrl in
+            try FileManager.default.removeItem(at: fileUrl)
+        }
     }
     
     func checkUpdates() {
@@ -191,8 +206,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
         
         
+        
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")
+        
+        func internalCompletionHandler(url: URL?, item: NSFileProviderItem?, error: Error?) -> Void {
+            
+            completionHandler(url, item, error)
+            do {
+                try FileManager.default.removeItem(at: encryptedFileDestinationURL)
+                try FileManager.default.removeItem(at: destinationURL)
+            } catch {
+                error.reportToSentry()
+            }
+            
+        }
         return FetchFileContentUseCase(
             networkFacade: networkFacade,
             user: user,
@@ -200,9 +228,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             itemIdentifier: itemIdentifier,
             encryptedFileDestinationURL: encryptedFileDestinationURL,
             destinationURL: destinationURL,
-            completionHandler: completionHandler
+            completionHandler: internalCompletionHandler
         ).run()
     }
+    
+    
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         
@@ -224,10 +254,24 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             let fileCopy = makeTemporaryURL("plain", filename.pathExtension)
             try! FileManager.default.copyItem(at: contentUrl, to: fileCopy)
             
+            let encryptedFileDestination =  makeTemporaryURL("encrypted", "enc")
+            let thumbnailFileDestination = makeTemporaryURL("thumbnail", "jpg")
+            let encryptedThumbnailFileDestination = makeTemporaryURL("encrypted_thumbnail", "enc")
+            
             func completionHandlerInternal(_ item: NSFileProviderItem?, _ fields: NSFileProviderItemFields, _ shouldFetch:Bool, _ error:Error?) -> Void {
                 
-                
                 completionHandler(item, fields, shouldFetch, error)
+                
+               
+                do {
+                    try FileManager.default.removeItem(at: fileCopy)
+                    try FileManager.default.removeItem(at: encryptedFileDestination)
+                    try FileManager.default.removeItem(at: thumbnailFileDestination)
+                    try FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
+                } catch {
+                    error.reportToSentry()
+                }
+                
             }
             return CreateFileUseCase(
                 networkFacade: networkFacade,
@@ -235,9 +279,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 activityManager: activityManager,
                 item: itemTemplate,
                 url: fileCopy,
-                encryptedFileDestination: makeTemporaryURL("encrypted", "enc"),
-                thumbnailFileDestination: makeTemporaryURL("thumbnail", "jpg"),
-                encryptedThumbnailFileDestination: makeTemporaryURL("encrypted_thumbnail", "enc"),
+                encryptedFileDestination: encryptedFileDestination,
+                thumbnailFileDestination: thumbnailFileDestination,
+                encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
                 completionHandler: completionHandlerInternal
             ).run()
         }
