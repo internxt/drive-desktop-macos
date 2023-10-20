@@ -9,6 +9,7 @@ on:
 env:
   KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
   CODESIGN_IDENTITY: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)"
+  APPLE_DEVELOPMENT_TEAM: "JR4S3SY396"
 jobs:
   build:
     runs-on: macos-13
@@ -53,8 +54,11 @@ jobs:
             
       - name: Build and Sign
         run: |
-          xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)" PROVISIONING_PROFILE_SPECIFIER="profile"
+          xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release
       
       - name: Clean Up Runner
         run: security delete-keychain $KEYCHAIN_PATH
 
+
+
+          
