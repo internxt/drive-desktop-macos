@@ -13,12 +13,12 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-default_platform(:macos)
+default_platform(:mac)
 
 team_id("JR4S3SY396")
 
 
-platform :macos do
+platform :mac do
   desc "Build release"
   lane :release do
     # add actions here: https://docs.fastlane.tools/actions

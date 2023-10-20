@@ -956,7 +956,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n    # We should handle this better in a CI environment, this is a temporary solution\n    # until we automatize this task\n    source ~/.zshrc\n    export SENTRY_ORG=internxt-e56c74f0b\n    export SENTRY_PROJECT=desktop-macos\n    sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\"\n    echo \"Debug files uploaded to Sentry\"\nfi\n";
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n    # We should handle this better in a CI environment, this is a temporary solution\n    # until we automatize this task\n    source ~/.zshrc\n    export SENTRY_ORG=internxt-e56c74f0b\n    export SENTRY_PROJECT=desktop-macos\n    sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\"\n    echo \"Debug files uploaded to Sentry\"\nfi\n";
 		};
 		E1ADD04D2AA8BAC200D95694 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
