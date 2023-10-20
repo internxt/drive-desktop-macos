@@ -13,15 +13,15 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-## macos
+## Mac
 
-### macos release
+### mac release_ci
 
 ```sh
-[bundle exec] fastlane macos release
+[bundle exec] fastlane mac release_ci
 ```
 
-Description of what the lane does
+Build release from CI
 
 ----
 

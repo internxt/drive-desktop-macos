@@ -13,18 +13,24 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+
 default_platform(:mac)
 
 team_id("JR4S3SY396")
 
 
 platform :mac do
-  desc "Build release"
-  lane :release do
+  desc "Build release from CI"
+  lane :release_ci do
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      path: "InternxtDesktop.xcodeproj"
+    )
     # add actions here: https://docs.fastlane.tools/actions
     build_mac_app(
+      output_directory: 'build',
       scheme: "InternxtDesktop",
-      export_method: 'package',
+      export_method: 'mac-application',
     )
   end
 end
