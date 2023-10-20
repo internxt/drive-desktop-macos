@@ -31,7 +31,8 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, update
             title: "Internxt Drive",
             id: "settings",
             width: 400,
-            height: 290
+            height: 290,
+            backgroundColor: Color.Gray5
         ),
         WindowConfig(
             view: AnyView(OnboardingView(finishOrSkipOnboarding: finishOrSkipOnboarding)),

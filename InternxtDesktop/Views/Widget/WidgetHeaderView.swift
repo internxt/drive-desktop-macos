@@ -64,8 +64,18 @@ struct WidgetHeaderView: View {
                 .foregroundColor(.Gray100)
                 .lineLimit(1)
                 .help(user?.email ?? "No user found")
-            Text("COMMON_USAGE_\(usageManager.getFormattedTotalUsage())_OF_\(usageManager.format(bytes: usageManager.limit))").font(.XSMedium)
-                .foregroundColor(.Gray50)
+            if(self.usageManager.loadingUsage == true && usageManager.limit == 1) {
+                HStack(alignment: .center,spacing: 4) {
+                    ProgressView().progressViewStyle(.circular).controlSize(.mini)
+                    AppText("USAGE_LOADING").font(.XSMedium)
+                       .foregroundColor(.Gray50)
+                }
+            } else {
+                Text("COMMON_USAGE_\(usageManager.getFormattedTotalUsage())_OF_\(usageManager.format(bytes: usageManager.limit))").font(.XSMedium)
+                   .foregroundColor(.Gray50)
+                
+                
+            }
         }
         
     }

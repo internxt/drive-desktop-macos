@@ -13,27 +13,36 @@ struct AccountUsageView: View {
     @EnvironmentObject var usageManager: UsageManager
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .center, spacing: 0) {
-                CurrentPlanSpace()
-                Spacer()
-                AppButton(title: "COMMON_UPGRADE", onClick: handleOpenUpgradePlan)
-            }.padding(.bottom, 20)
-            HStack {
-                Text("COMMON_USAGE_\(usageManager.getFormattedTotalUsage())_OF_\(usageManager.format(bytes: usageManager.limit))").font(.BaseRegular)
-                    .foregroundColor(.Gray100)
-                Spacer()
-                AppText("\(usageManager.getUsedPercentage())")
-                    .font(.BaseRegular)
-                    .foregroundColor(.Gray50)
+            if(usageManager.loadingUsage == true && usageManager.limit == 1) {
+                HStack(alignment: .center,spacing: 8) {
+                    ProgressView().progressViewStyle(.circular).controlSize(.small)
+                    AppText("USAGE_LOADING").font(.BaseMedium)
+                       .foregroundColor(.Gray50)
+                }.frame(height: 140)
+            } else {
+                HStack(alignment: .center, spacing: 0) {
+                    CurrentPlanSpace()
+                    Spacer()
+                    AppButton(title: "COMMON_UPGRADE", onClick: handleOpenUpgradePlan)
+                }.padding(.bottom, 20)
+                HStack {
+                    Text("COMMON_USAGE_\(usageManager.getFormattedTotalUsage())_OF_\(usageManager.format(bytes: usageManager.limit))").font(.BaseRegular)
+                        .foregroundColor(.Gray100)
+                    Spacer()
+                    AppText("\(usageManager.getUsedPercentage())")
+                        .font(.BaseRegular)
+                        .foregroundColor(.Gray50)
+                }
+                
+                
+                UsageBar().cornerRadius(6).padding(.vertical, 8)
+                HStack(alignment: .center, spacing: 16) {
+                    UsageLegendItem(label: "Drive", color: .Primary)
+                    UsageLegendItem(label: "Backups", color: .Indigo)
+                    UsageLegendItem(label: "Photos", color: .Orange)
+                }
             }
             
-            
-            UsageBar().cornerRadius(6).padding(.vertical, 8)
-            HStack(alignment: .center, spacing: 16) {
-                UsageLegendItem(label: "Drive", color: .Primary)
-                UsageLegendItem(label: "Backups", color: .Indigo)
-                UsageLegendItem(label: "Photos", color: .Orange)
-            }
         }
         
         .padding(20)

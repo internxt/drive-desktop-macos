@@ -101,7 +101,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
            
         })
-        if self.updaterController.updater.canCheckForUpdates == true {
+        if ConfigLoader.isDevMode == false && self.updaterController.updater.canCheckForUpdates == true {
             self.updaterController.updater.checkForUpdatesInBackground()
         }
         
