@@ -13,14 +13,14 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-    
+
       - name: Checkout code
         uses: actions/checkout@v3
       
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '14.3.1'
+          xcode-version: '14.2.0'
       
       - name: Install the Apple certificate and provisioning profile
         env:
