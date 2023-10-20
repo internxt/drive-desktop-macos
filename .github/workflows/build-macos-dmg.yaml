@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - feature/automatic-build-ga
+
+# This envs are available for all the steps
+env:
+  KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
+
 jobs:
   build:
     runs-on: macos-latest
@@ -20,7 +25,6 @@ jobs:
           P12_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-          KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
