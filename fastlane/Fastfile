@@ -30,11 +30,6 @@ platform :mac do
       profile_name: "internxt_desktop_ci_profile",
     )
 
-
-    update_code_signing_settings(
-      use_automatic_signing: true,
-      path: ""
-    )
     # add actions here: https://docs.fastlane.tools/actions
     build_mac_app(
       output_directory: 'build',
