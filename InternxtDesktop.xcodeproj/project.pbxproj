@@ -747,7 +747,6 @@
 				E1FB2D212A76BF0200473AE1 /* Frameworks */,
 				E1FB2D222A76BF0200473AE1 /* Resources */,
 				E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */,
-				E1581DC72A95143F0051DD46 /* Run Script */,
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
 			);
 			buildRules = (
@@ -872,8 +871,8 @@
 				E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */,
 				E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
-				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
-				E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift.git" */,
+				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
+				E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
@@ -939,25 +938,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E1581DC72A95143F0051DD46 /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			name = "Run Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n    # We should handle this better in a CI environment, this is a temporary solution\n    # until we automatize this task\n    source ~/.zshrc\n    export SENTRY_ORG=internxt-e56c74f0b\n    export SENTRY_PROJECT=desktop-macos\n    sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\"\n    echo \"Debug files uploaded to Sentry\"\nfi\n";
-		};
 		E1ADD04D2AA8BAC200D95694 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -1755,7 +1735,7 @@
 				kind = branch;
 			};
 		};
-		E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift.git" */ = {
+		E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
@@ -1779,7 +1759,7 @@
 				kind = branch;
 			};
 		};
-		E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */ = {
+		E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
 			requirement = {
@@ -1817,27 +1797,27 @@
 		};
 		E198D7E02AAA3A2800107753 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
+			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
 		};
 		E1A0AC4D2AB3A27F005E71D6 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift.git" */;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = Realm;
 		};
 		E1A0AC4F2AB3A27F005E71D6 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift.git" */;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 		E1A0AC512AB3A8C8005E71D6 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift.git" */;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 		E1A0AC532AB3A8D8005E71D6 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift.git" */;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = Realm;
 		};
 		E1A0AC632AB884F0005E71D6 /* Rudder */ = {
@@ -1857,7 +1837,7 @@
 		};
 		E1ADD0512AA8D68D00D95694 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
+			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
 		};
 /* End XCSwiftPackageProductDependency section */

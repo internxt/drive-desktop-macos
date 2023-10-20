@@ -53,7 +53,7 @@ jobs:
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
             
       - name: Run Fastlane release
-        run: fastlane release
+        run: fastlane release_ci
       # - name: Build and Sign
       #  run: |
       #    xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release
