@@ -55,7 +55,7 @@ jobs:
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       
       - name: Profile 
-        run: cat /Users/runner/Library/MobileDevice/Provisioning Profiles/profile.provision
+        run: cat /Users/runner/Library/MobileDevice/Provisioning\ Profiles/profile.provision
       
       - name: Build and Sign
         run: |
