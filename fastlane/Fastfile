@@ -31,6 +31,7 @@ platform :mac do
       output_directory: 'build',
       scheme: "InternxtDesktop",
       export_method: 'mac-application',
+      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM='JR4S3SY396'"
     )
   end
 end
