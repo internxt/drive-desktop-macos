@@ -53,9 +53,8 @@ jobs:
             
       - name: Build and Sign
         run: |
-          xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)" PROVISIONING_PROFILE="profile"
+          xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)" PROVISIONING_PROFILE_SPECIFIER="profile"
       
       - name: Clean Up Runner
         run: security delete-keychain $KEYCHAIN_PATH
 
-        
