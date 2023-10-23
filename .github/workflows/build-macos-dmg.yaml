@@ -65,7 +65,12 @@ jobs:
           name: fastlane-logs
           path: /Users/runner/Library/Logs/gym/
 
+      - name: Download all workflow run artifacts
+        if: always()
+        uses: actions/download-artifact@v3
+
       - name: Clean Up Runner
+        if: always()
         run: security delete-keychain $KEYCHAIN_PATH
 
 
