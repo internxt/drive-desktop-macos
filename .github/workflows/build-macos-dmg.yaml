@@ -58,6 +58,12 @@ jobs:
       #  run: |
       #    xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release
       
+      - name: Save logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: fastlane-logs
+          path: /Users/runner/Library/Logs/gym/
+
       - name: Clean Up Runner
         run: security delete-keychain $KEYCHAIN_PATH
 
