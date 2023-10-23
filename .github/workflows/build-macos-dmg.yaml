@@ -59,6 +59,7 @@ jobs:
       #    xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release
       
       - name: Save logs
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: fastlane-logs
