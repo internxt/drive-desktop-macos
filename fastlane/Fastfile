@@ -16,28 +16,32 @@
 
 default_platform(:mac)
 
-team_id("JR4S3SY396")
-
 
 platform :mac do
   desc "Build release from CI"
   lane :release_ci do
-    update_code_signing_settings(
-      use_automatic_signing: false,
-      path: "InternxtDesktop.xcodeproj",
-      team_id: "JR4S3SY396",
-      code_sign_identity: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)",
-      profile_name: "internxt_desktop_ci_profile",
+
+    match(
+      type: "developer_id", 
+      readonly: true,
+      app_identifier: [
+        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop.sync"
+      ]
     )
 
-    # add actions here: https://docs.fastlane.tools/actions
     build_mac_app(
+      clean: true,
       output_directory: 'build',
+      export_method: "developer-id",
       scheme: "InternxtDesktop",
-      export_method: 'mac-application',
-      export_options: {
-        "*" => "internxt_desktop_ci_profile"
-      }
     )
+
+
+    notarize(
+      package: './build/Internxt Drive.app',
+      api_key_path: './app_store_key.json'
+    )
+    
   end
 end

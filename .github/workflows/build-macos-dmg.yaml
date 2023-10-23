@@ -54,9 +54,8 @@ jobs:
             
       - name: Run Fastlane release
         run: fastlane release_ci --verbose
-      # - name: Build and Sign
-      #  run: |
-      #    xcodebuild -project InternxtDesktop.xcodeproj -scheme InternxtDesktop -configuration Release
+        env:
+          MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
       
       - name: Save logs
         if: always()

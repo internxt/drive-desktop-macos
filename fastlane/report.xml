@@ -5,22 +5,22 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000206">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000202">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: team_id" time="0.000147">
+      <testcase classname="fastlane.lanes" name="1: match" time="3.700778">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: update_code_signing_settings" time="0.087227">
+      <testcase classname="fastlane.lanes" name="2: build_mac_app" time="168.6141">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: build_mac_app" time="156.515898">
+      <testcase classname="fastlane.lanes" name="3: notarize" time="40.132227">
         
       </testcase>
     
