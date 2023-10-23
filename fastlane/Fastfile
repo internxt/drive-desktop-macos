@@ -35,6 +35,9 @@ platform :mac do
       output_directory: 'build',
       scheme: "InternxtDesktop",
       export_method: 'mac-application',
+      export_options: {
+        "*" => "internxt_desktop_ci_profile"
+      }
     )
   end
 end
