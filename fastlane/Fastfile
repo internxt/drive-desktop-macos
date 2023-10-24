@@ -30,7 +30,6 @@ platform :mac do
         "internxt.InternxtDesktop", 
         "internxt.InternxtDesktop.sync"
       ],
-      clone_branch_directly: true
     )
 
     # Build, archive and sign the .app
