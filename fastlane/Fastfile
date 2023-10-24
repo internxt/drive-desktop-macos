@@ -39,7 +39,7 @@ platform :mac do
       output_directory: 'build',
       export_method: "developer-id",
       scheme: "InternxtDesktop",
-      xcargs: '-allowProvisioningUpdates PROVISIONING_PROFILE_SPECIFIER=match Direct internxt.InternxtDesktop macos'
+      xcargs: '-allowProvisioningUpdates PROVISIONING_PROFILE_SPECIFIER="match Direct internxt.InternxtDesktop macos"'
     )
 
 
