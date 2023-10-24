@@ -21,6 +21,7 @@ platform :mac do
   desc "Build release from CI"
   lane :release_ci do
 
+    setup_ci()
     
     # Prepare certificates using Match
     match(
