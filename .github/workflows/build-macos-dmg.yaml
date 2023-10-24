@@ -8,7 +8,7 @@ on:
 # This envs are available for all the steps
 env:
   KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
-  CODESIGN_IDENTITY: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)"
+  #CODESIGN_IDENTITY: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)"
   #APPLE_DEVELOPMENT_TEAM: "JR4S3SY396"
 jobs:
   build:
@@ -43,10 +43,6 @@ jobs:
       - name: Download all workflow run artifacts
         if: always()
         uses: actions/download-artifact@v3
-
-      - name: Clean Up Runner
-        if: always()
-        run: security delete-keychain $KEYCHAIN_PATH
 
 
 
