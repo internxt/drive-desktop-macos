@@ -21,15 +21,19 @@ platform :mac do
   desc "Build release from CI"
   lane :release_ci do
 
+    
+    # Prepare certificates using Match
     match(
       type: "developer_id", 
       readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop", 
         "internxt.InternxtDesktop.sync"
-      ]
+      ],
+      clone_branch_directly: true
     )
 
+    # Build, archive and sign the .app
     build_mac_app(
       clean: true,
       output_directory: 'build',
@@ -38,6 +42,7 @@ platform :mac do
     )
 
 
+    # Notarize the app sending it to Apple notarytool
     notarize(
       package: './build/Internxt Drive.app',
       api_key_path: './app_store_key.json'
