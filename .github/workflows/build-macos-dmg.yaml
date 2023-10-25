@@ -27,7 +27,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
       - name: Add env.json
-        run: echo ${{ secrets.JSON_ENV }} >> ./InternxtDesktop/env.local.json
+        run: echo ${{ secrets.JSON_ENV }} > ./InternxtDesktop/env.local.json
       
       
       - name: Run Fastlane release
