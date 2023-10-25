@@ -22,7 +22,13 @@ platform :mac do
   lane :release_ci do
 
     setup_ci()
-
+    
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_KEY_ID"],
+      issuer_id: ENV["APP_STORE_ISSUER_ID"],
+      key_content: ENV["APP_STORE_KEY_CONTENT_BASE64"],
+      is_key_content_base64: true
+    )
     # Prepare certificates using Match
     match(
       type: "developer_id", 
@@ -41,12 +47,10 @@ platform :mac do
       scheme: "InternxtDesktop",
     )
 
-
-    # Notarize the app
     notarize(
       package: './build/Internxt Drive.app',
       api_key_path: './app_store_key.json'
     )
-    
+     
   end
 end
