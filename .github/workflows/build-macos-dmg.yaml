@@ -28,6 +28,9 @@ jobs:
       
       - name: Add App Store Key
         run: echo ${{ secrets.APP_STORE_KEY_JSON }} >> ./app_store_key.json
+      
+      - name: Debug JSON content
+        run: cat ./app_store_key.json
 
       - name: Run Fastlane release
         run: fastlane release_ci --verbose
