@@ -49,7 +49,6 @@ platform :mac do
 
     notarize(
       package: './build/Internxt Drive.app',
-      api_key_path: './app_store_key.json'
     )
      
   end
