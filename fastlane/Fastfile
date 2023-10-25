@@ -45,11 +45,7 @@ platform :mac do
 
     notarize(
       package: './build/Internxt Drive.app',
-      api_key: {
-        key_id: ENV["APP_STORE_KEY_ID"],
-        issuer_id: ENV["APP_STORE_ISSUER_ID"],
-        key: Base64.decode64(ENV["APP_STORE_KEY_CONTENT_BASE64"]),
-      }
+      api_key_path: './app_store_key.json'
     )
      
   end

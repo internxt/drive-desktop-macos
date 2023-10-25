@@ -10,7 +10,7 @@ env:
   KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
   APP_STORE_KEY_ID: ${{secrets.APP_STORE_KEY_ID}}
   APP_STORE_ISSUER_ID: ${{secrets.APP_STORE_ISSUER_ID}}
-  APP_STORE_KEY_CONTENT_BASE64: ${{secrets.APP_STORE_KEY_CONTENT_BASE64}}
+  APP_STORE_KEY_CONTENT: ${{secrets.APP_STORE_KEY_CONTENT}}
   #CODESIGN_IDENTITY: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)"
   #APPLE_DEVELOPMENT_TEAM: "JR4S3SY396"
 jobs:
@@ -29,6 +29,12 @@ jobs:
       - name: Add env.json
         run: echo ${{ secrets.JSON_ENV }} > ./InternxtDesktop/env.local.json
       
+      - name: Add App Store JSON
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "app_store_key.json"
+          json: ${{ secrets.APP_STORE_JSON }}
       
       - name: Run Fastlane release
         run: fastlane release_ci --verbose
