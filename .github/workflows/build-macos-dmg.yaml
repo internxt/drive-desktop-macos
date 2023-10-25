@@ -8,6 +8,9 @@ on:
 # This envs are available for all the steps
 env:
   KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
+  APP_STORE_KEY_ID: ${{secrets.APP_STORE_KEY_ID}}
+  APP_STORE_ISSUER_ID: ${{secrets.APP_STORE_ISSUER_ID}}
+  APP_STORE_KEY_CONTENT_BASE64: ${{secrets.APP_STORE_KEY_CONTENT_BASE64}}
   #CODESIGN_IDENTITY: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)"
   #APPLE_DEVELOPMENT_TEAM: "JR4S3SY396"
 jobs:
