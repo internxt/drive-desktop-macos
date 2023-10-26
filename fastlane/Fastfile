@@ -54,7 +54,7 @@ platform :mac do
     # FOR TESTING
 
     slack(
-      message: "[TESTING] Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here #{dmg_download_url}",
+      message: "[TESTING] Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here [WIP]",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
     github_release = set_github_release(
