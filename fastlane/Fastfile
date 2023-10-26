@@ -36,6 +36,8 @@ platform :mac do
       ],
     )
 
+    
+
     version_number = get_version_number(
       xcodeproj: "InternxtDesktop.xcodeproj",
       target: "InternxtDesktop"
@@ -48,7 +50,25 @@ platform :mac do
     dmg_original_name = "Internxt #{version}.dmg"
     dmg_final_name = "Internxt Drive #{version}.dmg"
     dmg_destination_dir = "build"
-    
+      
+    # FOR TESTING
+    github_release = set_github_release(
+      repository_name: "internxt/drive-desktop-macos",
+      api_token: ENV["GITHUB_TOKEN"],
+      is_draft: true,
+      is_prerelease: true,
+      description: "Drive Desktop #{version} release for MacOS",
+      name: "Drive Desktop MacOS #{version}",
+      tag_name: "v#{version}",
+      #upload_assets: [final_dmg_path]
+    )
+
+    slack(
+      message: "[TESTING] Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here #{dmg_download_url}",
+      slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
+    )
+
+    # END FOR TESTING
    
     # Build, archive and sign the .app
     build_mac_app(
@@ -70,9 +90,8 @@ platform :mac do
     Dir.chdir("..") do
       sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
       # Create a DMG directory
-      sh("mkdir", "./#{dmg_destination_dir}/dmg")
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
-      sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", "./#{dmg_destination_dir}/dmg/#{dmg_final_name}")
+      sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", "./#{dmg_destination_dir}/#{dmg_final_name}")
     end
 
 
@@ -104,7 +123,7 @@ platform :mac do
     dmg_download_url = dmg_asset["browser_download_url"]
     
     slack(
-      message: "Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here #{dmg_download_url}",
+      message: "[TESTING] Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here #{dmg_download_url}",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
 
