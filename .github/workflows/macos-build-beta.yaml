@@ -1,9 +1,7 @@
 name: Build and Sign Internxt Desktop MacOS App - Beta
 
 on:
-  push:
-    branches:
-      - feature/automatic-build-ga
+  workflow_dispatch:
 
 # This envs are available for all the steps
 env:
