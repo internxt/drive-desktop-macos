@@ -50,15 +50,13 @@ jobs:
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
       
-      - name: Save logs
-        if: always()
+      - name: Upload DMG
         uses: actions/upload-artifact@v3
         with:
-          name: fastlane-logs
-          path: /Users/runner/Library/Logs/gym/
+          name: Internxt Drive
+          path: ./build/dmg/
 
-      - name: Download all workflow run artifacts
-        if: always()
+      - name: Download DMG
         uses: actions/download-artifact@v3
 
 

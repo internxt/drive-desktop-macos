@@ -40,7 +40,8 @@ platform :mac do
     )
 
     app_path = "build/Internxt Drive.app"
-    dmg_name = "Internxt #{version_number}.dmg"
+    dmg_original_name = "Internxt #{version_number}.dmg"
+    dmg_final_name = "Internxt Drive #{version_number}.dmg"
     dmg_destination_dir = "build"
     
    
@@ -63,15 +64,17 @@ platform :mac do
     
     Dir.chdir("..") do
       sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
-      # Rename the file
-      #sh("mv", )
+      # Create a DMG directory
+      sh("mkdir", "./#{dmg_destination_dir}/dmg")
+      # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
+      sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", "./#{dmg_destination_dir}/dmg/#{dmg_final_name}")
     end
 
 
     # Notarize the DMG file
     notarize(
       bundle_id: "internxt.InternxtDesktop",
-      package: "./#{dmg_destination_dir}/#{dmg_name}",
+      package: "./#{dmg_destination_dir}/dmg/#{dmg_final_name}",
       api_key_path: './app_store_key.json'
     )
 
