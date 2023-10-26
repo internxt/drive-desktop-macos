@@ -36,6 +36,15 @@ jobs:
           name: "app_store_key.json"
           json: ${{ secrets.APP_STORE_JSON }}
       
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install create-dmg
+        run: npm install -g create-dmg
+      
+      
       - name: Run Fastlane release
         run: fastlane release_ci --verbose
         env:

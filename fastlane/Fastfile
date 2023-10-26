@@ -23,7 +23,7 @@ platform :mac do
 
     setup_ci()
     
-  
+    
     # Prepare certificates using Match
     match(
       type: "developer_id", 
@@ -34,6 +34,16 @@ platform :mac do
       ],
     )
 
+    version_number = get_version_number(
+      xcodeproj: "InternxtDesktop.xcodeproj",
+      target: "InternxtDesktop"
+    )
+
+    app_path = "build/Internxt Drive.app"
+    dmg_name = "Internxt #{version_number}.dmg"
+    dmg_destination_dir = "build"
+    
+   
     # Build, archive and sign the .app
     build_mac_app(
       clean: true,
@@ -42,11 +52,30 @@ platform :mac do
       scheme: "InternxtDesktop",
     )
 
-
+    # Notarize the app
     notarize(
-      package: './build/Internxt Drive.app',
+      package: app_path,
       api_key_path: './app_store_key.json'
     )
+
+    # Build the DMG using nodejs create-dmg package
+    
+    
+    Dir.chdir("..") do
+      sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
+      # Rename the file
+      #sh("mv", )
+    end
+
+
+    # Notarize the DMG file
+    notarize(
+      bundle_id: "internxt.InternxtDesktop",
+      package: "./#{dmg_destination_dir}/#{dmg_name}",
+      api_key_path: './app_store_key.json'
+    )
+
+    # We are done    
      
   end
 end
