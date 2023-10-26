@@ -1,4 +1,4 @@
-name: Build and Sign Internxt Desktop MacOS App
+name: Build and Sign Internxt Desktop MacOS App - Beta
 
 on:
   push:
@@ -11,8 +11,8 @@ env:
   APP_STORE_KEY_ID: ${{secrets.APP_STORE_KEY_ID}}
   APP_STORE_ISSUER_ID: ${{secrets.APP_STORE_ISSUER_ID}}
   APP_STORE_KEY_CONTENT: ${{secrets.APP_STORE_KEY_CONTENT}}
-  #CODESIGN_IDENTITY: "Apple Distribution: Internxt Universal Technologies Sociedad Limitada (JR4S3SY396)"
-  #APPLE_DEVELOPMENT_TEAM: "JR4S3SY396"
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  SLACK_WEBHOOK_MAC_TEAM: ${{secrets.SLACK_WEBHOOK_MAC_TEAM}}
 jobs:
   build:
     runs-on: macos-13

@@ -18,11 +18,13 @@ default_platform(:mac)
 
 
 platform :mac do
-  desc "Build release from CI"
+  desc "Build Beta DMG"
   lane :release_ci do
 
     setup_ci()
     
+
+   
     
     # Prepare certificates using Match
     match(
@@ -39,9 +41,12 @@ platform :mac do
       target: "InternxtDesktop"
     )
 
+    build_number = get_build_number(xcodeproj: "InternxtDesktop.xcodeproj")
+    version = "#{version_number}.#{build_number}-beta"
+
     app_path = "build/Internxt Drive.app"
-    dmg_original_name = "Internxt #{version_number}.dmg"
-    dmg_final_name = "Internxt Drive #{version_number}.dmg"
+    dmg_original_name = "Internxt #{version}.dmg"
+    dmg_final_name = "Internxt Drive #{version}.dmg"
     dmg_destination_dir = "build"
     
    
@@ -71,14 +76,37 @@ platform :mac do
     end
 
 
+    final_dmg_path = "./#{dmg_destination_dir}/dmg/#{dmg_final_name}"
     # Notarize the DMG file
     notarize(
       bundle_id: "internxt.InternxtDesktop",
-      package: "./#{dmg_destination_dir}/dmg/#{dmg_final_name}",
+      package: final_dmg_path,
       api_key_path: './app_store_key.json'
     )
 
-    # We are done    
-     
+    # Create a Github Release
+
+    github_release = set_github_release(
+      repository_name: "internxt/drive-desktop-macos",
+      api_token: ENV["GITHUB_TOKEN"],
+      is_draft: true,
+      is_prerelease: true,
+      description: "Drive Desktop #{version} release for MacOS",
+      name: "Drive Desktop MacOS #{version}",
+      tag_name: "v#{version}",
+      upload_assets: [final_dmg_path]
+    )
+
+    release_assets = github_release["assets"]
+
+    dmg_asset = release_assets.find { |asset| asset["name"].include? "dmg" }
+    
+    dmg_download_url = dmg_asset["browser_download_url"]
+    
+    slack(
+      message: "Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here #{dmg_download_url}",
+      slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
+    )
+
   end
 end
