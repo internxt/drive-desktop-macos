@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane mac release_ci
 ```
 
-Build release from CI
+Build Beta DMG
 
 ----
 

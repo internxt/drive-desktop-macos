@@ -47,7 +47,7 @@ platform :mac do
     version = "#{version_number}.#{build_number}-beta"
 
     app_path = "build/Internxt Drive.app"
-    dmg_original_name = "Internxt #{version}.dmg"
+    dmg_original_name = "Internxt #{version_number}.dmg"
     dmg_final_name = "Internxt Drive #{version}.dmg"
     dmg_destination_dir = "build"
       
@@ -67,8 +67,6 @@ platform :mac do
     )
 
     # Build the DMG using nodejs create-dmg package
-    
-    
     Dir.chdir("..") do
       sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
       # Create a DMG directory
@@ -77,7 +75,7 @@ platform :mac do
     end
 
 
-    final_dmg_path = "./#{dmg_destination_dir}/dmg/#{dmg_final_name}"
+    final_dmg_path = "./#{dmg_destination_dir}/#{dmg_final_name}"
     # Notarize the DMG file
     notarize(
       bundle_id: "internxt.InternxtDesktop",
