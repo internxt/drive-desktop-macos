@@ -51,6 +51,11 @@ platform :mac do
     dmg_final_name = "Internxt Drive #{version}.dmg"
     dmg_destination_dir = "build"
       
+    dmg_download_url = "https://github.com/internxt/drive-desktop-macos/releases/download/untagged-e19494e1cd5ba4bb3b20/Internxt.Drive.2.1.0.29-beta.dmg"
+    slack(
+      pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>",
+      slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
+    )
    
     # Build, archive and sign the .app
     build_mac_app(
@@ -103,7 +108,7 @@ platform :mac do
     dmg_download_url = dmg_asset["browser_download_url"]
     
     slack(
-      pretext: "Drive Desktop MacOS v#{version} is ready, you can download the DMG for QA here #{dmg_download_url}",
+      pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
 
