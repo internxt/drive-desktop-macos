@@ -19,7 +19,7 @@ default_platform(:mac)
 
 platform :mac do
   desc "Build Beta DMG"
-  lane :release_ci do
+  lane :beta_ci do
 
     setup_ci()
     
@@ -85,7 +85,7 @@ platform :mac do
       repository_name: "internxt/drive-desktop-macos",
       api_bearer: ENV["GITHUB_TOKEN"],
       is_draft: true,
-      is_prerelease: true,
+      is_prerelease: false,
       description: "Drive Desktop #{version} release for MacOS",
       name: "Drive Desktop MacOS #{version}",
       tag_name: "v#{version}",

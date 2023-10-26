@@ -46,7 +46,7 @@ jobs:
       
       
       - name: Run Fastlane release
-        run: fastlane release_ci --verbose
+        run: fastlane beta_ci --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
 
