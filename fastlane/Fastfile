@@ -87,7 +87,7 @@ platform :mac do
 
     github_release = set_github_release(
       repository_name: "internxt/drive-desktop-macos",
-      api_token: ENV["GITHUB_TOKEN"],
+      api_bearer: ENV["GITHUB_TOKEN"],
       is_draft: true,
       is_prerelease: true,
       description: "Drive Desktop #{version} release for MacOS",
