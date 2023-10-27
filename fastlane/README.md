@@ -15,10 +15,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Mac
 
-### mac release_ci
+### mac beta_ci
 
 ```sh
-[bundle exec] fastlane mac release_ci
+[bundle exec] fastlane mac beta_ci
 ```
 
 Build Beta DMG

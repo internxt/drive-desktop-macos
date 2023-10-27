@@ -1,18 +1,11 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
 
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
 require 'addressable/template'
+require 'json'
+
+ENV["GITHUB_REPOSITORY"] = "drive-desktop-macos"
+ENV["GITHUB_OWNER"] = "internxt"
+ENV["REPOSITORY_PROD_BRANCH"] = "main"
+
 
 default_platform(:mac)
 
@@ -23,7 +16,25 @@ platform :mac do
 
     setup_ci()
     
+    version_number = get_version_number(
+      xcodeproj: "InternxtDesktop.xcodeproj",
+      target: "InternxtDesktop"
+    )
+
+    build_number = get_build_number(xcodeproj: "InternxtDesktop.xcodeproj")
+
     
+    version = "#{version_number}.#{build_number}-beta"
+    tag_name = "v#{version}"
+    release_exists = release_already_exists(tag_name: tag_name)
+
+    if release_exists 
+      UI.user_error!("Release with tag #{tag_name} already exists, delete it or upgrade either version number or builder number")
+    else 
+      UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
+    end 
+    
+
     # Prepare certificates using Match
     match(
       type: "developer_id", 
@@ -33,16 +44,6 @@ platform :mac do
         "internxt.InternxtDesktop.sync"
       ],
     )
-
-    
-    version_number = get_version_number(
-      xcodeproj: "InternxtDesktop.xcodeproj",
-      target: "InternxtDesktop"
-    )
-
-    build_number = get_build_number(xcodeproj: "InternxtDesktop.xcodeproj")
-    version = "#{version_number}.#{build_number}-beta"
-
     app_path = "build/Internxt Drive.app"
     dmg_original_name = "Internxt #{version_number}.dmg"
     dmg_final_name = "Internxt Drive #{version}.dmg"
@@ -68,7 +69,7 @@ platform :mac do
       sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
       # Create a DMG directory
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
-      #sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
+      sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
     end
 
     # Notarize the DMG file
@@ -80,7 +81,7 @@ platform :mac do
 
     # Create a Github Release
     github_release = set_github_release(
-      repository_name: "internxt/drive-desktop-macos",
+      repository_name: "#{GITHUB_OWNER}/#{GITHUB_REPOSITORY}",
       api_bearer: ENV["GITHUB_TOKEN"],
       is_draft: true,
       is_prerelease: false,
@@ -89,53 +90,21 @@ platform :mac do
       tag_name: "v#{version}",
     )
 
-    
-    Dir.chdir("..") do
 
-      
-      sh("gh", "release", "upload", "v2.1.0.29-beta", final_dmg_path, "--clobber")
-      # Create a DMG directory
-      # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
-      #sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
-    end
-
-
-=begin
     release_assets = github_release["assets"]
 
-    dmg_asset = release_assets.find { |asset| asset["name"].include? "dmg" }
-    
-    upload_url = github_release["upload_url"]
-    file_name = File.basename(final_dmg_path)
-    expanded_upload_url = Addressable::Template.new(upload_url).expand(name: file_name).to_s
 
-    github_api(
-      api_token: ENV["GITHUB_TOKEN"],
-      http_method: 'POST',
-      headers: {'Content-Type' => 'application/octet-stream'},
-      url: expanded_upload_url,
-      raw_body: File.read(".#{final_dmg_path}"),
-      error_handlers: {
-        '*' => proc do |result|
-            UI.error("GitHub responded with #{result[:status]}:#{result[:body]}")
-            UI.user_error!("Failed to upload asset #{file_name} to GitHub.")
-          end
-      }
-    )
+
+    dmg_asset = release_assets.find { |asset| asset["name"].include? "dmg" }
+
     dmg_download_url = dmg_asset["browser_download_url"]
+
 
     # Send an slack message with the new DMG ready
     slack(
       pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
-=end
-
-
-    
-    
-    
-    
 
   end
 end

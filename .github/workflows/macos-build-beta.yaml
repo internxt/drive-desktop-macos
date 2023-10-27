@@ -7,10 +7,6 @@ on:
 
 # This envs are available for all the steps
 env:
-  KEYCHAIN_PATH: $RUNNER_TEMP/app-signing.keychain-db
-  APP_STORE_KEY_ID: ${{secrets.APP_STORE_KEY_ID}}
-  APP_STORE_ISSUER_ID: ${{secrets.APP_STORE_ISSUER_ID}}
-  APP_STORE_KEY_CONTENT: ${{secrets.APP_STORE_KEY_CONTENT}}
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   SLACK_WEBHOOK_MAC_TEAM: ${{secrets.SLACK_WEBHOOK_MAC_TEAM}}
 jobs:
@@ -54,21 +50,6 @@ jobs:
         run: fastlane beta_ci --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
-
-      - name: 'Tar files'
-        run: tar -cvf ./build/build.tar ./build
-      
-      - name: Upload DMG to workflow
-        uses: actions/upload-artifact@v3
-        with:
-          name: Internxt Drive
-          path: ./build/**/*.tar
-      
-      - name: Download DMG artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Internxt Drive
-          path: ./build
        
 
 
