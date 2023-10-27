@@ -51,7 +51,7 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
 
       - name: 'Tar files'
-        run: tar -cvf build.tar ./build
+        run: tar -cvf ./build/build.tar ./build
       
       - name: Upload DMG to workflow
         uses: actions/upload-artifact@v3
