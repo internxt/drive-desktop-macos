@@ -27,8 +27,13 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
       - name: Add env.json
-        run: echo ${{ secrets.JSON_ENV }} > ./InternxtDesktop/env.local.json
-      
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "env.local.json"
+          json: ${{ secrets.JSON_ENV }}
+          dir: 'InternxtDesktop/'
+
       - name: Add App Store JSON
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
