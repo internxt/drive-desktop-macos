@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Internxt Drive
-          path: ./build/**/*.dmg
+          path: ./build/**/*.app
       
       - name: Download DMG artifact
         uses: actions/download-artifact@v3
