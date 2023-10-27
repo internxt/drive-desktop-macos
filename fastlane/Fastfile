@@ -23,6 +23,7 @@ platform :mac do
 
     setup_ci()
     
+    
     # Prepare certificates using Match
     match(
       type: "developer_id", 
@@ -88,8 +89,16 @@ platform :mac do
       description: "Drive Desktop #{version} release for MacOS",
       name: "Drive Desktop MacOS #{version}",
       tag_name: "v#{version}",
-      upload_assets: [final_dmg_path]
     )
+
+    Dir.chdir("..") do
+      sh("gh", "release", "upload", "v2.1.0.29-beta", final_dmg_path, "--clobber")
+      # Create a DMG directory
+      # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
+      #sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
+    end
+
+
 =begin
     release_assets = github_release["assets"]
 

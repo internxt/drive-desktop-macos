@@ -59,7 +59,7 @@ jobs:
       - name: Download DMG artifact
         uses: actions/download-artifact@v3
         with:
-          name: Internxt 2.1.0.dmg
+          name: Internxt Drive
           path: ./build
        
 
