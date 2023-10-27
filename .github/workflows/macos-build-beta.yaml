@@ -50,11 +50,14 @@ jobs:
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
 
+      - name: 'Tar files'
+        run: tar -cvf build.tar ./build
+      
       - name: Upload DMG to workflow
         uses: actions/upload-artifact@v3
         with:
           name: Internxt Drive
-          path: ./build/**/*.app
+          path: ./build/**/*.tar
       
       - name: Download DMG artifact
         uses: actions/download-artifact@v3
