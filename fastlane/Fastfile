@@ -65,13 +65,16 @@ platform :mac do
     final_dmg_path = "./#{dmg_destination_dir}/#{dmg_original_name}"
     # Build the DMG using nodejs create-dmg package
     Dir.chdir("..") do
-      sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
+      #sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
       # Create a DMG directory
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
       #sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
     end
 
-
+    dmg(
+      path: app_path,
+      output_path: final_dmg_path
+    )
     
     # Notarize the DMG file
     notarize(
@@ -91,9 +94,10 @@ platform :mac do
       tag_name: "v#{version}",
     )
 
+    
     Dir.chdir("..") do
-      sh("shasum", "-a", "512", final_dmg_path)
-      sh("ls", "-la", "./build")
+
+      
       sh("gh", "release", "upload", "v2.1.0.29-beta", final_dmg_path, "--clobber")
       # Create a DMG directory
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
