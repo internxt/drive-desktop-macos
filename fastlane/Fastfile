@@ -93,6 +93,7 @@ platform :mac do
 
     Dir.chdir("..") do
       sh("shasum", "-a", "512", final_dmg_path)
+      sh("ls", "-la", "./build")
       sh("gh", "release", "upload", "v2.1.0.29-beta", final_dmg_path, "--clobber")
       # Create a DMG directory
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
