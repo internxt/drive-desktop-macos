@@ -87,24 +87,21 @@ platform :mac do
       is_prerelease: false,
       description: "Drive Desktop #{version} release for MacOS",
       name: "Drive Desktop MacOS #{version}",
-      tag_name: "v#{version}",
+      tag_name: tag_name,
     )
 
-
     release_assets = github_release["assets"]
-
-
-
     dmg_asset = release_assets.find { |asset| asset["name"].include? "dmg" }
-
     dmg_download_url = dmg_asset["browser_download_url"]
 
 
     # Send an slack message with the new DMG ready
+=begin
     slack(
       pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
+=end
 
   end
 end
