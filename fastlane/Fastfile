@@ -81,7 +81,7 @@ platform :mac do
 
     # Create a Github Release
     github_release = set_github_release(
-      repository_name: "#{GITHUB_OWNER}/#{GITHUB_REPOSITORY}",
+      repository_name: "#{ENV["GITHUB_OWNER"]}/#{ENV["GITHUB_REPOSITORY"]}",
       api_bearer: ENV["GITHUB_TOKEN"],
       is_draft: true,
       is_prerelease: false,
