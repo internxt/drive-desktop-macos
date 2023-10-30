@@ -96,12 +96,12 @@ platform :mac do
 
 
     # Send an slack message with the new DMG ready
-=begin
+
     slack(
       pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
-=end
+
 
   end
 end
