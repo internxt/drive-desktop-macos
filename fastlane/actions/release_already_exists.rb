@@ -24,11 +24,7 @@ module Fastlane
             }
             
             return match
-            #UI.important("See release at \"#{html_url}\"")
         end
-        # sh "shellcommand ./path"
-
-        # Actions.lane_context[SharedValues::RELEASE_ALREADY_EXISTS_CUSTOM_VALUE] = "my_val"
       end
 
       #####################################################
@@ -51,12 +47,11 @@ module Fastlane
                                        # The name of the environment variable
                                        env_name: 'FL_RELEASE_ALREADY_EXISTS_TAG_NAME',
                                        # a short description of this parameter
-                                       description: 'Tag name to check agains in Github',
+                                       description: 'Tag name to check against in Github',
                                        verify_block: proc do |value|
                                          unless value && !value.empty?
                                            UI.user_error!("No tag_name value provided")
                                          end
-                                         # UI.user_error!("Couldn't find file at path '#{value}'") unless File.exist?(value)
                                        end),
         ]
       end
@@ -72,7 +67,6 @@ module Fastlane
       end
 
       def self.authors
-        
         []
       end
 
