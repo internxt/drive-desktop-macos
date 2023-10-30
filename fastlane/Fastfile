@@ -88,6 +88,7 @@ platform :mac do
       description: "Drive Desktop #{version} release for MacOS",
       name: "Drive Desktop MacOS #{version}",
       tag_name: tag_name,
+      upload_assets: [final_dmg_path]
     )
 
     release_assets = github_release["assets"]
