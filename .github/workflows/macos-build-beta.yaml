@@ -1,0 +1,54 @@
+name: Build and Sign Internxt Desktop MacOS App - Beta
+
+on:
+  workflow_dispatch:
+
+# This envs are available for all the steps
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  SLACK_WEBHOOK_MAC_TEAM: ${{secrets.SLACK_WEBHOOK_MAC_TEAM}}
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Add env.json
+        id: create-env-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "env.local.json"
+          json: ${{ secrets.JSON_ENV }}
+          dir: 'InternxtDesktop/'
+
+      - name: Add App Store JSON
+        id: create-app-store-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "app_store_key.json"
+          json: ${{ secrets.APP_STORE_JSON }}
+      
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install create-dmg
+        run: npm install -g create-dmg
+      
+      
+      - name: Run Fastlane release
+        run: fastlane beta_ci --verbose
+        env:
+          MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
+       
+
+
+          

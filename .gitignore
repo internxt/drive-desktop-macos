@@ -1,3 +1,8 @@
 # Project env
 env.local.json
 !env.sample.json
+Internxt Drive.app
+build
+*.p8
+app_store_key.json
+report.xml
