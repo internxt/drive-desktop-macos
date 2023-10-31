@@ -54,11 +54,52 @@ struct CreateFileUseCase {
         self.networkFacade = networkFacade
         self.user = user
     }
- 
+    
+    private func trackStart() -> Date {
+        let filename = (item.filename as NSString)
+        let event = UploadStartedEvent(
+            fileName: filename.deletingPathExtension,
+            fileExtension: filename.pathExtension,
+            fileSize: item.documentSize as! Int64,
+            fileUuid: item.itemIdentifier.rawValue
+        )
+        
+        Analytics.shared.track(event: event)
+        
+        return Date()
+    }
+    
+    private func trackEnd(startedAt: Date) {
+        let filename = (item.filename as NSString)
+        let event = UploadCompletedEvent(
+            fileName: filename.deletingPathExtension,
+            fileExtension: filename.pathExtension,
+            fileSize: item.documentSize as! Int64,
+            fileUuid: item.itemIdentifier.rawValue,
+            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
+        )
+        
+        Analytics.shared.track(event: event)
+    }
+    
+    private func trackError(error: any Error) {
+        let filename = (item.filename as NSString)
+        let event = UploadErrorEvent(
+            fileName: filename.deletingPathExtension,
+            fileExtension: filename.pathExtension,
+            fileSize: item.documentSize as! Int64,
+            fileUuid: item.itemIdentifier.rawValue,
+            error: error
+        )
+        
+        Analytics.shared.track(event: event)
+    }
+    
+    
     public func run() -> Progress {
         self.logger.info("Creating file")
         let progress = Progress(totalUnitCount: 100)
-        
+        let startedAt = self.trackStart()
         Task {
             do {
                
@@ -126,6 +167,8 @@ struct CreateFileUseCase {
                     size: result.size
                 )
                 
+                self.trackEnd(startedAt: startedAt)
+                
                 completionHandler(fileProviderItem, [], false, nil )
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
@@ -150,6 +193,7 @@ struct CreateFileUseCase {
                 
                 
             } catch {
+                self.trackError(error: error)
                 error.reportToSentry()
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
@@ -210,3 +254,4 @@ struct CreateFileUseCase {
         
     }
 }
+

@@ -9,9 +9,7 @@ import Foundation
 import Rudder
 
 
-enum AnalyticsEvent: String {
-    case SEND_FEEDBACK = "Feedback Sent"
-}
+
 struct Analytics {
     let client: RSClient = {
         RSClient.sharedInstance()

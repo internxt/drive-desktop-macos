@@ -54,6 +54,8 @@
 		E16310582A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E163105C2A8E6C830072989E /* AppText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E163105B2A8E6C830072989E /* AppText.swift */; };
 		E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		E16D3E8A2AF141540026C504 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* AnalyticsEvents.swift */; };
+		E16D3E8B2AF141540026C504 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* AnalyticsEvents.swift */; };
 		E16ECC142A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
@@ -206,6 +208,7 @@
 		E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFileContentUseCase.swift; sourceTree = "<group>"; };
 		E16310562A8E66F70072989E /* URLDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLDictionary.swift; sourceTree = "<group>"; };
 		E163105B2A8E6C830072989E /* AppText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppText.swift; sourceTree = "<group>"; };
+		E16D3E892AF141540026C504 /* AnalyticsEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEvents.swift; sourceTree = "<group>"; };
 		E16ECC132A9508B10093D3ED /* ErrorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorUtils.swift; sourceTree = "<group>"; };
 		E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InternxtDesktopDebug.entitlements; sourceTree = "<group>"; };
 		E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
@@ -379,6 +382,7 @@
 			isa = PBXGroup;
 			children = (
 				E140C3322AC379AA00A88B9F /* DriveFileService.swift */,
+				E16D3E892AF141540026C504 /* AnalyticsEvents.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -859,6 +863,7 @@
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
+				E16D3E8A2AF141540026C504 /* AnalyticsEvents.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
@@ -913,6 +918,7 @@
 				E17C84C72AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */,
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
+				E16D3E8B2AF141540026C504 /* AnalyticsEvents.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
 				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
 				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
