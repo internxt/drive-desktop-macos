@@ -15,12 +15,12 @@ enum NetworkAnalyticsEvent: String {
     case DOWNLOAD_ERROR = "Download Error"
 }
 
-func getBandwidthUsage(fileSizeBytes: Int64, durationMs: Int) -> String {
+func getBandwidthUsage(fileSizeBytes: Int64, durationMs: Int) -> Int {
     /**
      * TODO: Define a better way to gather bandwidth usage, MetricKit is not enough
      * and dividing size/duration throws very random values
      **/
-    return "0"
+    return 0
 }
 
 protocol DownloadAnalyticsEventPayload {
