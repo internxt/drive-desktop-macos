@@ -10,15 +10,15 @@ import FileProvider
 import InternxtSwiftCore
 import os.log
 
-enum CreateFileUseCaseError: Error {
+enum UploadFileUseCaseError: Error {
     case InvalidParentId
     case CannotOpenInputStream
     case MissingDocumentSize
 }
 
 
-struct CreateFileUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "CreateFile")
+struct UploadFileUseCase {
+    let logger = Logger(subsystem: "com.internxt", category: "UploadFile")
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let trashAPI: TrashAPI = APIFactory.Trash
@@ -29,10 +29,12 @@ struct CreateFileUseCase {
     private let fileContent: URL
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+    private let thumbnailGenerationCompletionHandler: (Error?) -> Void
     private let driveAPI = APIFactory.Drive
     private let config = ConfigLoader().get()
     private let user: DriveUser
     private let activityManager: ActivityManager
+    private let trackId = UUID().uuidString
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -42,7 +44,8 @@ struct CreateFileUseCase {
         encryptedFileDestination: URL,
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
-        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
+        thumbnailGenerationCompletionHandler: @escaping (Error?) -> Void
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -53,66 +56,85 @@ struct CreateFileUseCase {
         self.completionHandler = completionHandler
         self.networkFacade = networkFacade
         self.user = user
+        self.thumbnailGenerationCompletionHandler = thumbnailGenerationCompletionHandler
     }
     
-    private func trackStart() -> Date {
+   
+    
+    private func trackStart(processIdentifier: String) -> Date {
         let filename = (item.filename as NSString)
         let event = UploadStartedEvent(
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
-            fileUuid: item.itemIdentifier.rawValue
+            fileUploadId: item.itemIdentifier.rawValue,
+            processIdentifier: processIdentifier,
+            parentFolderId: Int(getParentId()) ?? -1
         )
         
-        Analytics.shared.track(event: event)
+        DispatchQueue.main.async {
+            Analytics.shared.track(event: event)
+        }
+        
         
         return Date()
     }
     
-    private func trackEnd(startedAt: Date) {
+    private func trackEnd(processIdentifier: String, startedAt: Date) {
         let filename = (item.filename as NSString)
         let event = UploadCompletedEvent(
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
-            fileUuid: item.itemIdentifier.rawValue,
+            fileUploadId: item.itemIdentifier.rawValue,
+            processIdentifier: processIdentifier,
+            parentFolderId: Int(getParentId()) ?? -1,
             elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
         )
         
-        Analytics.shared.track(event: event)
+        DispatchQueue.main.async {
+            Analytics.shared.track(event: event)
+        }
     }
     
-    private func trackError(error: any Error) {
+    private func trackError(processIdentifier: String, error: any Error) {
         let filename = (item.filename as NSString)
         let event = UploadErrorEvent(
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
-            fileUuid: item.itemIdentifier.rawValue,
+            fileUploadId: item.itemIdentifier.rawValue,
+            processIdentifier: processIdentifier,
+            parentFolderId: Int(getParentId()) ?? -1,
             error: error
         )
         
-        Analytics.shared.track(event: event)
+        DispatchQueue.main.async {
+            Analytics.shared.track(event: event)
+        }
     }
     
     
+    private func getParentId() -> String {
+        return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
+    }
     public func run() -> Progress {
         self.logger.info("Creating file")
         let progress = Progress(totalUnitCount: 100)
-        let startedAt = self.trackStart()
+        let startedAt = self.trackStart(processIdentifier: trackId)
         Task {
             do {
                
                 guard let inputStream = InputStream(url: fileContent) else {
-                    throw CreateFileUseCaseError.CannotOpenInputStream
+                    throw UploadFileUseCaseError.CannotOpenInputStream
                 }
                 
                 guard let size = item.documentSize else {
-                    throw CreateFileUseCaseError.MissingDocumentSize
+                    throw UploadFileUseCaseError.MissingDocumentSize
                 }
                 
                 guard let sizeInt = size?.intValue else {
-                    throw CreateFileUseCaseError.MissingDocumentSize
+                    throw UploadFileUseCaseError.MissingDocumentSize
                 }
                 
                 
@@ -134,11 +156,11 @@ struct CreateFileUseCase {
                 
                 self.logger.info("Upload completed with id \(result.id)")
                
-                let parentId = item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
+                
                 
                 let encryptedFilename = try encrypt.encrypt(
                     string: filename.deletingPathExtension,
-                    password: "\(config.CRYPTO_SECRET2)-\(parentId)",
+                    password: "\(config.CRYPTO_SECRET2)-\(self.getParentId())",
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
@@ -167,7 +189,7 @@ struct CreateFileUseCase {
                     size: result.size
                 )
                 
-                self.trackEnd(startedAt: startedAt)
+                self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
                 
                 completionHandler(fileProviderItem, [], false, nil )
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
@@ -185,18 +207,18 @@ struct CreateFileUseCase {
                 
                 if let thumbnailUploadUnwrapped = thumbnailUpload {
                     self.logger.info("✅ Thumbnail uploaded with fileId \(thumbnailUploadUnwrapped.fileId)...")
+                    self.thumbnailGenerationCompletionHandler(nil)
                 } else {
                     self.logger.info("❌ Thumbnail uploaded failed")
+                    self.thumbnailGenerationCompletionHandler(nil)
                 }
                 
-                
-                
-                
             } catch {
-                self.trackError(error: error)
+                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                self.thumbnailGenerationCompletionHandler(error)
             }
         }
         
@@ -213,10 +235,10 @@ struct CreateFileUseCase {
             let size = thumbnailGenerationResult.url.fileSize
             
             guard let inputStream = InputStream(url: thumbnailGenerationResult.url) else {
-                throw CreateFileUseCaseError.CannotOpenInputStream
+                throw UploadFileUseCaseError.CannotOpenInputStream
             }
             
-            let result = try await networkFacade.uploadFile(
+            let uploadFileResult = try await networkFacade.uploadFile(
                 input: inputStream,
                 encryptedOutput: encryptedThumbnailDestination,
                 fileSize: Int(size),
@@ -234,8 +256,8 @@ struct CreateFileUseCase {
             
             
             let createdThumbnail = try await driveAPI.createThumbnail(createThumbnail: CreateThumbnailData(
-                bucketFile: result.id,
-                bucketId: result.bucket,
+                bucketFile: uploadFileResult.id,
+                bucketId: uploadFileResult.bucket,
                 fileId: driveItemId,
                 height: thumbnailGenerationResult.height,
                 width: thumbnailGenerationResult.width,
