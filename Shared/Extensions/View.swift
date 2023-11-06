@@ -24,7 +24,26 @@ struct EdgeBorder: Shape {
     }
 }
 
+
+
 extension View {
+    
+    @ViewBuilder
+    private func onTapBackgroundContent(enabled: Bool, _ action: @escaping () -> Void) -> some View {
+        if enabled {
+            Color.clear
+                .frame(width: NSScreen.main?.visibleFrame.size.width, height: NSScreen.main?.visibleFrame.size.width)
+                .contentShape(Rectangle())
+                .onTapGesture(perform: action)
+        }
+    }
+
+    func onTapBackground(enabled: Bool, _ action: @escaping () -> Void) -> some View {
+        background(
+            onTapBackgroundContent(enabled: enabled, action)
+        )
+    }
+    
     public func border(width: CGFloat, edges: [Edge], color: Color) -> some View {
         overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
     }
