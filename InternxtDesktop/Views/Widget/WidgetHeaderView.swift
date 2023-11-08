@@ -90,7 +90,9 @@ struct WidgetHeaderView: View {
                 
                 if #available(macOS 12, *) {
                     view.overlay(alignment: .bottomLeading) {
-                        SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+                        SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager).onTapBackground(enabled: settingsMenuOpen) {
+                                self.settingsMenuOpen = false
+                            }
                     }
                 } else {
                     view.overlay(SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
