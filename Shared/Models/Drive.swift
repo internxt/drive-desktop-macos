@@ -23,4 +23,5 @@ struct DriveFile {
     public let updatedAt: Date
     public let folderId: Int
     public let status: DriveItemStatus
+    public let fileId: String
 }

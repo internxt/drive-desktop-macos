@@ -11,8 +11,12 @@ import FileProvider
 import InternxtSwiftCore
 
 
-struct FetchFileContentUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "FetchFileContent")
+enum DownloadFileUseCaseError: Error {
+    case DriveFileMissing
+}
+
+struct DownloadFileUseCase {
+    let logger = Logger(subsystem: "com.internxt", category: "DownloadFileUseCase")
     private let cryptoUtils = CryptoUtils()
     private let networkFacade: NetworkFacade
     private let completionHandler: (URL?, NSFileProviderItem?, Error?) -> Void
@@ -39,12 +43,66 @@ struct FetchFileContentUseCase {
         self.encryptedFileDestinationURL = encryptedFileDestinationURL
         self.activityManager = activityManager
     }
+    
+    
+    
+    private func trackStart(driveFile: DriveFile, processIdentifier: String) -> Date {
+        
+        let event = DownloadStartedEvent(
+            fileName: driveFile.name,
+            fileExtension: driveFile.type ?? "",
+            fileSize: Int64(driveFile.size),
+            fileUuid: driveFile.uuid,
+            fileId: driveFile.fileId,
+            parentFolderId: driveFile.folderId
+        )
+        
+        DispatchQueue.main.async {
+            Analytics.shared.track(event: event)
+        }
+        
+        return Date()
+    }
+    
+    private func trackEnd(driveFile: DriveFile, processIdentifier: String, startedAt: Date) {
+        let event = DownloadCompletedEvent(
+            fileName: driveFile.name,
+            fileExtension: driveFile.type ?? "",
+            fileSize: Int64(driveFile.size),
+            fileUuid: driveFile.uuid,
+            fileId: driveFile.fileId,
+            parentFolderId: driveFile.folderId,
+            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
+        )
+        
+        
+        DispatchQueue.main.async {
+            Analytics.shared.track(event: event)
+        }
+    }
+    
+    private func trackError(driveFile: DriveFile,processIdentifier: String, error: any Error) {
+        let event = DownloadErrorEvent(
+            fileName: driveFile.name,
+            fileExtension: driveFile.type ?? "",
+            fileSize: Int64(driveFile.size),
+            fileUuid: driveFile.uuid,
+            fileId: driveFile.fileId,
+            parentFolderId: driveFile.folderId,
+            error: error
+        )
+        
+        DispatchQueue.main.async {
+            Analytics.shared.track(event: event)
+        }
+    }
  
     public func run() -> Progress {
-        
         let progress = Progress(totalUnitCount: 100)
         
         Task {
+           
+            var driveFile: DriveFile? = nil
             do {
                 
                 func progressHandler(completedProgress: Double) {
@@ -53,6 +111,24 @@ struct FetchFileContentUseCase {
                 }
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
                 let file = try await driveNewAPI.getFileMetaByUuid(uuid: itemIdentifier.rawValue)
+                
+                driveFile = DriveFile(
+                    uuid: file.uuid,
+                    plainName: file.plainName,
+                    name: file.name,
+                    type: file.type,
+                    size: Int(file.size) ?? 0,
+                    createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
+                    updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
+                    folderId: file.folderId,
+                    status: DriveItemStatus(rawValue: file.status) ?? DriveItemStatus.exists,
+                    fileId: file.fileId
+                )
+                
+                guard let driveFileUnrawpped = driveFile else {
+                    throw DownloadFileUseCaseError.DriveFileMissing
+                }
+                let trackStartedAt = trackStart(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid)
                 let decryptedFileURL = try await networkFacade.downloadFile(
                     bucketId: file.bucket,
                     fileId: file.fileId,
@@ -63,6 +139,9 @@ struct FetchFileContentUseCase {
                         progressHandler(completedProgress: completedProgress * maxProgress)
                     }
                 )
+                
+                
+                
                 let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
                 let parentIsRootFolder = file.folderId == user.root_folder_id
                 let fileProviderItem = FileProviderItem(
@@ -76,14 +155,19 @@ struct FetchFileContentUseCase {
                     size: Int(file.size)!
                 )
                 
+                trackEnd(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid, startedAt: trackStartedAt)
                 self.logger.info("Fetching file \(fileProviderItem.itemIdentifier.rawValue) inside of \(fileProviderItem.parentItemIdentifier.rawValue)")
                 
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
-                // Finish
+
                 progressHandler(completedProgress: 1)
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: filename, kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
+                if let driveFileUnwrapped = driveFile {
+                    trackError(driveFile: driveFileUnwrapped, processIdentifier: driveFileUnwrapped.uuid, error: error)
+                }
+                
                 error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content: \(error.localizedDescription)")
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))

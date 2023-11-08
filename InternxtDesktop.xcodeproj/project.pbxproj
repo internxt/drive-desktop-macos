@@ -37,7 +37,7 @@
 		E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */; };
 		E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */; };
 		E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
-		E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */; };
+		E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */; };
 		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
 		E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
 		E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
@@ -49,11 +49,13 @@
 		E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */; };
 		E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */; };
 		E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */; };
-		E1581DE02A96835F0051DD46 /* FetchFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */; };
+		E1581DE02A96835F0051DD46 /* DownloadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */; };
 		E16310572A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E16310582A8E66F70072989E /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		E163105C2A8E6C830072989E /* AppText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E163105B2A8E6C830072989E /* AppText.swift */; };
 		E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
+		E16D3E8B2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		E16ECC142A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
@@ -131,6 +133,8 @@
 		E1CC521C2AA0A884009DEEAA /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC521B2AA0A884009DEEAA /* String.swift */; };
 		E1CC521F2AA0A895009DEEAA /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC521B2AA0A884009DEEAA /* String.swift */; };
 		E1CC52212AA0B4FE009DEEAA /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1CC52202AA0B4FE009DEEAA /* Icons.xcassets */; };
+		E1D0D4172AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
+		E1D0D4182AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
 		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
 		E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
 		E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
@@ -195,7 +199,7 @@
 		E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileUseCase.swift; sourceTree = "<group>"; };
 		E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderMetaUseCase.swift; sourceTree = "<group>"; };
 		E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFolderUseCase.swift; sourceTree = "<group>"; };
-		E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFileUseCase.swift; sourceTree = "<group>"; };
+		E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileUseCase.swift; sourceTree = "<group>"; };
 		E1581DC92A95221D0051DD46 /* FileProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProvider.swift; sourceTree = "<group>"; };
 		E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileUseCase.swift; sourceTree = "<group>"; };
 		E1581DCE2A9629620051DD46 /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
@@ -203,9 +207,10 @@
 		E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaUseCase.swift; sourceTree = "<group>"; };
 		E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileUseCase.swift; sourceTree = "<group>"; };
 		E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderUseCase.swift; sourceTree = "<group>"; };
-		E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFileContentUseCase.swift; sourceTree = "<group>"; };
+		E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileUseCase.swift; sourceTree = "<group>"; };
 		E16310562A8E66F70072989E /* URLDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLDictionary.swift; sourceTree = "<group>"; };
 		E163105B2A8E6C830072989E /* AppText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppText.swift; sourceTree = "<group>"; };
+		E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAnalyticsEvents.swift; sourceTree = "<group>"; };
 		E16ECC132A9508B10093D3ED /* ErrorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorUtils.swift; sourceTree = "<group>"; };
 		E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InternxtDesktopDebug.entitlements; sourceTree = "<group>"; };
 		E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
@@ -261,6 +266,7 @@
 		E1CC52192AA0A695009DEEAA /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		E1CC521B2AA0A884009DEEAA /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		E1CC52202AA0B4FE009DEEAA /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
+		E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEvents.swift; sourceTree = "<group>"; };
 		E1DB29532A7D56C4009036B8 /* AppTextInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextInput.swift; sourceTree = "<group>"; };
 		E1DB29552A7D5CD5009036B8 /* env.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.local.json; sourceTree = "<group>"; };
 		E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigLoader.swift; sourceTree = "<group>"; };
@@ -362,7 +368,9 @@
 		E140C3282AC3769C00A88B9F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */,
 				E140C3292AC376AE00A88B9F /* Drive.swift */,
+				E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -400,10 +408,10 @@
 			isa = PBXGroup;
 			children = (
 				E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */,
-				E145E17F2A85235A00B07E0B /* CreateFileUseCase.swift */,
+				E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */,
 				E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */,
 				E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */,
-				E1581DDF2A96835F0051DD46 /* FetchFileContentUseCase.swift */,
+				E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */,
 				E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */,
 			);
 			path = Files;
@@ -836,6 +844,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D0D4172AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
 				E19136962AA108D200CAF0FA /* View.swift in Sources */,
 				E17C84B02AB225CD00A58414 /* WelcomeSlideView.swift in Sources */,
 				E1A0AC772AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
@@ -859,6 +868,7 @@
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
+				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
@@ -913,6 +923,7 @@
 				E17C84C72AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */,
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
+				E16D3E8B2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
 				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
 				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
@@ -939,7 +950,7 @@
 				E17C84C12AB2880B00A58414 /* Color.swift in Sources */,
 				E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */,
-				E1581DE02A96835F0051DD46 /* FetchFileContentUseCase.swift in Sources */,
+				E1581DE02A96835F0051DD46 /* DownloadFileUseCase.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
@@ -948,8 +959,9 @@
 				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E140C3362AC37E5500A88B9F /* DeleteFileUseCase.swift in Sources */,
-				E145E1802A85235A00B07E0B /* CreateFileUseCase.swift in Sources */,
+				E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */,
 				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,
+				E1D0D4182AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
 				E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E1A0AC7A2AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
 				E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */,
@@ -1050,7 +1062,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1087,7 +1099,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -1250,7 +1262,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1291,7 +1303,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1327,7 +1339,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -1360,7 +1372,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;

@@ -9,9 +9,9 @@ import Foundation
 import Rudder
 
 
-enum AnalyticsEvent: String {
-    case SEND_FEEDBACK = "Feedback Sent"
-}
+
+
+
 struct Analytics {
     let client: RSClient = {
         RSClient.sharedInstance()
@@ -27,7 +27,7 @@ struct Analytics {
         return [
             "name": "drive-desktop",
             "isNativeMacOS": "1",
-            "version": "\(Bundle.main.releaseVersionNumber).\(Bundle.main.buildVersionNumber)"
+            "version": "\(Bundle.main.releaseVersionNumber ?? "NO_RELEASE_VERSION_NUMBER").\(Bundle.main.buildVersionNumber ?? "NO_BUILD_VERSION_NUMBER")"
         ]
         
     }
@@ -64,6 +64,20 @@ struct Analytics {
             "app": getAppContextProperties(),
             "os": getOSContextProperties()
         ].merging(props){ (_, new) in new })
+    }
+    
+    func track(event: UploadAnalyticsEventPayload) {
+        client.track(event.eventName.rawValue, properties: [
+            "app": getAppContextProperties(),
+            "os": getOSContextProperties()
+        ].merging(event.getAllProperties()){ (_, new) in new })
+    }
+    
+    func track(event: DownloadAnalyticsEventPayload) {
+        client.track(event.eventName.rawValue, properties: [
+            "app": getAppContextProperties(),
+            "os": getOSContextProperties()
+        ].merging(event.getAllProperties()){ (_, new) in new })
     }
 
 }

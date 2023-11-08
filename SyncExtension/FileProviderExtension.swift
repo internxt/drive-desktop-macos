@@ -215,13 +215,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             completionHandler(url, item, error)
             do {
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
-                try FileManager.default.removeItem(at: destinationURL)
             } catch {
                 error.reportToSentry()
             }
             
         }
-        return FetchFileContentUseCase(
+        return DownloadFileUseCase(
             networkFacade: networkFacade,
             user: user,
             activityManager: activityManager,
@@ -266,14 +265,23 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 do {
                     try FileManager.default.removeItem(at: fileCopy)
                     try FileManager.default.removeItem(at: encryptedFileDestination)
-                    try FileManager.default.removeItem(at: thumbnailFileDestination)
-                    try FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
                 } catch {
                     error.reportToSentry()
                 }
                 
             }
-            return CreateFileUseCase(
+            
+            func thumbnailCompletionHandler(_ error:Error?) -> Void {
+                
+                do {
+                    try FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
+                    try FileManager.default.removeItem(at: thumbnailFileDestination)
+                } catch {
+                    error.reportToSentry()
+                }
+                
+            }
+            return UploadFileUseCase(
                 networkFacade: networkFacade,
                 user: user,
                 activityManager: activityManager,
@@ -282,7 +290,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 encryptedFileDestination: encryptedFileDestination,
                 thumbnailFileDestination: thumbnailFileDestination,
                 encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
-                completionHandler: completionHandlerInternal
+                completionHandler: completionHandlerInternal,
+                thumbnailGenerationCompletionHandler: thumbnailCompletionHandler
             ).run()
         }
         

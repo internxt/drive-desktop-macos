@@ -51,7 +51,8 @@ struct DriveFileService {
             createdAt: createdAt,
             updatedAt: updatedAt,
             folderId: fileMeta.folderId,
-            status: .trashed
+            status: .trashed,
+            fileId: fileMeta.fileId
         )
     }
     
@@ -86,7 +87,8 @@ struct DriveFileService {
             createdAt: createdAt,
             updatedAt: updatedAt,
             folderId: fileMeta.folderId,
-            status: DriveItemStatus(rawValue: fileMeta.status) ?? .exists
+            status: DriveItemStatus(rawValue: fileMeta.status) ?? .exists,
+            fileId: fileMeta.fileId
         )
     }
 }
