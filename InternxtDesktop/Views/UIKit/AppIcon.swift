@@ -14,6 +14,7 @@ enum AppIconName: String {
     case Check = "EA32"
     case At = "E989"
     case ChatCircle = "EA29"
+    case ChevronDown = "E9FD"
 }
 
 

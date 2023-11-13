@@ -73,6 +73,7 @@ struct AppTextStyle: ViewModifier {
 
 
 struct AppText: View {
+    
     private let text: String
     init(_ text: String){
         self.text = text

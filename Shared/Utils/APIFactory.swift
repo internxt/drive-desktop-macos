@@ -11,7 +11,20 @@ import InternxtSwiftCore
 enum APIFactoryError: Error {
     case MissingLegacyToken
 }
+
+var CLIENT_NAME = "drive-desktop"
+func getVersion() -> String {
+    guard let version = Bundle.main.releaseVersionNumber else {
+        return "NO_VERSION"
+    }
+    guard let buildNumber = Bundle.main.buildVersionNumber else {
+        return "NO_BUILD_NUMBER"
+    }
+    
+    return "\(version).\(buildNumber)"
+}
 struct APIFactory {
+    
     
     
     static var Network: NetworkAPI {
@@ -19,7 +32,7 @@ struct APIFactory {
         
         let config = configLoader.get()
         let networkAuth = configLoader.getNetworkAuth()
-        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!)
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
     static var DriveNew: DriveAPI {
@@ -28,7 +41,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
-        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token)
+        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
     static var Drive: DriveAPI {
@@ -37,7 +50,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
         
-        return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token)
+        return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
     static var Photos: PhotosAPI {
@@ -46,7 +59,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
-        return PhotosAPI(baseUrl: config.PHOTOS_API_URL, authToken: token)
+        return PhotosAPI(baseUrl: config.PHOTOS_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
     static var Trash: TrashAPI {
@@ -55,6 +68,6 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
-        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token)
+        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
 }
