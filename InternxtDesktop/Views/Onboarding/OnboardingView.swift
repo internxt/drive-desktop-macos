@@ -12,26 +12,28 @@ struct OnboardingView: View {
     public let totalSlides = 5
     @State var currentSlideIndex = 0
     var body: some View {
-        HStack(alignment: .top,spacing: 0){
-            VStack(alignment: .leading,spacing:0) {
-                CurrentSlideView.transition(.onboardingText)
+        AppSettingsManagerView {
+            HStack(alignment: .top,spacing: 0){
+                VStack(alignment: .leading,spacing:0) {
+                    CurrentSlideView.transition(.onboardingText)
+                }
+                .padding(.top, 64)
+                .padding(.horizontal, 32)
+                .padding(.bottom, 32)
+                .frame(minWidth: 0, maxWidth: .infinity,minHeight: 0, maxHeight: .infinity)
+                .background(Color.Gray1)
+                
+                Divider()
+                    .frame(maxWidth: 1, maxHeight: .infinity)
+                    .overlay(Color.Gray10)
+                    .zIndex(5)
+                HStack(alignment: .top) {
+                    CurrentSlideImage
+                        .transition(.onboardingImage)
+                }
+                .frame(maxWidth: 400, maxHeight: .infinity, alignment: .topLeading)
+                .background(Color.Gray5)
             }
-            .padding(.top, 64)
-            .padding(.horizontal, 32)
-            .padding(.bottom, 32)
-            .frame(minWidth: 0, maxWidth: .infinity,minHeight: 0, maxHeight: .infinity)
-            .background(Color.Gray1)
-            
-            Divider()
-                .frame(maxWidth: 1, maxHeight: .infinity)
-                .overlay(Color.Gray10)
-                .zIndex(5)
-            HStack(alignment: .top) {
-                CurrentSlideImage
-                    .transition(.onboardingImage)
-            }
-            .frame(maxWidth: 400, maxHeight: .infinity, alignment: .topLeading)
-            .background(Color.Gray5)
         }
     }
     

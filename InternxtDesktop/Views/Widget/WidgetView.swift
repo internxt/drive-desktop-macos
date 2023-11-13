@@ -24,44 +24,46 @@ struct WidgetView: View {
         self.openSendFeedback = openSendFeedback
     }
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            if authManager.user != nil {
-                
-                WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot, openSendFeedback: self.openSendFeedback)
-                    .zIndex(100)
-                    .environmentObject(self.globalUIManager)
-                    .environmentObject(self.usageManager)
-                VStack(alignment: .center) {
+        AppSettingsManagerView {
+            VStack(alignment: .leading, spacing: 0) {
+                if authManager.user != nil {
                     
-                    if activityManager.activityEntries.isEmpty {
-                        Image("SyncedStack")
-                           .resizable()
-                           .scaledToFit()
-                           .frame(maxWidth: 128)
-                        VStack {
-                            AppText("FILES_UP_TO_DATE")
-                                .font(.BaseMedium)
-                                .foregroundColor(.Gray100)
-                            AppText("FILES_UP_TO_DATE_HINT")
-                                .font(.SMRegular)
-                                .foregroundColor(.Gray60)
+                    WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot, openSendFeedback: self.openSendFeedback)
+                        .zIndex(100)
+                        .environmentObject(self.globalUIManager)
+                        .environmentObject(self.usageManager)
+                    VStack(alignment: .center) {
+                        
+                        if activityManager.activityEntries.isEmpty {
+                            Image("SyncedStack")
+                               .resizable()
+                               .scaledToFit()
+                               .frame(maxWidth: 128)
+                            VStack {
+                                AppText("FILES_UP_TO_DATE")
+                                    .font(.BaseMedium)
+                                    .foregroundColor(.Gray100)
+                                AppText("FILES_UP_TO_DATE_HINT")
+                                    .font(.SMRegular)
+                                    .foregroundColor(.Gray60)
+                            }
+                            .padding(.top, 22)
+                        } else {
+                            WidgetContentView(activityEntries: $activityManager.activityEntries)
                         }
-                        .padding(.top, 22)
-                    } else {
-                        WidgetContentView(activityEntries: $activityManager.activityEntries)
-                    }
-                }.frame(maxWidth: .infinity,maxHeight: .infinity)
-                WidgetFooterView()
-            } else {
-                Spacer()
-                AppText("Loading user...").foregroundColor(.Highlight)
-                Spacer()
+                    }.frame(maxWidth: .infinity,maxHeight: .infinity)
+                    WidgetFooterView()
+                } else {
+                    Spacer()
+                    AppText("Loading user...").foregroundColor(.Highlight)
+                    Spacer()
+                }
+                
             }
-            
+            .frame(width: 330, height: 400)
+            .background(Color.Surface)
+            .cornerRadius(10)
         }
-        .frame(width: 330, height: 400)
-        .background(Color.Surface)
-        .cornerRadius(10)
         
     }
 }

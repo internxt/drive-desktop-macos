@@ -39,6 +39,10 @@
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Última comprobación %@";
 "SETTINGS_START_ON_LAUNCH" = "Iniciar Internxt Drive al arrancar el sistema";
 "SETTINGS_LEARN_MORE" = "Más información sobre Internxt Drive";
+"SETTINGS_SPANISH_LANGUAGE" = "Español (Español)";
+"SETTINGS_ENGLISH_LANGUAGE" = "English (Inglés)";
+"SETTINGS_FRENCH_LANGUAGE" = "Français (Francés)";
+
 
 // Common
 "COMMON_UPGRADE" = "Comprar espacio";
@@ -50,6 +54,7 @@
 "COMMON_CONTINUE" = "Continuar";
 "COMMON_USAGE_%@_OF_%@" = "Usado %@ de %@";
 "COMMON_CLOSE" = "Cerrar";
+"COMMON_LANGUAGE" = "Idioma";
 
 // Usage
 "USAGE_LOADING" = "Cargando espacio usado";

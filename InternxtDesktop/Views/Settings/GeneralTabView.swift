@@ -9,8 +9,14 @@ import SwiftUI
 import Sparkle
 
 struct GeneralTabView: View {
+    @ObservedObject var appSettings = AppSettings.shared
+    @State private var selectedLanguage: Languages = AppSettings.shared.selectedLanguage
+    
+    
     public var updater: SPUUpdater? = nil
+    
     var body: some View {
+        
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .center, spacing: 0) {
                 AppText("SETTINGS_DEVICE_NAME")
@@ -22,11 +28,25 @@ struct GeneralTabView: View {
                 .background(Color.Gray10).padding(.vertical, 24)
             VStack(alignment: .leading,spacing: 0) {
                 StartOnLaunchView()
-                HStack(spacing:24) {
-                    
-                }.padding(.top, 20)
+                HStack(spacing:0) {
+                    VStack(alignment:.leading,spacing: 8){
+                        AppText("COMMON_LANGUAGE")
+                        AppSelector(
+                            options: [
+                                AppSelectorOption(value: Languages.en.rawValue, label: "SETTINGS_ENGLISH_LANGUAGE"),
+                                AppSelectorOption(value: Languages.fr.rawValue, label: "SETTINGS_FRENCH_LANGUAGE"),
+                                AppSelectorOption(value: Languages.es.rawValue, label: "SETTINGS_SPANISH_LANGUAGE")
+                            ],
+                            initialValue: appSettings.selectedLanguage.rawValue,
+                            position: .top) {selectedOption in
+                                if let language = Languages(rawValue: selectedOption.value) {
+                                    appSettings.selectedLanguage = language
+                                }
+                            }
+                    }.padding(.top, 24)
+                }
             }
-            Divider().background(Color.Gray10).padding(.vertical, 24)
+            Divider().background(Color.Gray10).padding(.vertical, 24).zIndex(-1)
             HStack {
                 VStack(alignment: .leading) {
                     AppText("Internxt Drive v\(getVersion())")
@@ -41,14 +61,14 @@ struct GeneralTabView: View {
                     CheckForUpdatesView(updater: updater)
                 }
                 
-            }.padding(.bottom, 16)
+            }.padding(.bottom, 16).zIndex(-1)
             AppText("SETTINGS_LEARN_MORE")
                 .contentShape(Rectangle())
                 .onTapGesture{
                     handleOpenLearnMore()
                 }
                 .font(.BaseRegular)
-                .foregroundColor(Color.Primary)
+                .foregroundColor(Color.Primary).zIndex(-1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(20)

@@ -39,6 +39,9 @@
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
 "SETTINGS_START_ON_LAUNCH" = "Démarrer Internxt Drive au démarrage du système";
 "SETTINGS_LEARN_MORE" = "En savoir plus sur Internxt Drive";
+"SETTINGS_SPANISH_LANGUAGE" = "Español (Espagnol)";
+"SETTINGS_ENGLISH_LANGUAGE" = "English (Anglais)";
+"SETTINGS_FRENCH_LANGUAGE" = "Français (Français)";
 
 // Common
 "COMMON_UPGRADE" = "Mise à niveau";
@@ -49,7 +52,8 @@
 "COMMON_SKIP" = "Sauter";
 "COMMON_CONTINUE" = "Continuer";
 "COMMON_USAGE_%@_OF_%@" = "Utilisation de %@ de %@";
-"COMMON_CLOSE" = "Fermer" ;
+"COMMON_CLOSE" = "Fermer";
+"COMMON_LANGUAGE" = "Langue";
 
 // Usage
 "USAGE_LOADING" = "Chargement de l'espace";

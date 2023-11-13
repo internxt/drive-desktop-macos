@@ -18,43 +18,45 @@ struct SendFeedbackView: View {
         self.closeWindow = closeWindow
     }
     var body: some View {
-        VStack(alignment: .leading, spacing: 0){
-            if feedbackSent {
-                VStack(alignment: .center, spacing: 0){
-                    AppIcon(iconName: .ChatCircle, size: 96, color: .Primary).padding(.bottom, 20)
-                    AppText("SHARE_FEEDBACK_SUCCESS_TITLE")
+        AppSettingsManagerView{
+            VStack(alignment: .leading, spacing: 0){
+                if feedbackSent {
+                    VStack(alignment: .center, spacing: 0){
+                        AppIcon(iconName: .ChatCircle, size: 96, color: .Primary).padding(.bottom, 20)
+                        AppText("SHARE_FEEDBACK_SUCCESS_TITLE")
+                            .font(.LGMedium)
+                            .frame(alignment:.center)
+                        AppText("SHARE_FEEDBACK_SUCCESS_SUBTITLE")
+                            .font(.BaseRegular).multilineTextAlignment(.center).padding(.bottom, 20)
+                        AppButton(title: "COMMON_CLOSE", onClick: handleCloseWindow, type: .secondary, size: .MD)
+                    }
+                } else {
+                    AppText("SHARE_FEEDBACK_TITLE")
                         .font(.LGMedium)
-                        .frame(alignment:.center)
-                    AppText("SHARE_FEEDBACK_SUCCESS_SUBTITLE")
-                        .font(.BaseRegular).multilineTextAlignment(.center).padding(.bottom, 20)
-                    AppButton(title: "COMMON_CLOSE", onClick: handleCloseWindow, type: .secondary, size: .MD)
+                        .padding(.bottom,4)
+                    AppText("SHARE_FEEDBACK_SUBTITLE")
+                        .font(.BaseRegular)
+                    AppTextArea(placeholder: "SHARE_FEEDBACK_PLACEHOLDER", text: $feedback)
+                        .padding(.top, 20)
+                        .padding(.bottom, 8)
+                    HStack {
+                        AppText("\(charactersCount)/\(charactersLimit)")
+                            .font(.XSRegular)
+                            .foregroundColor(.Gray80)
+                        Spacer()
+                        AppButton(title: "SHARE_FEEDBACK_ACTION", onClick: handleSendFeedback, size: .MD)
+                    }
                 }
-            } else {
-                AppText("SHARE_FEEDBACK_TITLE")
-                    .font(.LGMedium)
-                    .padding(.bottom,4)
-                AppText("SHARE_FEEDBACK_SUBTITLE")
-                    .font(.BaseRegular)
-                AppTextArea(placeholder: "SHARE_FEEDBACK_PLACEHOLDER", text: $feedback)
-                    .padding(.top, 20)
-                    .padding(.bottom, 8)
-                HStack {
-                    AppText("\(charactersCount)/\(charactersLimit)")
-                        .font(.XSRegular)
-                        .foregroundColor(.Gray80)
-                    Spacer()
-                    AppButton(title: "SHARE_FEEDBACK_ACTION", onClick: handleSendFeedback, size: .MD)
+            }.padding(20).frame(width: 380, height: 320).onChange(of: feedback, perform: {newFeedbackText in
+                if newFeedbackText.count >= charactersLimit {
+                    isDisabled = true
+                } else {
+                    isDisabled = false
                 }
-            }
-        }.padding(20).frame(width: 380, height: 320).onChange(of: feedback, perform: {newFeedbackText in
-            if newFeedbackText.count >= charactersLimit {
-                isDisabled = true
-            } else {
-                isDisabled = false
-            }
-            
-            charactersCount = feedback.count
-        })
+                
+                charactersCount = feedback.count
+            })
+        }
     }
     
     func handleSendFeedback() {

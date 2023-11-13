@@ -39,6 +39,9 @@
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Last checked %@";
 "SETTINGS_START_ON_LAUNCH" = "Start Internxt Drive on system startup";
 "SETTINGS_LEARN_MORE" = "Learn more about Internxt Drive";
+"SETTINGS_SPANISH_LANGUAGE" = "Español (Spanish)";
+"SETTINGS_ENGLISH_LANGUAGE" = "English (English)";
+"SETTINGS_FRENCH_LANGUAGE" = "Français (French)";
 
 // Common
 "COMMON_UPGRADE" = "Upgrade";
@@ -50,6 +53,7 @@
 "COMMON_CONTINUE" = "Continue";
 "COMMON_USAGE_%@_OF_%@" = "Using %@ of %@";
 "COMMON_CLOSE" = "Close";
+"COMMON_LANGUAGE" = "Language";
 
 // Usage
 "USAGE_LOADING" = "Loading your usage";
