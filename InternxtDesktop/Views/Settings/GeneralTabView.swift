@@ -36,7 +36,7 @@ struct GeneralTabView: View {
                                 AppSelectorOption(value: Languages.en.rawValue, label: "SETTINGS_ENGLISH_LANGUAGE"),
                                 AppSelectorOption(value: Languages.fr.rawValue, label: "SETTINGS_FRENCH_LANGUAGE"),
                                 AppSelectorOption(value: Languages.es.rawValue, label: "SETTINGS_SPANISH_LANGUAGE")
-                            ],
+                            ].sorted(by: {$0.label > $1.label}),
                             initialValue: appSettings.selectedLanguage.rawValue,
                             position: .top) {selectedOption in
                                 if let language = Languages(rawValue: selectedOption.value) {
