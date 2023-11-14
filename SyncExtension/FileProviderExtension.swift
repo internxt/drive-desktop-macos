@@ -368,13 +368,24 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         if contentHasChanged {
             
+            let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
+            
+            func completionHandlerInternal(item: NSFileProviderItem?, fields: NSFileProviderItemFields, shouldFetch: Bool, error: Error?) -> Void{
+                completionHandler(item, fields, shouldFetch, error)
+                do {
+                    try FileManager.default.removeItem(at: encryptedFileDestination)
+                } catch {
+                    error.reportToSentry()
+                }
+            }
+            
             return UpdateFileContentUseCase(
                 networkFacade: self.networkFacade,
                 user: self.user,
                 item: item,
                 url: newContents!,
-                encryptedFileDestination: makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)"),
-                completionHandler: completionHandler
+                encryptedFileDestination: encryptedFileDestination,
+                completionHandler: completionHandlerInternal
             ).run()
         }
         
