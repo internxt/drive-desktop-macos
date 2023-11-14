@@ -329,7 +329,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let fileHasBeenMoved = changedFields.contains(.parentItemIdentifier) && item.contentType != .folder &&  !fileHasBeenTrashed
        
         // File and folder cases
-        let contentHasChanged = changedFields.contains(.contents)
+        let contentHasChanged = changedFields.contains(.contents) && newContents != nil
         let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
         let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
         
@@ -337,33 +337,56 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         
         if folderHasBeenTrashed {
+            
             return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if folderHasBeenRenamed {
+            
             return RenameFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if folderHasBeenMoved {
+            
             return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenTrashed {
+            
             return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenRenamed  {
+            
             return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenMoved {
+            
             return MoveFileUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if contentHasChanged {
-            logger.info("File content has changed, let it pass")
-            completionHandler(item, [], false, nil)
-            return Progress()
+            
+            let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
+            
+            func completionHandlerInternal(item: NSFileProviderItem?, fields: NSFileProviderItemFields, shouldFetch: Bool, error: Error?) -> Void{
+                completionHandler(item, fields, shouldFetch, error)
+                do {
+                    try FileManager.default.removeItem(at: encryptedFileDestination)
+                } catch {
+                    error.reportToSentry()
+                }
+            }
+            
+            return UpdateFileContentUseCase(
+                networkFacade: self.networkFacade,
+                user: self.user,
+                item: item,
+                url: newContents!,
+                encryptedFileDestination: encryptedFileDestination,
+                completionHandler: completionHandlerInternal
+            ).run()
         }
         
         if contentModificationDateHasChanged {
