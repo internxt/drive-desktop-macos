@@ -128,6 +128,7 @@
 		E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0432AA7367800D95694 /* UsageManager.swift */; };
 		E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
 		E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = E1ADD0512AA8D68D00D95694 /* SocketIO */; };
+		E1B1C9272B0394C30003F001 /* UpdateFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */; };
 		E1BE23612AB0A06A00EAB152 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
 		E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4612AB9FD6300E3BF7A /* URL.swift */; };
 		E1CAB6782AFC3F740006EA1E /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CAB6772AFC3F740006EA1E /* AppSelector.swift */; };
@@ -268,6 +269,7 @@
 		E1ADD0412AA7272100D95694 /* AccountUsageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountUsageView.swift; sourceTree = "<group>"; };
 		E1ADD0432AA7367800D95694 /* UsageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageManager.swift; sourceTree = "<group>"; };
 		E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeService.swift; sourceTree = "<group>"; };
+		E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFileContentUseCase.swift; sourceTree = "<group>"; };
 		E1CAB6772AFC3F740006EA1E /* AppSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelector.swift; sourceTree = "<group>"; };
 		E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileOrFolderUseCase.swift; sourceTree = "<group>"; };
 		E1CC520B2A98B460009DEEAA /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 				E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */,
 				E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */,
 				E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */,
+				E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -574,9 +577,9 @@
 			children = (
 				E163105D2A8F8A570072989E /* Shared */,
 				E1FB2D262A76BF0200473AE1 /* InternxtDesktop */,
+				E1FB2D832A76C48600473AE1 /* SyncExtension */,
 				E1FB2D382A76BF0300473AE1 /* InternxtDesktopTests */,
 				E1FB2D422A76BF0300473AE1 /* InternxtDesktopUITests */,
-				E1FB2D832A76C48600473AE1 /* SyncExtension */,
 				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 			);
@@ -956,6 +959,7 @@
 				E106D4672ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E13B839A2AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E1A0AC752AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
+				E1B1C9272B0394C30003F001 /* UpdateFileContentUseCase.swift in Sources */,
 				E145E16D2A82A21500B07E0B /* Time.swift in Sources */,
 				E10B0FE02A94143F00B97874 /* Int.swift in Sources */,
 				E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */,
@@ -1086,7 +1090,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1286,7 +1290,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1327,7 +1331,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
