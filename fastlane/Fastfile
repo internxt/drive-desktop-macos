@@ -97,9 +97,9 @@ platform :mac do
 
 
     # Send an slack message with the new DMG ready
-
+    # TODO: Add changelog and latest changes from previous release
     slack(
-      pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>",
+      pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>\n\nInstructions:\nLogout and then uninstall totally the previous app version to prevent unpredictable effects",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
 

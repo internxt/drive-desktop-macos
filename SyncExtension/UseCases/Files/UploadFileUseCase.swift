@@ -191,8 +191,6 @@ struct UploadFileUseCase {
                 
                 self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
                 
-                completionHandler(fileProviderItem, [], false, nil )
-                activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
                 
                 self.logger.info("🖼️ Processing thumbnail...")
@@ -213,9 +211,13 @@ struct UploadFileUseCase {
                     self.thumbnailGenerationCompletionHandler(nil)
                 }
                 
+                completionHandler(fileProviderItem, [], false, nil )
+                activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
+                
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
+                
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 self.thumbnailGenerationCompletionHandler(error)
@@ -223,6 +225,10 @@ struct UploadFileUseCase {
         }
         
         return progress
+    }
+    
+    func patchFileContent() -> Void {
+        
     }
     
     func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL) async -> CreateThumbnailResponse? {

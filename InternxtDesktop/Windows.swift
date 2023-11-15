@@ -16,7 +16,7 @@ import Sparkle
 func defaultWindows(authManager: AuthManager, usageManager: UsageManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
     let windows = [
         WindowConfig(
-            view: AnyView(SignInWithBrowserView().environmentObject(authManager)),
+            view: AnyView(AppSettingsManagerView{SignInWithBrowserView().environmentObject(authManager)}),
             title: nil,
             id: "auth",
             width: 480,
@@ -24,10 +24,10 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, update
             fixedToFront: false
         ),
         WindowConfig(
-            view:  AnyView(SettingsView(updater: updater)
-                .environmentObject(authManager)
-                .environmentObject(usageManager)
-            ),
+            view:  AnyView(AppSettingsManagerView{ SettingsView(updater: updater)
+                    .environmentObject(authManager)
+                    .environmentObject(usageManager)
+            }),
             title: "Internxt Drive",
             id: "settings",
             width: 400,
@@ -35,13 +35,13 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, update
             backgroundColor: Color.Gray5
         ),
         WindowConfig(
-            view: AnyView(OnboardingView(finishOrSkipOnboarding: finishOrSkipOnboarding)),
+            view: AnyView(AppSettingsManagerView { OnboardingView(finishOrSkipOnboarding: finishOrSkipOnboarding) }),
             id: "onboarding",
             width: 800,
             height: 470
         ),
         WindowConfig(
-            view: AnyView(SendFeedbackView(closeWindow: closeSendFeedbackWindow )),
+            view: AnyView(AppSettingsManagerView { SendFeedbackView(closeWindow: closeSendFeedbackWindow ) }),
             title: "Internxt Desktop Feedback",
             id: "send-feedback",
             width: 380,

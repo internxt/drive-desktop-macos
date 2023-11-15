@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct SignInWithBrowserView: View {
-
- 
+    
+    
     var body: some View {
-        AppSettingsManagerView {
-            Color.Surface
+        Color.Surface
             .ignoresSafeArea(.all)
             .overlay(
                 VStack(alignment: .center, spacing: 0) {
@@ -37,9 +36,8 @@ struct SignInWithBrowserView: View {
                         
                     }.padding(.top, 24)
                 }
-                .frame(width: 300)
+                    .frame(width: 300)
             )
-        }
     }
     
     func openSignUpUrl() {
