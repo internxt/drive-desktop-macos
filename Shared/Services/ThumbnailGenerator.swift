@@ -15,7 +15,7 @@ struct GeneratedThumbnailResult {
     public let url: URL
 }
 
-var DEFAULT_THUMBNAIL_SIZE: CGFloat = 256
+var DEFAULT_THUMBNAIL_SIZE: CGFloat = 512
 class ThumbnailGenerator {
     static var shared = ThumbnailGenerator()
     

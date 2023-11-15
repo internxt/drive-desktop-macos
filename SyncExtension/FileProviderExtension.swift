@@ -15,14 +15,8 @@ enum CreateItemError: Error {
     case NoParentIdFound
 }
 
-let enableInternvalSignallerInDevMode = false
 
-let useIntervalSignaller = ConfigLoader.isDevMode ? enableInternvalSignallerInDevMode : true;
-
-func createFallbackRealtimeInterval() -> Timer.TimerPublisher  {
-    return Timer.publish(every: 5, on: .main, in: .common)
-}
-
+let useIntervalSignaller = true;
 
 let logger = Logger(subsystem: "com.internxt", category: "sync")
 class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
@@ -63,6 +57,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             onEvent: {
                 Task {
                     do {
+                        
                         // Wait 500ms before asking for updates
                         try await Task.sleep(nanoseconds: 500_000_000)
                         try await manager.signalEnumerator(for: .workingSet)
@@ -80,10 +75,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         self.realtime = realtime
         
         
-        // If the realtime service gets disconnected, this system will keep signalling on an interval
-        self.realtimeFallbackTimer = createFallbackRealtimeInterval().autoconnect().sink(receiveValue: {_ in
-           
-            if realtime.isConnected == false || useIntervalSignaller {
+        self.realtimeFallbackTimer = Timer.publish(every: 5, on:.main, in: .common).autoconnect().sink(
+            receiveValue: {_ in
+                
+            // If the realtime socket gets disconnected, we will fallback to
+            // checking for updates periodically until it gets reconnected
+            logger.info("About to signal enumerator to ask for changes")
+            logger.info("Realtime is connected: \(realtime.isConnected == true ? "Yes" : "No")")
+            if realtime.isConnected == false && useIntervalSignaller {
                 manager.signalEnumerator(for: .workingSet, completionHandler: {error in
                     if error != nil {
                         logger.error("Failed to signal enumerator")
