@@ -29,7 +29,6 @@ struct UploadFileUseCase {
     private let fileContent: URL
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
-    private let thumbnailGenerationCompletionHandler: (Error?) -> Void
     private let driveAPI = APIFactory.Drive
     private let config = ConfigLoader().get()
     private let user: DriveUser
@@ -44,8 +43,7 @@ struct UploadFileUseCase {
         encryptedFileDestination: URL,
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
-        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
-        thumbnailGenerationCompletionHandler: @escaping (Error?) -> Void
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -56,7 +54,6 @@ struct UploadFileUseCase {
         self.completionHandler = completionHandler
         self.networkFacade = networkFacade
         self.user = user
-        self.thumbnailGenerationCompletionHandler = thumbnailGenerationCompletionHandler
     }
     
    
@@ -191,8 +188,6 @@ struct UploadFileUseCase {
                 
                 self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
                 
-                completionHandler(fileProviderItem, [], false, nil )
-                activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
                 
                 self.logger.info("🖼️ Processing thumbnail...")
@@ -207,22 +202,27 @@ struct UploadFileUseCase {
                 
                 if let thumbnailUploadUnwrapped = thumbnailUpload {
                     self.logger.info("✅ Thumbnail uploaded with fileId \(thumbnailUploadUnwrapped.fileId)...")
-                    self.thumbnailGenerationCompletionHandler(nil)
                 } else {
                     self.logger.info("❌ Thumbnail uploaded failed")
-                    self.thumbnailGenerationCompletionHandler(nil)
                 }
+                
+                completionHandler(fileProviderItem, [], false, nil )
+                activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
+                
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
-                self.thumbnailGenerationCompletionHandler(error)
             }
         }
         
         return progress
+    }
+    
+    func patchFileContent() -> Void {
+        
     }
     
     func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL) async -> CreateThumbnailResponse? {

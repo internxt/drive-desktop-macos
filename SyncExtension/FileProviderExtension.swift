@@ -265,15 +265,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 do {
                     try FileManager.default.removeItem(at: fileCopy)
                     try FileManager.default.removeItem(at: encryptedFileDestination)
-                } catch {
-                    error.reportToSentry()
-                }
-                
-            }
-            
-            func thumbnailCompletionHandler(_ error:Error?) -> Void {
-                
-                do {
                     try FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
                     try FileManager.default.removeItem(at: thumbnailFileDestination)
                 } catch {
@@ -281,6 +272,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 }
                 
             }
+            
+           
             return UploadFileUseCase(
                 networkFacade: networkFacade,
                 user: user,
@@ -290,8 +283,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 encryptedFileDestination: encryptedFileDestination,
                 thumbnailFileDestination: thumbnailFileDestination,
                 encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
-                completionHandler: completionHandlerInternal,
-                thumbnailGenerationCompletionHandler: thumbnailCompletionHandler
+                completionHandler: completionHandlerInternal
             ).run()
         }
         

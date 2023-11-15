@@ -18,7 +18,6 @@ struct SendFeedbackView: View {
         self.closeWindow = closeWindow
     }
     var body: some View {
-        AppSettingsManagerView{
             VStack(alignment: .leading, spacing: 0){
                 if feedbackSent {
                     VStack(alignment: .center, spacing: 0){
@@ -56,7 +55,6 @@ struct SendFeedbackView: View {
                 
                 charactersCount = feedback.count
             })
-        }
     }
     
     func handleSendFeedback() {
