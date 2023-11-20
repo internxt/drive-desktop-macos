@@ -30,10 +30,12 @@ struct UploadFileUseCase {
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     private let driveAPI = APIFactory.Drive
+    private let driveNewAPI = APIFactory.DriveNew
     private let config = ConfigLoader().get()
     private let user: DriveUser
     private let activityManager: ActivityManager
     private let trackId = UUID().uuidString
+    private let progress: Progress
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -43,7 +45,8 @@ struct UploadFileUseCase {
         encryptedFileDestination: URL,
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
-        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
+        progress: Progress
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -54,6 +57,7 @@ struct UploadFileUseCase {
         self.completionHandler = completionHandler
         self.networkFacade = networkFacade
         self.user = user
+        self.progress = progress
     }
     
    
@@ -94,6 +98,8 @@ struct UploadFileUseCase {
         }
     }
     
+   
+    
     private func trackError(processIdentifier: String, error: any Error) {
         let filename = (item.filename as NSString)
         let event = UploadErrorEvent(
@@ -117,11 +123,12 @@ struct UploadFileUseCase {
     }
     public func run() -> Progress {
         self.logger.info("Creating file")
-        let progress = Progress(totalUnitCount: 100)
-        let startedAt = self.trackStart(processIdentifier: trackId)
+                
+        
         Task {
             do {
-               
+                
+                let startedAt = self.trackStart(processIdentifier: trackId)
                 guard let inputStream = InputStream(url: fileContent) else {
                     throw UploadFileUseCaseError.CannotOpenInputStream
                 }

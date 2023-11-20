@@ -248,6 +248,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return Progress()
             }
             
+           
             let filename = NSString(string:itemTemplate.filename)
             let fileCopy = makeTemporaryURL("plain", filename.pathExtension)
             try! FileManager.default.copyItem(at: contentUrl, to: fileCopy)
@@ -273,7 +274,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
             
            
-            return UploadFileUseCase(
+            return UploadFileOrUpdateContentUseCase(
                 networkFacade: networkFacade,
                 user: user,
                 activityManager: activityManager,
@@ -374,9 +375,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 networkFacade: self.networkFacade,
                 user: self.user,
                 item: item,
+                fileUuid: item.itemIdentifier.rawValue,
                 url: newContents!,
                 encryptedFileDestination: encryptedFileDestination,
-                completionHandler: completionHandlerInternal
+                completionHandler: completionHandlerInternal,
+                progress: Progress(totalUnitCount: 100)
             ).run()
         }
         

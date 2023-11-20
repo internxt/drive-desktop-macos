@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import InternxtSwiftCore
+import FileProvider
 
 func dateToAnchor(_ date: Date) -> String {
     let formatter = DateFormatter()
@@ -20,4 +22,9 @@ func anchorToDate(_ string: String) -> Date? {
     formatter.dateStyle = .long
     formatter.timeStyle = .short
     return formatter.date(from: string)
+}
+
+
+func getParentId(item: NSFileProviderItem, user: DriveUser) -> String {
+    return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
 }
