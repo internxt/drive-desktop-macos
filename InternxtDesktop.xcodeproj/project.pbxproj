@@ -98,6 +98,7 @@
 		E19136942AA101DE00CAF0FA /* WidgetIconButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */; };
 		E19136962AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
 		E19136992AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
+		E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */; };
 		E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */; };
 		E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DD2AA9EA0A00107753 /* Utils.swift */; };
 		E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
@@ -253,6 +254,7 @@
 		E19136902AA0FB4C00CAF0FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetIconButtonView.swift; sourceTree = "<group>"; };
 		E19136952AA108D200CAF0FA /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileOrUpdateContentUseCase.swift; sourceTree = "<group>"; };
 		E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCase.swift; sourceTree = "<group>"; };
 		E198D7DD2AA9EA0A00107753 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		E1A0AC4A2AB3590E005E71D6 /* AppCachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCachedAsyncImage.swift; sourceTree = "<group>"; };
@@ -440,6 +442,7 @@
 				E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */,
 				E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */,
 				E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */,
+				E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -952,6 +955,7 @@
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
 				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
 				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
+				E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
@@ -1090,7 +1094,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1290,7 +1294,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -1331,7 +1335,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";

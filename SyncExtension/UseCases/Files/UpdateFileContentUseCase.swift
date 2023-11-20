@@ -32,13 +32,17 @@ struct UpdateFileContentUseCase {
     private let config = ConfigLoader().get()
     private let user: DriveUser
     private let trackId = UUID().uuidString
+    private let progress: Progress
+    private let fileUuid: String
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
         item: NSFileProviderItem,
+        fileUuid: String,
         url: URL,
         encryptedFileDestination: URL,
-        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
+        progress: Progress
     ) {
         self.item = item
         self.fileContent = url
@@ -46,6 +50,8 @@ struct UpdateFileContentUseCase {
         self.completionHandler = completionHandler
         self.networkFacade = networkFacade
         self.user = user
+        self.progress = progress
+        self.fileUuid = fileUuid
     }
     
    
@@ -56,7 +62,7 @@ struct UpdateFileContentUseCase {
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
+            fileUploadId: fileUuid,
             processIdentifier: processIdentifier,
             parentFolderId: Int(getParentId()) ?? -1
         )
@@ -75,7 +81,7 @@ struct UpdateFileContentUseCase {
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
+            fileUploadId: self.fileUuid,
             processIdentifier: processIdentifier,
             parentFolderId: Int(getParentId()) ?? -1,
             elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
@@ -92,7 +98,7 @@ struct UpdateFileContentUseCase {
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
+            fileUploadId: self.fileUuid,
             processIdentifier: processIdentifier,
             parentFolderId: Int(getParentId()) ?? -1,
             error: error
@@ -109,7 +115,6 @@ struct UpdateFileContentUseCase {
     }
     public func run() -> Progress {
         self.logger.info("Updating file")
-        let progress = Progress(totalUnitCount: 100)
         let startedAt = self.trackStart(processIdentifier: trackId)
         Task {
             do {
@@ -146,8 +151,10 @@ struct UpdateFileContentUseCase {
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
                 
                 
-                let existingFile = try await driveNewAPI.getFileMetaByUuid(uuid: item.itemIdentifier.rawValue)
-                                
+                self.logger.info("Getting file meta with UUID: \(self.fileUuid)")
+                let existingFile = try await driveNewAPI.getFileMetaByUuid(uuid: fileUuid)
+                            
+                
                 _ = try await driveNewAPI.replaceFileId(fileUuid: existingFile.uuid, newFileId: result.id, newSize: result.size)
                 
                 let fileProviderItem = FileProviderItem(
@@ -165,7 +172,7 @@ struct UpdateFileContentUseCase {
                 
                 completionHandler(fileProviderItem, [], false, nil )
                 
-                self.logger.info("✅ Updated file content correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
+                self.logger.info("✅ Updated file content correctly with identifier \(fileUuid)")
                 
                 
                 
