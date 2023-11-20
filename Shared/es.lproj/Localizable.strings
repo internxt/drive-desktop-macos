@@ -62,6 +62,7 @@
 // Context menu actions
 "CONTEXT_MENU_AVAILABLE_OFFLINE" = "Cambiar a disponible offline";
 "CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Cambiar a disponible sólo online";
+"CONTEXT_MENU_REFRESH_CONTENT" = "Refrescar contenido";
 
 // Decorations
 "AvailableOfflineLabel" = "Disponible sin conexión";

@@ -61,6 +61,7 @@
 // Context menu actions
 "CONTEXT_MENU_AVAILABLE_OFFLINE" = "Rendre disponible hors ligne";
 "CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Rendre disponible en ligne uniquement";
+"CONTEXT_MENU_REFRESH_CONTENT" = "Actualiser le contenu";
 
 // Decorations
 "AvailableOfflineLabel" = "Disponible hors ligne";

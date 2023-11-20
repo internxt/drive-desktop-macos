@@ -16,7 +16,15 @@
 		<array>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
-				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != NO &amp;&amp; $item.itemIdentifier != "NSFileProviderRootContainerItemIdentifier" ).@count &gt; 0</string>
+				<string>TRUEPREDICATE</string>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>CONTEXT_MENU_REFRESH_CONTENT</string>
+				<key>NSExtensionFileProviderActionIdentifier</key>
+				<string>internxt.InternxtDesktop.sync.Action.RefreshContent</string>
+			</dict>
+			<dict>
+				<key>NSExtensionFileProviderActionActivationRule</key>
+				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != NO &amp;&amp; $item.itemIdentifier != &quot;NSFileProviderRootContainerItemIdentifier&quot; ).@count &gt; 0</string>
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.AvailableOnlineOnly</string>
 				<key>NSExtensionFileProviderActionName</key>
@@ -24,7 +32,7 @@
 			</dict>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
-				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != YES &amp;&amp; $item.itemIdentifier != "NSFileProviderRootContainerItemIdentifier" ).@count &gt; 0</string>
+				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != YES &amp;&amp; $item.itemIdentifier != &quot;NSFileProviderRootContainerItemIdentifier&quot; ).@count &gt; 0</string>
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.AvailableOffline</string>
 				<key>NSExtensionFileProviderActionName</key>

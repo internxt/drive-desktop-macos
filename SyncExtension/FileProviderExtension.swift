@@ -419,6 +419,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func performAction(identifier actionIdentifier: NSFileProviderExtensionActionIdentifier, onItemsWithIdentifiers itemIdentifiers: [NSFileProviderItemIdentifier], completionHandler: @escaping (Error?) -> Void) -> Progress {
         
+        if actionIdentifier == FileProviderItemActionsManager.RefreshContent {
+            logger.info("User requested to refresh content, signalling enumerator...")
+            manager.signalEnumerator(for: .workingSet, completionHandler: {error in
+                if error == nil {
+                    logger.info("Enumerator signalled correctly")
+                } else {
+                    logger.info("Failed to signal enumerator")
+                }
+                
+                completionHandler(error)
+            })
+            
+            return Progress()
+        }
+        
         if actionIdentifier == FileProviderItemActionsManager.MakeAvailableOffline {
             Task {
                 
