@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "main",
-        "revision" : "ac5ddcd74d63deec7959df48431f68859eec9506"
+        "branch" : "feature/multipart-upload",
+        "revision" : "6a9e32a13e504214238dbd7db074b70f042750d1"
       }
     }
   ],

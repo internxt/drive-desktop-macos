@@ -81,7 +81,8 @@ struct UploadFileUseCase {
         return Date()
     }
     
-    private func trackEnd(processIdentifier: String, startedAt: Date) {
+    private func trackEnd(processIdentifier: String, startedAt: Date) -> TimeInterval {
+        let elapsedTime = Date().timeIntervalSince(startedAt)
         let filename = (item.filename as NSString)
         let event = UploadCompletedEvent(
             fileName: filename.deletingPathExtension,
@@ -90,12 +91,14 @@ struct UploadFileUseCase {
             fileUploadId: item.itemIdentifier.rawValue,
             processIdentifier: processIdentifier,
             parentFolderId: Int(getParentId()) ?? -1,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
+            elapsedTimeMs: elapsedTime * 1000
         )
         
         DispatchQueue.main.async {
             Analytics.shared.track(event: event)
         }
+        
+        return elapsedTime
     }
     
    
@@ -125,6 +128,8 @@ struct UploadFileUseCase {
         self.logger.info("Creating file")
                 
         
+        
+        
         Task {
             do {
                 
@@ -137,14 +142,20 @@ struct UploadFileUseCase {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
                 
+                
+                
+                
+                
                 guard let sizeInt = size?.intValue else {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
                 
+               
+                
                 
                 let filename = (item.filename as NSString)
                 self.logger.info("Starting upload for file \(filename)")
-                self.logger.info("Parent id: \(item.parentItemIdentifier.rawValue)")
+                self.logger.info("Parent id: \(getParentId())")
                 
                 /// Upload a file to the Internxt network and returns an id used later to create a file in Drive with that fileId
                 let result = try await networkFacade.uploadFile(
@@ -156,12 +167,9 @@ struct UploadFileUseCase {
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
                 )
-                
-                
+                                
                 self.logger.info("Upload completed with id \(result.id)")
                
-                
-                
                 let encryptedFilename = try encrypt.encrypt(
                     string: filename.deletingPathExtension,
                     password: "\(config.CRYPTO_SECRET2)-\(self.getParentId())",
@@ -193,8 +201,9 @@ struct UploadFileUseCase {
                     size: result.size
                 )
                 
-                self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
+                let uploadDuration = self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
                 
+                self.logger.info("⏱️ Upload completed in \(uploadDuration) seconds")
                 self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
                 
                 self.logger.info("🖼️ Processing thumbnail...")
@@ -219,7 +228,6 @@ struct UploadFileUseCase {
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
-                
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
