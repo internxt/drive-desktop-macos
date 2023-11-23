@@ -165,7 +165,7 @@ struct UploadFileUseCase {
                     bucketId: user.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
-                    },
+                    }
                 )
                                 
                 self.logger.info("Upload completed with id \(result.id)")
