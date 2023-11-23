@@ -165,7 +165,7 @@ struct UploadFileUseCase {
                     bucketId: user.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
-                    }
+                    },
                 )
                                 
                 self.logger.info("Upload completed with id \(result.id)")
@@ -228,6 +228,7 @@ struct UploadFileUseCase {
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
+
                 self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }

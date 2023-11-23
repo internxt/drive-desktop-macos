@@ -96,7 +96,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "feature/multipart-upload",
-        "revision" : "6a9e32a13e504214238dbd7db074b70f042750d1"
+        "revision" : "467c7fa97833fb8ecdbabc3817f1aeb125c4f765"
       }
     }
   ],
