@@ -126,9 +126,6 @@ struct UploadFileUseCase {
     }
     public func run() -> Progress {
         self.logger.info("Creating file")
-                
-        
-        
         
         Task {
             do {
@@ -142,16 +139,9 @@ struct UploadFileUseCase {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
                 
-                
-                
-                
-                
                 guard let sizeInt = size?.intValue else {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
-                
-               
-                
                 
                 let filename = (item.filename as NSString)
                 self.logger.info("Starting upload for file \(filename)")
