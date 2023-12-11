@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "c60f232c96264c3bea75bc0b81e6126b2f7475ee",
-        "version" : "8.15.2"
+        "revision" : "74cf23b2946c92550fb1185612077151497e648e",
+        "version" : "8.17.1"
       }
     },
     {
@@ -96,7 +96,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "feature/multipart-upload",
-        "revision" : "467c7fa97833fb8ecdbabc3817f1aeb125c4f765"
+        "revision" : "325bf273ff98dc28a4c5802928a872352c19bcbf"
       }
     }
   ],

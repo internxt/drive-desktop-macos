@@ -41,7 +41,10 @@ class AuthManager: ObservableObject {
     }
     
     func initializeCurrentUser() async throws {
-        let refreshUserResponse = try await APIFactory.Drive.refreshUser()
+        guard let legacyAuthToken = config.getLegacyAuthToken() else {
+            throw AuthError.LegacyAuthTokenNotInConfig
+        }
+        let refreshUserResponse = try await APIFactory.Drive.refreshUser(currentAuthToken: legacyAuthToken)
         ErrorUtils.identify(
             email:refreshUserResponse.user.email,
             uuid: refreshUserResponse.user.uuid
@@ -51,6 +54,14 @@ class AuthManager: ObservableObject {
         DispatchQueue.main.async{
             self.user = refreshUserResponse.user
         }
+    }
+    
+    func refreshTokens() async throws {
+        guard let legacyAuthToken = config.getLegacyAuthToken() else {
+            throw AuthError.LegacyAuthTokenNotInConfig
+        }
+        let refreshUserResponse = try await APIFactory.Drive.refreshUser(currentAuthToken: legacyAuthToken )
+        try config.setLegacyAuthToken(legacyAuthToken: refreshUserResponse.token)
     }
     
     func storeAuthDetails(plainMnemonic: String, authToken: String, legacyAuthToken: String) throws {
