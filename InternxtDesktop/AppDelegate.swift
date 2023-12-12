@@ -186,8 +186,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     return
                 }
                 
-                // 401 means token is expired, so we logout the user
-                if(apiClientError.statusCode == 401) {
+                let tokenIsExpired = apiClientError.statusCode == 401
+                if(tokenIsExpired) {
                     try authManager.signOut()
                 }
             }
