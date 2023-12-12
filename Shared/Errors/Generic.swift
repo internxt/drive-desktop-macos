@@ -12,3 +12,9 @@ import Foundation
 enum AppError: Error {
     case runtimeError(String)
 }
+
+
+enum AuthError: Error {
+    case UnableToRefreshToken
+    case LegacyAuthTokenNotInConfig
+}

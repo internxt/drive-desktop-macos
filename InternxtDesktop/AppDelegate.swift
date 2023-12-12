@@ -31,7 +31,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
-
+    
     // Managers
     var windowsManager: WindowsManager! = nil
     var domainManager = DomainManager()
@@ -44,7 +44,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem?
     
     var listenToLoggedIn: AnyCancellable?
-    
+    var refreshTokensTimer: AnyCancellable?
+
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
@@ -90,6 +91,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.loginSuccess()
             } else {
                 self.logger.info("User is logged out, closing session")
+                self.refreshTokensTimer?.cancel()
                 self.globalUIManager.setAppStatus(.loading)
                 self.destroyWidget()
                 self.logoutSuccess()
@@ -138,11 +140,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func closeSendFeedbackWindow() {
+    private func closeSendFeedbackWindow() {
         self.windowsManager.closeWindow(id: "send-feedback")
     }
     
-    func checkVolumeAndEjectIfNeeded() {
+    private func checkVolumeAndEjectIfNeeded() {
         do {
             let mountedVolumes = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [])
             
@@ -161,7 +163,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     
-    func finishOrSkipOnboarding() {
+    private func finishOrSkipOnboarding() {
         do {
             self.openFileProviderRoot()
             self.windowsManager.closeWindow(id: "onboarding")
@@ -172,13 +174,45 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
     }
     
-    func loginSuccess() {
+    private func refreshTokens() {
+        Task{
+            self.logger.info("Refreshing tokens")
+            do {
+                try await authManager.refreshTokens()
+                self.logger.info("Tokens refreshed correctly")
+            } catch{
+                AuthError.UnableToRefreshToken.reportToSentry()
+                guard let apiClientError = error as? APIClientError else {
+                    return
+                }
+                
+                let tokenIsExpired = apiClientError.statusCode == 401
+                if(tokenIsExpired) {
+                    try authManager.signOut()
+                }
+            }
+        }
+    }
+    
+    private func startTokensRefreshing() {
+        self.refreshTokensTimer?.cancel()
+        
+        // Refresh every hour
+        self.refreshTokensTimer =  Timer.publish(every: 3600, on:.main, in: .common).autoconnect().sink(
+            receiveValue: {_ in
+                self.refreshTokens()
+        })
+    }
+    private func loginSuccess() {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
-        
+       
         Task {
             do {
+                self.startTokensRefreshing()
+              
                 try await authManager.initializeCurrentUser()
+                
                 // If usage fails to load, we'll let the user pass
                 await usageManager.updateUsage()
                 try await domainManager.initFileProvider()
@@ -200,7 +234,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
     }
     
-    func logoutSuccess() {
+    private func logoutSuccess() {
         self.windowsManager.displayDockIcon()
         self.openAuthWindow()
         self.windowsManager.closeAll(except: ["auth"])
@@ -215,7 +249,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     
-    func openAuthWindow() {
+    private func openAuthWindow() {
         self.windowsManager.openWindow(id: "auth")
     }
     
@@ -249,14 +283,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func destroyWidget() {
+    private func destroyWidget() {
         if let statusBarItemUnwrapped = self.statusBarItem {
             NSStatusBar.system.removeStatusItem(statusBarItemUnwrapped)
             statusBarItem = nil
         }
     }
     
-    func setupWidget() {
+    private func setupWidget() {
         NSApp.setActivationPolicy(.accessory)
         NSApp.hide(self)
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -282,7 +316,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
     
-    func openFileProviderRoot() {
+    private func openFileProviderRoot() {
         closeWidget()
         Task{
             do {
@@ -302,7 +336,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @objc func togglePopover() {
+    @objc private func togglePopover() {
         if self.statusBarItem != nil {
             if authManager.isLoggedIn == false {
                 openAuthWindow()
@@ -321,7 +355,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     
-    func closeWidget() {
+    private func closeWidget() {
         globalUIManager.setWidgetIsOpen(false)
         if popover?.isShown == true {
             popover?.performClose(nil)
@@ -329,8 +363,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
     }
+   
     
-    func openWidget(delayed: Bool = false) {
+    private func openWidget(delayed: Bool = false) {
+        
         func display() {
             
             if let statusBarItemButton = self.statusBarItem?.button {
