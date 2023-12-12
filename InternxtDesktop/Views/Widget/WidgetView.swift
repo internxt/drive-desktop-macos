@@ -14,11 +14,12 @@ struct WidgetView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var globalUIManager: GlobalUIManager
     @EnvironmentObject var usageManager: UsageManager
-    
-    
+
+    @State private var showBackupBanner = false
     var isEmpty: Bool = true
     var openFileProviderRoot: () -> Void
     var openSendFeedback: () -> Void
+    let configLoader = ConfigLoader()
     init(openFileProviderRoot:  @escaping () -> Void,openSendFeedback:  @escaping () -> Void) {
         self.openFileProviderRoot = openFileProviderRoot
         self.openSendFeedback = openSendFeedback
@@ -32,6 +33,14 @@ struct WidgetView: View {
                         .zIndex(100)
                         .environmentObject(self.globalUIManager)
                         .environmentObject(self.usageManager)
+
+                    if !activityManager.activityEntries.isEmpty && self.showBackupBanner {
+                        WidgetBackupBannerView() {
+                            self.showBackupBanner = false
+                        }
+                        .environmentObject(self.usageManager)
+                    }
+
                     VStack(alignment: .center) {
                         
                         if activityManager.activityEntries.isEmpty {
@@ -64,7 +73,10 @@ struct WidgetView: View {
             .background(Color.Surface)
             .cornerRadius(10)
         }
-        
+        .onAppear {
+            self.showBackupBanner = configLoader.isBackupBannerShown()
+        }
+
     }
 }
 
