@@ -34,6 +34,7 @@
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
+"SETTINGS_TAB_BACKUPS_TITLE" = "Backups";
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";

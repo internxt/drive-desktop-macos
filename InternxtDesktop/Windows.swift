@@ -46,6 +46,13 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, update
             id: "send-feedback",
             width: 380,
             height: 320
+        ),
+        WindowConfig(
+            view: AnyView(AppSettingsManagerView { FolderSelectorView() }),
+            title: nil,
+            id: "folder-selector",
+            width: 480,
+            height: 380
         )
     ]
     

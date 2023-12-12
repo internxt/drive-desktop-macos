@@ -256,7 +256,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openSettingsWindow() {
         self.windowsManager.openWindow(id: "settings")
     }
-    
+
+    @objc func openFolderSelector() {
+        self.windowsManager.openWindow(id: "folder-selector")
+    }
+
     @objc func openOnboardingWindow() {
         self.windowsManager.openWindow(id: "onboarding")
     }

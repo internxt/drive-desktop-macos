@@ -11,6 +11,7 @@ import Sparkle
 enum TabView {
     case General
     case Account
+    case Backup
 }
 struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -24,6 +25,7 @@ struct SettingsView: View {
                 HStack(spacing: 4) {
                     TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
                     TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
+                    TabItem(iconName: .At, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 12)
@@ -33,7 +35,7 @@ struct SettingsView: View {
             }
             
             Tabcontent.background(Color.Gray1)
-        }.frame(width: 440, alignment: .topLeading)
+        }.frame(width: 600, alignment: .topLeading)
     }
     
     @ViewBuilder
@@ -45,7 +47,9 @@ struct SettingsView: View {
             AccountTabView()
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
-            
+        case .Backup:
+            BackupsTabView()
+                .environmentObject(usageManager)
         default:
             EmptyView()
         }
