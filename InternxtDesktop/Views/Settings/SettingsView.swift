@@ -25,7 +25,7 @@ struct SettingsView: View {
                 HStack(spacing: 4) {
                     TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
                     TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
-                    TabItem(iconName: .At, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
+                    TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 12)

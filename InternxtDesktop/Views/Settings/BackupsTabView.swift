@@ -35,8 +35,8 @@ struct BackupsTabView: View {
             Spacer()
 
             HStack(alignment: .center, spacing: 4) {
-                Rectangle()
-                    .fill(.gray)
+                Image(systemName: "questionmark.circle")
+                    .resizable()
                     .frame(width: 16, height: 16)
                 AppText("Backups help")
                     .foregroundColor(.Gray60)
