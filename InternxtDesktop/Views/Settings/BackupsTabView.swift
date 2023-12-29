@@ -51,8 +51,8 @@ struct BackupsTabView: View {
 
     var BackupTab: some View {
         VStack(spacing: 16) {
-            Rectangle()
-                .fill(.gray)
+            Image("DriveIcon")
+                .resizable()
                 .frame(width: 80, height: 80)
 
             VStack(spacing: 0) {
