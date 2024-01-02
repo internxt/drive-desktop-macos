@@ -50,7 +50,7 @@ struct DeviceItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if (isCurrentDevice) {
-                AppText("This device")
+                AppText("BACKUP_SETTINGS_THIS_DEVICE")
                     .foregroundColor(.Primary)
                     .font(.XXSSemibold)
             }

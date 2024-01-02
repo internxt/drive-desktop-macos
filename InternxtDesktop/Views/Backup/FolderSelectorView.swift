@@ -16,19 +16,19 @@ struct FolderSelectorView: View {
         VStack(spacing: 12) {
 
             HStack {
-                AppText("Backup folders")
+                AppText("BACKUP_SETTINGS_BACKUP_FOLDERS")
                     .font(.LGMedium)
                     .foregroundColor(.Gray100)
 
                 Spacer()
 
-                AppText("\(numberOfFolders) folders")
+                AppText("BACKUP_SETTINGS_FOLDERS")
                     .font(.BaseRegular)
                     .foregroundColor(.Gray50)
             }
 
             VStack {
-                AppText("Click + to select the folders\nyou want to back up")
+                AppText("BACKUP_SETTINGS_ADD_FOLDERS")
                     .font(.BaseRegular)
                     .foregroundColor(.Gray50)
                     .multilineTextAlignment(.center)
@@ -55,11 +55,11 @@ struct FolderSelectorView: View {
                 Spacer()
 
                 HStack {
-                    AppButton(title: "Cancel", onClick: {
+                    AppButton(title: "COMMON_CANCEL", onClick: {
 
                     }, type: .secondary, size: .SM)
 
-                    AppButton(title: "Backup now", onClick: {
+                    AppButton(title: "COMMON_BACKUP_NOW", onClick: {
 
                     }, type: .primary, size: .SM, isEnabled: $isBackupButtonEnabled)
                 }

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct BackupsTabView: View {
-    @EnvironmentObject var usageManager: UsageManager
 
     var body: some View {
         HStack(spacing: 16) {
@@ -26,7 +25,7 @@ struct BackupsTabView: View {
 
     var DevicesTab: some View {
         VStack(alignment: .leading, spacing: 8) {
-            AppText("Devices")
+            AppText("BACKUP_SETTINGS_DEVICES")
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
 
@@ -38,7 +37,7 @@ struct BackupsTabView: View {
                 Image(systemName: "questionmark.circle")
                     .resizable()
                     .frame(width: 16, height: 16)
-                AppText("Backups help")
+                AppText("BACKUP_SETTINGS_DEVICES_HELP")
                     .foregroundColor(.Gray60)
                     .font(.XSRegular)
             }
@@ -56,17 +55,17 @@ struct BackupsTabView: View {
                 .frame(width: 80, height: 80)
 
             VStack(spacing: 0) {
-                AppText("INTERNXT BACKUPS")
+                AppText("INTERNXT_BACKUPS")
                     .foregroundColor(.Gray100)
                     .font(.XSSemibold)
 
-                AppText("Save a copy of your most important files on the cloud automatically")
+                AppText("BACKUP_SETTINGS_TOOLTIP")
                     .foregroundColor(.Gray60)
                     .font(.BaseRegular)
                     .multilineTextAlignment(.center)
             }
 
-            AppButton(title: "Backup now", onClick: {
+            AppButton(title: "COMMON_BACKUP_NOW", onClick: {
                 handleOpenBackupFolders()
             }, type: .primary, size: .MD)
         }
@@ -74,7 +73,6 @@ struct BackupsTabView: View {
     }
 
     func handleOpenBackupFolders() -> Void {
-        Task { await usageManager.updateUsage() }
         NSApp.sendAction(#selector(AppDelegate.openFolderSelector), to: nil, from: nil)
     }
 }

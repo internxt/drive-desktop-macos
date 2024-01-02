@@ -49,7 +49,6 @@ struct SettingsView: View {
                 .environmentObject(usageManager)
         case .Backup:
             BackupsTabView()
-                .environmentObject(usageManager)
         default:
             EmptyView()
         }

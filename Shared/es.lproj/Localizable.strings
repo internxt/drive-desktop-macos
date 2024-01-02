@@ -34,7 +34,7 @@
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Cuenta";
-"SETTINGS_TAB_BACKUPS_TITLE" = "Backups";
+"SETTINGS_TAB_BACKUPS_TITLE" = "Respaldo";
 "SETTINGS_DEVICE_NAME" = "Nombre del dispositivo";
 "SETTINGS_CHECK_FOR_UPDATES" = "Buscar actualizaciones";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Última comprobación %@";
@@ -44,12 +44,20 @@
 "SETTINGS_ENGLISH_LANGUAGE" = "English (Inglés)";
 "SETTINGS_FRENCH_LANGUAGE" = "Français (Francés)";
 
+"BACKUP_SETTINGS_DEVICES" = "Dispositivos";
+"BACKUP_SETTINGS_DEVICES_HELP" = "Ayuda para respaldar";
+"BACKUP_SETTINGS_THIS_DEVICE" = "Este dispositivo";
+"BACKUP_SETTINGS_TOOLTIP" = "Guarda automáticamente en la nube una copia de tus archivos más importantes";
+"BACKUP_SETTINGS_BACKUP_FOLDERS" = "Carpetas de copia de seguridad";
+"BACKUP_SETTINGS_FOLDERS" = "carpetas";
+"BACKUP_SETTINGS_ADD_FOLDERS" = "Haga clic en + para seleccionar las carpetas\nde las que desea hacer una copia de seguridad.";
 
 // Common
 "COMMON_UPGRADE" = "Comprar espacio";
 "COMMON_LOGOUT" = "Cerrar sesión";
 "COMMON_EDIT" = "Editar";
 "COMMON_CANCEL" = "Cancelar";
+"COMMON_BACKUP_NOW" = "Respaldar ahora";
 "COMMON_SAVE" = "Guardar";
 "COMMON_SKIP" = "Saltar";
 "COMMON_CONTINUE" = "Continuar";
