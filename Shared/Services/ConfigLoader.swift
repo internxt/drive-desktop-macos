@@ -204,8 +204,8 @@ public struct ConfigLoader {
         }
     }
 
-    public func hideBackupBanner() throws -> Void {
-        let show = self.saveToUserDefaults(key: "ShowBackupBanner", value: "1")
+    public func shouldDisplayBackupsBanner(shouldDisplay: Bool) throws -> Void {
+        let show = self.saveToUserDefaults(key: "ShowBackupBanner", value: shouldDisplay ? "1" : "0")
 
         if !show {
             throw ConfigLoaderError.CannotHideBackupBanner
@@ -218,7 +218,7 @@ public struct ConfigLoader {
         return completed == "1"
     }
 
-    public func isBackupBannerShown() -> Bool {
+    public func shouldShowBackupsBanner() -> Bool {
         let show = self.getFromUserDefaults(key: "ShowBackupBanner")
 
         return show == nil

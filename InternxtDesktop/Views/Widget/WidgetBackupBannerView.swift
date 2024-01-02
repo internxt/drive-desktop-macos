@@ -21,7 +21,6 @@ struct ImageContainerView: View {
 
 struct WidgetBackupBannerView: View {
 
-    @EnvironmentObject var usageManager: UsageManager
     let dismiss: () -> Void
 
     var body: some View {
@@ -72,7 +71,6 @@ struct WidgetBackupBannerView: View {
     }
 
     func handleOpenPreferences() -> Void {
-        Task { await usageManager.updateUsage() }
         NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
     }
 }

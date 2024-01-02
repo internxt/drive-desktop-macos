@@ -38,7 +38,6 @@ struct WidgetView: View {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
                         }
-                        .environmentObject(self.usageManager)
                     }
 
                     VStack(alignment: .center) {
@@ -74,7 +73,7 @@ struct WidgetView: View {
             .cornerRadius(10)
         }
         .onAppear {
-            self.showBackupBanner = configLoader.isBackupBannerShown()
+            self.showBackupBanner = configLoader.shouldShowBackupsBanner()
         }
 
     }
