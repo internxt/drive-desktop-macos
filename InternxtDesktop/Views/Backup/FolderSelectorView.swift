@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct FolderSelectorView: View {
+
+    @State private var numberOfFolders = 0
+    @State private var isBackupButtonEnabled = false
+
     var body: some View {
         VStack(spacing: 12) {
 
@@ -18,7 +22,7 @@ struct FolderSelectorView: View {
 
                 Spacer()
 
-                AppText("0 folders")
+                AppText("\(numberOfFolders) folders")
                     .font(.BaseRegular)
                     .foregroundColor(.Gray50)
             }
@@ -39,11 +43,11 @@ struct FolderSelectorView: View {
 
             HStack {
                 HStack(spacing: 8) {
-                    AppButton(title: "+", onClick: {
+                    AppButton(icon: .Plus, title: "", onClick: {
 
                     }, type: .secondary, size: .SM)
 
-                    AppButton(title: "-", onClick: {
+                    AppButton(icon: .Minus, title: "", onClick: {
 
                     }, type: .secondary, size: .SM)
                 }
@@ -57,7 +61,7 @@ struct FolderSelectorView: View {
 
                     AppButton(title: "Backup now", onClick: {
 
-                    }, type: .primary, size: .SM)
+                    }, type: .primary, size: .SM, isEnabled: $isBackupButtonEnabled)
                 }
             }
 
