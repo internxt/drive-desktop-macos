@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -187,6 +188,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
 		E106D4612AB9FD6300E3BF7A /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 				E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */,
 				E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */,
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
+				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -936,6 +939,7 @@
 				E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */,
 				E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
+				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
 				E17C84BE2AB2880B00A58414 /* Color.swift in Sources */,
 				E17C84B82AB2787200A58414 /* OnboardingSlide4View.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
