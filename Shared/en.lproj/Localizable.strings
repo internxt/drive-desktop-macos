@@ -50,7 +50,7 @@
 "BACKUP_SETTINGS_THIS_DEVICE" = "This device";
 "BACKUP_SETTINGS_TOOLTIP" = "Save a copy of your most important files on the cloud automatically";
 "BACKUP_SETTINGS_BACKUP_FOLDERS" = "Backup folders";
-"BACKUP_SETTINGS_FOLDERS" = "folders";
+"BACKUP_SETTINGS_%@_FOLDERS" = "%@ folders";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Click + to select the folders\nyou want to back up";
 
 // Common

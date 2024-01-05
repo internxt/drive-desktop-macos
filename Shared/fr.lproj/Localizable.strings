@@ -50,7 +50,7 @@
 "BACKUP_SETTINGS_THIS_DEVICE" = "Ce dispositif";
 "BACKUP_SETTINGS_TOOLTIP" = "Sauvegarde automatique d'une copie de vos fichiers les plus importants sur le cloud";
 "BACKUP_SETTINGS_BACKUP_FOLDERS" = "Dossiers de sauvegarde";
-"BACKUP_SETTINGS_FOLDERS" = "dossiers";
+"BACKUP_SETTINGS_%@_FOLDERS" = "%@ dossiers";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Cliquez sur + pour sélectionner les dossiers\nque vous souhaitez sauvegarder.";
 
 // Common

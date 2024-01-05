@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311612A02B47873D003C8EE8 /* WidgetFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -190,6 +191,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFolderList.swift; sourceTree = "<group>"; };
 		315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsTabView.swift; sourceTree = "<group>"; };
 		315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDeviceSelector.swift; sourceTree = "<group>"; };
 		315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectorView.swift; sourceTree = "<group>"; };
@@ -579,6 +581,7 @@
 				E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */,
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
 				315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */,
+				3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -917,6 +920,7 @@
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
+				311612A02B47873D003C8EE8 /* WidgetFolderList.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
 				E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */,
 				E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */,
