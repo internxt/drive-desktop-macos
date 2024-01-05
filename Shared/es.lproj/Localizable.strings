@@ -31,6 +31,11 @@
 "SYNC_ENTRY_KIND_DOWNLOADED" = "Descargado";
 "SYNC_ENTRY_KIND_UPLOADED" = "Subido";
 
+// Widget backup banner
+"INTERNXT_BACKUPS" = "INTERNXT BACKUPS";
+"BACKUPS_BODY" = "Guarda una copia de seguridad de la mayoría de tus carpetas y archivos importantes.";
+"BACKUP_BUTTON_LABEL" = "Hacer copia de seguridad";
+
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Cuenta";
