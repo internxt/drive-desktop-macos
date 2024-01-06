@@ -35,6 +35,7 @@ enum ConfigLoaderError: Error {
     case CannotSaveUser
     case CannotRemoveUser
     case CannotSaveOnboardingIsCompleted
+    case CannotHideBackupBanner
 }
 
 public var loadedConfig: JSONConfig? = nil
@@ -98,7 +99,7 @@ public struct ConfigLoader {
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: "Mnemonic")
     }
-    
+
     public func getNetworkAuth() -> String? {
         guard let user = getUser() else {
             return nil
@@ -202,13 +203,27 @@ public struct ConfigLoader {
             throw ConfigLoaderError.CannotSaveOnboardingIsCompleted
         }
     }
-    
+
+    public func shouldDisplayBackupsBanner(shouldDisplay: Bool) throws -> Void {
+        let show = self.saveToUserDefaults(key: "ShowBackupBanner", value: shouldDisplay ? "1" : "0")
+
+        if !show {
+            throw ConfigLoaderError.CannotHideBackupBanner
+        }
+    }
+
     public func onboardingIsCompleted() -> Bool {
         let completed = self.getFromUserDefaults(key: "OnboardingIsCompleted")
 
         return completed == "1"
     }
-    
+
+    public func shouldShowBackupsBanner() -> Bool {
+        let show = self.getFromUserDefaults(key: "ShowBackupBanner")
+
+        return show == nil
+    }
+
     public func removeUser() throws -> Void  {
         let removed = self.removeFromUserDefaults(key: "DriveUser")
         
