@@ -7,11 +7,15 @@
 
 import SwiftUI
 
+enum FolderSelectorError: Error {
+    case NotImplementedError
+}
+
 struct FolderSelectorView: View {
 
     let closeWindow: () -> Void
     @State private var isBackupButtonEnabled = false
-    @State private var filenames: [String] = []
+    @State private var foldernames: [String] = []
     @State private var urls: [String] = []
     @State private var selectedIndex: Int?
 
@@ -30,7 +34,7 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            WidgetFolderList(folders: $filenames, selectedIndex: $selectedIndex)
+            WidgetFolderList(folders: $foldernames, selectedIndex: $selectedIndex)
 
             HStack {
                 HStack(spacing: 8) {
@@ -41,9 +45,9 @@ struct FolderSelectorView: View {
                         panel.canChooseFiles = false
                         if panel.runModal() == .OK {
                             if let url = panel.url {
-                                let filename = url.lastPathComponent
+                                let foldername = url.lastPathComponent
                                 self.urls.append(url.absoluteString)
-                                self.filenames.append(filename)
+                                self.foldernames.append(foldername)
                             }
                         }
                     }, type: .secondary, size: .SM)
@@ -51,11 +55,11 @@ struct FolderSelectorView: View {
                     AppButton(icon: .Minus, title: "", onClick: {
                         if let index = selectedIndex {
                             self.urls.remove(at: index)
-                            self.filenames.remove(at: index)
+                            self.foldernames.remove(at: index)
                             self.selectedIndex = nil
                         }
                     }, type: .secondary, size: .SM)
-                    .disabled(self.filenames.count == 0)
+                    .disabled(self.foldernames.count == 0)
                 }
 
                 Spacer()
@@ -66,7 +70,11 @@ struct FolderSelectorView: View {
                     }, type: .secondary, size: .SM)
 
                     AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-
+                        do {
+                            try doBackup()
+                        } catch {
+                            print("Error \(error)")
+                        }
                     }, type: .primary, size: .SM, isEnabled: $isBackupButtonEnabled)
                 }
             }
@@ -81,6 +89,10 @@ struct FolderSelectorView: View {
         })
         .frame(width: 480, height: 380, alignment: .top)
         .padding(20)
+    }
+
+    private func doBackup() throws {
+        throw FolderSelectorError.NotImplementedError
     }
 }
 
