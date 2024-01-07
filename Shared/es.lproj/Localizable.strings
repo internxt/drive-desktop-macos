@@ -36,6 +36,30 @@
 "BACKUPS_BODY" = "Guarda una copia de seguridad de la mayoría de tus carpetas y archivos importantes.";
 "BACKUP_BUTTON_LABEL" = "Hacer copia de seguridad";
 
+"BACKUP_TITLE" = "Backup";
+"BACKUP_LAST_UPLOADED_%@" = "Última actualización %@";
+"BACKUP_BACKING_UP" = "Respaldando...";
+"BACKUP_STOP_BACKUP" = "Detener copia de seguridad";
+"BACKUP_BROWSE_FILES" = "Examinar archivos";
+"BACKUP_SELECTED_FOLDERS" = "Carpetas seleccionadas";
+"BACKUP_CHANGE_FOLDERS" = "Cambiar carpetas";
+"BACKUP_%@_NUMBER_OF_FOLDERS_SELECTED" = "%@ carpetas seleccionadas";
+"BACKUP_UPLOAD_FREQUENCY" = "Frecuencia de carga";
+"BACKUP_UPLOAD_FREQUENCY_6_HRS" = "Cada 6 horas";
+"BACKUP_UPLOAD_FREQUENCY_12_HRS" = "Cada 12 horas";
+"BACKUP_UPLOAD_FREQUENCY_EVERY_DAY" = "Cada día";
+"BACKUP_UPLOAD_FREQUENCY_MANUALLY" = "Manualmente";
+"BACKUP_UPLOAD_FREQUENCY_MANUALLY_TOOLTIP" = "Las carpetas no se copiarán automáticamente hasta que haga clic en\n\"Copiar ahora\". No se recomienda este modo";
+"BACKUP_UPLOAD_DELETE_BACKUP" = "Eliminar copia de seguridad";
+"BACKUP_UPLOAD_DELETE_BACKUP_CONTENT" = "Esta copia de seguridad se eliminará de la nube, todas las carpetas y archivos permanecerán en este equipo.";
+"BACKUP_DELETE_BACKUP_TITLE" = "¿Eliminar copia de seguridad?";
+"BACKUP_DELETE_BACKUP_CONTENT" = "Esta copia de seguridad se eliminará de la nube de forma permanente, todas las carpetas y archivos permanecerán en este equipo.";
+"BACKUP_DELETE_BACKUP_TOOLTIP" = "Esta acción no puede deshacerse.";
+"BACKUP_YES_DELETE" = "Sí, eliminar";
+"BACKUP_STOP_ONGOING_BACKUP" = "Detener la copia de seguridad en curso";
+"BACKUP_STOP_BACKUP_BODY" = "Todavía hay archivos que no se han cargado. ¿Detener la copia de seguridad de todos modos?";
+"BACKUP_STOP_BACKUP" = "Detener copia de seguridad";
+
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Cuenta";
