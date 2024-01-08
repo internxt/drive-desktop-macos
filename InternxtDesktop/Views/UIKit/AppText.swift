@@ -14,6 +14,11 @@ extension AppText {
 }
 
 extension Font {
+    // XXS
+    static let XXSRegular = Font.custom("InstrumentSans-Regular", size: 10)
+    static let XXSMedium = Font.custom("InstrumentSans-Medium", size: 10)
+    static let XXSSemibold = Font.custom("InstrumentSans-SemiBold", size: 10)
+    static let XXSBold = Font.custom("InstrumentSans-Bold", size: 10)
     // XS
     static let XSRegular = Font.custom("InstrumentSans-Regular", size: 12)
     static let XSMedium = Font.custom("InstrumentSans-Medium", size: 12)

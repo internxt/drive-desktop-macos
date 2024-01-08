@@ -39,6 +39,7 @@
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Account";
+"SETTINGS_TAB_BACKUPS_TITLE" = "Backups";
 "SETTINGS_DEVICE_NAME" = "Device name";
 "SETTINGS_CHECK_FOR_UPDATES" = "Check for updates";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Last checked %@";
@@ -48,11 +49,21 @@
 "SETTINGS_ENGLISH_LANGUAGE" = "English (English)";
 "SETTINGS_FRENCH_LANGUAGE" = "Français (French)";
 
+// Backup Settings
+"BACKUP_SETTINGS_DEVICES" = "Devices";
+"BACKUP_SETTINGS_DEVICES_HELP" = "Backups help";
+"BACKUP_SETTINGS_THIS_DEVICE" = "This device";
+"BACKUP_SETTINGS_TOOLTIP" = "Save a copy of your most important files on the cloud automatically";
+"BACKUP_SETTINGS_BACKUP_FOLDERS" = "Backup folders";
+"BACKUP_SETTINGS_%@_FOLDERS" = "%@ folders";
+"BACKUP_SETTINGS_ADD_FOLDERS" = "Click + to select the folders\nyou want to back up";
+
 // Common
 "COMMON_UPGRADE" = "Upgrade";
 "COMMON_LOGOUT" = "Log out";
 "COMMON_EDIT" = "Edit";
 "COMMON_CANCEL" = "Cancel";
+"COMMON_BACKUP_NOW" = "Backup now";
 "COMMON_SAVE" = "Save";
 "COMMON_SKIP" = "Skip";
 "COMMON_CONTINUE" = "Continue";

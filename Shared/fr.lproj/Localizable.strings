@@ -39,6 +39,7 @@
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
+"SETTINGS_TAB_BACKUPS_TITLE" = "Sauvegarde";
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
@@ -48,11 +49,21 @@
 "SETTINGS_ENGLISH_LANGUAGE" = "English (Anglais)";
 "SETTINGS_FRENCH_LANGUAGE" = "Français (Français)";
 
+// Backup Settings
+"BACKUP_SETTINGS_DEVICES" = "Dispositifs";
+"BACKUP_SETTINGS_DEVICES_HELP" = "Aide aux sauvegardes";
+"BACKUP_SETTINGS_THIS_DEVICE" = "Ce dispositif";
+"BACKUP_SETTINGS_TOOLTIP" = "Sauvegarde automatique d'une copie de vos fichiers les plus importants sur le cloud";
+"BACKUP_SETTINGS_BACKUP_FOLDERS" = "Dossiers de sauvegarde";
+"BACKUP_SETTINGS_%@_FOLDERS" = "%@ dossiers";
+"BACKUP_SETTINGS_ADD_FOLDERS" = "Cliquez sur + pour sélectionner les dossiers\nque vous souhaitez sauvegarder.";
+
 // Common
 "COMMON_UPGRADE" = "Mise à niveau";
 "COMMON_LOGOUT" = "Déconnexion";
 "COMMON_EDIT" = "Modifier";
 "COMMON_CANCEL" = "Annuler";
+"COMMON_BACKUP_NOW" = "Sauvegarder maintenant";
 "COMMON_SAVE" = "Enregistrer";
 "COMMON_SKIP" = "Sauter";
 "COMMON_CONTINUE" = "Continuer";

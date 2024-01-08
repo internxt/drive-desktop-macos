@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311612A02B47873D003C8EE8 /* WidgetFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */; };
+		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
+		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
+		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
 		31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
@@ -188,6 +192,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFolderList.swift; sourceTree = "<group>"; };
+		315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsTabView.swift; sourceTree = "<group>"; };
+		315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDeviceSelector.swift; sourceTree = "<group>"; };
+		315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectorView.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
@@ -343,6 +351,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		315BC6902B3E0683004C85D8 /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */,
+			);
+			path = Backup;
+			sourceTree = "<group>";
+		};
 		E109717A2A81133C00ABED41 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -527,6 +543,7 @@
 				E1880BA12AA63CF2001FC171 /* AccountTabView.swift */,
 				E1ADD0412AA7272100D95694 /* AccountUsageView.swift */,
 				E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */,
+				315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -565,6 +582,8 @@
 				E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */,
 				E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */,
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
+				315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */,
+				3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 			);
 			path = Widget;
@@ -671,6 +690,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				315BC6902B3E0683004C85D8 /* Backup */,
 				E13B83952AFBBCC1009F6684 /* App */,
 				E1A0AC5D2AB85BE2005E71D6 /* SendFeedback */,
 				E17C84AC2AB2229A00A58414 /* Onboarding */,
@@ -890,17 +910,20 @@
 				E17C84B42AB2315D00A58414 /* OnboardingSlideIndicator.swift in Sources */,
 				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
 				E13B839C2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
+				315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */,
 				E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
+				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
+				311612A02B47873D003C8EE8 /* WidgetFolderList.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
 				E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */,
 				E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */,
@@ -931,6 +954,7 @@
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
 				E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
+				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
 				E1880BA02AA63215001FC171 /* StartOnLaunchView.swift in Sources */,
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
