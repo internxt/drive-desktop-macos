@@ -73,7 +73,7 @@ struct FolderSelectorView: View {
                         do {
                             try doBackup()
                         } catch {
-                            print("Error \(error)")
+                            print("Error \(error.reportToSentry())")
                         }
                     }, type: .primary, size: .SM, isEnabled: $isBackupButtonEnabled)
                 }
