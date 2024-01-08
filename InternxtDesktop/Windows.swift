@@ -13,7 +13,7 @@ import Sparkle
 /// Return the default windows config, this
 /// windows will be available without needing to explicitly
 /// creating them
-func defaultWindows(authManager: AuthManager, usageManager: UsageManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
+func defaultWindows(authManager: AuthManager, usageManager: UsageManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, closeFolderSelectorWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
     let windows = [
         WindowConfig(
             view: AnyView(AppSettingsManagerView{SignInWithBrowserView().environmentObject(authManager)}),
@@ -46,6 +46,13 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, update
             id: "send-feedback",
             width: 380,
             height: 320
+        ),
+        WindowConfig(
+            view: AnyView(AppSettingsManagerView { FolderSelectorView(closeWindow: closeFolderSelectorWindow) }),
+            title: nil,
+            id: "folder-selector",
+            width: 480,
+            height: 380
         )
     ]
     

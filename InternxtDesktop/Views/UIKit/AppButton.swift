@@ -56,13 +56,29 @@ func getTextFontBySize(size: AppButtonSize) -> Font? {
 
 struct PrimaryAppButtonStyle: ButtonStyle {
     public var size: AppButtonSize
+    @Binding public var isEnabled: Bool
+
+    func getForeroundColor(configuration: Self.Configuration) -> Color {
+        if !isEnabled {
+            return Color.white.opacity(0.5)
+        }
+        return .white
+    }
+
+    func getBackgroundColor(configuration: Self.Configuration) -> Color {
+        if !isEnabled {
+            return Color.Gray30
+        }
+        return configuration.isPressed ? Color.PrimaryDark : Color.Primary
+    }
+
     func makeBody(configuration: Self.Configuration) -> some View {
         
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
-            .foregroundColor(configuration.isPressed ? Color.white : Color.white)
-            .background(configuration.isPressed ? Color.PrimaryDark : Color.Primary)
+            .foregroundColor(getForeroundColor(configuration: configuration))
+            .background(getBackgroundColor(configuration: configuration))
             .cornerRadius(8)
             .font(getTextFontBySize(size: self.size))
     }
@@ -104,24 +120,58 @@ struct AppButton: View {
     public let onClick: () -> Void
     public var type: AppButtonType = .primary
     public var size: AppButtonSize = .MD
-    
+    public var icon: AppIconName?
+    @Binding public var isEnabled: Bool
+
+    init(title: String, onClick: @escaping () -> Void, type: AppButtonType = .primary, size: AppButtonSize = .MD, isEnabled: Binding<Bool> = .constant(true)) {
+        self.title = title
+        self.onClick = onClick
+        self.type = type
+        self.size = size
+        self._isEnabled = isEnabled
+    }
+
+    init(icon: AppIconName, title: String, onClick: @escaping () -> Void, type: AppButtonType = .primary, size: AppButtonSize = .MD, isEnabled: Binding<Bool> = .constant(true)) {
+        self.title = title
+        self.icon = icon
+        self.onClick = onClick
+        self.type = type
+        self.size = size
+        self._isEnabled = isEnabled
+    }
 
     var body: some View {
         
         switch self.type {
         case .primary:
-            Button(LocalizedStringKey(self.title)) {
-                self.onClick()
+            if let icon = icon {
+                Button(action: {
+                    self.onClick()
+                }, label: {
+                    AppIcon(iconName: icon, color: .white)
+                })
+                .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: $isEnabled))
+            } else {
+                Button(LocalizedStringKey(self.title)) {
+                    self.onClick()
+                }
+                .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: $isEnabled))
             }
-            .buttonStyle(PrimaryAppButtonStyle(size: self.size))
         case .secondary:
-            Button(LocalizedStringKey(self.title)) {
-                self.onClick()
+            if let icon = icon {
+                Button(action: {
+                    self.onClick()
+                }, label: {
+                    AppIcon(iconName: icon, color: .Gray80)
+                })
+                .buttonStyle(SecondaryAppButtonStyle(size: self.size))
+            } else {
+                Button(LocalizedStringKey(self.title)) {
+                    self.onClick()
+                }
+                .buttonStyle(SecondaryAppButtonStyle(size: self.size))
             }
-            .buttonStyle(SecondaryAppButtonStyle(size: self.size))
         }
-        
-       
 
     }
 }
@@ -132,12 +182,13 @@ struct AppButton_Previews: PreviewProvider {
             VStack(alignment: .leading) {
                 AppText("Primary button")
                 AppButton(title: "Button SM", onClick: {}, size: .SM)
-                AppButton(title: "Button MD", onClick: {}, size: .MD)
+                AppButton(icon: .Gear, title: "", onClick: {}, size: .SM)
                 AppButton(title: "Button LG", onClick: {}, size: .LG)
             }.padding(20)
             VStack(alignment: .leading) {
                 AppText("Secondary white button")
                 AppButton(title: "Button SM", onClick: {}, type: .secondary, size: .SM)
+                AppButton(icon: .Gear, title: "", onClick: {}, type: .secondary, size: .SM)
                 AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD)
                 AppButton(title: "Button LG", onClick: {}, type: .secondary, size: .LG)
             }.padding(20)
