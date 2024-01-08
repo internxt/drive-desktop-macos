@@ -15,6 +15,7 @@ import InternxtSwiftCore
 import Combine
 import ServiceManagement
 import Sparkle
+import RealmSwift
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillShow(_ notification: Notification) {
@@ -39,7 +40,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let usageManager = UsageManager()
     let activityManager = ActivityManager()
     var globalUIManager = GlobalUIManager()
-    
+    let backupsService = BackupsService()
+
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
@@ -53,10 +55,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
         ErrorUtils.start()
-    
+
         checkVolumeAndEjectIfNeeded()
+        backupsService.assignUrls()
+
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, closeFolderSelectorWindow: closeFolderSelectorWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, closeFolderSelectorWindow: closeFolderSelectorWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()

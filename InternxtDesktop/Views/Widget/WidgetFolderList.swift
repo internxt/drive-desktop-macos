@@ -10,7 +10,7 @@ import SwiftUI
 struct WidgetFolderList: View {
 
     @Environment(\.colorScheme) var colorScheme
-    @Binding var folders: [String]
+    @Binding var folders: [URL]
     @Binding var selectedIndex: Int?
 
     var body: some View {
@@ -36,7 +36,7 @@ struct WidgetFolderList: View {
                             HStack(alignment: .center, spacing: 8) {
                                 AppIcon(iconName: .FolderSimple, color: .blue)
 
-                                AppText(folders[index])
+                                AppText(folders[index].lastPathComponent)
                                     .font(.LGRegular)
                                     .foregroundColor(selectedIndex == index ? .white : .Gray80)
                                     .padding([.vertical], 10)

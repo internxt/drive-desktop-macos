@@ -13,10 +13,8 @@ enum FolderSelectorError: Error {
 
 struct FolderSelectorView: View {
 
+    @StateObject var backupsService: BackupsService
     let closeWindow: () -> Void
-    @State private var isBackupButtonEnabled = false
-    @State private var foldernames: [String] = []
-    @State private var urls: [String] = []
     @State private var selectedIndex: Int?
 
     var body: some View {
@@ -29,12 +27,12 @@ struct FolderSelectorView: View {
 
                 Spacer()
 
-                Text("BACKUP_SETTINGS_\("\(urls.count)")_FOLDERS")
+                Text("BACKUP_SETTINGS_\("\(backupsService.urls.count)")_FOLDERS")
                     .font(.BaseRegular)
                     .foregroundColor(.Gray50)
             }
 
-            WidgetFolderList(folders: $foldernames, selectedIndex: $selectedIndex)
+            WidgetFolderList(folders: $backupsService.urls, selectedIndex: $selectedIndex)
 
             HStack {
                 HStack(spacing: 8) {
@@ -45,21 +43,23 @@ struct FolderSelectorView: View {
                         panel.canChooseFiles = false
                         if panel.runModal() == .OK {
                             if let url = panel.url {
-                                let foldername = url.lastPathComponent
-                                self.urls.append(url.absoluteString)
-                                self.foldernames.append(foldername)
+                                self.backupsService.addFoldernameToBackup(
+                                    FoldernameToBackup(
+                                        url: url.absoluteString,
+                                        status: .selected
+                                    )
+                                )
                             }
                         }
                     }, type: .secondary, size: .SM)
 
                     AppButton(icon: .Minus, title: "", onClick: {
                         if let index = selectedIndex {
-                            self.urls.remove(at: index)
-                            self.foldernames.remove(at: index)
+                            self.backupsService.removeFoldernameFromBackup(at: index)
                             self.selectedIndex = nil
                         }
                     }, type: .secondary, size: .SM)
-                    .disabled(self.foldernames.count == 0)
+                    .disabled(self.backupsService.urls.count == 0)
                 }
 
                 Spacer()
@@ -75,16 +75,16 @@ struct FolderSelectorView: View {
                         } catch {
                             print("Error \(error.reportToSentry())")
                         }
-                    }, type: .primary, size: .SM, isEnabled: $isBackupButtonEnabled)
+                    }, type: .primary, size: .SM, isEnabled: $backupsService.isBackupButtonEnabled)
                 }
             }
 
         }
-        .onChange(of: urls, perform: { list in
-            if list.count == 0 {
-                self.isBackupButtonEnabled = false
+        .onChange(of: backupsService.urls, perform: { array in
+            if array.count == 0 {
+                backupsService.isBackupButtonEnabled = false
             } else {
-                self.isBackupButtonEnabled = true
+                backupsService.isBackupButtonEnabled = true
             }
         })
         .frame(width: 480, height: 380, alignment: .top)
@@ -97,5 +97,5 @@ struct FolderSelectorView: View {
 }
 
 #Preview {
-    FolderSelectorView(closeWindow: {})
+    FolderSelectorView(backupsService: BackupsService(), closeWindow: {})
 }
