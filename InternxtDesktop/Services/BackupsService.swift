@@ -11,6 +11,7 @@ import RealmSwift
 class BackupsService: ObservableObject {
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var urls: [URL] = []
+    @Published var isBackupButtonEnabled: Bool = false
 
     private func getRealm() -> Realm {
         do {
@@ -31,12 +32,32 @@ class BackupsService: ObservableObject {
         }
     }
 
-    func saveFoldernameToBackup(foldername: FoldernameToBackup) {
+    func addFoldernameToBackup(_ foldernameToBackup: FoldernameToBackup) {
+        guard let url = URL(string: foldernameToBackup.url) else {
+            return
+        }
+
         do {
             let realm = getRealm()
             try realm.write {
-                realm.add(foldername)
+                realm.add(foldernameToBackup)
             }
+            self.urls.append(url)
+        } catch {
+            error.reportToSentry()
+        }
+    }
+
+    func removeFoldernameFromBackup(at index: Int) {
+        let array = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: false)
+
+        let itemToDelete = array[index]
+        do {
+            let realm = getRealm()
+            try realm.write {
+                realm.delete(itemToDelete)
+            }
+            self.urls.remove(at: index)
         } catch {
             error.reportToSentry()
         }
@@ -64,7 +85,7 @@ class BackupsService: ObservableObject {
                 array.append(url)
             }
         }
-
+        self.isBackupButtonEnabled = !array.isEmpty
         self.urls = array
     }
 }

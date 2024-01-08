@@ -52,17 +52,6 @@ class ActivityManager: ObservableObject {
 
     }
 
-//    func saveFoldernameToBackup(foldername: FoldernameToBackup) {
-//        do {
-//            let realm = getRealm()
-//            try realm.write {
-//                realm.add(foldername)
-//            }
-//        } catch {
-//            error.reportToSentry()
-//        }
-//    }
-
     func updateActivityEntries() {
         let entries = getRealm().objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
         
@@ -80,18 +69,6 @@ class ActivityManager: ObservableObject {
         
     }
 
-//    private func updateFoldernamesToBackup() {
-//        let foldernames = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: false)
-//        var newFoldernames: [FoldernameToBackup] = []
-//        for i in 0..<foldernames.count {
-//            newFoldernames.append(foldernames[i])
-//        }
-//
-//        DispatchQueue.main.async {
-//            self.foldernamesToBackup = newFoldernames
-//        }
-//    }
-
     func observeLatestActivityEntries() -> Void {
         if self.notificationToken == nil {
             let result = getRealm().objects(ActivityEntry.self)
@@ -108,21 +85,6 @@ class ActivityManager: ObservableObject {
         }
     }
 
-//    func observeFoldernamesToBackup() -> Void {
-//        if self.foldernamesNotificationToken == nil {
-//            let result = getRealm().objects(FoldernameToBackup.self)
-//            self.notificationToken = result.observe{[weak self] (changes: RealmCollectionChange) in
-//                switch changes {
-//                case .initial:
-//                    self?.updateFoldernamesToBackup()
-//                case .update:
-//                    self?.updateFoldernamesToBackup()
-//                case .error(let error):
-//                    fatalError("\(error)")
-//                }
-//            }
-//        }
-//    }
 }
 
 

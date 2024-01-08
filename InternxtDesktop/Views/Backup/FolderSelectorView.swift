@@ -15,7 +15,6 @@ struct FolderSelectorView: View {
 
     @StateObject var backupsService: BackupsService
     let closeWindow: () -> Void
-    @State private var isBackupButtonEnabled = false
     @State private var selectedIndex: Int?
 
     var body: some View {
@@ -44,14 +43,19 @@ struct FolderSelectorView: View {
                         panel.canChooseFiles = false
                         if panel.runModal() == .OK {
                             if let url = panel.url {
-                                self.backupsService.urls.append(url)
+                                self.backupsService.addFoldernameToBackup(
+                                    FoldernameToBackup(
+                                        url: url.absoluteString,
+                                        status: .selected
+                                    )
+                                )
                             }
                         }
                     }, type: .secondary, size: .SM)
 
                     AppButton(icon: .Minus, title: "", onClick: {
                         if let index = selectedIndex {
-                            self.backupsService.urls.remove(at: index)
+                            self.backupsService.removeFoldernameFromBackup(at: index)
                             self.selectedIndex = nil
                         }
                     }, type: .secondary, size: .SM)
@@ -71,16 +75,16 @@ struct FolderSelectorView: View {
                         } catch {
                             print("Error \(error.reportToSentry())")
                         }
-                    }, type: .primary, size: .SM, isEnabled: $isBackupButtonEnabled)
+                    }, type: .primary, size: .SM, isEnabled: $backupsService.isBackupButtonEnabled)
                 }
             }
 
         }
-        .onChange(of: backupsService.urls, perform: { list in
-            if list.count == 0 {
-                self.isBackupButtonEnabled = false
+        .onChange(of: backupsService.urls, perform: { array in
+            if array.count == 0 {
+                backupsService.isBackupButtonEnabled = false
             } else {
-                self.isBackupButtonEnabled = true
+                backupsService.isBackupButtonEnabled = true
             }
         })
         .frame(width: 480, height: 380, alignment: .top)
@@ -88,10 +92,7 @@ struct FolderSelectorView: View {
     }
 
     private func doBackup() throws {
-//        for i in 0..<urls.count {
-//            activityManager.saveFoldernameToBackup(foldername: FoldernameToBackup(foldername: urls[i], status: .selected))
-//        }
-//        throw FolderSelectorError.NotImplementedError
+        throw FolderSelectorError.NotImplementedError
     }
 }
 
