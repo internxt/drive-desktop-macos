@@ -29,4 +29,5 @@ extension Color {
     static let PrimaryDark = Color("PrimaryDark")
     static let Secondary = Color("Secondary")
     static let Surface = Color("Surface")
+    static let Red = Color("Red")
 }

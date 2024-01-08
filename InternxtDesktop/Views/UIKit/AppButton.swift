@@ -17,6 +17,7 @@ enum AppButtonSize {
 enum AppButtonType {
     case primary
     case secondary
+    case danger
 }
 
 func getHeightBySize(size: AppButtonSize) -> CGFloat {
@@ -73,7 +74,7 @@ struct PrimaryAppButtonStyle: ButtonStyle {
     }
 
     func makeBody(configuration: Self.Configuration) -> some View {
-        
+
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
@@ -88,7 +89,7 @@ struct PrimaryAppButtonStyle: ButtonStyle {
 struct SecondaryAppButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
     public var size: AppButtonSize
-    
+
     private func getForegroundColor(_ config: Self.Configuration) -> Color {
         if colorScheme == .dark {
             return config.isPressed ? Color.Gray10 : Color.Gray5
@@ -97,7 +98,7 @@ struct SecondaryAppButtonStyle: ButtonStyle {
         }
     }
     func makeBody(configuration: Self.Configuration) -> some View {
-        
+
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
@@ -111,7 +112,22 @@ struct SecondaryAppButtonStyle: ButtonStyle {
                     .inset(by: -0.5)
                     .stroke(Color.Gray10, lineWidth: 1)
             )
-            
+
+    }
+}
+
+struct DangerAppButtonStyle: ButtonStyle {
+    public var size: AppButtonSize
+
+    func makeBody(configuration: Self.Configuration) -> some View {
+
+        return configuration.label
+            .frame(height: getHeightBySize(size: self.size))
+            .padding(.horizontal, getPaddingBySize(size: self.size))
+            .foregroundColor(.white)
+            .background(Color.Red)
+            .cornerRadius(8)
+            .font(getTextFontBySize(size: self.size))
     }
 }
 
@@ -141,7 +157,7 @@ struct AppButton: View {
     }
 
     var body: some View {
-        
+
         switch self.type {
         case .primary:
             if let icon = icon {
@@ -171,9 +187,22 @@ struct AppButton: View {
                 }
                 .buttonStyle(SecondaryAppButtonStyle(size: self.size))
             }
+        case .danger:
+            if let icon = icon {
+                Button(action: {
+                    self.onClick()
+                }, label: {
+                    AppIcon(iconName: icon, color: .Gray80)
+                })
+                .buttonStyle(DangerAppButtonStyle(size: self.size))
+            } else {
+                Button(LocalizedStringKey(self.title)) {
+                    self.onClick()
+                }
+                .buttonStyle(DangerAppButtonStyle(size: self.size))
+            }
         }
-
-    }
+        }
 }
 
 struct AppButton_Previews: PreviewProvider {
@@ -192,9 +221,15 @@ struct AppButton_Previews: PreviewProvider {
                 AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD)
                 AppButton(title: "Button LG", onClick: {}, type: .secondary, size: .LG)
             }.padding(20)
+            VStack(alignment: .leading) {
+                AppText("Danger button")
+                AppButton(title: "Button SM", onClick: {}, type: .danger, size: .SM)
+                AppButton(title: "Button MD", onClick: {},type: .danger, size: .MD)
+                AppButton(title: "Button LG", onClick: {}, type: .danger, size: .LG)
+            }.padding(20)
         }
-    
-        
-        
+
+
+
     }
 }
