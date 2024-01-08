@@ -30,8 +30,8 @@ struct DeleteBackupDialog: View {
                 }, type: .secondary)
 
                 AppButton(title: "BACKUP_YES_DELETE", onClick: {
-
-                }, type: .primary)
+                    
+                }, type: .danger)
             }
             .padding([.top], 8)
             .frame(maxWidth: .infinity)
