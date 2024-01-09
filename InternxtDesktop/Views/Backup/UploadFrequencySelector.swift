@@ -1,5 +1,5 @@
 //
-//  WidgetUploadFrequencySelector.swift
+//  UploadFrequencySelector.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/9/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WidgetUploadFrequencySelector: View {
+struct UploadFrequencySelector: View {
     @Binding var currentFrequency: UploadFrequencyEnum
 
     var body: some View {
@@ -50,5 +50,5 @@ struct WidgetUploadFrequencySelector: View {
 }
 
 #Preview {
-    WidgetUploadFrequencySelector(currentFrequency: .constant(.six))
+    UploadFrequencySelector(currentFrequency: .constant(.six))
 }

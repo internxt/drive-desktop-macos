@@ -1,5 +1,5 @@
 //
-//  WidgetBackup.swift
+//  BackupComponent.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/5/24.
@@ -11,11 +11,7 @@ enum UploadFrequencyEnum: String {
     case six = "6", twelve = "12", daily = "24", manually = "0"
 }
 
-enum BackupError: Error {
-    case NotImplementedError
-}
-
-struct WidgetBackup: View {
+struct BackupComponent: View {
 
     var deviceName: String
     var numOfFolders: Int
@@ -32,7 +28,7 @@ struct WidgetBackup: View {
                 .font(.SMMedium)
                 .foregroundColor(.Gray80)
 
-            WidgetDeviceCard(
+            DeviceCardComponent(
                 deviceName: self.deviceName,
                 isLoading: self.isLoading,
                 lastUpdated: self.lastUpdated,
@@ -81,7 +77,7 @@ struct WidgetBackup: View {
             }
             .padding([.top], 12)
 
-            WidgetUploadFrequencySelector(currentFrequency: self.$currentFrequency)
+            UploadFrequencySelector(currentFrequency: self.$currentFrequency)
                 .padding([.top], 12)
 
             VStack(alignment: .leading, spacing: 8) {
@@ -106,23 +102,23 @@ struct WidgetBackup: View {
     }
 
     func deleteBackup() throws {
-        throw DeleteBackupError.NotImplementedError
+        throw AppError.notImplementedError
     }
 
     func changeFolders() throws {
-        throw DeleteBackupError.NotImplementedError
+        throw AppError.notImplementedError
     }
 
     func stopBackup() throws {
-        throw DeleteBackupError.NotImplementedError
+        throw AppError.notImplementedError
     }
 
     func browseFiles() throws {
-        throw DeleteBackupError.NotImplementedError
+        throw AppError.notImplementedError
     }
 
 }
 
 #Preview {
-    WidgetBackup(deviceName: "Mac Mini M1", numOfFolders: 16, isLoading: false, lastUpdated: "today at 13:34", backupStorageValue: 10, backupStorageUnit: "GB", progress: .constant(0.5))
+    BackupComponent(deviceName: "Mac Mini M1", numOfFolders: 16, isLoading: false, lastUpdated: "today at 13:34", backupStorageValue: 10, backupStorageUnit: "GB", progress: .constant(0.5))
 }

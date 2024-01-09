@@ -1,5 +1,5 @@
 //
-//  WidgetProgressBar.swift
+//  ProgressBarComponent.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/9/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WidgetProgressBar: View {
+struct ProgressBarComponent: View {
     @Binding var progressBarWidth: CGFloat
     @Binding var progress: Double
 
@@ -31,5 +31,5 @@ struct WidgetProgressBar: View {
 }
 
 #Preview {
-    WidgetProgressBar(progressBarWidth: .constant(.zero), progress: .constant(20))
+    ProgressBarComponent(progressBarWidth: .constant(.zero), progress: .constant(20))
 }

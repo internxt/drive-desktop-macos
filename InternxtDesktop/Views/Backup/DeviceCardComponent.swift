@@ -1,5 +1,5 @@
 //
-//  WidgetDeviceCard.swift
+//  DeviceCardComponent.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/9/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WidgetDeviceCard: View {
+struct DeviceCardComponent: View {
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
     var isLoading: Bool
@@ -30,7 +30,7 @@ struct WidgetDeviceCard: View {
                         .foregroundColor(.Gray80)
 
                     if isLoading {
-                        WidgetProgressField()
+                        ProgressFieldComponent()
                     } else {
                         Text("BACKUP_LAST_UPLOADED_\(lastUpdated ?? "")")
                             .font(.SMRegular)
@@ -62,7 +62,7 @@ struct WidgetDeviceCard: View {
 
             if isLoading {
                 // show progress bar
-                WidgetProgressBar(
+                ProgressBarComponent(
                     progressBarWidth: $progressBarWidth,
                     progress: $progress
                 )
@@ -82,5 +82,5 @@ struct WidgetDeviceCard: View {
 }
 
 #Preview {
-    WidgetDeviceCard(deviceName: "", isLoading: true, lastUpdated: "", progress: .constant(20))
+    DeviceCardComponent(deviceName: "", isLoading: true, lastUpdated: "", progress: .constant(20))
 }

@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum DeleteBackupError: Error {
-    case NotImplementedError
-}
-
 struct DeleteBackupDialog: View {
     
     @Environment(\.colorScheme) var colorScheme
@@ -55,11 +51,11 @@ struct DeleteBackupDialog: View {
     }
 
     func cancelDeleteBackup() throws {
-        throw DeleteBackupError.NotImplementedError
+        throw AppError.notImplementedError
     }
 
     func deleteBackup() throws {
-        throw DeleteBackupError.NotImplementedError
+        throw AppError.notImplementedError
     }
 }
 

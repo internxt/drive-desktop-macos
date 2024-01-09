@@ -1,5 +1,5 @@
 //
-//  WidgetProgressField.swift
+//  ProgressFieldComponent.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/9/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WidgetProgressField: View {
+struct ProgressFieldComponent: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: "arrow.up.circle.fill")
@@ -23,5 +23,5 @@ struct WidgetProgressField: View {
 }
 
 #Preview {
-    WidgetProgressField()
+    ProgressFieldComponent()
 }
