@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+enum DeleteBackupError: Error {
+    case NotImplementedError
+}
+
 struct DeleteBackupDialog: View {
     
     @Environment(\.colorScheme) var colorScheme
@@ -26,11 +30,19 @@ struct DeleteBackupDialog: View {
 
             HStack(spacing: 8) {
                 AppButton(title: "COMMON_CANCEL", onClick: {
-
+                    do {
+                        try cancelDeleteBackup()
+                    } catch {
+                        print("Error \(error.reportToSentry())")
+                    }
                 }, type: .secondary)
 
                 AppButton(title: "BACKUP_YES_DELETE", onClick: {
-
+                    do {
+                        try deleteBackup()
+                    } catch {
+                        print("Error \(error.reportToSentry())")
+                    }
                 }, type: .danger)
             }
             .padding([.top], 8)
@@ -40,6 +52,14 @@ struct DeleteBackupDialog: View {
         .background(colorScheme == .dark ? Color.Gray1 : Color.white)
         .cornerRadius(10)
         .frame(width: 320)
+    }
+
+    func cancelDeleteBackup() throws {
+        throw DeleteBackupError.NotImplementedError
+    }
+
+    func deleteBackup() throws {
+        throw DeleteBackupError.NotImplementedError
     }
 }
 
