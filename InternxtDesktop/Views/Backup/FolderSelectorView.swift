@@ -7,15 +7,11 @@
 
 import SwiftUI
 
-enum FolderSelectorError: Error {
-    case NotImplementedError
-}
-
 struct FolderSelectorView: View {
 
     @StateObject var backupsService: BackupsService
     let closeWindow: () -> Void
-    @State private var selectedIndex: Int?
+    @State private var selectedId: String?
 
     var body: some View {
         VStack(spacing: 12) {
@@ -32,7 +28,7 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            WidgetFolderList(folders: $backupsService.urls, selectedIndex: $selectedIndex)
+            WidgetFolderList(foldernames: $backupsService.foldernames, selectedId: $selectedId)
 
             HStack {
                 HStack(spacing: 8) {
@@ -43,20 +39,30 @@ struct FolderSelectorView: View {
                         panel.canChooseFiles = false
                         if panel.runModal() == .OK {
                             if let url = panel.url {
-                                self.backupsService.addFoldernameToBackup(
-                                    FoldernameToBackup(
-                                        url: url.absoluteString,
-                                        status: .selected
+                                do {
+                                    try self.backupsService.addFoldernameToBackup(
+                                        FoldernameToBackup(
+                                            url: url.absoluteString,
+                                            status: .selected
+                                        )
                                     )
-                                )
+                                } catch {
+                                    // show error in UI
+                                    showErrorDialog(message: error.localizedDescription)
+                                }
                             }
                         }
                     }, type: .secondary, size: .SM)
 
                     AppButton(icon: .Minus, title: "", onClick: {
-                        if let index = selectedIndex {
-                            self.backupsService.removeFoldernameFromBackup(at: index)
-                            self.selectedIndex = nil
+                        if let selectedId = selectedId {
+                            do {
+                                try self.backupsService.removeFoldernameFromBackup(id: selectedId)
+                                self.selectedId = nil
+                            } catch {
+                                // show error in UI
+                                showErrorDialog(message: error.localizedDescription)
+                            }
                         }
                     }, type: .secondary, size: .SM)
                     .disabled(self.backupsService.urls.count == 0)
@@ -73,26 +79,28 @@ struct FolderSelectorView: View {
                         do {
                             try doBackup()
                         } catch {
-                            print("Error \(error.reportToSentry())")
+                            // show error in UI
+                            showErrorDialog(message: error.localizedDescription)
                         }
-                    }, type: .primary, size: .SM, isEnabled: $backupsService.isBackupButtonEnabled)
+                    }, type: .primary, size: .SM, isEnabled: !backupsService.urls.isEmpty)
                 }
             }
 
         }
-        .onChange(of: backupsService.urls, perform: { array in
-            if array.count == 0 {
-                backupsService.isBackupButtonEnabled = false
-            } else {
-                backupsService.isBackupButtonEnabled = true
-            }
-        })
         .frame(width: 480, height: 380, alignment: .top)
         .padding(20)
     }
 
     private func doBackup() throws {
-        throw FolderSelectorError.NotImplementedError
+        throw AppError.notImplementedError
+    }
+
+    private func showErrorDialog(message: String) {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
     }
 }
 

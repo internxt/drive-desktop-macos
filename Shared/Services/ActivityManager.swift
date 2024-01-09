@@ -14,14 +14,13 @@ enum RealmError: Error {
 }
 
 class ActivityManager: ObservableObject {
-    static let realmURL: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ConfigLoader.GroupName)!.appendingPathComponent("internxt_desktop.realm")
     private let activityActionsLimit = 50
     private var notificationToken: NotificationToken?
     @Published var activityEntries: [ActivityEntry] = []
     
     private func getRealm() -> Realm {
         do {
-            return try Realm(fileURL: ActivityManager.realmURL)
+            return try Realm(fileURL: ConfigLoader.realmURL)
         } catch {
             error.reportToSentry()
             fatalError("Unable to open Realm")

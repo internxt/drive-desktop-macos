@@ -11,6 +11,7 @@ import Foundation
 
 enum AppError: Error {
     case runtimeError(String)
+    case notImplementedError
 }
 
 

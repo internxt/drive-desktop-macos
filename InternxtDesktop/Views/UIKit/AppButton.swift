@@ -56,7 +56,7 @@ func getTextFontBySize(size: AppButtonSize) -> Font? {
 
 struct PrimaryAppButtonStyle: ButtonStyle {
     public var size: AppButtonSize
-    @Binding public var isEnabled: Bool
+    public var isEnabled: Bool
 
     func getForeroundColor(configuration: Self.Configuration) -> Color {
         if !isEnabled {
@@ -121,23 +121,23 @@ struct AppButton: View {
     public var type: AppButtonType = .primary
     public var size: AppButtonSize = .MD
     public var icon: AppIconName?
-    @Binding public var isEnabled: Bool
+    public var isEnabled: Bool
 
-    init(title: String, onClick: @escaping () -> Void, type: AppButtonType = .primary, size: AppButtonSize = .MD, isEnabled: Binding<Bool> = .constant(true)) {
+    init(title: String, onClick: @escaping () -> Void, type: AppButtonType = .primary, size: AppButtonSize = .MD, isEnabled: Bool = true) {
         self.title = title
         self.onClick = onClick
         self.type = type
         self.size = size
-        self._isEnabled = isEnabled
+        self.isEnabled = isEnabled
     }
 
-    init(icon: AppIconName, title: String, onClick: @escaping () -> Void, type: AppButtonType = .primary, size: AppButtonSize = .MD, isEnabled: Binding<Bool> = .constant(true)) {
+    init(icon: AppIconName, title: String, onClick: @escaping () -> Void, type: AppButtonType = .primary, size: AppButtonSize = .MD, isEnabled: Bool = true) {
         self.title = title
         self.icon = icon
         self.onClick = onClick
         self.type = type
         self.size = size
-        self._isEnabled = isEnabled
+        self.isEnabled = isEnabled
     }
 
     var body: some View {
@@ -150,12 +150,12 @@ struct AppButton: View {
                 }, label: {
                     AppIcon(iconName: icon, color: .white)
                 })
-                .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: $isEnabled))
+                .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
             } else {
                 Button(LocalizedStringKey(self.title)) {
                     self.onClick()
                 }
-                .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: $isEnabled))
+                .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
             }
         case .secondary:
             if let icon = icon {

@@ -8,14 +8,20 @@
 import Foundation
 import RealmSwift
 
+enum BackupError: Error {
+    case cannotCreateURL
+    case cannotAddFolder
+    case cannotDeleteFolder
+    case cannotFindFolder
+}
+
 class BackupsService: ObservableObject {
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var urls: [URL] = []
-    @Published var isBackupButtonEnabled: Bool = false
 
     private func getRealm() -> Realm {
         do {
-            return try Realm(fileURL: ActivityManager.realmURL)
+            return try Realm(fileURL: ConfigLoader.realmURL)
         } catch {
             error.reportToSentry()
             fatalError("Unable to open Realm")
@@ -32,9 +38,9 @@ class BackupsService: ObservableObject {
         }
     }
 
-    func addFoldernameToBackup(_ foldernameToBackup: FoldernameToBackup) {
+    func addFoldernameToBackup(_ foldernameToBackup: FoldernameToBackup) throws {
         guard let url = URL(string: foldernameToBackup.url) else {
-            return
+            throw BackupError.cannotCreateURL
         }
 
         do {
@@ -42,24 +48,31 @@ class BackupsService: ObservableObject {
             try realm.write {
                 realm.add(foldernameToBackup)
             }
+            self.foldernames.append(foldernameToBackup)
             self.urls.append(url)
         } catch {
             error.reportToSentry()
+            throw BackupError.cannotAddFolder
         }
     }
 
-    func removeFoldernameFromBackup(at index: Int) {
-        let array = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: false)
+    func removeFoldernameFromBackup(id: String) throws {
+        let itemToDelete = foldernames.first { foldername in
+            return foldername.id == id
+        }
+        guard let itemToDelete = itemToDelete else {
+            throw BackupError.cannotFindFolder
+        }
 
-        let itemToDelete = array[index]
         do {
             let realm = getRealm()
             try realm.write {
                 realm.delete(itemToDelete)
             }
-            self.urls.remove(at: index)
+            self.assignUrls()
         } catch {
             error.reportToSentry()
+            throw BackupError.cannotDeleteFolder
         }
     }
 
@@ -77,15 +90,17 @@ class BackupsService: ObservableObject {
     }
 
     func assignUrls() {
-        let foldernamesToBackup = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: false)
+        let foldernamesToBackup = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: true)
 
         var array: [URL] = []
+        var folders: [FoldernameToBackup] = []
         for foldername in foldernamesToBackup {
             if let url = URL(string: foldername.url) {
                 array.append(url)
+                folders.append(foldername)
             }
         }
-        self.isBackupButtonEnabled = !array.isEmpty
+        self.foldernames = folders
         self.urls = array
     }
 }
@@ -104,6 +119,12 @@ class FoldernameToBackup: Object {
         self.url = url
         self.createdAt = Date()
         self.status = status
+    }
+}
+
+extension FoldernameToBackup: Identifiable {
+    var id: String {
+        return _id.stringValue
     }
 }
 

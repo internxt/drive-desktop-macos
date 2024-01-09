@@ -10,11 +10,11 @@ import SwiftUI
 struct WidgetFolderList: View {
 
     @Environment(\.colorScheme) var colorScheme
-    @Binding var folders: [URL]
-    @Binding var selectedIndex: Int?
+    @Binding var foldernames: [FoldernameToBackup]
+    @Binding var selectedId: String?
 
     var body: some View {
-        if folders.count == 0 {
+        if foldernames.count == 0 {
             VStack {
                 AppText("BACKUP_SETTINGS_ADD_FOLDERS")
                     .font(.BaseRegular)
@@ -32,13 +32,13 @@ struct WidgetFolderList: View {
             VStack {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(0..<folders.count, id: \.self) { index in
+                        ForEach(0..<foldernames.count, id: \.self) { index in
                             HStack(alignment: .center, spacing: 8) {
                                 AppIcon(iconName: .FolderSimple, color: .blue)
 
-                                AppText(folders[index].lastPathComponent)
+                                AppText(URL(string: foldernames[index].url)?.lastPathComponent ?? "")
                                     .font(.LGRegular)
-                                    .foregroundColor(selectedIndex == index ? .white : .Gray80)
+                                    .foregroundColor(selectedId == foldernames[index].id ? .white : .Gray80)
                                     .padding([.vertical], 10)
 
                                 Spacer()
@@ -46,7 +46,7 @@ struct WidgetFolderList: View {
                             .padding([.horizontal], 10)
                             .background(getRowBackgroundColor(for: index))
                             .onTapGesture {
-                                self.selectedIndex = index
+                                self.selectedId = foldernames[index].id
                             }
                         }
                     }
@@ -63,7 +63,7 @@ struct WidgetFolderList: View {
     }
 
     private func getRowBackgroundColor(for index: Int) -> Color {
-        if selectedIndex == index {
+        if selectedId == foldernames[index].id {
             return .Primary
         }
 
