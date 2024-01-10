@@ -34,7 +34,7 @@ struct WidgetFolderList: View {
                     LazyVStack(spacing: 0) {
                         ForEach(0..<folders.count, id: \.self) { index in
                             HStack(alignment: .center, spacing: 8) {
-                                AppIcon(iconName: .FolderSimple, color: .blue)
+                                Image("folder")
 
                                 AppText(folders[index])
                                     .font(.LGRegular)

@@ -77,9 +77,10 @@
 "BACKUP_SETTINGS_DEVICES" = "Dispositifs";
 "BACKUP_SETTINGS_DEVICES_HELP" = "Aide aux sauvegardes";
 "BACKUP_SETTINGS_THIS_DEVICE" = "Ce dispositif";
-"BACKUP_SETTINGS_TOOLTIP" = "Sauvegarde automatique d'une copie de vos fichiers les plus importants sur le cloud";
+"BACKUP_SETTINGS_TOOLTIP" = "Sauvegarde automatique d'une copie de vos fichiers\nles plus importants sur le cloud";
 "BACKUP_SETTINGS_BACKUP_FOLDERS" = "Dossiers de sauvegarde";
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ dossiers";
+"BACKUP_SETTINGS_ONE_FOLDER" = "1 dossier";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Cliquez sur + pour sélectionner les dossiers\nque vous souhaitez sauvegarder.";
 
 // Common

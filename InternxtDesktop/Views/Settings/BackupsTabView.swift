@@ -9,6 +9,8 @@ import SwiftUI
 
 struct BackupsTabView: View {
 
+    @Binding var showFolderSelector: Bool
+
     var body: some View {
         HStack(spacing: 16) {
             DevicesTab
@@ -36,7 +38,7 @@ struct BackupsTabView: View {
             HStack(alignment: .center, spacing: 4) {
                 Image(systemName: "questionmark.circle")
                     .resizable()
-                    .frame(width: 16, height: 16)
+                    .frame(width: 12, height: 12)
                 AppText("BACKUP_SETTINGS_DEVICES_HELP")
                     .foregroundColor(.Gray60)
                     .font(.XSRegular)
@@ -66,17 +68,17 @@ struct BackupsTabView: View {
             }
 
             AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                handleOpenBackupFolders()
+                withAnimation {
+                    showFolderSelector = true
+                }
             }, type: .primary, size: .MD)
         }
+        .frame(maxWidth: .infinity)
         .padding(20)
     }
 
-    func handleOpenBackupFolders() -> Void {
-        NSApp.sendAction(#selector(AppDelegate.openFolderSelector), to: nil, from: nil)
-    }
 }
 
 #Preview {
-    BackupsTabView()
+    BackupsTabView(showFolderSelector: .constant(false))
 }

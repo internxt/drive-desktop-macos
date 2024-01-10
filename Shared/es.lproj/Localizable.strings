@@ -76,9 +76,10 @@
 "BACKUP_SETTINGS_DEVICES" = "Dispositivos";
 "BACKUP_SETTINGS_DEVICES_HELP" = "Ayuda para respaldar";
 "BACKUP_SETTINGS_THIS_DEVICE" = "Este dispositivo";
-"BACKUP_SETTINGS_TOOLTIP" = "Guarda automáticamente en la nube una copia de tus archivos más importantes";
+"BACKUP_SETTINGS_TOOLTIP" = "Guarda automáticamente en la nube una copia\nde tus archivos más importantes";
 "BACKUP_SETTINGS_BACKUP_FOLDERS" = "Carpetas de copia de seguridad";
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ carpetas";
+"BACKUP_SETTINGS_ONE_FOLDER" = "1 carpeta";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Haga clic en + para seleccionar las carpetas\nde las que desea hacer una copia de seguridad.";
 
 // Common
