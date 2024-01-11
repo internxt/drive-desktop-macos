@@ -42,17 +42,17 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            WidgetFolderList(folders: $foldernames, selectedIndex: $selectedIndex)
+            WidgetFolderList(folders: $foldernames, urls: $urls, selectedIndex: $selectedIndex)
 
             HStack {
                 HStack(spacing: 8) {
                     AppButton(icon: .Plus, title: "", onClick: {
                         let panel = NSOpenPanel()
-                        panel.allowsMultipleSelection = false
+                        panel.allowsMultipleSelection = true
                         panel.canChooseDirectories = true
                         panel.canChooseFiles = false
                         if panel.runModal() == .OK {
-                            if let url = panel.url {
+                            for url in panel.urls {
                                 let foldername = url.lastPathComponent
                                 self.urls.append(url.absoluteString)
                                 self.foldernames.append(foldername)

@@ -184,11 +184,13 @@ struct AppButton: View {
                     AppIcon(iconName: icon, color: .white.opacity(isEnabled ? 1 : 0.5))
                 })
                 .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             } else {
                 Button(LocalizedStringKey(self.title)) {
                     self.onClick()
                 }
                 .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             }
         case .secondary:
             if let icon = icon {
@@ -198,11 +200,13 @@ struct AppButton: View {
                     AppIcon(iconName: icon, color: .Gray80.opacity(isEnabled ? 1 : 0.5))
                 })
                 .buttonStyle(SecondaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             } else {
                 Button(LocalizedStringKey(self.title)) {
                     self.onClick()
                 }
                 .buttonStyle(SecondaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             }
         case .danger:
             if let icon = icon {
@@ -212,11 +216,13 @@ struct AppButton: View {
                     AppIcon(iconName: icon, color: .Gray80)
                 })
                 .buttonStyle(DangerAppButtonStyle(size: self.size))
+                .disabled(!isEnabled)
             } else {
                 Button(LocalizedStringKey(self.title)) {
                     self.onClick()
                 }
                 .buttonStyle(DangerAppButtonStyle(size: self.size))
+                .disabled(!isEnabled)
             }
         }
         }
@@ -237,6 +243,7 @@ struct AppButton_Previews: PreviewProvider {
                 AppText("Secondary white button")
                 AppButton(title: "Button SM", onClick: {}, type: .secondary, size: .SM)
                 AppButton(icon: .Gear, title: "", onClick: {}, type: .secondary, size: .SM)
+                AppButton(icon: .Gear, title: "", onClick: {}, type: .secondary, size: .SM, isEnabled: false)
                 AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD)
                 AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD, isEnabled: false)
                 AppButton(title: "Button LG", onClick: {}, type: .secondary, size: .LG)

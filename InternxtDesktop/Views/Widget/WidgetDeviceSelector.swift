@@ -65,6 +65,7 @@ struct DeviceItem: View {
         .padding([.horizontal], 16)
         .padding([.vertical], 10)
         .background(getBackgroundColor())
+        .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }
