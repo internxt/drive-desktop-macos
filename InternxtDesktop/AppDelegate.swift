@@ -60,7 +60,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         backupsService.assignUrls()
 
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, closeFolderSelectorWindow: closeFolderSelectorWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -146,10 +146,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func closeSendFeedbackWindow() {
         self.windowsManager.closeWindow(id: "send-feedback")
-    }
-
-    private func closeFolderSelectorWindow() {
-        self.windowsManager.closeWindow(id: "folder-selector")
     }
 
     private func checkVolumeAndEjectIfNeeded() {
@@ -263,10 +259,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func openSettingsWindow() {
         self.windowsManager.openWindow(id: "settings")
-    }
-
-    @objc func openFolderSelector() {
-        self.windowsManager.openWindow(id: "folder-selector")
     }
 
     @objc func openOnboardingWindow() {

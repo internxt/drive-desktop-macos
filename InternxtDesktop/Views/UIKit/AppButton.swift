@@ -17,6 +17,7 @@ enum AppButtonSize {
 enum AppButtonType {
     case primary
     case secondary
+    case danger
 }
 
 func getHeightBySize(size: AppButtonSize) -> CGFloat {
@@ -60,7 +61,7 @@ struct PrimaryAppButtonStyle: ButtonStyle {
 
     func getForeroundColor(configuration: Self.Configuration) -> Color {
         if !isEnabled {
-            return Color.white.opacity(0.5)
+            return Color.white.opacity(0.75)
         }
         return .white
     }
@@ -73,7 +74,7 @@ struct PrimaryAppButtonStyle: ButtonStyle {
     }
 
     func makeBody(configuration: Self.Configuration) -> some View {
-        
+
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
@@ -88,30 +89,62 @@ struct PrimaryAppButtonStyle: ButtonStyle {
 struct SecondaryAppButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
     public var size: AppButtonSize
-    
-    private func getForegroundColor(_ config: Self.Configuration) -> Color {
+    public var isEnabled: Bool
+
+    private func getBackgroundColor(_ config: Self.Configuration) -> Color {
         if colorScheme == .dark {
             return config.isPressed ? Color.Gray10 : Color.Gray5
         } else {
-            return config.isPressed ? Color.Gray1 : Color.Surface
+            return config.isPressed ? Color.Gray1 : .white
         }
     }
+
+    private func getForegroundColor() -> Color {
+        if !isEnabled {
+            return Color.Gray30
+        }
+        return Color.Gray80
+    }
+
+    private func getStrokeColor() -> Color {
+        if !isEnabled {
+            return Color.Gray5
+        }
+
+        return Color.Gray10
+    }
+
     func makeBody(configuration: Self.Configuration) -> some View {
-        
+
         return configuration.label
             .frame(height: getHeightBySize(size: self.size))
             .padding(.horizontal, getPaddingBySize(size: self.size))
-            .background(getForegroundColor(configuration))
-            .foregroundColor(Color.Gray80)
+            .background(getBackgroundColor(configuration))
+            .foregroundColor(getForegroundColor())
             .cornerRadius(8)
             .font(getTextFontBySize(size: self.size))
             .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .inset(by: -0.5)
-                    .stroke(Color.Gray10, lineWidth: 1)
+                    .stroke(getStrokeColor(), lineWidth: 1)
             )
-            
+
+    }
+}
+
+struct DangerAppButtonStyle: ButtonStyle {
+    public var size: AppButtonSize
+
+    func makeBody(configuration: Self.Configuration) -> some View {
+
+        return configuration.label
+            .frame(height: getHeightBySize(size: self.size))
+            .padding(.horizontal, getPaddingBySize(size: self.size))
+            .foregroundColor(.white)
+            .background(Color.Red)
+            .cornerRadius(8)
+            .font(getTextFontBySize(size: self.size))
     }
 }
 
@@ -141,39 +174,58 @@ struct AppButton: View {
     }
 
     var body: some View {
-        
+
         switch self.type {
         case .primary:
             if let icon = icon {
                 Button(action: {
                     self.onClick()
                 }, label: {
-                    AppIcon(iconName: icon, color: .white)
+                    AppIcon(iconName: icon, color: .white.opacity(isEnabled ? 1 : 0.5))
                 })
                 .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             } else {
                 Button(LocalizedStringKey(self.title)) {
                     self.onClick()
                 }
                 .buttonStyle(PrimaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             }
         case .secondary:
             if let icon = icon {
                 Button(action: {
                     self.onClick()
                 }, label: {
-                    AppIcon(iconName: icon, color: .Gray80)
+                    AppIcon(iconName: icon, color: .Gray80.opacity(isEnabled ? 1 : 0.5))
                 })
-                .buttonStyle(SecondaryAppButtonStyle(size: self.size))
+                .buttonStyle(SecondaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
             } else {
                 Button(LocalizedStringKey(self.title)) {
                     self.onClick()
                 }
-                .buttonStyle(SecondaryAppButtonStyle(size: self.size))
+                .buttonStyle(SecondaryAppButtonStyle(size: self.size, isEnabled: isEnabled))
+                .disabled(!isEnabled)
+            }
+        case .danger:
+            if let icon = icon {
+                Button(action: {
+                    self.onClick()
+                }, label: {
+                    AppIcon(iconName: icon, color: .Gray80)
+                })
+                .buttonStyle(DangerAppButtonStyle(size: self.size))
+                .disabled(!isEnabled)
+            } else {
+                Button(LocalizedStringKey(self.title)) {
+                    self.onClick()
+                }
+                .buttonStyle(DangerAppButtonStyle(size: self.size))
+                .disabled(!isEnabled)
             }
         }
-
-    }
+        }
 }
 
 struct AppButton_Previews: PreviewProvider {
@@ -183,18 +235,28 @@ struct AppButton_Previews: PreviewProvider {
                 AppText("Primary button")
                 AppButton(title: "Button SM", onClick: {}, size: .SM)
                 AppButton(icon: .Gear, title: "", onClick: {}, size: .SM)
+                AppButton(title: "Button MD", onClick: {}, size: .SM)
+                AppButton(title: "Button MD", onClick: {}, size: .SM, isEnabled: false)
                 AppButton(title: "Button LG", onClick: {}, size: .LG)
             }.padding(20)
             VStack(alignment: .leading) {
                 AppText("Secondary white button")
                 AppButton(title: "Button SM", onClick: {}, type: .secondary, size: .SM)
                 AppButton(icon: .Gear, title: "", onClick: {}, type: .secondary, size: .SM)
+                AppButton(icon: .Gear, title: "", onClick: {}, type: .secondary, size: .SM, isEnabled: false)
                 AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD)
+                AppButton(title: "Button MD", onClick: {},type: .secondary, size: .MD, isEnabled: false)
                 AppButton(title: "Button LG", onClick: {}, type: .secondary, size: .LG)
             }.padding(20)
+            VStack(alignment: .leading) {
+                AppText("Danger button")
+                AppButton(title: "Button SM", onClick: {}, type: .danger, size: .SM)
+                AppButton(title: "Button MD", onClick: {},type: .danger, size: .MD)
+                AppButton(title: "Button LG", onClick: {}, type: .danger, size: .LG)
+            }.padding(20)
         }
-    
-        
-        
+        .background(Color.Surface)
+
+
     }
 }

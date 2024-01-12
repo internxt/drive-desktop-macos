@@ -36,6 +36,30 @@
 "BACKUPS_BODY" = "Conservez une copie de secours de la plupart de vos dossiers et fichiers importants.";
 "BACKUP_BUTTON_LABEL" = "Sauvegarder ce dispositif";
 
+"BACKUP_TITLE" = "Sauvegarde";
+"BACKUP_LAST_UPLOADED_%@" = "Dernière mise à jour %@";
+"BACKUP_BACKING_UP" = "Sauvegardons...";
+"BACKUP_STOP_BACKUP" = "Arrêter la sauvegarde";
+"BACKUP_BROWSE_FILES" = "Parcourir les fichiers";
+"BACKUP_SELECTED_FOLDERS" = "Dossiers sélectionnés";
+"BACKUP_CHANGE_FOLDERS" = "Modifier les dossiers";
+"BACKUP_%@_NUMBER_OF_FOLDERS_SELECTED" = "%@ dossiers sélectionnés";
+"BACKUP_UPLOAD_FREQUENCY" = "Fréquence de téléchargement";
+"BACKUP_UPLOAD_FREQUENCY_6_HRS" = "Toutes les 6 heures";
+"BACKUP_UPLOAD_FREQUENCY_12_HRS" = "Toutes les 12 heures";
+"BACKUP_UPLOAD_FREQUENCY_EVERY_DAY" = "Tous les jours";
+"BACKUP_UPLOAD_FREQUENCY_MANUALLY" = "Manuellement";
+"BACKUP_UPLOAD_FREQUENCY_MANUALLY_TOOLTIP" = "Les dossiers ne seront pas sauvegardés automatiquement tant que vous n'aurez pas cliqué sur\n\"Sauvegarder maintenant\". Ce mode n'est pas recommandé";
+"BACKUP_UPLOAD_DELETE_BACKUP" = "Supprimer la sauvegarde";
+"BACKUP_UPLOAD_DELETE_BACKUP_CONTENT" = "Cette sauvegarde sera supprimée du nuage, tous les dossiers et fichiers resteront sur cet ordinateur.";
+"BACKUP_DELETE_BACKUP_TITLE" = "Supprimer la sauvegarde ?";
+"BACKUP_DELETE_BACKUP_CONTENT" = "Cette sauvegarde sera définitivement supprimée du nuage, tous les dossiers et fichiers resteront sur cet ordinateur.";
+"BACKUP_DELETE_BACKUP_TOOLTIP" = "Cette action ne peut être annulée.";
+"BACKUP_YES_DELETE" = "Oui, supprimer";
+"BACKUP_STOP_ONGOING_BACKUP" = "Arrêter la sauvegarde en cours";
+"BACKUP_STOP_BACKUP_BODY" = "Il y a encore des fichiers qui n'ont pas encore été téléchargés. Arrêter la sauvegarde de toute façon ?";
+"BACKUP_STOP_BACKUP" = "Arrêter la sauvegarde";
+
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
@@ -53,9 +77,10 @@
 "BACKUP_SETTINGS_DEVICES" = "Dispositifs";
 "BACKUP_SETTINGS_DEVICES_HELP" = "Aide aux sauvegardes";
 "BACKUP_SETTINGS_THIS_DEVICE" = "Ce dispositif";
-"BACKUP_SETTINGS_TOOLTIP" = "Sauvegarde automatique d'une copie de vos fichiers les plus importants sur le cloud";
+"BACKUP_SETTINGS_TOOLTIP" = "Sauvegarde automatique d'une copie de vos fichiers\nles plus importants sur le cloud";
 "BACKUP_SETTINGS_BACKUP_FOLDERS" = "Dossiers de sauvegarde";
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ dossiers";
+"BACKUP_SETTINGS_ONE_FOLDER" = "1 dossier";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Cliquez sur + pour sélectionner les dossiers\nque vous souhaitez sauvegarder.";
 
 // Common

@@ -34,7 +34,7 @@ struct WidgetFolderList: View {
                     LazyVStack(spacing: 0) {
                         ForEach(0..<foldernames.count, id: \.self) { index in
                             HStack(alignment: .center, spacing: 8) {
-                                AppIcon(iconName: .FolderSimple, color: .blue)
+                                Image("folder")
 
                                 AppText(URL(string: foldernames[index].url)?.lastPathComponent ?? "")
                                     .font(.LGRegular)
@@ -48,6 +48,12 @@ struct WidgetFolderList: View {
                             .onTapGesture {
                                 self.selectedId = foldernames[index].id
                             }
+                            .onTapGesture(count: 2, perform: {
+                                self.openFolderInFinder(url: urls[index])
+                            })
+                            .onTapGesture(count: 1, perform: {
+                                self.selectedId = foldernames[index].id
+                            })
                         }
                     }
                 }
@@ -76,5 +82,10 @@ struct WidgetFolderList: View {
         }
 
         return .white
+    }
+
+    private func openFolderInFinder(url: String) {
+        let safeUrl = URL(fileURLWithPath: url.replacingOccurrences(of: "file:///", with: "/"), isDirectory: true)
+        NSWorkspace.shared.open(safeUrl)
     }
 }
