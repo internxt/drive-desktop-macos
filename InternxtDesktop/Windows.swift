@@ -27,6 +27,7 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, backup
             view:  AnyView(AppSettingsManagerView{ SettingsView(updater: updater)
                     .environmentObject(authManager)
                     .environmentObject(usageManager)
+                    .environmentObject(backupsService)
             }),
             title: "Internxt Drive",
             id: "settings",

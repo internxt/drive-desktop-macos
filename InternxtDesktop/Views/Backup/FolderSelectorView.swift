@@ -14,10 +14,10 @@ struct FolderSelectorView: View {
     @State private var selectedId: String?
 
     private var foldersCountLabel: Text {
-        if urls.count == 1 {
+        if backupsService.foldernames.count == 1 {
             return Text("BACKUP_SETTINGS_ONE_FOLDER")
         } else {
-            return Text("BACKUP_SETTINGS_\("\(urls.count)")_FOLDERS")
+            return Text("BACKUP_SETTINGS_\("\(backupsService.foldernames.count)")_FOLDERS")
         }
     }
 
@@ -72,7 +72,7 @@ struct FolderSelectorView: View {
                                 showErrorDialog(message: error.localizedDescription)
                             }
                         }
-                    }, type: .secondary, size: .SM, isEnabled: self.foldernames.count != 0)
+                    }, type: .secondary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
                 }
 
                 Spacer()
@@ -91,7 +91,7 @@ struct FolderSelectorView: View {
                             // show error in UI
                             showErrorDialog(message: error.localizedDescription)
                         }
-                    }, type: .primary, size: .SM, isEnabled: self.foldernames.count != 0)
+                    }, type: .primary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
                 }
             }
 
