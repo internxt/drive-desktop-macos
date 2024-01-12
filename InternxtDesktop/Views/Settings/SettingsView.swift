@@ -19,23 +19,39 @@ struct SettingsView: View {
     @EnvironmentObject var usageManager: UsageManager
     @State var focusedTab: TabView = .General
     public var updater: SPUUpdater? = nil
+    @State private var showFolderSelector = false
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(spacing: 0) {
-                HStack(spacing: 4) {
-                    TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
-                    TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
-                    TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
+        ZStack {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
+                    HStack(spacing: 4) {
+                        TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
+                        TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
+                        TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(colorScheme == .dark ? Color.Gray5 :  Color.Surface)
+                    Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color.Gray10).zIndex(5)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(colorScheme == .dark ? Color.Gray5 :  Color.Surface)
-                Divider().frame(maxWidth: .infinity, maxHeight: 1).overlay(Color.Gray10).zIndex(5)
+
+                Tabcontent.background(Color.Gray1)
             }
-            
-            Tabcontent.background(Color.Gray1)
-        }.frame(width: 600, alignment: .topLeading)
+
+            // folder selector
+            if showFolderSelector {
+                VStack {
+                    FolderSelectorView {
+                        showFolderSelector = false
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.Gray1.opacity(0.8))
+            }
+        }
+        .frame(width: 600)
     }
     
     @ViewBuilder
@@ -48,7 +64,7 @@ struct SettingsView: View {
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
-            BackupsTabView()
+            BackupsTabView(showFolderSelector: $showFolderSelector)
         default:
             EmptyView()
         }
@@ -56,7 +72,7 @@ struct SettingsView: View {
     
     func TabItem(iconName: AppIconName, label: String, id: TabView) -> some View {
         return VStack(alignment: .center, spacing:2) {
-            AppIcon(iconName: iconName, color: Color("Gray100"))
+            AppIcon(iconName: iconName, size: 28, color: Color("Gray100"))
             AppText(label).font(.XSMedium)
         }
         
@@ -73,6 +89,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView().frame(width: 400).fixedSize(horizontal: false, vertical: true).environmentObject(AuthManager()).environmentObject(UsageManager())
+        SettingsView().frame(width: 600, height: 460).fixedSize(horizontal: false, vertical: true).environmentObject(AuthManager()).environmentObject(UsageManager())
     }
 }

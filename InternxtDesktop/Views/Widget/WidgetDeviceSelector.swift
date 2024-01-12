@@ -21,7 +21,7 @@ struct WidgetDeviceSelector: View {
     @State private var selectedIndex = 0
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             ForEach(devices) { item in
                 DeviceItem(deviceName: item.name, isCurrentDevice: item.isCurrentDevice, isSelected: self.selectedIndex == item.index) {
                     withAnimation {
@@ -30,6 +30,7 @@ struct WidgetDeviceSelector: View {
                 }
             }
         }
+        .frame(width: 160, alignment: .leading)
         .onAppear {
             devices = [
                 Device(name: deviceName ?? "", index: 0, isCurrentDevice: true, isSelected: true),
@@ -41,7 +42,8 @@ struct WidgetDeviceSelector: View {
 }
 
 struct DeviceItem: View {
-
+    
+    @Environment(\.colorScheme) var colorScheme
     var deviceName: String
     var isCurrentDevice: Bool
     var isSelected: Bool
@@ -59,9 +61,11 @@ struct DeviceItem: View {
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
         }
-        .background(Color.clear)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.horizontal], 16)
         .padding([.vertical], 10)
+        .background(getBackgroundColor())
+        .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }
@@ -72,6 +76,17 @@ struct DeviceItem: View {
                 .inset(by: -0.5)
                 .stroke(isSelected ? Color.Gray10 : .clear, lineWidth: 1)
         )
+    }
+
+    func getBackgroundColor() -> Color {
+        if isSelected {
+            if colorScheme == .dark {
+                return Color.Gray5
+            } else {
+                return .white
+            }
+        }
+        return .clear
     }
 }
 

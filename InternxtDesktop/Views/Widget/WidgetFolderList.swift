@@ -11,6 +11,7 @@ struct WidgetFolderList: View {
 
     @Environment(\.colorScheme) var colorScheme
     @Binding var folders: [String]
+    @Binding var urls: [String]
     @Binding var selectedIndex: Int?
 
     var body: some View {
@@ -34,7 +35,7 @@ struct WidgetFolderList: View {
                     LazyVStack(spacing: 0) {
                         ForEach(0..<folders.count, id: \.self) { index in
                             HStack(alignment: .center, spacing: 8) {
-                                AppIcon(iconName: .FolderSimple, color: .blue)
+                                Image("folder")
 
                                 AppText(folders[index])
                                     .font(.LGRegular)
@@ -45,9 +46,12 @@ struct WidgetFolderList: View {
                             }
                             .padding([.horizontal], 10)
                             .background(getRowBackgroundColor(for: index))
-                            .onTapGesture {
+                            .onTapGesture(count: 2, perform: {
+                                self.openFolderInFinder(url: urls[index])
+                            })
+                            .onTapGesture(count: 1, perform: {
                                 self.selectedIndex = index
-                            }
+                            })
                         }
                     }
                 }
@@ -76,5 +80,10 @@ struct WidgetFolderList: View {
         }
 
         return .white
+    }
+
+    private func openFolderInFinder(url: String) {
+        let safeUrl = URL(fileURLWithPath: url.replacingOccurrences(of: "file:///", with: "/"), isDirectory: true)
+        NSWorkspace.shared.open(safeUrl)
     }
 }
