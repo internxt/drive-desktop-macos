@@ -45,12 +45,19 @@ struct WidgetFolderList: View {
                             }
                             .padding([.horizontal], 10)
                             .background(getRowBackgroundColor(for: index))
-                            .onTapGesture(count: 2, perform: {
-                                self.openFolderInFinder(url: foldernames[index].url)
-                            })
-                            .onTapGesture(count: 1, perform: {
-                                self.selectedId = foldernames[index].id
-                            })
+                            .gesture(
+                                TapGesture(count: 2)
+                                    .onEnded {
+                                        self.openFolderInFinder(url: foldernames[index].url)
+                                    }
+                                    .simultaneously(
+                                        with:
+                                            TapGesture(count: 1)
+                                                .onEnded {
+                                                    self.selectedId = foldernames[index].id
+                                                }
+                                    )
+                            )
                         }
                     }
                 }

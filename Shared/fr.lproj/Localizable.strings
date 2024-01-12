@@ -82,6 +82,7 @@
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ dossiers";
 "BACKUP_SETTINGS_ONE_FOLDER" = "1 dossier";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Cliquez sur + pour sélectionner les dossiers\nque vous souhaitez sauvegarder.";
+"BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Ce dossier est déjà sélectionné";
 
 // Common
 "COMMON_UPGRADE" = "Mise à niveau";

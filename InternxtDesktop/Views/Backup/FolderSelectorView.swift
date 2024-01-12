@@ -48,12 +48,16 @@ struct FolderSelectorView: View {
                         if panel.runModal() == .OK {
                             for url in panel.urls {
                                 do {
-                                    try self.backupsService.addFoldernameToBackup(
-                                      FoldernameToBackup(
-                                          url: url.absoluteString,
-                                          status: .selected
-                                      )
-                                    )
+                                    if (!backupsService.urls.contains(url)) {
+                                        try self.backupsService.addFoldernameToBackup(
+                                          FoldernameToBackup(
+                                              url: url.absoluteString,
+                                              status: .selected
+                                          )
+                                        )
+                                    } else {
+                                        showErrorDialog(message: "Already added folder")
+                                    }
                                 } catch {
                                     // show error in UI
                                     showErrorDialog(message: error.localizedDescription)

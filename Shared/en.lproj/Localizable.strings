@@ -82,6 +82,7 @@
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ folders";
 "BACKUP_SETTINGS_ONE_FOLDER" = "1 folder";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Click + to select the folders\nyou want to back up";
+"BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "This folder is already selected";
 
 // Common
 "COMMON_UPGRADE" = "Upgrade";
