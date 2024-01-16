@@ -36,7 +36,7 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            WidgetFolderList(foldernames: $backupsService.foldernames, selectedId: $selectedId)
+            BackupsFolderList(foldernames: $backupsService.foldernames, selectedId: $selectedId)
 
             HStack {
                 HStack(spacing: 8) {
@@ -48,18 +48,19 @@ struct FolderSelectorView: View {
                         if panel.runModal() == .OK {
                             for url in panel.urls {
                                 do {
-                                    if (!backupsService.urls.contains(url)) {
+                                    let urls = backupsService.foldernames.map { foldername in
+                                        return URL(string: foldername.url)
+                                    }
+                                    if (!urls.contains(url)) {
                                         try self.backupsService.addFoldernameToBackup(
                                           FoldernameToBackup(
                                               url: url.absoluteString,
                                               status: .selected
                                           )
                                         )
-                                    } else {
-                                        showErrorDialog(message: "Already added folder")
                                     }
                                 } catch {
-                                    // show error in UI
+                                    error.reportToSentry()
                                     showErrorDialog(message: error.localizedDescription)
                                 }
                             }
@@ -72,7 +73,7 @@ struct FolderSelectorView: View {
                                 try self.backupsService.removeFoldernameFromBackup(id: selectedId)
                                 self.selectedId = nil
                             } catch {
-                                // show error in UI
+                                error.reportToSentry()
                                 showErrorDialog(message: error.localizedDescription)
                             }
                         }

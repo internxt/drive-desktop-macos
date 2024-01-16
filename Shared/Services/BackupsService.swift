@@ -17,7 +17,6 @@ enum BackupError: Error {
 
 class BackupsService: ObservableObject {
     @Published var foldernames: [FoldernameToBackup] = []
-    @Published var urls: [URL] = []
 
     private func getRealm() -> Realm {
         do {
@@ -31,7 +30,6 @@ class BackupsService: ObservableObject {
 
     func clean() throws {
         foldernames = []
-        urls = []
         let realm = getRealm()
         try realm.write {
             realm.deleteAll()
@@ -39,7 +37,7 @@ class BackupsService: ObservableObject {
     }
 
     func addFoldernameToBackup(_ foldernameToBackup: FoldernameToBackup) throws {
-        guard let url = URL(string: foldernameToBackup.url) else {
+        guard let _ = URL(string: foldernameToBackup.url) else {
             throw BackupError.cannotCreateURL
         }
 
@@ -49,7 +47,6 @@ class BackupsService: ObservableObject {
                 realm.add(foldernameToBackup)
             }
             self.foldernames.append(foldernameToBackup)
-            self.urls.append(url)
         } catch {
             error.reportToSentry()
             throw BackupError.cannotAddFolder
@@ -92,16 +89,13 @@ class BackupsService: ObservableObject {
     func assignUrls() {
         let foldernamesToBackup = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: true)
 
-        var array: [URL] = []
         var folders: [FoldernameToBackup] = []
         for foldername in foldernamesToBackup {
-            if let url = URL(string: foldername.url) {
-                array.append(url)
+            if let _ = URL(string: foldername.url) {
                 folders.append(foldername)
             }
         }
         self.foldernames = folders
-        self.urls = array
     }
 }
 

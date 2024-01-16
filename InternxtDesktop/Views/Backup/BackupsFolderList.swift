@@ -1,5 +1,5 @@
 //
-//  WidgetFolderList.swift
+//  BackupsFolderList.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/4/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WidgetFolderList: View {
+struct BackupsFolderList: View {
 
     @Environment(\.colorScheme) var colorScheme
     @Binding var foldernames: [FoldernameToBackup]
@@ -46,17 +46,12 @@ struct WidgetFolderList: View {
                             .padding([.horizontal], 10)
                             .background(getRowBackgroundColor(for: index))
                             .gesture(
-                                TapGesture(count: 2)
-                                    .onEnded {
-                                        self.openFolderInFinder(url: foldernames[index].url)
+                                onMultipleTaps(firstCount: 2, firstAction: {
+                                    self.openFolderInFinder(url: foldernames[index].url)
+                                    }, secondCount: 1, secondAction: {
+                                        self.selectedId = foldernames[index].id
                                     }
-                                    .simultaneously(
-                                        with:
-                                            TapGesture(count: 1)
-                                                .onEnded {
-                                                    self.selectedId = foldernames[index].id
-                                                }
-                                    )
+                                )
                             )
                         }
                     }

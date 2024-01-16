@@ -77,4 +77,9 @@ extension View {
             }
         }
     }
+
+    public func onMultipleTaps(firstCount: Int, firstAction: @escaping () -> Void, secondCount: Int, secondAction: @escaping () -> Void) -> some Gesture {
+        return TapGesture(count: firstCount).onEnded(firstAction)
+            .simultaneously(with: TapGesture(count: secondCount).onEnded(secondAction))
+    }
 }
