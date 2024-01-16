@@ -1,5 +1,5 @@
 //
-//  WidgetFolderList.swift
+//  BackupsFolderList.swift
 //  InternxtDesktop
 //
 //  Created by Richard Ascanio on 1/4/24.
@@ -7,15 +7,14 @@
 
 import SwiftUI
 
-struct WidgetFolderList: View {
+struct BackupsFolderList: View {
 
     @Environment(\.colorScheme) var colorScheme
-    @Binding var folders: [String]
-    @Binding var urls: [String]
-    @Binding var selectedIndex: Int?
+    @Binding var foldernames: [FoldernameToBackup]
+    @Binding var selectedId: String?
 
     var body: some View {
-        if folders.count == 0 {
+        if foldernames.count == 0 {
             VStack {
                 AppText("BACKUP_SETTINGS_ADD_FOLDERS")
                     .font(.BaseRegular)
@@ -33,25 +32,27 @@ struct WidgetFolderList: View {
             VStack {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(0..<folders.count, id: \.self) { index in
+                        ForEach(0..<foldernames.count, id: \.self) { index in
                             HStack(alignment: .center, spacing: 8) {
                                 Image("folder")
 
-                                AppText(folders[index])
+                                AppText(URL(string: foldernames[index].url)?.lastPathComponent ?? "")
                                     .font(.LGRegular)
-                                    .foregroundColor(selectedIndex == index ? .white : .Gray80)
+                                    .foregroundColor(selectedId == foldernames[index].id ? .white : .Gray80)
                                     .padding([.vertical], 10)
 
                                 Spacer()
                             }
                             .padding([.horizontal], 10)
                             .background(getRowBackgroundColor(for: index))
-                            .onTapGesture(count: 2, perform: {
-                                self.openFolderInFinder(url: urls[index])
-                            })
-                            .onTapGesture(count: 1, perform: {
-                                self.selectedIndex = index
-                            })
+                            .gesture(
+                                onMultipleTaps(firstCount: 2, firstAction: {
+                                    self.openFolderInFinder(url: foldernames[index].url)
+                                    }, secondCount: 1, secondAction: {
+                                        self.selectedId = foldernames[index].id
+                                    }
+                                )
+                            )
                         }
                     }
                 }
@@ -67,7 +68,7 @@ struct WidgetFolderList: View {
     }
 
     private func getRowBackgroundColor(for index: Int) -> Color {
-        if selectedIndex == index {
+        if selectedId == foldernames[index].id {
             return .Primary
         }
 

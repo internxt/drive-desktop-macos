@@ -7,23 +7,17 @@
 
 import SwiftUI
 
-enum FolderSelectorError: Error {
-    case NotImplementedError
-}
-
 struct FolderSelectorView: View {
 
+    @StateObject var backupsService: BackupsService
     let closeWindow: () -> Void
-    @State private var isBackupButtonEnabled = false
-    @State private var foldernames: [String] = []
-    @State private var urls: [String] = []
-    @State private var selectedIndex: Int?
+    @State private var selectedId: String?
 
     private var foldersCountLabel: Text {
-        if urls.count == 1 {
+        if backupsService.foldernames.count == 1 {
             return Text("BACKUP_SETTINGS_ONE_FOLDER")
         } else {
-            return Text("BACKUP_SETTINGS_\("\(urls.count)")_FOLDERS")
+            return Text("BACKUP_SETTINGS_\("\(backupsService.foldernames.count)")_FOLDERS")
         }
     }
 
@@ -42,7 +36,7 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            WidgetFolderList(folders: $foldernames, urls: $urls, selectedIndex: $selectedIndex)
+            BackupsFolderList(foldernames: $backupsService.foldernames, selectedId: $selectedId)
 
             HStack {
                 HStack(spacing: 8) {
@@ -53,20 +47,37 @@ struct FolderSelectorView: View {
                         panel.canChooseFiles = false
                         if panel.runModal() == .OK {
                             for url in panel.urls {
-                                let foldername = url.lastPathComponent
-                                self.urls.append(url.absoluteString)
-                                self.foldernames.append(foldername)
+                                do {
+                                    let urls = backupsService.foldernames.map { foldername in
+                                        return URL(string: foldername.url)
+                                    }
+                                    if (!urls.contains(url)) {
+                                        try self.backupsService.addFoldernameToBackup(
+                                          FoldernameToBackup(
+                                              url: url.absoluteString,
+                                              status: .selected
+                                          )
+                                        )
+                                    }
+                                } catch {
+                                    error.reportToSentry()
+                                    showErrorDialog(message: error.localizedDescription)
+                                }
                             }
                         }
                     }, type: .secondary, size: .SM)
 
                     AppButton(icon: .Minus, title: "", onClick: {
-                        if let index = selectedIndex {
-                            self.urls.remove(at: index)
-                            self.foldernames.remove(at: index)
-                            self.selectedIndex = nil
+                        if let selectedId = selectedId {
+                            do {
+                                try self.backupsService.removeFoldernameFromBackup(id: selectedId)
+                                self.selectedId = nil
+                            } catch {
+                                error.reportToSentry()
+                                showErrorDialog(message: error.localizedDescription)
+                            }
                         }
-                    }, type: .secondary, size: .SM, isEnabled: self.foldernames.count != 0)
+                    }, type: .secondary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
                 }
 
                 Spacer()
@@ -82,9 +93,10 @@ struct FolderSelectorView: View {
                         do {
                             try doBackup()
                         } catch {
-                            print("Error \(error.reportToSentry())")
+                            // show error in UI
+                            showErrorDialog(message: error.localizedDescription)
                         }
-                    }, type: .primary, size: .SM, isEnabled: self.foldernames.count != 0)
+                    }, type: .primary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
                 }
             }
 
@@ -96,10 +108,18 @@ struct FolderSelectorView: View {
     }
 
     private func doBackup() throws {
-        throw FolderSelectorError.NotImplementedError
+        throw AppError.notImplementedError
+    }
+
+    private func showErrorDialog(message: String) {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
     }
 }
 
 #Preview {
-    FolderSelectorView(closeWindow: {})
+    FolderSelectorView(backupsService: BackupsService(), closeWindow: {})
 }

@@ -10,7 +10,7 @@
 		310452692B4B05AE00984716 /* BackupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310452682B4B05AE00984716 /* BackupComponent.swift */; };
 		3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */; };
 		3104526E2B4B1C5C00984716 /* StopBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */; };
-		311612A02B47873D003C8EE8 /* WidgetFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */; };
+		311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -18,6 +18,7 @@
 		316D24742B4D89F5007DE91A /* ProgressFieldComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */; };
 		316D24762B4D8A38007DE91A /* ProgressBarComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */; };
 		316D24782B4D8B94007DE91A /* UploadFrequencySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */; };
+		316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
 		31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
@@ -202,7 +203,7 @@
 		310452682B4B05AE00984716 /* BackupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupComponent.swift; sourceTree = "<group>"; };
 		3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteBackupDialog.swift; sourceTree = "<group>"; };
 		3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopBackupDialog.swift; sourceTree = "<group>"; };
-		3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFolderList.swift; sourceTree = "<group>"; };
+		3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsFolderList.swift; sourceTree = "<group>"; };
 		315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsTabView.swift; sourceTree = "<group>"; };
 		315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDeviceSelector.swift; sourceTree = "<group>"; };
 		315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectorView.swift; sourceTree = "<group>"; };
@@ -210,6 +211,7 @@
 		316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressFieldComponent.swift; sourceTree = "<group>"; };
 		316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarComponent.swift; sourceTree = "<group>"; };
 		316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFrequencySelector.swift; sourceTree = "<group>"; };
+		316D24792B4D9997007DE91A /* BackupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsService.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 		3104526A2B4B1C3A00984716 /* Backup */ = {
 			isa = PBXGroup;
 			children = (
+				3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */,
 				310452682B4B05AE00984716 /* BackupComponent.swift */,
 				316D24712B4D88FA007DE91A /* DeviceCardComponent.swift */,
 				316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */,
@@ -454,6 +457,7 @@
 				E1A0AC762AB8AAFE005E71D6 /* ThumbnailGenerator.swift */,
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
+				316D24792B4D9997007DE91A /* BackupsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -604,7 +608,6 @@
 				E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */,
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
 				315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */,
-				3116129F2B47873D003C8EE8 /* WidgetFolderList.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 			);
 			path = Widget;
@@ -944,10 +947,11 @@
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
+				316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */,
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
-				311612A02B47873D003C8EE8 /* WidgetFolderList.swift in Sources */,
+				311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
 				E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */,
 				E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */,

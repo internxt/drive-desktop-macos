@@ -81,6 +81,7 @@
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ carpetas";
 "BACKUP_SETTINGS_ONE_FOLDER" = "1 carpeta";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Haga clic en + para seleccionar las carpetas\nde las que desea hacer una copia de seguridad.";
+"BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Esta carpeta ya se encuentra seleccionada";
 
 // Common
 "COMMON_UPGRADE" = "Comprar espacio";

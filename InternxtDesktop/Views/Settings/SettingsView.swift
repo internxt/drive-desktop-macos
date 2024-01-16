@@ -17,6 +17,7 @@ struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
+    @EnvironmentObject var backupsService: BackupsService
     @State var focusedTab: TabView = .General
     public var updater: SPUUpdater? = nil
     @State private var showFolderSelector = false
@@ -43,7 +44,7 @@ struct SettingsView: View {
             // folder selector
             if showFolderSelector {
                 VStack {
-                    FolderSelectorView {
+                    FolderSelectorView(backupsService: backupsService) {
                         showFolderSelector = false
                     }
                 }

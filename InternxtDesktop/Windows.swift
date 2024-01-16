@@ -13,7 +13,7 @@ import Sparkle
 /// Return the default windows config, this
 /// windows will be available without needing to explicitly
 /// creating them
-func defaultWindows(authManager: AuthManager, usageManager: UsageManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
+func defaultWindows(authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
     let windows = [
         WindowConfig(
             view: AnyView(AppSettingsManagerView{SignInWithBrowserView().environmentObject(authManager)}),
@@ -27,6 +27,7 @@ func defaultWindows(authManager: AuthManager, usageManager: UsageManager, update
             view:  AnyView(AppSettingsManagerView{ SettingsView(updater: updater)
                     .environmentObject(authManager)
                     .environmentObject(usageManager)
+                    .environmentObject(backupsService)
             }),
             title: "Internxt Drive",
             id: "settings",
