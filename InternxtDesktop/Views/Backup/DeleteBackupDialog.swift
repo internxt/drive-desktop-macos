@@ -10,6 +10,7 @@ import SwiftUI
 struct DeleteBackupDialog: View {
     
     @Environment(\.colorScheme) var colorScheme
+    var dismiss: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -26,20 +27,16 @@ struct DeleteBackupDialog: View {
 
             HStack(spacing: 8) {
                 AppButton(title: "COMMON_CANCEL", onClick: {
-                    do {
-                        try cancelDeleteBackup()
-                    } catch {
-                        print("Error \(error.reportToSentry())")
-                    }
-                }, type: .secondary)
+                    dismiss()
+                }, type: .secondary, isExpanded: true)
 
                 AppButton(title: "BACKUP_YES_DELETE", onClick: {
                     do {
                         try deleteBackup()
                     } catch {
-                        print("Error \(error.reportToSentry())")
+                        error.reportToSentry()
                     }
-                }, type: .danger)
+                }, type: .danger, isExpanded: true)
             }
             .padding([.top], 8)
             .frame(maxWidth: .infinity)
@@ -50,15 +47,11 @@ struct DeleteBackupDialog: View {
         .frame(width: 320)
     }
 
-    func cancelDeleteBackup() throws {
-        throw AppError.notImplementedError
-    }
-
     func deleteBackup() throws {
         throw AppError.notImplementedError
     }
 }
 
 #Preview {
-    DeleteBackupDialog()
+    DeleteBackupDialog {}
 }

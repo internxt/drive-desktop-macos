@@ -35,6 +35,7 @@ struct DeviceCardComponent: View {
                         Text("BACKUP_LAST_UPLOADED_\(lastUpdated ?? "")")
                             .font(.SMRegular)
                             .foregroundColor(.Gray50)
+                            .lineLimit(1)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

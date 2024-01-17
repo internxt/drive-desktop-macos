@@ -10,6 +10,7 @@ import SwiftUI
 struct StopBackupDialog: View {
 
     @Environment(\.colorScheme) var colorScheme
+    var dismiss: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -22,12 +23,16 @@ struct StopBackupDialog: View {
 
             HStack(spacing: 8) {
                 AppButton(title: "COMMON_CANCEL", onClick: {
-
-                }, type: .secondary)
+                    dismiss()
+                }, type: .secondary, isExpanded: true)
 
                 AppButton(title: "BACKUP_STOP_BACKUP", onClick: {
-
-                }, type: .primary)
+                    do {
+                        try stopBackup()
+                    } catch {
+                        error.reportToSentry()
+                    }
+                }, type: .primary, isExpanded: true)
             }
             .padding([.top], 8)
             .frame(maxWidth: .infinity)
@@ -37,8 +42,12 @@ struct StopBackupDialog: View {
         .cornerRadius(10)
         .frame(width: 320)
     }
+
+    private func stopBackup() throws {
+        throw AppError.notImplementedError
+    }
 }
 
 #Preview {
-    StopBackupDialog()
+    StopBackupDialog {}
 }

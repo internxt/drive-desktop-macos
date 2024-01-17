@@ -14,12 +14,15 @@ enum UploadFrequencyEnum: String {
 struct BackupComponent: View {
 
     var deviceName: String
+    var isCurrentDevice: Bool
     var numOfFolders: Int
     var isLoading: Bool
     var lastUpdated: String?
     var backupStorageValue: Int?
     var backupStorageUnit: String?
     @Binding var progress: Double
+    @Binding var showStopBackupDialog: Bool
+    @Binding var showDeleteBackupDialog: Bool
     @State private var currentFrequency: UploadFrequencyEnum = .six
 
     var body: some View {
@@ -38,13 +41,19 @@ struct BackupComponent: View {
             )
 
             HStack(spacing: 8) {
-                AppButton(title: "BACKUP_STOP_BACKUP", onClick: {
-                    do {
-                        try stopBackup()
-                    } catch {
-                        print("error \(error.reportToSentry())")
-                    }
-                }, type: .primary)
+                if isCurrentDevice {
+                    AppButton(title: "BACKUP_STOP_BACKUP", onClick: {
+                        showStopBackupDialog = true
+                    }, type: .primary, isExpanded: true)
+                } else {
+                    AppButton(title: "BACKUP_DOWNLOAD", onClick: {
+                        do {
+                            try downloadBackup()
+                        } catch {
+                            print("error \(error.reportToSentry())")
+                        }
+                    }, type: .primary, isExpanded: true)
+                }
 
                 AppButton(title: "BACKUP_BROWSE_FILES", onClick: {
                     do {
@@ -52,33 +61,35 @@ struct BackupComponent: View {
                     } catch {
                         print("error \(error.reportToSentry())")
                     }
-                }, type: .secondary)
+                }, type: .secondary, isExpanded: true)
             }
             .frame(maxWidth: .infinity)
 
-            VStack(alignment: .leading, spacing: 8) {
-                AppText("BACKUP_SELECTED_FOLDERS")
-                    .font(.SMMedium)
-                    .foregroundColor(.Gray80)
+            if isCurrentDevice {
+                VStack(alignment: .leading, spacing: 8) {
+                    AppText("BACKUP_SELECTED_FOLDERS")
+                        .font(.SMMedium)
+                        .foregroundColor(.Gray80)
 
-                HStack(spacing: 10) {
-                    AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
-                        do {
-                            try changeFolders()
-                        } catch {
-                            print("error \(error.reportToSentry())")
-                        }
-                    }, type: .secondary)
+                    HStack(spacing: 10) {
+                        AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
+                            do {
+                                try changeFolders()
+                            } catch {
+                                print("error \(error.reportToSentry())")
+                            }
+                        }, type: .secondary)
 
-                    Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
-                        .font(.SMRegular)
-                        .foregroundColor(.Gray60)
+                        Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
+                            .font(.SMRegular)
+                            .foregroundColor(.Gray60)
+                    }
                 }
-            }
-            .padding([.top], 12)
-
-            UploadFrequencySelector(currentFrequency: self.$currentFrequency)
                 .padding([.top], 12)
+
+                UploadFrequencySelector(currentFrequency: self.$currentFrequency)
+                    .padding([.top], 12)
+            }
 
             VStack(alignment: .leading, spacing: 8) {
                 AppText("BACKUP_UPLOAD_DELETE_BACKUP")
@@ -90,26 +101,20 @@ struct BackupComponent: View {
                     .foregroundColor(.Gray50)
 
                 AppButton(title: "BACKUP_UPLOAD_DELETE_BACKUP", onClick: {
-                    do {
-                        try deleteBackup()
-                    } catch {
-                        print("error \(error.reportToSentry())")
-                    }
+                    showDeleteBackupDialog = true
                 }, type: .secondary)
             }
             .padding([.top], 12)
         }
+        .padding([.vertical, .trailing], 20)
+        .padding([.leading], 16)
     }
 
-    func deleteBackup() throws {
+    func downloadBackup() throws {
         throw AppError.notImplementedError
     }
 
     func changeFolders() throws {
-        throw AppError.notImplementedError
-    }
-
-    func stopBackup() throws {
         throw AppError.notImplementedError
     }
 
@@ -120,5 +125,5 @@ struct BackupComponent: View {
 }
 
 #Preview {
-    BackupComponent(deviceName: "Mac Mini M1", numOfFolders: 16, isLoading: false, lastUpdated: "today at 13:34", backupStorageValue: 10, backupStorageUnit: "GB", progress: .constant(0.5))
+    BackupComponent(deviceName: "Mac Mini M1", isCurrentDevice: true, numOfFolders: 16, isLoading: false, lastUpdated: "today at 13:34", backupStorageValue: 10, backupStorageUnit: "GB", progress: .constant(0.5), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false))
 }

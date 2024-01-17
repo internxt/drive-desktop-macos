@@ -40,6 +40,7 @@
 "BACKUP_LAST_UPLOADED_%@" = "Última actualización %@";
 "BACKUP_BACKING_UP" = "Respaldando...";
 "BACKUP_STOP_BACKUP" = "Detener copia de seguridad";
+"BACKUP_DOWNLOAD" = "Descargar";
 "BACKUP_BROWSE_FILES" = "Examinar archivos";
 "BACKUP_SELECTED_FOLDERS" = "Carpetas seleccionadas";
 "BACKUP_CHANGE_FOLDERS" = "Cambiar carpetas";

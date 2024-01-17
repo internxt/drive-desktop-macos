@@ -21,6 +21,8 @@ struct SettingsView: View {
     @State var focusedTab: TabView = .General
     public var updater: SPUUpdater? = nil
     @State private var showFolderSelector = false
+    @State private var showStopBackupDialog = false
+    @State private var showDeleteBackupDialog = false
 
     var body: some View {
         ZStack {
@@ -51,6 +53,28 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Gray1.opacity(0.8))
             }
+
+            // stop ongoing backup dialog
+            if showStopBackupDialog {
+                VStack {
+                    StopBackupDialog {
+                        showStopBackupDialog = false
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.Gray1.opacity(0.8))
+            }
+
+            // delete backup dialog
+            if showDeleteBackupDialog {
+                VStack {
+                    DeleteBackupDialog {
+                        showDeleteBackupDialog = false
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.Gray1.opacity(0.8))
+            }
         }
         .frame(width: 600)
     }
@@ -65,7 +89,7 @@ struct SettingsView: View {
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
-            BackupsTabView(showFolderSelector: $showFolderSelector)
+            BackupsTabView(showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog)
         default:
             EmptyView()
         }

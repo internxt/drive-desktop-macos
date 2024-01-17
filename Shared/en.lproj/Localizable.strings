@@ -40,6 +40,7 @@
 "BACKUP_LAST_UPLOADED_%@" = "Last updated %@";
 "BACKUP_BACKING_UP" = "Backing up...";
 "BACKUP_STOP_BACKUP" = "Stop backup";
+"BACKUP_DOWNLOAD" = "Download";
 "BACKUP_BROWSE_FILES" = "Browse files";
 "BACKUP_SELECTED_FOLDERS" = "Selected folders";
 "BACKUP_CHANGE_FOLDERS" = "Change folders";

@@ -10,19 +10,27 @@ import SwiftUI
 struct BackupsTabView: View {
 
     @Binding var showFolderSelector: Bool
+    @Binding var showStopBackupDialog: Bool
+    @Binding var showDeleteBackupDialog: Bool
+    private let deviceName = ConfigLoader().getDeviceName()
+    @State var hasBackup = false
+    @State var selectedDeviceId = 0
+    @State var progress: Double = 0.48
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 0) {
             DevicesTab
+                .padding([.leading, .vertical], 20)
+                .padding([.trailing], 16)
 
             Divider()
                 .background(Color.Gray10)
+                .padding([.vertical], 20)
 
             BackupTab
 
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(20)
     }
 
     var DevicesTab: some View {
@@ -46,39 +54,50 @@ struct BackupsTabView: View {
             .onTapGesture {
                 URLDictionary.HELP_CENTER.open()
             }
-
         }
     }
 
     var BackupTab: some View {
-        VStack(spacing: 16) {
-            Image("DriveIcon")
-                .resizable()
-                .frame(width: 80, height: 80)
-
-            VStack(spacing: 0) {
-                AppText("INTERNXT_BACKUPS")
-                    .foregroundColor(.Gray100)
-                    .font(.XSSemibold)
-
-                AppText("BACKUP_SETTINGS_TOOLTIP")
-                    .foregroundColor(.Gray60)
-                    .font(.BaseRegular)
-                    .multilineTextAlignment(.center)
-            }
-
-            AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                withAnimation {
-                    showFolderSelector = true
+        Group {
+            if selectedDeviceId == 0 {
+                if hasBackup {
+                    ScrollView(showsIndicators: false) {
+                        BackupComponent(
+                            deviceName: deviceName ?? "",
+                            isCurrentDevice: true,
+                            numOfFolders: 20,
+                            isLoading: true,
+                            progress: $progress,
+                            showStopBackupDialog: $showStopBackupDialog,
+                            showDeleteBackupDialog: $showDeleteBackupDialog
+                        )
+                    }
+                } else {
+                    BackupSetupComponent {
+                        showFolderSelector = true
+                    }
+                    .padding(20)
                 }
-            }, type: .primary, size: .MD)
+            } else {
+                BackupComponent(
+                    deviceName: "Home PC",
+                    isCurrentDevice: false,
+                    numOfFolders: 0,
+                    isLoading: false,
+                    lastUpdated: "November 24, 2022 at 13:34",
+                    backupStorageValue: 65,
+                    backupStorageUnit: "GB",
+                    progress: .constant(1),
+                    showStopBackupDialog: $showStopBackupDialog,
+                    showDeleteBackupDialog: $showDeleteBackupDialog
+                )
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding(20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
 }
 
 #Preview {
-    BackupsTabView(showFolderSelector: .constant(false))
+    BackupsTabView(showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false))
 }
