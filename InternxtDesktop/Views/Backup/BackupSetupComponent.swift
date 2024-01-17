@@ -29,7 +29,7 @@ struct BackupSetupComponent: View {
 
             AppButton(title: "COMMON_BACKUP_NOW", onClick: {
                 withAnimation {
-
+                    callback()
                 }
             }, type: .primary, size: .MD)
         }

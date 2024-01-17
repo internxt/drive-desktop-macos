@@ -73,8 +73,14 @@ struct BackupsTabView: View {
                         )
                     }
                 } else {
-                    BackupSetupComponent {
-                        showFolderSelector = true
+                    VStack {
+                        Spacer()
+
+                        BackupSetupComponent {
+                            showFolderSelector = true
+                        }
+
+                        Spacer()
                     }
                     .padding(20)
                 }
