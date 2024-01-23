@@ -31,7 +31,7 @@ struct GetRemoteChangesUseCase {
         self.user = user
     }
     
-    private func getFilesAndFoldersLastUpdate(_ anchor: NSFileProviderSyncAnchor) -> FilesAndFoldersAnchor {
+    private func getFilesAndFoldersLastUpdate(_ anchor: NSFileProviderSyncAnchor, deltaInSeconds: Int) -> FilesAndFoldersAnchor {
         
         // 1. Anchor to string
         let anchorString = String(data: anchor.rawValue, encoding: .utf8)
@@ -47,14 +47,17 @@ struct GetRemoteChangesUseCase {
         let filesLastUpdatedAt = filesAnchor == nil ? Date() : anchorToDate(filesAnchor!)
         let foldersLastUpdatedAt = foldersAnchor == nil ? Date() : anchorToDate(foldersAnchor!)
             
-        return FilesAndFoldersAnchor(filesAnchorDate: filesLastUpdatedAt ?? Date(), foldersAnchorDate: foldersLastUpdatedAt ?? Date())
+        return FilesAndFoldersAnchor(
+            filesAnchorDate: Calendar.current.date(byAdding: .second, value: deltaInSeconds, to: filesLastUpdatedAt ?? Date())!,
+            foldersAnchorDate: Calendar.current.date(byAdding: .second, value: deltaInSeconds, to: foldersLastUpdatedAt ?? Date())!
+        )
     }
     func run() {
         // Since we need to store the updatedAt for files and folders separated, both dates are stored in the anchor, so we split them
-        let lastUpdatedAt = getFilesAndFoldersLastUpdate(anchor)
+        let lastUpdatedAt = getFilesAndFoldersLastUpdate(anchor, deltaInSeconds: -3600)
        
         
-       
+        logger.info("Getting folders changes since \(Time.ISOStringFromDate(lastUpdatedAt.foldersAnchorDate)?.toString() ?? "NO_DATE")")
         Task {
             do {
                 var hasMoreFiles = false

@@ -1553,7 +1553,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/multipart-upload";
+				branch = main;
 				kind = branch;
 			};
 		};
