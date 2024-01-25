@@ -1,5 +1,33 @@
 {
+  "originHash" : "47eb2a873cc4234ed50ff0cf45981ca69410e1f0dc213634f87790fced2aeac7",
   "pins" : [
+    {
+      "identity" : "asn1",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leif-ibsen/ASN1",
+      "state" : {
+        "revision" : "e38d1b8b43d8b53ffadde9836f34289176bb7a0c",
+        "version" : "2.7.0"
+      }
+    },
+    {
+      "identity" : "bigint",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leif-ibsen/BigInt",
+      "state" : {
+        "revision" : "afb70a0038bfbba845271b60fa9a58d5840f8017",
+        "version" : "1.21.0"
+      }
+    },
+    {
+      "identity" : "digest",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leif-ibsen/Digest",
+      "state" : {
+        "revision" : "1b9858026d5d3cb7b371fb1683ece54a654dfb21",
+        "version" : "1.11.0"
+      }
+    },
     {
       "identity" : "idzswiftcommoncrypto",
       "kind" : "remoteSourceControl",
@@ -91,6 +119,15 @@
       }
     },
     {
+      "identity" : "swiftkyber",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leif-ibsen/SwiftKyber.git",
+      "state" : {
+        "revision" : "03e4d4bfb0e0c68a656708a83db6c2a8575038b1",
+        "version" : "3.0.0"
+      }
+    },
+    {
       "identity" : "xcglogger",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DaveWoodCom/XCGLogger.git",
@@ -100,5 +137,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

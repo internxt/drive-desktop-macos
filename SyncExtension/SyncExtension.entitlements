@@ -23,6 +23,7 @@
 	<key>keychain-access-groups</key>
 	<array>
 		<string>$(TeamIdentifierPrefix)internxt.SharedKeyChain</string>
+		<string>$(AppIdentifierPrefix)internxt.InternxtDesktop.sync</string>
 	</array>
 </dict>
 </plist>
