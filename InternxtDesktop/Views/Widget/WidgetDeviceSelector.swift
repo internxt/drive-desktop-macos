@@ -7,36 +7,29 @@
 
 import SwiftUI
 
-struct Device: Identifiable {
-    var id = UUID()
-    let name: String
-    let index: Int
-    let isCurrentDevice: Bool
-    let isSelected: Bool
-}
-
 struct WidgetDeviceSelector: View {
-    private let deviceName = ConfigLoader().getDeviceName()
-    @State private var devices: [Device] = []
-    @State private var selectedIndex = 0
-    
+
+    @StateObject var backupsService: BackupsService
+    @State private var selectedDeviceId = 0
+    private let currentDeviceName = ConfigLoader().getDeviceName()
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(devices) { item in
-                DeviceItem(deviceName: item.name, isCurrentDevice: item.isCurrentDevice, isSelected: self.selectedIndex == item.index) {
+            ForEach(backupsService.devices) { device in
+                DeviceItem(
+                    deviceName: device.name ?? "",
+                    isCurrentDevice: self.currentDeviceName == device.name,
+                    isSelected: self.selectedDeviceId == device.id
+                ) {
                     withAnimation {
-                        self.selectedIndex = item.index
+                        self.selectedDeviceId = device.id
                     }
                 }
             }
         }
         .frame(width: 160, alignment: .leading)
         .onAppear {
-            devices = [
-                Device(name: deviceName ?? "", index: 0, isCurrentDevice: true, isSelected: true),
-                Device(name: "Home PC", index: 1, isCurrentDevice: false, isSelected: false),
-                Device(name: "Office server", index: 2, isCurrentDevice: false, isSelected: false)
-            ]
+            self.selectedDeviceId = backupsService.devices.first?.id ?? 0
         }
     }
 }
@@ -91,5 +84,5 @@ struct DeviceItem: View {
 }
 
 #Preview {
-    WidgetDeviceSelector()
+    WidgetDeviceSelector(backupsService: BackupsService())
 }

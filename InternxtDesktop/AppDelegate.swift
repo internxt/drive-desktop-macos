@@ -57,7 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ErrorUtils.start()
 
         checkVolumeAndEjectIfNeeded()
-        backupsService.assignUrls()
+        initializeBackups()
 
         self.windowsManager = WindowsManager(
             initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
@@ -146,6 +146,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func closeSendFeedbackWindow() {
         self.windowsManager.closeWindow(id: "send-feedback")
+    }
+
+    private func initializeBackups() {
+        backupsService.assignUrls()
+
+        Task {
+            await backupsService.loadAllDevices()
+        }
     }
 
     private func checkVolumeAndEjectIfNeeded() {

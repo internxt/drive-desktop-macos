@@ -19,6 +19,8 @@
 		316D24762B4D8A38007DE91A /* ProgressBarComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */; };
 		316D24782B4D8B94007DE91A /* UploadFrequencySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */; };
 		316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
+		316DC7EB2B597BD000FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
+		316DC7EC2B59837D00FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
 		317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */; };
 		31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
@@ -213,6 +215,7 @@
 		316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarComponent.swift; sourceTree = "<group>"; };
 		316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFrequencySelector.swift; sourceTree = "<group>"; };
 		316D24792B4D9997007DE91A /* BackupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsService.swift; sourceTree = "<group>"; };
+		316DC7EA2B597BD000FDC746 /* DeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceService.swift; sourceTree = "<group>"; };
 		317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetupComponent.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
@@ -461,6 +464,7 @@
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
 				316D24792B4D9997007DE91A /* BackupsService.swift */,
+				316DC7EA2B597BD000FDC746 /* DeviceService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -928,6 +932,7 @@
 				E18300A22AA161ED00AD023C /* DomainManager.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
+				316DC7EC2B59837D00FDC746 /* DeviceService.swift in Sources */,
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
@@ -1049,6 +1054,7 @@
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
+				316DC7EB2B597BD000FDC746 /* DeviceService.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
@@ -1557,7 +1563,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/multipart-upload";
+				branch = main;
 				kind = branch;
 			};
 		};

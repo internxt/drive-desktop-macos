@@ -70,4 +70,15 @@ struct APIFactory {
         
         return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
+
+    static var Backup: BackupAPI {
+        let configLoader = ConfigLoader()
+
+        let config = configLoader.get()
+        let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
+
+        print("legacy auth token", token)
+        print("auth token", configLoader.getAuthToken())
+        return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
 }

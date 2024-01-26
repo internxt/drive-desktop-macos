@@ -12,6 +12,7 @@ struct BackupsTabView: View {
     @Binding var showFolderSelector: Bool
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
+    @StateObject var backupsService: BackupsService
     private let deviceName = ConfigLoader().getDeviceName()
     @State var hasBackup = false
     @State var selectedDeviceId = 0
@@ -39,7 +40,7 @@ struct BackupsTabView: View {
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
 
-            WidgetDeviceSelector()
+            WidgetDeviceSelector(backupsService: backupsService)
 
             Spacer()
 
@@ -105,5 +106,5 @@ struct BackupsTabView: View {
 }
 
 #Preview {
-    BackupsTabView(showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false))
+    BackupsTabView(showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), backupsService: BackupsService())
 }

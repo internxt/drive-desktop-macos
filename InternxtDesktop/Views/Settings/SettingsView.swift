@@ -89,7 +89,7 @@ struct SettingsView: View {
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
-            BackupsTabView(showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog)
+            BackupsTabView(showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog, backupsService: backupsService)
         default:
             EmptyView()
         }
