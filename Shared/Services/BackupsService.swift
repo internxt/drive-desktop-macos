@@ -102,10 +102,19 @@ class BackupsService: ObservableObject {
 
     func loadAllDevices() async {
         do {
-            self.devices = try await DeviceService.shared.getAllDevices()
+            self.devices = try await DeviceService.shared.getAllDevices(deviceName: ConfigLoader().getDeviceName())
         } catch {
             error.reportToSentry()
-            print("error loading devices", error.localizedDescription)
+        }
+    }
+
+    func addCurrentDevice() async {
+        do {
+            if let currentDeviceName = ConfigLoader().getDeviceName() {
+                try await DeviceService.shared.addCurrentDevice(deviceName: currentDeviceName)
+            }
+        } catch {
+            error.reportToSentry()
         }
     }
 }

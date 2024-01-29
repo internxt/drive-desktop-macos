@@ -6,31 +6,39 @@
 //
 
 import SwiftUI
+import InternxtSwiftCore
 
 struct WidgetDeviceSelector: View {
 
     @StateObject var backupsService: BackupsService
     @State private var selectedDeviceId = 0
-    private let currentDeviceName = ConfigLoader().getDeviceName()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ForEach(backupsService.devices) { device in
-                DeviceItem(
-                    deviceName: device.name ?? "",
-                    isCurrentDevice: self.currentDeviceName == device.name,
-                    isSelected: self.selectedDeviceId == device.id
-                ) {
-                    withAnimation {
-                        self.selectedDeviceId = device.id
+        Group {
+            if backupsService.devices.isEmpty {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                    .scaleEffect(2.0, anchor: .center)
+            } else {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(backupsService.devices) { device in
+                        DeviceItem(
+                            deviceName: device.name ?? "",
+                            bucket: device.bucket ?? "",
+                            isSelected: self.selectedDeviceId == device.id
+                        ) {
+                            withAnimation {
+                                self.selectedDeviceId = device.id
+                            }
+                        }
                     }
+                }
+                .onAppear {
+                    self.selectedDeviceId = backupsService.devices.first?.id ?? 0
                 }
             }
         }
         .frame(width: 160, alignment: .leading)
-        .onAppear {
-            self.selectedDeviceId = backupsService.devices.first?.id ?? 0
-        }
     }
 }
 
@@ -38,9 +46,21 @@ struct DeviceItem: View {
     
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
-    var isCurrentDevice: Bool
+    var bucket: String
     var isSelected: Bool
     var onTap: () -> Void
+
+    private let currentDeviceName = ConfigLoader().getDeviceName()
+    private let decrypt = Decrypt()
+    private let config = ConfigLoader().get()
+
+    var plainDeviceName: String? {
+        return try? decrypt.decrypt(base64String: deviceName, password: "\(config.CRYPTO_SECRET2)-\(self.bucket)")
+    }
+
+    var isCurrentDevice: Bool {
+        return plainDeviceName == currentDeviceName
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -50,7 +70,7 @@ struct DeviceItem: View {
                     .font(.XXSSemibold)
             }
 
-            AppText(deviceName)
+            AppText(plainDeviceName ?? "")
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
         }
