@@ -57,9 +57,9 @@ struct SettingsView: View {
             // stop ongoing backup dialog
             if showStopBackupDialog {
                 VStack {
-                    StopBackupDialog {
+                    StopBackupDialog(onClose: {
                         showStopBackupDialog = false
-                    }
+                    })
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Gray1.opacity(0.8))
@@ -68,9 +68,9 @@ struct SettingsView: View {
             // delete backup dialog
             if showDeleteBackupDialog {
                 VStack {
-                    DeleteBackupDialog {
+                    DeleteBackupDialog(onClose: {
                         showDeleteBackupDialog = false
-                    }
+                    })
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Gray1.opacity(0.8))

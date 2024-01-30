@@ -10,7 +10,7 @@ import SwiftUI
 struct StopBackupDialog: View {
 
     @Environment(\.colorScheme) var colorScheme
-    var dismiss: () -> Void
+    var onClose: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -23,7 +23,7 @@ struct StopBackupDialog: View {
 
             HStack(spacing: 8) {
                 AppButton(title: "COMMON_CANCEL", onClick: {
-                    dismiss()
+                    onClose()
                 }, type: .secondary, isExpanded: true)
 
                 AppButton(title: "BACKUP_STOP_BACKUP", onClick: {

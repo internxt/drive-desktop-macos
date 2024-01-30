@@ -15,17 +15,17 @@ struct DeviceService {
     private let config = ConfigLoader().get()
 
     public func getAllDevices(deviceName: String?) async throws -> Array<Device> {
-        let devices = try await backupAPI.getAllDevices()
+        let devicesAsFolder = try await backupAPI.getAllDevices()
         var filteredDevices: [Device] = []
         var currentDevice: Device? = nil
 
-        for device in devices {
-            let plainDeviceName = try decrypt.decrypt(base64String: device.name ?? "", password: "\(config.CRYPTO_SECRET2)-\(device.bucket ?? "")")
-
-            if plainDeviceName == deviceName {
-                currentDevice = device
-            }
+        let devices = devicesAsFolder.map { deviceAsFolder in
+            return Device(id: deviceAsFolder.id, uuid: deviceAsFolder.uuid, parentId: deviceAsFolder.parentId, parentUuid: deviceAsFolder.parentUuid, name: deviceAsFolder.name, plain_name: deviceAsFolder.plain_name, bucket: deviceAsFolder.bucket, user_id: deviceAsFolder.user_id, encrypt_version: deviceAsFolder.encrypt_version, deleted: deviceAsFolder.deleted, deletedAt: deviceAsFolder.deletedAt, removed: deviceAsFolder.removed, removedAt: deviceAsFolder.removedAt, createdAt: deviceAsFolder.createdAt, updatedAt: deviceAsFolder.updatedAt, userId: deviceAsFolder.userId, parent_id: deviceAsFolder.parentId)
         }
+
+        currentDevice = devices.first(where: { device in
+            device.isCurrentDevice
+        })
 
         if let currentDevice = currentDevice {
             filteredDevices.append(currentDevice)

@@ -16,16 +16,23 @@ struct WidgetDeviceSelector: View {
     var body: some View {
         Group {
             if backupsService.devices.isEmpty {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                    .scaleEffect(2.0, anchor: .center)
+                VStack(alignment: .center) {
+                    Spacer()
+                    
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                        .scaleEffect(2.0, anchor: .center)
+
+                    Spacer()
+                }
+                .frame(width: 160, alignment: .center)
             } else {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(backupsService.devices) { device in
                         DeviceItem(
-                            deviceName: device.name ?? "",
-                            bucket: device.bucket ?? "",
-                            isSelected: self.selectedDeviceId == device.id
+                            deviceName: device.decryptedName,
+                            isSelected: self.selectedDeviceId == device.id,
+                            isCurrentDevice: device.isCurrentDevice
                         ) {
                             withAnimation {
                                 self.selectedDeviceId = device.id
@@ -36,6 +43,7 @@ struct WidgetDeviceSelector: View {
                 .onAppear {
                     self.selectedDeviceId = backupsService.devices.first?.id ?? 0
                 }
+                .frame(width: 160, alignment: .leading)
             }
         }
         .onAppear {
@@ -43,7 +51,6 @@ struct WidgetDeviceSelector: View {
                 await backupsService.loadAllDevices()
             }
         }
-        .frame(width: 160, alignment: .leading)
     }
 }
 
@@ -51,21 +58,9 @@ struct DeviceItem: View {
     
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
-    var bucket: String
     var isSelected: Bool
+    var isCurrentDevice: Bool
     var onTap: () -> Void
-
-    private let currentDeviceName = ConfigLoader().getDeviceName()
-    private let decrypt = Decrypt()
-    private let config = ConfigLoader().get()
-
-    var plainDeviceName: String? {
-        return try? decrypt.decrypt(base64String: deviceName, password: "\(config.CRYPTO_SECRET2)-\(self.bucket)")
-    }
-
-    var isCurrentDevice: Bool {
-        return plainDeviceName == currentDeviceName
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -75,7 +70,7 @@ struct DeviceItem: View {
                     .font(.XXSSemibold)
             }
 
-            AppText(plainDeviceName ?? "")
+            AppText(deviceName)
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
         }
