@@ -7,4 +7,4 @@ build
 app_store_key.json
 report.xml
 *.xcuserstate
-InternxtDesktop.xcodeproj/xcuserdata/richardascanio.xcuserdatad/xcschemes/xcschememanagement.plist
+xcschememanagement.plist
