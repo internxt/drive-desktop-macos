@@ -38,6 +38,11 @@ struct WidgetDeviceSelector: View {
                 }
             }
         }
+        .onAppear {
+            Task {
+                await backupsService.loadAllDevices()
+            }
+        }
         .frame(width: 160, alignment: .leading)
     }
 }

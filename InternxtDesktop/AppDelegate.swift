@@ -153,7 +153,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         Task {
             await backupsService.addCurrentDevice()
-            try? await Task.sleep(nanoseconds: UInt64(2 * Double(NSEC_PER_SEC)))
             await backupsService.loadAllDevices()
         }
     }
