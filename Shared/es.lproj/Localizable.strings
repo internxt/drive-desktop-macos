@@ -60,6 +60,8 @@
 "BACKUP_STOP_ONGOING_BACKUP" = "Detener la copia de seguridad en curso";
 "BACKUP_STOP_BACKUP_BODY" = "Todavía hay archivos que no se han cargado. ¿Detener la copia de seguridad de todos modos?";
 "BACKUP_STOP_BACKUP" = "Detener copia de seguridad";
+"BACKUP_ERROR_FETCHING_DEVICES" = "Error obteniendo dispositivos, por favor inténtelo de nuevo";
+"BACKUP_TRY_AGAIN" = "Intentar de nuevo";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";

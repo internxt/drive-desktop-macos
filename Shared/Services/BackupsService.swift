@@ -17,7 +17,7 @@ enum BackupError: Error {
 }
 
 class BackupsService: ObservableObject {
-    @Published var devices: [Device] = []
+    @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldernames: [FoldernameToBackup] = []
 
     private func getRealm() -> Realm {
@@ -102,9 +102,10 @@ class BackupsService: ObservableObject {
 
     func loadAllDevices() async {
         do {
-            self.devices = try await DeviceService.shared.getAllDevices(deviceName: ConfigLoader().getDeviceName())
+            self.deviceResponse = .success(try await DeviceService.shared.getAllDevices(deviceName: ConfigLoader().getDeviceName()))
         } catch {
             error.reportToSentry()
+            self.deviceResponse = .failure(error)
         }
     }
 

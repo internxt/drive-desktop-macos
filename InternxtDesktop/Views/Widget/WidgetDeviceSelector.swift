@@ -15,10 +15,59 @@ struct WidgetDeviceSelector: View {
 
     var body: some View {
         Group {
-            if backupsService.devices.isEmpty {
+            switch backupsService.deviceResponse {
+            case .success(let devices):
+                if devices.isEmpty {
+                    VStack(alignment: .center) {
+                        Spacer()
+
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            .scaleEffect(2.0, anchor: .center)
+
+                        Spacer()
+                    }
+                    .frame(width: 160, alignment: .center)
+                } else {
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(devices) { device in
+                            DeviceItem(
+                                deviceName: device.decryptedName,
+                                isSelected: self.selectedDeviceId == device.id,
+                                isCurrentDevice: device.isCurrentDevice
+                            ) {
+                                withAnimation {
+                                    self.selectedDeviceId = device.id
+                                }
+                            }
+                        }
+                    }
+                    .onAppear {
+                        self.selectedDeviceId = devices.first?.id ?? 0
+                    }
+                    .frame(width: 160, alignment: .leading)
+                }
+            case .failure(_):
+                VStack(alignment: .center, spacing: 20) {
+                    Spacer()
+
+                    AppText("BACKUP_ERROR_FETCHING_DEVICES")
+                        .font(.SMMedium)
+                        .multilineTextAlignment(.center)
+
+                    AppButton(title: "BACKUP_TRY_AGAIN") {
+                        Task {
+                            await backupsService.loadAllDevices()
+                        }
+                    }
+
+                    Spacer()
+                }
+                .frame(width: 160, alignment: .center)
+            default:
                 VStack(alignment: .center) {
                     Spacer()
-                    
+
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                         .scaleEffect(2.0, anchor: .center)
@@ -26,24 +75,6 @@ struct WidgetDeviceSelector: View {
                     Spacer()
                 }
                 .frame(width: 160, alignment: .center)
-            } else {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(backupsService.devices) { device in
-                        DeviceItem(
-                            deviceName: device.decryptedName,
-                            isSelected: self.selectedDeviceId == device.id,
-                            isCurrentDevice: device.isCurrentDevice
-                        ) {
-                            withAnimation {
-                                self.selectedDeviceId = device.id
-                            }
-                        }
-                    }
-                }
-                .onAppear {
-                    self.selectedDeviceId = backupsService.devices.first?.id ?? 0
-                }
-                .frame(width: 160, alignment: .leading)
             }
         }
         .onAppear {
