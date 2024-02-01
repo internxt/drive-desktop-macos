@@ -20,7 +20,7 @@ struct DeviceService {
         var currentDevice: Device? = nil
 
         let devices = devicesAsFolder.map { deviceAsFolder in
-            return Device(id: deviceAsFolder.id, uuid: deviceAsFolder.uuid, parentId: deviceAsFolder.parentId, parentUuid: deviceAsFolder.parentUuid, name: deviceAsFolder.name, plain_name: deviceAsFolder.plain_name, bucket: deviceAsFolder.bucket, user_id: deviceAsFolder.user_id, encrypt_version: deviceAsFolder.encrypt_version, deleted: deviceAsFolder.deleted, deletedAt: deviceAsFolder.deletedAt, removed: deviceAsFolder.removed, removedAt: deviceAsFolder.removedAt, createdAt: deviceAsFolder.createdAt, updatedAt: deviceAsFolder.updatedAt, userId: deviceAsFolder.userId, parent_id: deviceAsFolder.parentId)
+            return Device(from: deviceAsFolder)
         }
 
         currentDevice = devices.first(where: { device in

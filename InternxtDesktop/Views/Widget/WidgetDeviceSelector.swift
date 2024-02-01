@@ -11,7 +11,7 @@ import InternxtSwiftCore
 struct WidgetDeviceSelector: View {
 
     @StateObject var backupsService: BackupsService
-    @State private var selectedDeviceId = 0
+    @State private var selectedDeviceId: Int? = nil
 
     var body: some View {
         Group {
@@ -32,7 +32,7 @@ struct WidgetDeviceSelector: View {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(devices) { device in
                             DeviceItem(
-                                deviceName: device.decryptedName,
+                                deviceName: device.plain_name ?? "",
                                 isSelected: self.selectedDeviceId == device.id,
                                 isCurrentDevice: device.isCurrentDevice
                             ) {
@@ -43,7 +43,7 @@ struct WidgetDeviceSelector: View {
                         }
                     }
                     .onAppear {
-                        self.selectedDeviceId = devices.first?.id ?? 0
+                        self.selectedDeviceId = devices.first?.id
                     }
                     .frame(width: 160, alignment: .leading)
                 }

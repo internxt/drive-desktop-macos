@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core.git",
       "state" : {
-        "revision" : "c569bec4d04da84030d94f376437bc4efda3686b",
-        "version" : "13.23.1"
+        "revision" : "a5e87a39cffdcc591f3203c11cfca68100d0b9a6",
+        "version" : "13.26.0"
       }
     },
     {
@@ -33,7 +33,7 @@
       "location" : "https://github.com/realm/realm-swift.git",
       "state" : {
         "branch" : "master",
-        "revision" : "95cb711d60801e82542b866d16d75608c40d7b2e"
+        "revision" : "dfb165eff87906651e552d824fa1973564a498c4"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/rudderlabs/rudder-sdk-ios",
       "state" : {
-        "revision" : "17627074e149b024a960e7a475747b90743bb6ab",
-        "version" : "2.4.2"
+        "revision" : "22575f73141aa4192582ee2ade9ae70ee29a6faa",
+        "version" : "2.4.3"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "c60f232c96264c3bea75bc0b81e6126b2f7475ee",
-        "version" : "8.15.2"
+        "revision" : "5c8abdeabf8d0dc5055879a657e31bac49bc1624",
+        "version" : "8.19.0"
       }
     },
     {
@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sparkle-project/Sparkle",
       "state" : {
-        "revision" : "1f07f4096e52f19b5e7abaa697b7fc592b7ff57c",
-        "version" : "2.5.1"
+        "revision" : "47d3d90aee3c52b6f61d04ceae426e607df62347",
+        "version" : "2.5.2"
       }
     },
     {
