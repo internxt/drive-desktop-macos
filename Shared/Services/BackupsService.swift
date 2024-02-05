@@ -7,6 +7,7 @@
 
 import Foundation
 import RealmSwift
+import InternxtSwiftCore
 
 enum BackupError: Error {
     case cannotCreateURL
@@ -16,6 +17,7 @@ enum BackupError: Error {
 }
 
 class BackupsService: ObservableObject {
+    @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldernames: [FoldernameToBackup] = []
 
     private func getRealm() -> Realm {
@@ -96,6 +98,25 @@ class BackupsService: ObservableObject {
             }
         }
         self.foldernames = folders
+    }
+
+    func loadAllDevices() async {
+        do {
+            self.deviceResponse = .success(try await DeviceService.shared.getAllDevices(deviceName: ConfigLoader().getDeviceName()))
+        } catch {
+            error.reportToSentry()
+            self.deviceResponse = .failure(error)
+        }
+    }
+
+    func addCurrentDevice() async {
+        do {
+            if let currentDeviceName = ConfigLoader().getDeviceName() {
+                try await DeviceService.shared.addCurrentDevice(deviceName: currentDeviceName)
+            }
+        } catch {
+            error.reportToSentry()
+        }
     }
 }
 

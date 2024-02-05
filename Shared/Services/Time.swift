@@ -15,4 +15,12 @@ public class Time {
         
         return dateFormatter.date(from: dateString)
     }
+
+    public static func stringDateFromDate(_ date: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
+        let stringDateFormatter = DateFormatter()
+        stringDateFormatter.dateStyle = dateStyle
+        stringDateFormatter.timeStyle = timeStyle
+
+        return stringDateFormatter.string(from: date)
+    }
 }

@@ -40,6 +40,7 @@
 "BACKUP_LAST_UPLOADED_%@" = "Last updated %@";
 "BACKUP_BACKING_UP" = "Backing up...";
 "BACKUP_STOP_BACKUP" = "Stop backup";
+"BACKUP_DOWNLOAD" = "Download";
 "BACKUP_BROWSE_FILES" = "Browse files";
 "BACKUP_SELECTED_FOLDERS" = "Selected folders";
 "BACKUP_CHANGE_FOLDERS" = "Change folders";
@@ -59,6 +60,8 @@
 "BACKUP_STOP_ONGOING_BACKUP" = "Stop ongoing backup";
 "BACKUP_STOP_BACKUP_BODY" = "There are still files that have not yet been uploaded. Stop backup anyway?";
 "BACKUP_STOP_BACKUP" = "Stop backup";
+"BACKUP_ERROR_FETCHING_DEVICES" = "Error fetching devices, please try again";
+"BACKUP_TRY_AGAIN" = "Try again";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";

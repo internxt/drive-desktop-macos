@@ -6,37 +6,84 @@
 //
 
 import SwiftUI
-
-struct Device: Identifiable {
-    var id = UUID()
-    let name: String
-    let index: Int
-    let isCurrentDevice: Bool
-    let isSelected: Bool
-}
+import InternxtSwiftCore
 
 struct WidgetDeviceSelector: View {
-    private let deviceName = ConfigLoader().getDeviceName()
-    @State private var devices: [Device] = []
-    @State private var selectedIndex = 0
-    
+
+    @StateObject var backupsService: BackupsService
+    @Binding var selectedDevice: Device?
+    @State private var selectedDeviceId: Int? = nil
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ForEach(devices) { item in
-                DeviceItem(deviceName: item.name, isCurrentDevice: item.isCurrentDevice, isSelected: self.selectedIndex == item.index) {
-                    withAnimation {
-                        self.selectedIndex = item.index
+        Group {
+            switch backupsService.deviceResponse {
+            case .success(let devices):
+                if devices.isEmpty {
+                    VStack(alignment: .center) {
+                        Spacer()
+
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            .scaleEffect(2.0, anchor: .center)
+
+                        Spacer()
                     }
+                    .frame(width: 160, alignment: .center)
+                } else {
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(devices) { device in
+                            DeviceItem(
+                                deviceName: device.plainName ?? "",
+                                isSelected: self.selectedDeviceId == device.id,
+                                isCurrentDevice: device.isCurrentDevice
+                            ) {
+                                withAnimation {
+                                    self.selectedDeviceId = device.id
+                                    self.selectedDevice = device
+                                }
+                            }
+                        }
+                    }
+                    .onAppear {
+                        self.selectedDeviceId = devices.first?.id
+                        self.selectedDevice = devices.first
+                    }
+                    .frame(width: 160, alignment: .leading)
                 }
+            case .failure(_):
+                VStack(alignment: .center, spacing: 20) {
+                    Spacer()
+
+                    AppText("BACKUP_ERROR_FETCHING_DEVICES")
+                        .font(.SMMedium)
+                        .multilineTextAlignment(.center)
+
+                    AppButton(title: "BACKUP_TRY_AGAIN") {
+                        Task {
+                            await backupsService.loadAllDevices()
+                        }
+                    }
+
+                    Spacer()
+                }
+                .frame(width: 160, alignment: .center)
+            default:
+                VStack(alignment: .center) {
+                    Spacer()
+
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                        .scaleEffect(2.0, anchor: .center)
+
+                    Spacer()
+                }
+                .frame(width: 160, alignment: .center)
             }
         }
-        .frame(width: 160, alignment: .leading)
         .onAppear {
-            devices = [
-                Device(name: deviceName ?? "", index: 0, isCurrentDevice: true, isSelected: true),
-                Device(name: "Home PC", index: 1, isCurrentDevice: false, isSelected: false),
-                Device(name: "Office server", index: 2, isCurrentDevice: false, isSelected: false)
-            ]
+            Task {
+                await backupsService.loadAllDevices()
+            }
         }
     }
 }
@@ -45,8 +92,8 @@ struct DeviceItem: View {
     
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
-    var isCurrentDevice: Bool
     var isSelected: Bool
+    var isCurrentDevice: Bool
     var onTap: () -> Void
 
     var body: some View {
@@ -91,5 +138,5 @@ struct DeviceItem: View {
 }
 
 #Preview {
-    WidgetDeviceSelector()
+    WidgetDeviceSelector(backupsService: BackupsService(), selectedDevice: .constant(nil))
 }

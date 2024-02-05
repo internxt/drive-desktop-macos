@@ -6,3 +6,5 @@ build
 *.p8
 app_store_key.json
 report.xml
+*.xcuserstate
+xcschememanagement.plist
