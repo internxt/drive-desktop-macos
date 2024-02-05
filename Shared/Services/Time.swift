@@ -16,15 +16,10 @@ public class Time {
         return dateFormatter.date(from: dateString)
     }
 
-    public static func stringDateFromISOString(_ dateString: String) -> String {
-        let date = Time.dateFromISOString(dateString)
-
-        guard let date = date else {
-            return ""
-        }
+    public static func stringDateFromDate(_ date: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
         let stringDateFormatter = DateFormatter()
-        stringDateFormatter.dateStyle = .long
-        stringDateFormatter.timeStyle = .short
+        stringDateFormatter.dateStyle = dateStyle
+        stringDateFormatter.timeStyle = timeStyle
 
         return stringDateFormatter.string(from: date)
     }

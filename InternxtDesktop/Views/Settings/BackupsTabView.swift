@@ -60,7 +60,7 @@ struct BackupsTabView: View {
 
     var BackupTab: some View {
         Group {
-            if deviceName == self.selectedDevice?.plain_name {
+            if deviceName == self.selectedDevice?.plainName {
                 if hasBackup {
                     ScrollView(showsIndicators: false) {
                         BackupComponent(
@@ -87,7 +87,7 @@ struct BackupsTabView: View {
                 }
             } else {
                 BackupComponent(
-                    deviceName: self.selectedDevice?.plain_name ?? "",
+                    deviceName: self.selectedDevice?.plainName ?? "",
                     isCurrentDevice: false,
                     numOfFolders: 0,
                     isLoading: false,

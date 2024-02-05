@@ -24,10 +24,10 @@ struct BackupComponent: View {
     @State private var currentFrequency: UploadFrequencyEnum = .six
 
     private var formattedDate: String {
-        guard let lastUpdated = lastUpdated else {
+        guard let lastUpdated, let lastUpdatedDate = Time.dateFromISOString(lastUpdated) else {
             return ""
         }
-        return Time.stringDateFromISOString(lastUpdated)
+        return Time.stringDateFromDate(lastUpdatedDate, dateStyle: .long, timeStyle: .short)
     }
 
     var body: some View {

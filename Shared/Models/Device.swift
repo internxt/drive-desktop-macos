@@ -14,10 +14,9 @@ struct Device: Codable, Identifiable {
     let parentId: String?
     let parentUuid: String?
     let name: String?
-    var plain_name: String?
+    var plainName: String?
     let bucket: String?
-    let user_id: Int?
-    let encrypt_version: String?
+    let encryptVersion: String?
     let deleted: Bool
     let deletedAt: String?
     let removed: Bool
@@ -25,14 +24,13 @@ struct Device: Codable, Identifiable {
     let createdAt: String
     let updatedAt: String
     let userId: Int?
-    let parent_id: String?
     var hasBackup: Bool = false
 
     var isCurrentDevice: Bool {
-        return ConfigLoader().getDeviceName() == self.plain_name
+        return ConfigLoader().getDeviceName() == self.plainName
     }
 
-    init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plain_name: String? = nil, bucket: String?, user_id: Int?, encrypt_version: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, parent_id: String?, hasBackup: Bool) {
+    init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plainName: String? = nil, bucket: String?, encryptVersion: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, hasBackup: Bool) {
         let decrypt = Decrypt()
 
         self.id = id
@@ -40,19 +38,18 @@ struct Device: Codable, Identifiable {
         self.parentId = parentId
         self.parentUuid = parentUuid
         self.name = name
-        if let plainName = plain_name {
-            self.plain_name = plainName
+        if let plainName = plainName {
+            self.plainName = plainName
         } else {
             do {
-                self.plain_name = try decrypt.decrypt(base64String: name ?? "", password: "\(DecryptUtils().getDecryptPassword(bucketId: bucket ?? ""))")
+                self.plainName = try decrypt.decrypt(base64String: name ?? "", password: "\(DecryptUtils().getDecryptPassword(bucketId: bucket ?? ""))")
             } catch {
                 error.reportToSentry()
-                self.plain_name = ""
+                self.plainName = ""
             }
         }
         self.bucket = bucket
-        self.user_id = user_id
-        self.encrypt_version = encrypt_version
+        self.encryptVersion = encryptVersion
         self.deleted = deleted
         self.deletedAt = deletedAt
         self.removed = removed
@@ -60,7 +57,6 @@ struct Device: Codable, Identifiable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.userId = userId
-        self.parent_id = parent_id
         self.hasBackup = hasBackup
     }
 
@@ -73,27 +69,25 @@ struct Device: Codable, Identifiable {
         self.parentUuid = deviceAsFolder.parentUuid
         self.name = deviceAsFolder.name
         if let plainName = deviceAsFolder.plain_name {
-            self.plain_name = plainName
+            self.plainName = plainName
         } else {
             do {
-                self.plain_name = try decrypt.decrypt(base64String: deviceAsFolder.name ?? "", password: "\(DecryptUtils().getDecryptPassword(bucketId: deviceAsFolder.bucket ?? ""))")
+                self.plainName = try decrypt.decrypt(base64String: deviceAsFolder.name ?? "", password: "\(DecryptUtils().getDecryptPassword(bucketId: deviceAsFolder.bucket ?? ""))")
             } catch {
                 error.reportToSentry()
-                self.plain_name = ""
+                self.plainName = ""
             }
         }
         self.bucket = deviceAsFolder.bucket
-        self.user_id = deviceAsFolder.user_id
-        self.encrypt_version = deviceAsFolder.encrypt_version
+        self.encryptVersion = deviceAsFolder.encrypt_version
         self.deleted = deviceAsFolder.deleted
         self.deletedAt = deviceAsFolder.deletedAt
         self.removed = deviceAsFolder.removed
         self.removedAt = deviceAsFolder.removedAt
         self.createdAt = deviceAsFolder.createdAt
         self.updatedAt = deviceAsFolder.updatedAt
-        self.userId = deviceAsFolder.userId
-        self.parent_id = deviceAsFolder.parent_id
-//        self.hasBackup = deviceAsFolder.hasBackup
+        self.userId = deviceAsFolder.user_id ?? deviceAsFolder.userId
+        self.hasBackup = deviceAsFolder.hasBackup
     }
 
 }

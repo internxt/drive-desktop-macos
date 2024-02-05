@@ -33,7 +33,7 @@ struct WidgetDeviceSelector: View {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(devices) { device in
                             DeviceItem(
-                                deviceName: device.plain_name ?? "",
+                                deviceName: device.plainName ?? "",
                                 isSelected: self.selectedDeviceId == device.id,
                                 isCurrentDevice: device.isCurrentDevice
                             ) {
