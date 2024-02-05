@@ -15,7 +15,7 @@ struct BackupsTabView: View {
     @StateObject var backupsService: BackupsService
     private let deviceName = ConfigLoader().getDeviceName()
     @State var hasBackup = false
-    @State var selectedDeviceId = 0
+    @State private var selectedDevice: Device? = nil
     @State var progress: Double = 0.48
 
     var body: some View {
@@ -40,7 +40,7 @@ struct BackupsTabView: View {
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
 
-            WidgetDeviceSelector(backupsService: backupsService)
+            WidgetDeviceSelector(backupsService: backupsService, selectedDevice: $selectedDevice)
 
             Spacer()
 
@@ -60,13 +60,13 @@ struct BackupsTabView: View {
 
     var BackupTab: some View {
         Group {
-            if selectedDeviceId == 0 {
+            if deviceName == self.selectedDevice?.plain_name {
                 if hasBackup {
                     ScrollView(showsIndicators: false) {
                         BackupComponent(
                             deviceName: deviceName ?? "",
                             isCurrentDevice: true,
-                            numOfFolders: 20,
+                            numOfFolders: backupsService.foldernames.count,
                             isLoading: true,
                             progress: $progress,
                             showStopBackupDialog: $showStopBackupDialog,
@@ -87,13 +87,11 @@ struct BackupsTabView: View {
                 }
             } else {
                 BackupComponent(
-                    deviceName: "Home PC",
+                    deviceName: self.selectedDevice?.plain_name ?? "",
                     isCurrentDevice: false,
                     numOfFolders: 0,
                     isLoading: false,
-                    lastUpdated: "November 24, 2022 at 13:34",
-                    backupStorageValue: 65,
-                    backupStorageUnit: "GB",
+                    lastUpdated: self.selectedDevice?.updatedAt,
                     progress: .constant(1),
                     showStopBackupDialog: $showStopBackupDialog,
                     showDeleteBackupDialog: $showDeleteBackupDialog

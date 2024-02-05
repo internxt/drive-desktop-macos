@@ -25,6 +25,8 @@
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */; };
+		31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
+		31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -221,6 +223,7 @@
 		317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetupComponent.swift; sourceTree = "<group>"; };
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
+		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
 		E106D4612AB9FD6300E3BF7A /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
@@ -408,6 +411,7 @@
 				E109717E2A81143A00ABED41 /* APIFactory.swift */,
 				E16ECC132A9508B10093D3ED /* ErrorUtils.swift */,
 				E13B839B2AFBBE67009F6684 /* AppUserDefaults.swift */,
+				31ED949C2B7151E200EF699F /* DecryptUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1006,6 +1010,7 @@
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */,
 				E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */,
+				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
 				317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */,
@@ -1057,6 +1062,7 @@
 				E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1581DE02A96835F0051DD46 /* DownloadFileUseCase.swift in Sources */,
+				31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,

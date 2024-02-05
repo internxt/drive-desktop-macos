@@ -34,7 +34,6 @@ struct Device: Codable, Identifiable {
 
     init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plain_name: String? = nil, bucket: String?, user_id: Int?, encrypt_version: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, parent_id: String?, hasBackup: Bool) {
         let decrypt = Decrypt()
-        let config = ConfigLoader().get()
 
         self.id = id
         self.uuid = uuid
@@ -45,7 +44,7 @@ struct Device: Codable, Identifiable {
             self.plain_name = plainName
         } else {
             do {
-                self.plain_name = try decrypt.decrypt(base64String: name ?? "", password: "\(config.CRYPTO_SECRET2)-\(bucket ?? "")")
+                self.plain_name = try decrypt.decrypt(base64String: name ?? "", password: "\(DecryptUtils().getDecryptPassword(bucketId: bucket ?? ""))")
             } catch {
                 error.reportToSentry()
                 self.plain_name = ""
@@ -67,7 +66,6 @@ struct Device: Codable, Identifiable {
 
     init(from deviceAsFolder: DeviceAsFolder) {
         let decrypt = Decrypt()
-        let config = ConfigLoader().get()
 
         self.id = deviceAsFolder.id
         self.uuid = deviceAsFolder.uuid
@@ -78,7 +76,7 @@ struct Device: Codable, Identifiable {
             self.plain_name = plainName
         } else {
             do {
-                self.plain_name = try decrypt.decrypt(base64String: deviceAsFolder.name ?? "", password: "\(config.CRYPTO_SECRET2)-\(deviceAsFolder.bucket ?? "")")
+                self.plain_name = try decrypt.decrypt(base64String: deviceAsFolder.name ?? "", password: "\(DecryptUtils().getDecryptPassword(bucketId: deviceAsFolder.bucket ?? ""))")
             } catch {
                 error.reportToSentry()
                 self.plain_name = ""
@@ -95,7 +93,7 @@ struct Device: Codable, Identifiable {
         self.updatedAt = deviceAsFolder.updatedAt
         self.userId = deviceAsFolder.userId
         self.parent_id = deviceAsFolder.parent_id
-        self.hasBackup = deviceAsFolder.hasBackup
+//        self.hasBackup = deviceAsFolder.hasBackup
     }
 
 }

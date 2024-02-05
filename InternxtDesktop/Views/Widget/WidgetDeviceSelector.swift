@@ -11,6 +11,7 @@ import InternxtSwiftCore
 struct WidgetDeviceSelector: View {
 
     @StateObject var backupsService: BackupsService
+    @Binding var selectedDevice: Device?
     @State private var selectedDeviceId: Int? = nil
 
     var body: some View {
@@ -38,12 +39,14 @@ struct WidgetDeviceSelector: View {
                             ) {
                                 withAnimation {
                                     self.selectedDeviceId = device.id
+                                    self.selectedDevice = device
                                 }
                             }
                         }
                     }
                     .onAppear {
                         self.selectedDeviceId = devices.first?.id
+                        self.selectedDevice = devices.first
                     }
                     .frame(width: 160, alignment: .leading)
                 }
@@ -135,5 +138,5 @@ struct DeviceItem: View {
 }
 
 #Preview {
-    WidgetDeviceSelector(backupsService: BackupsService())
+    WidgetDeviceSelector(backupsService: BackupsService(), selectedDevice: .constant(nil))
 }

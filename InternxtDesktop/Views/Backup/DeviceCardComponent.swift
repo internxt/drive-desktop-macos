@@ -13,8 +13,6 @@ struct DeviceCardComponent: View {
     var isLoading: Bool
     var lastUpdated: String?
     @Binding var progress: Double
-    var backupStorageValue: Int?
-    var backupStorageUnit: String?
     @State private var progressBarWidth: CGFloat = .zero
 
     var body: some View {
@@ -44,20 +42,6 @@ struct DeviceCardComponent: View {
                     AppText("\(Int(progress * 100))%")
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
-                } else {
-                    HStack(spacing: 0) {
-                        AppText("\(backupStorageValue ?? 0)")
-                            .font(.SMMedium)
-                            .foregroundColor(.Gray60)
-
-                        AppText(backupStorageUnit ?? "")
-                            .font(.XSMedium)
-                            .foregroundColor(.Gray60)
-                    }
-                    .padding([.vertical], 4)
-                    .padding([.horizontal], 8)
-                    .background(Color.Gray5)
-                    .cornerRadius(8)
                 }
             }
 

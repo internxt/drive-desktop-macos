@@ -18,12 +18,17 @@ struct BackupComponent: View {
     var numOfFolders: Int
     var isLoading: Bool
     var lastUpdated: String?
-    var backupStorageValue: Int?
-    var backupStorageUnit: String?
     @Binding var progress: Double
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @State private var currentFrequency: UploadFrequencyEnum = .six
+
+    private var formattedDate: String {
+        guard let lastUpdated = lastUpdated else {
+            return ""
+        }
+        return Time.stringDateFromISOString(lastUpdated)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -34,10 +39,8 @@ struct BackupComponent: View {
             DeviceCardComponent(
                 deviceName: self.deviceName,
                 isLoading: self.isLoading,
-                lastUpdated: self.lastUpdated,
-                progress: self.$progress,
-                backupStorageValue: self.backupStorageValue,
-                backupStorageUnit: self.backupStorageUnit
+                lastUpdated: formattedDate,
+                progress: self.$progress
             )
 
             HStack(spacing: 8) {
@@ -125,5 +128,5 @@ struct BackupComponent: View {
 }
 
 #Preview {
-    BackupComponent(deviceName: "Mac Mini M1", isCurrentDevice: true, numOfFolders: 16, isLoading: false, lastUpdated: "today at 13:34", backupStorageValue: 10, backupStorageUnit: "GB", progress: .constant(0.5), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false))
+    BackupComponent(deviceName: "Mac Mini M1", isCurrentDevice: true, numOfFolders: 16, isLoading: false, lastUpdated: "2016-06-05T16:56:57.019+01:00", progress: .constant(0.5), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false))
 }
