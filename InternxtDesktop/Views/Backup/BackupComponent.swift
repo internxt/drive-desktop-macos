@@ -59,11 +59,7 @@ struct BackupComponent: View {
                 }
 
                 AppButton(title: "BACKUP_BROWSE_FILES", onClick: {
-                    do {
-                        try browseFiles()
-                    } catch {
-                        print("error \(error.reportToSentry())")
-                    }
+                    browseFiles()
                 }, type: .secondary, isExpanded: true)
             }
             .frame(maxWidth: .infinity)
@@ -121,8 +117,8 @@ struct BackupComponent: View {
         throw AppError.notImplementedError
     }
 
-    func browseFiles() throws {
-        throw AppError.notImplementedError
+    func browseFiles() {
+        URLDictionary.BACKUPS_WEB.open()
     }
 
 }
