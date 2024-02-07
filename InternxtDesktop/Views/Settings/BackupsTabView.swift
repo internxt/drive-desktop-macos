@@ -60,7 +60,9 @@ struct BackupsTabView: View {
 
     var BackupTab: some View {
         Group {
-            if deviceName == self.selectedDevice?.plainName {
+            if self.selectedDevice == nil {
+                Spacer()
+            } else if deviceName == self.selectedDevice?.plainName {
                 if hasBackup {
                     ScrollView(showsIndicators: false) {
                         BackupComponent(

@@ -87,7 +87,7 @@ struct Device: Codable, Identifiable {
         self.createdAt = deviceAsFolder.createdAt
         self.updatedAt = deviceAsFolder.updatedAt
         self.userId = deviceAsFolder.user_id ?? deviceAsFolder.userId
-        self.hasBackup = deviceAsFolder.hasBackup
+        self.hasBackup = deviceAsFolder.hasBackup ?? false
     }
 
 }
