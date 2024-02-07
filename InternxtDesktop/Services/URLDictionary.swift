@@ -14,4 +14,5 @@ struct URLDictionary {
     public static var LEARN_MORE_ABOUT_INTERNXT_DRIVE = URL(string:"https://internxt.com/drive")!
     public static var UPGRADE_PLAN = URL(string:"https://drive.internxt.com/preferences?tab=plans")!
     public static var HELP_CENTER = URL(string:"https://help.internxt.com")!
+    public static var BACKUPS_WEB = URL(string: "https://drive.internxt.com/backups")!
 }
