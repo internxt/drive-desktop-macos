@@ -13,6 +13,7 @@ enum BackupTreeGeneratorError: Error {
     case rootIsNotDirectory
     case enumeratorNotFound
 }
+
 protocol BackupTreeGeneration {
     var root: URL {get set}
     var rootNode: BackupTreeNode { get }
@@ -65,6 +66,8 @@ class BackupTreeGenerator: BackupTreeGeneration {
                 }
                 
                 continuation.resume(returning: self.rootNode)
+                
+                
             } else {
                 continuation.resume(throwing: BackupTreeGeneratorError.rootIsNotDirectory)
             }
@@ -74,14 +77,13 @@ class BackupTreeGenerator: BackupTreeGeneration {
     
     func insertInTree(_ url: URL) throws {
         
-            // 1. Find a parent for the node
+        // 1. Find a parent for the node
         guard let parentNode = self.rootNode.findNode(url.deletingLastPathComponent()) else {
             throw BackupTreeGeneratorError.parentNodeNotFound
         }
         
         // 2. Check if the node already exists in the parent instead of the whole tree, so
         // we don't traverse the entire tree again
-        
         let existingNode = parentNode.findNode(url)
         
         if(existingNode != nil) {
@@ -100,10 +102,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             childs: []
         )
         
+        
         parentNode.addChild(newNode: newNode)
-        
-        print("PARENT", parentNode)
-        
-        
     }
 }

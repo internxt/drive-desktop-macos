@@ -12,4 +12,18 @@ class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         let response = firstNumber + secondNumber
         reply(response)
     }
+    
+    @objc func startBackup(backupAt backupURL: URL, with reply: @escaping () -> Void) {
+        
+        Task {
+            let backupTreeGenerator = BackupTreeGenerator(root: backupURL)
+            
+            let backupTree = try await backupTreeGenerator.generateTree()
+            
+            try await backupTree.syncNodes()
+            
+            reply()
+        }
+        
+    }
 }

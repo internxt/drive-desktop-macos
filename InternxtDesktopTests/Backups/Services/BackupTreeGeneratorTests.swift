@@ -11,7 +11,7 @@ import XCTest
 final class BackupTreeGeneratorTests: XCTestCase {
     var sut: BackupTreeGenerator!
     var tmpDirectoryURL: URL!
-
+    
     override func setUpWithError() throws {
         try super.setUpWithError()
         
@@ -30,10 +30,7 @@ final class BackupTreeGeneratorTests: XCTestCase {
     private func createFileInTmpDir(_ fileRelativePath: String) throws -> URL {
         let url = tmpDirectoryURL.appendingPathComponent(fileRelativePath)
         
-        
         try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
-        
-        
         
         FileManager.default.createFile(atPath: url.path(), contents: nil)
         
@@ -46,8 +43,8 @@ final class BackupTreeGeneratorTests: XCTestCase {
         
         return url
     }
-
-
+    
+    
     func testGenerateTreeFromUrls() async throws {
         
         let fileTest1 = try createFileInTmpDir("test1.txt")
@@ -82,6 +79,7 @@ final class BackupTreeGeneratorTests: XCTestCase {
         
         let fileNode = backupTree.findNode(fileURL)
         
+        
         // Node exists
         XCTAssertEqual(fileNode!.url, fileURL )
         let firstParent = backupTree.findNodeById(fileNode!.parentId!)
@@ -99,8 +97,6 @@ final class BackupTreeGeneratorTests: XCTestCase {
         let fourthParent = backupTree.findNodeById(thirdParent!.parentId!)
         
         XCTAssertEqual(fourthParent?.name, "FolderB")
-        
-        
         
     }
 }

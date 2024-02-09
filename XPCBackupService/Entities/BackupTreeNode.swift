@@ -18,17 +18,6 @@ class BackupTreeNode {
     var remoteParentId: String?
     private(set) var childs: [BackupTreeNode]
     
-    init(id: String, parentId: String? = nil, name: String, type: BackupTreeNodeType, url: URL? = nil, syncStatus: BackupTreeNodeSyncStatus, remoteId: String? = nil, remoteParentId: String? = nil, childs: [BackupTreeNode]) {
-        self.id = id
-        self.parentId = parentId
-        self.name = name
-        self.type = type
-        self.url = url
-        self.syncStatus = syncStatus
-        self.remoteId = remoteId
-        self.remoteParentId = remoteParentId
-        self.childs = childs
-    }
     
     func addChild(newNode: BackupTreeNode){
         childs.append(newNode)
@@ -68,8 +57,12 @@ class BackupTreeNode {
         return false
     }
     
+    func syncNodes() async throws -> Void {
+        // This should sync the current node, and all the child nodes recursively
+    }
+    
     func syncNode() async throws -> Void {
-        // This should sync the node with Internxt API (upload or create a folder, based on self.type)
+        // This should sync the current node with Internxt API (upload or create a folder, based on self.type)
         // Once synced, update the syncStatus
     }
 }

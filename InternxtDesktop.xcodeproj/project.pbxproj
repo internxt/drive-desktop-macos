@@ -84,8 +84,6 @@
 		E1581DE02A96835F0051DD46 /* DownloadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */; };
 		E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */; };
 		E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */; };
-		E15F8C372B762D2F00C60EFA /* BackupTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C362B762D2F00C60EFA /* BackupTree.swift */; };
-		E15F8C382B762D2F00C60EFA /* BackupTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C362B762D2F00C60EFA /* BackupTree.swift */; };
 		E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */; };
 		E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */; };
 		E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */; };
@@ -311,7 +309,6 @@
 		E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InternxtDesktopTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeGeneratorTests.swift; sourceTree = "<group>"; };
-		E15F8C362B762D2F00C60EFA /* BackupTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTree.swift; sourceTree = "<group>"; };
 		E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNode.swift; sourceTree = "<group>"; };
 		E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeType.swift; sourceTree = "<group>"; };
 		E15F8C402B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncStatus.swift; sourceTree = "<group>"; };
@@ -613,7 +610,6 @@
 		E15F8C0D2B76290B00C60EFA /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				E15F8C362B762D2F00C60EFA /* BackupTree.swift */,
 				E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */,
 				E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */,
 				E15F8C402B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift */,
@@ -1115,7 +1111,6 @@
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
-				E15F8C372B762D2F00C60EFA /* BackupTree.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1129,7 +1124,6 @@
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
-				E15F8C382B762D2F00C60EFA /* BackupTree.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
