@@ -18,6 +18,8 @@
 		316B3E412B7FC9C1009F2C8D /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B3E402B7FC9C1009F2C8D /* BackupOperation.swift */; };
 		316B3E422B7FCB23009F2C8D /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
 		316B3E432B7FCEBD009F2C8D /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
+		316B3E442B8009E4009F2C8D /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
+		316B3E452B800A05009F2C8D /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24712B4D88FA007DE91A /* DeviceCardComponent.swift */; };
 		316D24742B4D89F5007DE91A /* ProgressFieldComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */; };
 		316D24762B4D8A38007DE91A /* ProgressBarComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */; };
@@ -1150,8 +1152,10 @@
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
 				316B3E3F2B7FBE29009F2C8D /* Error.swift in Sources */,
+				316B3E442B8009E4009F2C8D /* AuthManager.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 				316B3E422B7FCB23009F2C8D /* DeviceService.swift in Sources */,
+				316B3E452B800A05009F2C8D /* ErrorUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

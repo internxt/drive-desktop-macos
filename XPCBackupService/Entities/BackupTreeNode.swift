@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import InternxtSwiftCore
 
 class BackupTreeNode {
     var id: String
@@ -28,7 +29,6 @@ class BackupTreeNode {
         self.childs = childs
     }
 
-    
     func addChild(newNode: BackupTreeNode){
         childs.append(newNode)
     }
@@ -68,25 +68,31 @@ class BackupTreeNode {
     }
     
     func syncNodes() async throws -> Void {
-        do {
-            // sync current node
-            try await self.syncNode()
+        // sync current node
+        try await self.syncNode()
 
-            for child in self.childs {
-                // sync each child nodes
-                try await syncNodes()
-            }
-        } catch {
-            print("error", error.localizedDescription)
+        for child in self.childs {
+            // sync each child nodes
+            try await syncNodes()
         }
     }
     
     func syncNode() async throws -> Void {
-        // This should sync the current node with Internxt API (upload or create a folder, based on self.type)
-        // Once synced, update the syncStatus
+        let authManager = AuthManager()
+
+        guard let mnemonic = authManager.mnemonic else {
+            ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")
+        }
+
+        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: APIFactory.Network)
+        let encryptedFileDestination =  makeTemporaryURL("encrypted", "enc")
+
+        let backupUploadService = BackupUploadService(
+            networkFacade: networkFacade,
+            encryptedFileDestination: encryptedFileDestination
+        )
+
+        backupUploadService.executeOperation(node: self)
     }
+
 }
-
-
-
-

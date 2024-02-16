@@ -79,9 +79,7 @@ struct BackupUploadService {
                     encryptedOutput: encryptedFileDestination,
                     fileSize: Int(fileURL.fileSize),
                     bucketId: self.getDeviceBucketId()
-                ) { completedProgress in
-                    // progress.completedUnitCount = Int64(completedProgress * 100)
-                }
+                ) { }
 
                 self.logger.info("Upload completed with id \(result.id)")
 
