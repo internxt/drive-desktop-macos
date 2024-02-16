@@ -17,7 +17,17 @@ class BackupTreeNode {
     var remoteId: String?
     var remoteParentId: String?
     private(set) var childs: [BackupTreeNode]
-    
+
+    init(id: String, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode]) {
+        self.id = id
+        self.parentId = parentId
+        self.name = name
+        self.type = type
+        self.url = url
+        self.syncStatus = syncStatus
+        self.childs = childs
+    }
+
     
     func addChild(newNode: BackupTreeNode){
         childs.append(newNode)
@@ -58,7 +68,17 @@ class BackupTreeNode {
     }
     
     func syncNodes() async throws -> Void {
-        // This should sync the current node, and all the child nodes recursively
+        do {
+            // sync current node
+            try await self.syncNode()
+
+            for child in self.childs {
+                // sync each child nodes
+                try await syncNodes()
+            }
+        } catch {
+            print("error", error.localizedDescription)
+        }
     }
     
     func syncNode() async throws -> Void {
