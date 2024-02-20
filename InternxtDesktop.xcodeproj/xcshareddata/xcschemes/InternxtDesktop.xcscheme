@@ -45,7 +45,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E15F8C162B762A8C00C60EFA"
+               BlueprintIdentifier = "E15F8C242B762B0400C60EFA"
                BuildableName = "InternxtDesktopTests.xctest"
                BlueprintName = "InternxtDesktopTests"
                ReferencedContainer = "container:InternxtDesktop.xcodeproj">

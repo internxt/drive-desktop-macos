@@ -11,6 +11,20 @@
 		3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */; };
 		3104526E2B4B1C5C00984716 /* StopBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */; };
 		311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */; };
+		3120B55B2B84F12A00F524F1 /* BakupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B55A2B84F12A00F524F1 /* BakupUploadService.swift */; };
+		3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */; };
+		3120B5622B84F32500F524F1 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B5612B84F32500F524F1 /* Sentry */; };
+		3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
+		3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
+		3120B5672B84F45600F524F1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
+		3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
+		3120B5692B84F47700F524F1 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
+		3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
+		3120B56C2B84F65100F524F1 /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56B2B84F65100F524F1 /* BackupOperation.swift */; };
+		3120B56F2B84F6C400F524F1 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
+		3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -254,6 +268,10 @@
 		3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteBackupDialog.swift; sourceTree = "<group>"; };
 		3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopBackupDialog.swift; sourceTree = "<group>"; };
 		3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsFolderList.swift; sourceTree = "<group>"; };
+		3120B55A2B84F12A00F524F1 /* BakupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BakupUploadService.swift; sourceTree = "<group>"; };
+		3120B56B2B84F65100F524F1 /* BackupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupOperation.swift; sourceTree = "<group>"; };
+		3120B56E2B84F6C400F524F1 /* Completable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completable.swift; sourceTree = "<group>"; };
+		3120B5702B84F6F400F524F1 /* Enqueueable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enqueueable.swift; sourceTree = "<group>"; };
 		315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsTabView.swift; sourceTree = "<group>"; };
 		315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDeviceSelector.swift; sourceTree = "<group>"; };
 		315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectorView.swift; sourceTree = "<group>"; };
@@ -404,6 +422,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
+				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,9 +483,19 @@
 			path = Backup;
 			sourceTree = "<group>";
 		};
+		3120B56D2B84F6B100F524F1 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3120B56E2B84F6C400F524F1 /* Completable.swift */,
+				3120B5702B84F6F400F524F1 /* Enqueueable.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		31DEAEAF2B75139400E76D53 /* XPCBackupService */ = {
 			isa = PBXGroup;
 			children = (
+				3120B56D2B84F6B100F524F1 /* Extensions */,
 				E15F8C0E2B76291B00C60EFA /* Services */,
 				E15F8C0D2B76290B00C60EFA /* Entities */,
 				31DEAEB02B75139400E76D53 /* XPCBackupService.swift */,
@@ -621,6 +651,8 @@
 			isa = PBXGroup;
 			children = (
 				E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */,
+				3120B55A2B84F12A00F524F1 /* BakupUploadService.swift */,
+				3120B56B2B84F65100F524F1 /* BackupOperation.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -893,6 +925,10 @@
 			dependencies = (
 			);
 			name = XPCBackupService;
+			packageProductDependencies = (
+				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
+				3120B5612B84F32500F524F1 /* Sentry */,
+			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
 			productType = "com.apple.product-type.xpc-service";
@@ -1103,14 +1139,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3120B56F2B84F6C400F524F1 /* Completable.swift in Sources */,
 				31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */,
+				3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */,
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
+				3120B56C2B84F65100F524F1 /* BackupOperation.swift in Sources */,
+				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
+				3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
+				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
+				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
+				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
+				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
+				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
+				3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */,
+				3120B55B2B84F12A00F524F1 /* BakupUploadService.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2023,6 +2071,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		3120B5612B84F32500F524F1 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */;
