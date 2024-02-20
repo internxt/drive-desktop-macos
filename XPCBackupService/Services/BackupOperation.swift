@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BackupOperation: BlockOperation, Completable, Enqueueable {
+final class BackupOperation: BlockOperation, Completable, Enqueueable {
     var result: (URLResponse, Data)?
     var lastError: Error?
 
@@ -15,14 +15,14 @@ class BackupOperation: BlockOperation, Completable, Enqueueable {
         super.init()
         addExecutionBlock { [weak self] in
             for _ in 1...attempLimit {
-                Task {
-                    do {
-                        // do backend call to upload file or folder
-                        return
-                    } catch {
-                        print("error", error.localizedDescription)
-                        self?.lastError = error
-                    }
+                do {
+                    let request = URLRequest(url: URL(string: "")!)
+                    var response: URLResponse?
+                    let data = try NSURLConnection.sendSynchronousRequest(request, returning: &response)
+                    self?.result = (response!, data)
+                    return
+                } catch {
+                    self?.lastError = error
                 }
             }
         }

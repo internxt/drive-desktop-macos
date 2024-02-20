@@ -254,7 +254,7 @@ struct UploadFileUseCase {
                 }
             )
             var fileExtension: String = ""
-            if #available(macOSApplicationExtension 13.0, *) {
+            if #available(macOS 13.0, *) {
                 fileExtension = NSString(string: thumbnailGenerationResult.url.path()).pathExtension
             } else {
                 fileExtension = NSString(string: thumbnailGenerationResult.url.path).pathExtension

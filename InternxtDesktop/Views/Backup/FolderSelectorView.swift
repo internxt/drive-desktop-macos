@@ -108,7 +108,9 @@ struct FolderSelectorView: View {
     }
 
     private func doBackup() throws {
-        throw AppError.notImplementedError
+        Task {
+            try await self.backupsService.syncBackup()
+        }
     }
 
     private func showErrorDialog(message: String) {

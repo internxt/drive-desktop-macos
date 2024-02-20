@@ -11,15 +11,79 @@
 		3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */; };
 		3104526E2B4B1C5C00984716 /* StopBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */; };
 		311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */; };
+		3120B51B2B84E85D00F524F1 /* FileProviderItemActionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */; };
+		3120B51C2B84E86F00F524F1 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
+		3120B51D2B84E87A00F524F1 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C32AB2FEF500A58414 /* ActivityManager.swift */; };
+		3120B5222B84E8AB00F524F1 /* GetFileOrFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */; };
+		3120B5232B84E8B400F524F1 /* DownloadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */; };
+		3120B5242B84E8BC00F524F1 /* CreateFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */; };
+		3120B5252B84E8C500F524F1 /* UploadFileOrUpdateContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */; };
+		3120B5262B84E8D100F524F1 /* TrashFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */; };
+		3120B5272B84E8DD00F524F1 /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
+		3120B5282B84E8E300F524F1 /* MoveFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */; };
+		3120B5292B84E8EA00F524F1 /* TrashFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */; };
+		3120B52A2B84E8F100F524F1 /* RenameFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */; };
+		3120B52B2B84E8F700F524F1 /* MoveFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */; };
+		3120B52C2B84E8FD00F524F1 /* UpdateFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */; };
+		3120B52D2B84E90400F524F1 /* DeleteFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */; };
+		3120B52F2B84E90F00F524F1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
+		3120B5302B84E92800F524F1 /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
+		3120B5312B84E93F00F524F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
+		3120B5322B84E95200F524F1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DD2AA9EA0A00107753 /* Utils.swift */; };
+		3120B5332B84E95A00F524F1 /* UploadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */; };
+		3120B5342B84E96D00F524F1 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
+		3120B5352B84E97E00F524F1 /* DriveFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3322AC379AA00A88B9F /* DriveFileService.swift */; };
+		3120B5362B84E99800F524F1 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
+		3120B5372B84E9A600F524F1 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
+		3120B5382B84E9B200F524F1 /* DriveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C32F2AC3778200A88B9F /* DriveFile.swift */; };
+		3120B5392B84E9C400F524F1 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		3120B53A2B84E9CC00F524F1 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
+		3120B53B2B84E9D700F524F1 /* EnumerateFolderItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */; };
+		3120B53C2B84E9EE00F524F1 /* GetRemoteChangesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */; };
+		3120B53D2B84E9F700F524F1 /* ThumbnailGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC762AB8AAFE005E71D6 /* ThumbnailGenerator.swift */; };
+		3120B53E2B84EA7000F524F1 /* FileProviderItemActionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */; };
+		3120B53F2B84EA7D00F524F1 /* FileProviderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */; };
+		3120B5402B84EA8700F524F1 /* GetFileOrFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */; };
+		3120B5412B84EA8D00F524F1 /* DownloadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */; };
+		3120B5422B84EA9500F524F1 /* CreateFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */; };
+		3120B5432B84EA9F00F524F1 /* UploadFileOrUpdateContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */; };
+		3120B5452B84EB6000F524F1 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B5442B84EB6000F524F1 /* Realm */; };
+		3120B5472B84EB6600F524F1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B5462B84EB6600F524F1 /* RealmSwift */; };
+		3120B5482B84EBB700F524F1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DD2AA9EA0A00107753 /* Utils.swift */; };
+		3120B5492B84EBD800F524F1 /* UploadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */; };
+		3120B54A2B84ECDE00F524F1 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		3120B54B2B84ECF100F524F1 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		3120B54C2B84ED2400F524F1 /* TrashFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */; };
+		3120B54D2B84ED2A00F524F1 /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
+		3120B54E2B84ED3D00F524F1 /* MoveFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */; };
+		3120B54F2B84ED4300F524F1 /* MoveFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DDB2A9672910051DD46 /* MoveFileUseCase.swift */; };
+		3120B5502B84ED5800F524F1 /* UpdateFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */; };
+		3120B5512B84ED6100F524F1 /* TrashFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */; };
+		3120B5522B84ED6600F524F1 /* RenameFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */; };
+		3120B5542B84EDCB00F524F1 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B5532B84EDCB00F524F1 /* Sentry */; };
+		3120B5562B84EDD100F524F1 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B5552B84EDD100F524F1 /* SocketIO */; };
+		3120B5572B84EDDB00F524F1 /* DeleteFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3352AC37E5500A88B9F /* DeleteFileUseCase.swift */; };
+		3120B5582B84EDE000F524F1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
+		3120B5592B84EE1900F524F1 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
-		316B3E3F2B7FBE29009F2C8D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
 		316B3E412B7FC9C1009F2C8D /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B3E402B7FC9C1009F2C8D /* BackupOperation.swift */; };
 		316B3E422B7FCB23009F2C8D /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
 		316B3E432B7FCEBD009F2C8D /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		316B3E442B8009E4009F2C8D /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		316B3E452B800A05009F2C8D /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
+		316B3E462B8012E4009F2C8D /* BackupTreeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */; };
+		316B3E472B801303009F2C8D /* BackupTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */; };
+		316B3E482B80130E009F2C8D /* BackupTreeNodeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */; };
+		316B3E492B801314009F2C8D /* BackupTreeNodeSyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C402B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift */; };
+		316B3E4A2B801412009F2C8D /* BackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C3727F2B7E706A00BF795D /* BackupUploadService.swift */; };
+		316B3E4C2B80145D009F2C8D /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */; };
+		316B3E4E2B8014A6009F2C8D /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */; };
+		316B3E4F2B8014A7009F2C8D /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */; };
+		316B3E502B801548009F2C8D /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B3E402B7FC9C1009F2C8D /* BackupOperation.swift */; };
+		316B3E512B8015A7009F2C8D /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F765452B7E91FD00EAF734 /* Completable.swift */; };
+		316B3E522B8015AC009F2C8D /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F765472B7E921300EAF734 /* Enqueueable.swift */; };
 		316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24712B4D88FA007DE91A /* DeviceCardComponent.swift */; };
 		316D24742B4D89F5007DE91A /* ProgressFieldComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */; };
 		316D24762B4D8A38007DE91A /* ProgressBarComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */; };
@@ -30,6 +94,7 @@
 		317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */; };
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
+		31BDC1482B84E667006E3806 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 31BDC1472B84E667006E3806 /* InternxtSwiftCore */; };
 		31C372802B7E706A00BF795D /* BackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C3727F2B7E706A00BF795D /* BackupUploadService.swift */; };
 		31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
@@ -422,6 +487,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3120B5472B84EB6600F524F1 /* RealmSwift in Frameworks */,
+				3120B5452B84EB6000F524F1 /* Realm in Frameworks */,
+				31BDC1482B84E667006E3806 /* InternxtSwiftCore in Frameworks */,
+				3120B5562B84EDD100F524F1 /* SocketIO in Frameworks */,
+				3120B5542B84EDCB00F524F1 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -923,6 +993,13 @@
 			dependencies = (
 			);
 			name = XPCBackupService;
+			packageProductDependencies = (
+				31BDC1472B84E667006E3806 /* InternxtSwiftCore */,
+				3120B5442B84EB6000F524F1 /* Realm */,
+				3120B5462B84EB6600F524F1 /* RealmSwift */,
+				3120B5532B84EDCB00F524F1 /* Sentry */,
+				3120B5552B84EDD100F524F1 /* SocketIO */,
+			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
 			productType = "com.apple.product-type.xpc-service";
@@ -1135,26 +1212,57 @@
 			files = (
 				31F765462B7E91FD00EAF734 /* Completable.swift in Sources */,
 				31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */,
+				3120B51C2B84E86F00F524F1 /* RealtimeService.swift in Sources */,
+				3120B5292B84E8EA00F524F1 /* TrashFileUseCase.swift in Sources */,
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
+				3120B5282B84E8E300F524F1 /* MoveFolderUseCase.swift in Sources */,
+				3120B52D2B84E90400F524F1 /* DeleteFileUseCase.swift in Sources */,
+				3120B53C2B84E9EE00F524F1 /* GetRemoteChangesUseCase.swift in Sources */,
+				3120B53B2B84E9D700F524F1 /* EnumerateFolderItemsUseCase.swift in Sources */,
+				3120B53A2B84E9CC00F524F1 /* ProcessInfo.swift in Sources */,
 				31C372802B7E706A00BF795D /* BackupUploadService.swift in Sources */,
 				316B3E412B7FC9C1009F2C8D /* BackupOperation.swift in Sources */,
+				3120B5302B84E92800F524F1 /* Drive.swift in Sources */,
+				3120B5352B84E97E00F524F1 /* DriveFileService.swift in Sources */,
+				3120B53D2B84E9F700F524F1 /* ThumbnailGenerator.swift in Sources */,
+				3120B5382B84E9B200F524F1 /* DriveFile.swift in Sources */,
 				31F765482B7E921300EAF734 /* Enqueueable.swift in Sources */,
+				3120B5392B84E9C400F524F1 /* Bundle.swift in Sources */,
+				3120B5342B84E96D00F524F1 /* NetworkAnalyticsEvents.swift in Sources */,
 				31F7654C2B7EB35700EAF734 /* Time.swift in Sources */,
 				31F765492B7EB1A200EAF734 /* DecryptUtils.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
 				31F765432B7E717E00EAF734 /* APIFactory.swift in Sources */,
+				3120B51D2B84E87A00F524F1 /* ActivityManager.swift in Sources */,
+				3120B51B2B84E85D00F524F1 /* FileProviderItemActionsManager.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				316B3E432B7FCEBD009F2C8D /* Device.swift in Sources */,
+				3120B52B2B84E8F700F524F1 /* MoveFileUseCase.swift in Sources */,
+				3120B52F2B84E90F00F524F1 /* FileProviderEnumerator.swift in Sources */,
 				31F7654A2B7EB1EF00EAF734 /* ConfigLoader.swift in Sources */,
+				3120B5312B84E93F00F524F1 /* Generic.swift in Sources */,
+				3120B5232B84E8B400F524F1 /* DownloadFileUseCase.swift in Sources */,
 				31F7654B2B7EB33C00EAF734 /* FileProviderItem.swift in Sources */,
+				3120B5592B84EE1900F524F1 /* Error.swift in Sources */,
+				3120B52C2B84E8FD00F524F1 /* UpdateFileContentUseCase.swift in Sources */,
+				3120B5372B84E9A600F524F1 /* AnalyticsEvents.swift in Sources */,
+				3120B5362B84E99800F524F1 /* Analytics.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
+				3120B5322B84E95200F524F1 /* Utils.swift in Sources */,
+				3120B5252B84E8C500F524F1 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
+				3120B5222B84E8AB00F524F1 /* GetFileOrFolderMetaUseCase.swift in Sources */,
+				3120B5332B84E95A00F524F1 /* UploadFileUseCase.swift in Sources */,
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
-				316B3E3F2B7FBE29009F2C8D /* Error.swift in Sources */,
+				3120B52A2B84E8F100F524F1 /* RenameFileUseCase.swift in Sources */,
 				316B3E442B8009E4009F2C8D /* AuthManager.swift in Sources */,
+				3120B5262B84E8D100F524F1 /* TrashFolderUseCase.swift in Sources */,
+				3120B5272B84E8DD00F524F1 /* RenameFolderUseCase.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 				316B3E422B7FCB23009F2C8D /* DeviceService.swift in Sources */,
+				3120B5242B84E8BC00F524F1 /* CreateFolderUseCase.swift in Sources */,
+				316B3E4F2B8014A7009F2C8D /* FileProviderExtension.swift in Sources */,
 				316B3E452B800A05009F2C8D /* ErrorUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1164,11 +1272,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
+				3120B54A2B84ECDE00F524F1 /* Bundle.swift in Sources */,
+				316B3E4E2B8014A6009F2C8D /* FileProviderExtension.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
+				3120B54B2B84ECF100F524F1 /* APIFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1197,28 +1308,42 @@
 				E163105C2A8E6C830072989E /* AppText.swift in Sources */,
 				E17C84B42AB2315D00A58414 /* OnboardingSlideIndicator.swift in Sources */,
 				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
+				3120B53F2B84EA7D00F524F1 /* FileProviderItem.swift in Sources */,
 				E13B839C2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
 				315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */,
 				E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */,
+				3120B5492B84EBD800F524F1 /* UploadFileUseCase.swift in Sources */,
+				3120B5582B84EDE000F524F1 /* FileProviderEnumerator.swift in Sources */,
+				3120B5572B84EDDB00F524F1 /* DeleteFileUseCase.swift in Sources */,
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */,
 				310452692B4B05AE00984716 /* BackupComponent.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
+				3120B5482B84EBB700F524F1 /* Utils.swift in Sources */,
+				3120B5432B84EA9F00F524F1 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
+				3120B54F2B84ED4300F524F1 /* MoveFileUseCase.swift in Sources */,
+				316B3E482B80130E009F2C8D /* BackupTreeNodeType.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
+				316B3E4A2B801412009F2C8D /* BackupUploadService.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */,
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
+				3120B54E2B84ED3D00F524F1 /* MoveFolderUseCase.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
+				3120B5512B84ED6100F524F1 /* TrashFileUseCase.swift in Sources */,
 				311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
+				316B3E502B801548009F2C8D /* BackupOperation.swift in Sources */,
 				E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */,
+				3120B5522B84ED6600F524F1 /* RenameFileUseCase.swift in Sources */,
 				E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */,
 				316D24782B4D8B94007DE91A /* UploadFrequencySelector.swift in Sources */,
+				316B3E472B801303009F2C8D /* BackupTreeNode.swift in Sources */,
 				E1CAB6782AFC3F740006EA1E /* AppSelector.swift in Sources */,
 				E19136942AA101DE00CAF0FA /* WidgetIconButtonView.swift in Sources */,
 				E1F616072A8D7DF8008C9E62 /* SignInWithBrowserView.swift in Sources */,
@@ -1226,9 +1351,13 @@
 				E1880BA42AA6973C001FC171 /* GlobalUIManager.swift in Sources */,
 				E140C3332AC379AA00A88B9F /* DriveFileService.swift in Sources */,
 				E140C32A2AC376AE00A88B9F /* Drive.swift in Sources */,
+				316B3E522B8015AC009F2C8D /* Enqueueable.swift in Sources */,
 				E16ECC142A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E1880BA22AA63CF2001FC171 /* AccountTabView.swift in Sources */,
+				3120B53E2B84EA7000F524F1 /* FileProviderItemActionsManager.swift in Sources */,
 				E1880B9C2AA625D6001FC171 /* DeviceNameView.swift in Sources */,
+				3120B54D2B84ED2A00F524F1 /* RenameFolderUseCase.swift in Sources */,
+				3120B5502B84ED5800F524F1 /* UpdateFileContentUseCase.swift in Sources */,
 				E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
@@ -1237,12 +1366,16 @@
 				E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */,
 				E1A0AC562AB48B7F005E71D6 /* WindowsManager.swift in Sources */,
 				E1581DCF2A9629620051DD46 /* Generic.swift in Sources */,
+				316B3E462B8012E4009F2C8D /* BackupTreeGenerator.swift in Sources */,
 				E145E16C2A82A21500B07E0B /* Time.swift in Sources */,
 				E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */,
 				E1880B972AA6111B001FC171 /* SettingsView.swift in Sources */,
+				3120B5412B84EA8D00F524F1 /* DownloadFileUseCase.swift in Sources */,
 				E18300B02AA2395100AD023C /* FileExtension.swift in Sources */,
 				E17C84B62AB276C000A58414 /* OnboardingSlide3View.swift in Sources */,
+				316B3E4C2B80145D009F2C8D /* FileProviderExtension.swift in Sources */,
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
+				3120B5402B84EA8700F524F1 /* GetFileOrFolderMetaUseCase.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
 				E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */,
@@ -1254,7 +1387,9 @@
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
 				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
+				316B3E512B8015A7009F2C8D /* Completable.swift in Sources */,
 				E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */,
+				3120B54C2B84ED2400F524F1 /* TrashFolderUseCase.swift in Sources */,
 				E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
@@ -1263,6 +1398,8 @@
 				E17C84BE2AB2880B00A58414 /* Color.swift in Sources */,
 				E17C84B82AB2787200A58414 /* OnboardingSlide4View.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
+				3120B5422B84EA9500F524F1 /* CreateFolderUseCase.swift in Sources */,
+				316B3E492B801314009F2C8D /* BackupTreeNodeSyncStatus.swift in Sources */,
 				3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2067,6 +2204,31 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3120B5442B84EB6000F524F1 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		3120B5462B84EB6600F524F1 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		3120B5532B84EDCB00F524F1 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+		3120B5552B84EDD100F524F1 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
+		};
+		31BDC1472B84E667006E3806 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */;

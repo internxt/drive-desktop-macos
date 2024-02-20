@@ -74,8 +74,8 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
         // with renames, trashing etc, this date is the date of the LAST CONTENT MODIFICATION
         return self.createdAt
     }
-    
-    @available(macOSApplicationExtension 13.0, *)
+
+    @available(macOS 13.0, *)
     var contentPolicy: NSFileProviderContentPolicy {
         if isAvailableOffline {
             return .downloadEagerlyAndKeepDownloaded

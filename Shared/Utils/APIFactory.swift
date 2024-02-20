@@ -14,14 +14,15 @@ enum APIFactoryError: Error {
 
 var CLIENT_NAME = "drive-desktop"
 func getVersion() -> String {
-    guard let version = Bundle.main.releaseVersionNumber else {
-        return "NO_VERSION"
-    }
-    guard let buildNumber = Bundle.main.buildVersionNumber else {
-        return "NO_BUILD_NUMBER"
-    }
-    
-    return "\(version).\(buildNumber)"
+//    guard let version = Bundle.main.releaseVersionNumber else {
+//        return "NO_VERSION"
+//    }
+//    guard let buildNumber = Bundle.main.buildVersionNumber else {
+//        return "NO_BUILD_NUMBER"
+//    }
+//    
+//    return "\(version).\(buildNumber)"
+    return ""
 }
 struct APIFactory {
     

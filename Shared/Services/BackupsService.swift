@@ -14,6 +14,7 @@ enum BackupError: Error {
     case cannotAddFolder
     case cannotDeleteFolder
     case cannotFindFolder
+    case emptyFolders
 }
 
 class BackupsService: ObservableObject {
@@ -117,6 +118,20 @@ class BackupsService: ObservableObject {
         } catch {
             error.reportToSentry()
         }
+    }
+
+    func syncBackup() async throws {
+        if foldernames.isEmpty {
+            throw BackupError.emptyFolders
+        }
+
+        //TODO: add for each statement and do this process for all items on foldernames array
+        guard let foldernameURL = URL(string: foldernames[0].url) else {
+            throw BackupError.cannotCreateURL
+        }
+
+        let treeGenerator = BackupTreeGenerator(root: foldernameURL)
+        try await treeGenerator.rootNode.syncNodes()
     }
 }
 

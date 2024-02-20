@@ -73,26 +73,25 @@ class BackupTreeNode {
 
         for child in self.childs {
             // sync each child nodes
-            try await syncNodes()
+            try await child.syncNodes()
         }
     }
     
     func syncNode() async throws -> Void {
-        let authManager = AuthManager()
+//        let authManager = AuthManager()
+//
+//        guard let mnemonic = authManager.mnemonic else {
+//            ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")
+//        }
+//
+//        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: APIFactory.Network)
+//
+//        let backupUploadService = BackupUploadService(
+//            networkFacade: networkFacade,
+//            encryptedFileDestination: URL(string: "")! //TODO: change this
+//        )
 
-        guard let mnemonic = authManager.mnemonic else {
-            ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")
-        }
-
-        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: APIFactory.Network)
-        let encryptedFileDestination =  makeTemporaryURL("encrypted", "enc")
-
-        let backupUploadService = BackupUploadService(
-            networkFacade: networkFacade,
-            encryptedFileDestination: encryptedFileDestination
-        )
-
-        backupUploadService.executeOperation(node: self)
+//        backupUploadService.executeOperation(node: self)
     }
 
 }

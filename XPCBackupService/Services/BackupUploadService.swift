@@ -51,8 +51,9 @@ struct BackupUploadService {
     }
 
     private func getDeviceBucketId() async throws -> String {
-        if let currentDevice = try await DeviceService.shared.getCurrentDevice() {
-            return currentDevice.bucket
+        if let currentDevice = try await DeviceService.shared.getCurrentDevice(), 
+            let bucket = currentDevice.bucket {
+            return bucket
         }
         return ""
     }
@@ -79,7 +80,7 @@ struct BackupUploadService {
                     encryptedOutput: encryptedFileDestination,
                     fileSize: Int(fileURL.fileSize),
                     bucketId: self.getDeviceBucketId()
-                ) { }
+                ) { _ in }
 
                 self.logger.info("Upload completed with id \(result.id)")
 
@@ -111,7 +112,7 @@ struct BackupUploadService {
             }
         }
 
-        return progress
+        return Progress()
     }
 
     func syncNodeFolder(node: BackupTreeNode) -> Progress {
@@ -119,8 +120,8 @@ struct BackupUploadService {
 
         Task {
             do {
-                let foldername = (node.name as NSString)
-                self.logger.info("Starting backing up file \(filename)")
+                let foldername = node.name
+                self.logger.info("Starting backing up folder \(foldername)")
                 self.logger.info("Parent id \(node.parentId ?? "no-parent")")
 
                 guard let remoteParentId = node.remoteParentId, let folderId = Int(remoteParentId) else {
