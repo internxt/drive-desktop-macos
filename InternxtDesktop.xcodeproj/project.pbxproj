@@ -11,7 +11,7 @@
 		3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */; };
 		3104526E2B4B1C5C00984716 /* StopBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */; };
 		311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */; };
-		3120B55B2B84F12A00F524F1 /* BakupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B55A2B84F12A00F524F1 /* BakupUploadService.swift */; };
+		3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */; };
 		3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */; };
 		3120B5622B84F32500F524F1 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B5612B84F32500F524F1 /* Sentry */; };
 		3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
@@ -25,6 +25,11 @@
 		3120B56C2B84F65100F524F1 /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56B2B84F65100F524F1 /* BackupOperation.swift */; };
 		3120B56F2B84F6C400F524F1 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
 		3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
+		3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */; };
+		3120B5752B84FC5300F524F1 /* BackupTreeNodeSyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C402B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift */; };
+		3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
+		3120B5772B8518C300F524F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
+		3120B5782B85296400F524F1 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -268,7 +273,7 @@
 		3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteBackupDialog.swift; sourceTree = "<group>"; };
 		3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopBackupDialog.swift; sourceTree = "<group>"; };
 		3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsFolderList.swift; sourceTree = "<group>"; };
-		3120B55A2B84F12A00F524F1 /* BakupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BakupUploadService.swift; sourceTree = "<group>"; };
+		3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupUploadService.swift; sourceTree = "<group>"; };
 		3120B56B2B84F65100F524F1 /* BackupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupOperation.swift; sourceTree = "<group>"; };
 		3120B56E2B84F6C400F524F1 /* Completable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completable.swift; sourceTree = "<group>"; };
 		3120B5702B84F6F400F524F1 /* Enqueueable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enqueueable.swift; sourceTree = "<group>"; };
@@ -651,7 +656,7 @@
 			isa = PBXGroup;
 			children = (
 				E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */,
-				3120B55A2B84F12A00F524F1 /* BakupUploadService.swift */,
+				3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */,
 				3120B56B2B84F65100F524F1 /* BackupOperation.swift */,
 			);
 			path = Services;
@@ -1071,6 +1076,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3120B5782B85296400F524F1 /* env.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1147,6 +1153,7 @@
 				3120B56C2B84F65100F524F1 /* BackupOperation.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
+				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
 				3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
@@ -1158,7 +1165,8 @@
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
 				3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */,
-				3120B55B2B84F12A00F524F1 /* BakupUploadService.swift in Sources */,
+				3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */,
+				3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1210,6 +1218,7 @@
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
+				3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
@@ -1267,6 +1276,7 @@
 				E17C84BE2AB2880B00A58414 /* Color.swift in Sources */,
 				E17C84B82AB2787200A58414 /* OnboardingSlide4View.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
+				3120B5752B84FC5300F524F1 /* BackupTreeNodeSyncStatus.swift in Sources */,
 				3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

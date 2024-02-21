@@ -90,12 +90,7 @@ struct FolderSelectorView: View {
                     }, type: .secondary, size: .SM)
 
                     AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                        do {
-                            try doBackup()
-                        } catch {
-                            // show error in UI
-                            showErrorDialog(message: error.localizedDescription)
-                        }
+                        doBackup()
                     }, type: .primary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
                 }
             }
@@ -107,8 +102,15 @@ struct FolderSelectorView: View {
         .cornerRadius(10)
     }
 
-    private func doBackup() throws {
-        throw AppError.notImplementedError
+    private func doBackup() {
+        Task {
+            do {
+                try await self.backupsService.startBackup(for: backupsService.foldernames)
+                closeWindow()
+            } catch {
+                self.showErrorDialog(message: "Error backing up this device")
+            }
+        }
     }
 
     private func showErrorDialog(message: String) {

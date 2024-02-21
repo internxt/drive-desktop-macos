@@ -14,6 +14,11 @@ enum BackupError: Error {
     case cannotAddFolder
     case cannotDeleteFolder
     case cannotFindFolder
+    case emptyFolders
+    case cannotGetMnemonic
+    case cannotGetCurrentDevice
+    case bucketIdIsNil
+    case cannotInitializeXPCService
 }
 
 class BackupsService: ObservableObject {
@@ -117,6 +122,76 @@ class BackupsService: ObservableObject {
         } catch {
             error.reportToSentry()
         }
+    }
+
+    private func getCurrentDevice() async throws -> Device {
+        guard let currentDevice = try await DeviceService.shared.getCurrentDevice() else {
+            throw BackupError.cannotGetCurrentDevice
+        }
+
+        return currentDevice
+    }
+
+    private func formatFolderURL(url: String) -> String {
+        return url.replacingOccurrences(of: "file://", with: "")
+    }
+
+    private func propagateError(errorMessage: String, url: URL) throws {
+        throw AppError.notImplementedError
+    }
+
+    private func propagateSuccess(url: URL) {
+        print("Backed up \(url) succesfully")
+    }
+
+    @MainActor func startBackup(for folders: [FoldernameToBackup]) async throws {
+        if self.foldernames.isEmpty {
+            throw BackupError.emptyFolders
+        }
+
+        let currentDevice = try await self.getCurrentDevice()
+
+        guard let bucketId = currentDevice.bucket else {
+            throw BackupError.bucketIdIsNil
+        }
+
+        let authManager = AuthManager()
+        guard let mnemonic = authManager.mnemonic else {
+            throw BackupError.cannotGetMnemonic
+        }
+
+        //Connection to xpc service
+        let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
+        connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
+        connectionToService.resume()
+
+        var initializationError: Error? = nil
+
+        let service = connectionToService.remoteObjectProxyWithErrorHandler { error in
+            initializationError = error
+        } as? XPCBackupServiceProtocol
+
+        if let error = initializationError {
+            throw error
+        }
+
+        let configLoader = ConfigLoader()
+        let networkAuth = configLoader.getNetworkAuth()
+        let authToken = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
+
+        let urls = folders.map { URL(fileURLWithPath: self.formatFolderURL(url: $0.url)) }
+
+        for url in urls {
+            print("Going to backup url \(url)")
+            service?.startBackup(backupAt: url, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, deviceId: currentDevice.id, bucketId: bucketId, with: { _, error in
+                if let error = error {
+                    try? self.propagateError(errorMessage: error, url: url)
+                } else {
+                    self.propagateSuccess(url: url)
+                }
+            })
+        }
+
     }
 }
 
