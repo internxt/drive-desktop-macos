@@ -53,6 +53,15 @@
 		31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */; };
 		31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
+		31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */; };
+		31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
+		31F9EF2C2B867F24007DAD86 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
+		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
+		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
+		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		31F9EF302B86800E007DAD86 /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56B2B84F65100F524F1 /* BackupOperation.swift */; };
+		31F9EF312B86801B007DAD86 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
+		31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -1175,12 +1184,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */,
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
+				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
+				31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */,
+				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
+				31F9EF312B86801B007DAD86 /* Completable.swift in Sources */,
+				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
+				31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
+				31F9EF2C2B867F24007DAD86 /* Error.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
+				31F9EF302B86800E007DAD86 /* BackupOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
