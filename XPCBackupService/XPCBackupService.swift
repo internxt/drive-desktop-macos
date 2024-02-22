@@ -32,9 +32,14 @@ class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             let backupTree = try await backupTreeGenerator.generateTree()
 
-            try await backupTree.syncNodes()
-            
-            reply("Device backed up successfully", nil)
+            do {
+                try await backupTree.syncNodes()
+                reply("Device backed up successfully", nil)
+            } catch {
+                error.reportToSentry()
+                reply(nil, error.localizedDescription)
+            }
+
         }
         
     }

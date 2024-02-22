@@ -73,14 +73,14 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode) async -> Int? {
+    func doSync(node: BackupTreeNode) async throws -> Int {
         if (node.type == .folder) {
-            return await self.syncNodeFolder(node: node)
+            return try await self.syncNodeFolder(node: node)
         }
-        return await self.syncNodeFile(node: node)
+        return try await self.syncNodeFile(node: node)
     }
 
-    func syncNodeFolder(node: BackupTreeNode) async -> Int? {
+    func syncNodeFolder(node: BackupTreeNode) async throws -> Int {
         self.logger.info("Creating folder")
         let childProgress = Progress()
         backupProgress.addChild(childProgress, withPendingUnitCount: 1)
@@ -119,11 +119,11 @@ struct BackupUploadService {
             error.reportToSentry()
             self.logger.error("❌ Failed to create folder: \(error.localizedDescription)")
             childProgress.completedUnitCount = 1
-            return nil
+            throw error
         }
     }
 
-    func syncNodeFile(node: BackupTreeNode) async -> Int? {
+    func syncNodeFile(node: BackupTreeNode) async throws -> Int {
         self.logger.info("Creating file")
         let childProgress = Progress()
         backupProgress.addChild(childProgress, withPendingUnitCount: 1)
@@ -199,7 +199,7 @@ struct BackupUploadService {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
             }
 
-            return nil
+            throw error
         }
 
     }
