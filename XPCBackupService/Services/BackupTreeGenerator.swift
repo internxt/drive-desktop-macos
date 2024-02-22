@@ -7,11 +7,13 @@
 
 import Foundation
 import os.log
+import UniformTypeIdentifiers
 
 enum BackupTreeGeneratorError: Error {
     case parentNodeNotFound
     case rootIsNotDirectory
     case enumeratorNotFound
+    case cannotGetNodeType
 }
 
 protocol BackupTreeGeneration {
@@ -92,8 +94,15 @@ class BackupTreeGenerator: BackupTreeGeneration {
         if(existingNode != nil) {
             return
         }
-        
-        let type: BackupTreeNodeType = url.isDirectory ? .folder : .plainText
+
+        guard let typeID = try url.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier else {
+            throw BackupTreeGeneratorError.cannotGetNodeType
+        }
+
+        guard let type = UTType(typeID) else {
+            throw BackupTreeGeneratorError.cannotGetNodeType
+        }
+
         // 3. We have a parent, and the node does not exists, create the BackupTreeNode
         let newNode = BackupTreeNode(
             id: UUID().uuidString,
