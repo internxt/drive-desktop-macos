@@ -20,6 +20,7 @@ enum BackupError: Error {
     case cannotGetCurrentDevice
     case bucketIdIsNil
     case cannotInitializeXPCService
+    case cannotCreateAuthToken
 }
 
 class BackupsService: ObservableObject {
@@ -180,7 +181,11 @@ class BackupsService: ObservableObject {
 
         let configLoader = ConfigLoader()
         let networkAuth = configLoader.getNetworkAuth()
-        let authToken = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
+        let authToken = configLoader.getLegacyAuthToken()
+
+        guard let authToken = authToken else {
+            throw BackupError.cannotCreateAuthToken
+        }
 
         let urls = folders.map { URL(fileURLWithPath: self.formatFolderURL(url: $0.url)) }
 
