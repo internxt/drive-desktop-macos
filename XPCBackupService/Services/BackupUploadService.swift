@@ -108,15 +108,13 @@ struct BackupUploadService {
 
             let createdFolder = try await backupAPI.createBackupFolder(
                 parentFolderId: safeRemoteParentId,
-                folderName: foldername,
-                debug: true
+                folderName: foldername
             )
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
             childProgress.completedUnitCount = 1
             return createdFolder.id
         } catch {
-            error.reportToSentry()
             self.logger.error("❌ Failed to create folder: \(error.localizedDescription)")
             childProgress.completedUnitCount = 1
             throw error
@@ -177,8 +175,7 @@ struct BackupUploadService {
                     folderId: remoteParentId,
                     name: encryptedFilename.base64EncodedString(),
                     plainName: filename.deletingPathExtension
-                ),
-                debug: true
+                )
             )
 
             self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
@@ -191,7 +188,6 @@ struct BackupUploadService {
 
             return createdFile.id
         } catch {
-            error.reportToSentry()
             self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
             childProgress.completedUnitCount = 1
 
