@@ -78,7 +78,7 @@ class BackupTreeNode {
         }
     }
     
-    func syncNode() async throws -> Void {
+    private func syncNode() async throws -> Void {
         let remoteId = await backupUploadService.doSync(node: self)
         self.syncStatus = .REMOTE_AND_LOCAL
         self.remoteId = remoteId
