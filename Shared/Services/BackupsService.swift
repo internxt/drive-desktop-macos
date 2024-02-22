@@ -8,6 +8,7 @@
 import Foundation
 import RealmSwift
 import InternxtSwiftCore
+import os.log
 
 enum BackupError: Error {
     case cannotCreateURL
@@ -22,8 +23,10 @@ enum BackupError: Error {
 }
 
 class BackupsService: ObservableObject {
+    private let logger = Logger(subsystem: "com.internxt", category: "BackupsService")
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldernames: [FoldernameToBackup] = []
+    private let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
 
     private func getRealm() -> Realm {
         do {
@@ -141,7 +144,8 @@ class BackupsService: ObservableObject {
     }
 
     private func propagateSuccess(url: URL) {
-        print("Backed up \(url) succesfully")
+        logger.info("Backed up \(url) succesfully")
+        //TODO: propagate success backup to UI component
     }
 
     @MainActor func startBackup(for folders: [FoldernameToBackup]) async throws {
@@ -161,7 +165,6 @@ class BackupsService: ObservableObject {
         }
 
         //Connection to xpc service
-        let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
         connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
         connectionToService.resume()
 
@@ -182,7 +185,7 @@ class BackupsService: ObservableObject {
         let urls = folders.map { URL(fileURLWithPath: self.formatFolderURL(url: $0.url)) }
 
         for url in urls {
-            print("Going to backup url \(url)")
+            logger.info("Going to backup url \(url)")
             service?.startBackup(backupAt: url, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, deviceId: currentDevice.id, bucketId: bucketId, with: { _, error in
                 if let error = error {
                     try? self.propagateError(errorMessage: error, url: url)
