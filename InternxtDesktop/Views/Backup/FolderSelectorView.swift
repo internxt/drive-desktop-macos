@@ -108,7 +108,7 @@ struct FolderSelectorView: View {
                 try await self.backupsService.startBackup(for: backupsService.foldernames)
                 closeWindow()
             } catch {
-                self.showErrorDialog(message: "Error backing up this device")
+                self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
             }
         }
     }

@@ -62,6 +62,7 @@
 "BACKUP_STOP_BACKUP" = "Arrêter la sauvegarde";
 "BACKUP_ERROR_FETCHING_DEVICES" = "Erreur dans l'extraction des dispositifs, veuillez réessayer";
 "BACKUP_TRY_AGAIN" = "Réessayer";
+"BACKUP_ERROR_BACKING_UP" = "Erreur de sauvegarde de ce dispositif";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";
