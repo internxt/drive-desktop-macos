@@ -6,7 +6,7 @@
 //
 
 import XCTest
-
+import InternxtSwiftCore
 
 final class BackupTreeGeneratorTests: XCTestCase {
     var sut: BackupTreeGenerator!
@@ -17,7 +17,8 @@ final class BackupTreeGeneratorTests: XCTestCase {
         
         tmpDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("BACKUP_TREE_GENERATOR_TESTS_\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: tmpDirectoryURL, withIntermediateDirectories: true)
-        sut = BackupTreeGenerator(root: tmpDirectoryURL)
+        let networkAPI = NetworkAPI(baseUrl: "", basicAuthToken: "", clientName: "", clientVersion: "")
+        sut = BackupTreeGenerator(root: tmpDirectoryURL, backupUploadService: BackupUploadService(networkFacade: NetworkFacade(mnemonic: "", networkAPI: networkAPI), encryptedContentDirectory: URL(string: "https://drive.internxt.com/app")!, deviceId: 0, bucketId: "", authToken: "", backupProgress: Progress()))
     }
     
     override func tearDownWithError() throws {

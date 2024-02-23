@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum BackupTreeNodeSyncStatus: String {
     case REMOTE_AND_LOCAL
     case REMOTE_ONLY

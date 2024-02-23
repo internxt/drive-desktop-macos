@@ -36,6 +36,20 @@ struct DeviceService {
         return filteredDevices
     }
 
+    public func getCurrentDevice() async throws -> Device? {
+        let devicesAsFolder = try await backupAPI.getAllDevices()
+
+        let devices = devicesAsFolder.map { deviceAsFolder in
+            return Device(from: deviceAsFolder)
+        }
+
+        let currentDevice = devices.first(where: { device in
+            device.isCurrentDevice
+        })
+
+        return currentDevice
+    }
+
     public func addCurrentDevice(deviceName: String) async throws {
         let _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
     }

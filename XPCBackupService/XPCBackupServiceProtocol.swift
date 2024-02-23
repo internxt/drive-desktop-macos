@@ -8,11 +8,9 @@
 import Foundation
 
 @objc protocol XPCBackupServiceProtocol {
+    
+    func startBackup(backupAt backupURL: URL, mnemonic: String, networkAuth: String?, authToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void)
 
-    func performCalculation(firstNumber: Int, secondNumber: Int, with reply: @escaping (Int) -> Void)
-    
-    func startBackup(backupAt backupURL: URL, with reply: @escaping () -> Void)
-    
 }
 
 /*

@@ -14,10 +14,21 @@ class BackupTreeNode {
     var type: BackupTreeNodeType
     var url: URL?
     private(set) var syncStatus: BackupTreeNodeSyncStatus
-    var remoteId: String?
-    var remoteParentId: String?
+    var remoteId: Int?
+    var remoteParentId: Int?
     private(set) var childs: [BackupTreeNode]
-    
+    let backupUploadService: BackupUploadService
+
+    init(id: String, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadService) {
+        self.id = id
+        self.parentId = parentId
+        self.name = name
+        self.type = type
+        self.url = url
+        self.syncStatus = syncStatus
+        self.childs = childs
+        self.backupUploadService = backupUploadService
+    }
     
     func addChild(newNode: BackupTreeNode){
         childs.append(newNode)
@@ -58,12 +69,22 @@ class BackupTreeNode {
     }
     
     func syncNodes() async throws -> Void {
-        // This should sync the current node, and all the child nodes recursively
+        // sync current node
+        try await self.syncNode()
+        
+        for child in self.childs {
+            // sync each child nodes
+            try await child.syncNodes()
+        }
     }
     
-    func syncNode() async throws -> Void {
-        // This should sync the current node with Internxt API (upload or create a folder, based on self.type)
-        // Once synced, update the syncStatus
+    private func syncNode() async throws -> Void {
+        let remoteId = try await backupUploadService.doSync(node: self)
+        self.syncStatus = .REMOTE_AND_LOCAL
+        self.remoteId = remoteId
+        for child in self.childs {
+            child.remoteParentId = remoteId
+        }
     }
 }
 
