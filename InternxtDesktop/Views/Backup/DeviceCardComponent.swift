@@ -10,6 +10,7 @@ import SwiftUI
 struct DeviceCardComponent: View {
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
+    var isCurrentDevice: Bool
     var isLoading: Bool
     var lastUpdated: String?
     @Binding var progress: Double
@@ -18,9 +19,17 @@ struct DeviceCardComponent: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                Rectangle()
-                    .fill(.gray)
-                    .frame(width: 32, height: 32)
+                if isCurrentDevice {
+                    Image("apple")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(.Gray40)
+                        .frame(width: 32, height: 32)
+                } else {
+                    Image("backup_folder")
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                }
 
                 VStack(alignment: .leading, spacing: 0) {
                     AppText(deviceName)
@@ -42,15 +51,14 @@ struct DeviceCardComponent: View {
                     AppText("\(Int(progress * 100))%")
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
+                        .hidden()
                 }
             }
 
             if isLoading {
                 // show progress bar
-                ProgressBarComponent(
-                    progressBarWidth: $progressBarWidth,
-                    progress: $progress
-                )
+                ProgressView()
+                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
             }
 
         }
@@ -67,5 +75,5 @@ struct DeviceCardComponent: View {
 }
 
 #Preview {
-    DeviceCardComponent(deviceName: "", isLoading: true, lastUpdated: "", progress: .constant(20))
+    DeviceCardComponent(deviceName: "", isCurrentDevice: true, isLoading: true, lastUpdated: "", progress: .constant(20))
 }

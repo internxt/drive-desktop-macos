@@ -73,17 +73,15 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode) async throws -> Int {
+    func doSync(node: BackupTreeNode, progress: Progress) async throws -> Int {
         if (node.type == .folder) {
-            return try await self.syncNodeFolder(node: node)
+            return try await self.syncNodeFolder(node: node, progress: progress)
         }
-        return try await self.syncNodeFile(node: node)
+        return try await self.syncNodeFile(node: node, progress: progress)
     }
 
-    func syncNodeFolder(node: BackupTreeNode) async throws -> Int {
+    func syncNodeFolder(node: BackupTreeNode, progress: Progress) async throws -> Int {
         self.logger.info("Creating folder")
-        let childProgress = Progress()
-        backupProgress.addChild(childProgress, withPendingUnitCount: 1)
 
         do {
             var remoteParentId: Int? = nil
@@ -112,19 +110,17 @@ struct BackupUploadService {
             )
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
-            childProgress.completedUnitCount = 1
+            progress.completedUnitCount = 1
             return createdFolder.id
         } catch {
-            self.logger.error("❌ Failed to create folder: \(error.localizedDescription)")
-            childProgress.completedUnitCount = 1
+            self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
+            progress.completedUnitCount = 1
             throw error
         }
     }
 
-    func syncNodeFile(node: BackupTreeNode) async throws -> Int {
+    func syncNodeFile(node: BackupTreeNode, progress: Progress) async throws -> Int {
         self.logger.info("Creating file")
-        let childProgress = Progress()
-        backupProgress.addChild(childProgress, withPendingUnitCount: 1)
 
         var encryptedContentURL: URL? = nil
         do {
@@ -150,10 +146,9 @@ struct BackupUploadService {
                 input: inputStream,
                 encryptedOutput: safeEncryptedContentURL,
                 fileSize: Int(fileURL.fileSize),
-                bucketId: self.bucketId
-            ) { completedProgress in
-                childProgress.completedUnitCount = Int64(completedProgress)
-            }
+                bucketId: self.bucketId,
+                progressHandler: { _ in }
+            )
 
             self.logger.info("Upload completed with id \(result.id)")
 
@@ -175,12 +170,12 @@ struct BackupUploadService {
                     folderId: remoteParentId,
                     name: encryptedFilename.base64EncodedString(),
                     plainName: filename.deletingPathExtension
-                )
+                ), debug: true
             )
 
             self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
-            childProgress.completedUnitCount = 1
+            progress.completedUnitCount = 1
 
             if encryptedContentURL != nil {
                 try FileManager.default.removeItem(at: encryptedContentURL!)
@@ -188,8 +183,9 @@ struct BackupUploadService {
 
             return createdFile.id
         } catch {
-            self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
-            childProgress.completedUnitCount = 1
+            self.logger.error("❌ Failed to create file: \(self.getErrorDescription(error: error))")
+
+            progress.completedUnitCount = 1
 
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
@@ -198,6 +194,13 @@ struct BackupUploadService {
             throw error
         }
 
+    }
+
+    private func getErrorDescription(error: Error) -> String {
+        if let apiClientError = error as? APIClientError {
+            return "APIClientError \(apiClientError.statusCode) - \(apiClientError.responseBody)"
+        }
+        return error.localizedDescription
     }
 
 }

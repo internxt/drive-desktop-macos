@@ -14,7 +14,6 @@ struct BackupsTabView: View {
     @Binding var showDeleteBackupDialog: Bool
     @StateObject var backupsService: BackupsService
     private let deviceName = ConfigLoader().getDeviceName()
-    @State var hasBackup = false
     @State private var selectedDevice: Device? = nil
     @State var progress: Double = 0.48
 
@@ -63,16 +62,33 @@ struct BackupsTabView: View {
             if self.selectedDevice == nil {
                 Spacer()
             } else if deviceName == self.selectedDevice?.plainName {
-                if hasBackup {
+                if backupsService.hasOngoingBackup {
                     ScrollView(showsIndicators: false) {
                         BackupComponent(
                             deviceName: deviceName ?? "",
                             isCurrentDevice: true,
                             numOfFolders: backupsService.foldernames.count,
                             isLoading: true,
+                            backupsService: self.backupsService,
                             progress: $progress,
                             showStopBackupDialog: $showStopBackupDialog,
-                            showDeleteBackupDialog: $showDeleteBackupDialog
+                            showDeleteBackupDialog: $showDeleteBackupDialog,
+                            showFolderSelector: $showFolderSelector
+                        )
+                    }
+                } else if self.backupsService.currentDeviceHasBackup {
+                    ScrollView(showsIndicators: false) {
+                        BackupComponent(
+                            deviceName: deviceName ?? "",
+                            isCurrentDevice: true,
+                            numOfFolders: backupsService.foldernames.count,
+                            isLoading: false,
+                            lastUpdated: self.selectedDevice?.updatedAt,
+                            backupsService: self.backupsService,
+                            progress: .constant(0.0),
+                            showStopBackupDialog: $showStopBackupDialog,
+                            showDeleteBackupDialog: $showDeleteBackupDialog,
+                            showFolderSelector: $showFolderSelector
                         )
                     }
                 } else {
@@ -94,9 +110,11 @@ struct BackupsTabView: View {
                     numOfFolders: 0,
                     isLoading: false,
                     lastUpdated: self.selectedDevice?.updatedAt,
+                    backupsService: self.backupsService,
                     progress: .constant(1),
                     showStopBackupDialog: $showStopBackupDialog,
-                    showDeleteBackupDialog: $showDeleteBackupDialog
+                    showDeleteBackupDialog: $showDeleteBackupDialog,
+                    showFolderSelector: $showFolderSelector
                 )
             }
         }
