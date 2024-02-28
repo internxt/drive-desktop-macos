@@ -70,7 +70,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     }
 
     private func getNodesCountFromURL(backupTree: BackupTreeNode) -> Int {
-        var count = 0
+        // we start in one so we can count the tree root
+        var count = 1
         if let url = backupTree.url, let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey], options: [.skipsHiddenFiles]) {
             for case let fileURL as URL in enumerator {
                 do {
