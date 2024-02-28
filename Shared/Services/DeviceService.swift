@@ -57,8 +57,7 @@ struct DeviceService {
         let _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
     }
 
-    public func getDeviceChilds(deviceId: Int) async throws -> [GetFolderFoldersResult] {
-        //TODO: change this deviceAPI for backupAPI
+    public func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
         let response = try await deviceAPI.getFolderFolders(folderId: "\(deviceId)")
         return response.result
     }

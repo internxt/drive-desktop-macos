@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import os.log
 import InternxtSwiftCore
 
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
     public static let shared = XPCBackupService()
+    private let logger = Logger(subsystem: "com.internxt", category: "XPCBackupService")
 
     @objc func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void) {
 
@@ -51,10 +53,11 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             }
 
             totalProgress.totalUnitCount = Int64(totalCount)
+            logger.info("Total progress to backup \(totalProgress.totalUnitCount)")
 
             for backupTree in trees {
                 do {
-                    try await backupTree.syncNodes(progress: totalProgress)
+                    try await backupTree.syncNodes(totalProgress)
                 } catch {
                     reply(nil, error.localizedDescription)
                 }

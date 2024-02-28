@@ -117,7 +117,7 @@ class BackupsService: ObservableObject {
                 self?.deviceResponse = response
             }
             if let deviceId = DeviceService.shared.currentDeviceId {
-                let _ = try await self.getDeviceChilds(deviceId: deviceId)
+                let _ = try await self.getDeviceFolders(deviceId: deviceId)
             }
         } catch {
             error.reportToSentry()
@@ -146,8 +146,8 @@ class BackupsService: ObservableObject {
         return currentDevice
     }
 
-    func getDeviceChilds(deviceId: Int) async throws -> [GetFolderFoldersResult] {
-        let folders = try await DeviceService.shared.getDeviceChilds(deviceId: deviceId)
+    func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
+        let folders = try await DeviceService.shared.getDeviceFolders(deviceId: deviceId)
         if DeviceService.shared.currentDeviceId == deviceId {
             self.currentDeviceHasBackup = !folders.isEmpty
         }

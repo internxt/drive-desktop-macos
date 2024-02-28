@@ -58,7 +58,7 @@ struct DeviceCardComponent: View {
             if isLoading {
                 // show progress bar
                 ProgressView()
-                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                    .progressViewStyle(LinearProgressViewStyle(tint: Color.Primary))
             }
 
         }

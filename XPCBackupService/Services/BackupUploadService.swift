@@ -170,7 +170,7 @@ struct BackupUploadService {
                     folderId: remoteParentId,
                     name: encryptedFilename.base64EncodedString(),
                     plainName: filename.deletingPathExtension
-                ), debug: true
+                )
             )
 
             self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
@@ -198,7 +198,8 @@ struct BackupUploadService {
 
     private func getErrorDescription(error: Error) -> String {
         if let apiClientError = error as? APIClientError {
-            return "APIClientError \(apiClientError.statusCode) - \(apiClientError.responseBody)"
+            let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
+            return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
         }
         return error.localizedDescription
     }

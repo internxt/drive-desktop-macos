@@ -68,17 +68,17 @@ class BackupTreeNode {
         return false
     }
     
-    func syncNodes(progress: Progress) async throws -> Void {
+    func syncNodes(_ progress: Progress) async throws -> Void {
         // sync current node
-        try await self.syncNode(progress: progress)
+        try await self.syncNode(progress)
 
         for child in self.childs {
             // sync each child nodes
-            try await child.syncNodes(progress: progress)
+            try await child.syncNodes(progress)
         }
     }
     
-    private func syncNode(progress: Progress) async throws -> Void {
+    private func syncNode(_ progress: Progress) async throws -> Void {
         let remoteId = try await backupUploadService.doSync(node: self, progress: progress)
         self.syncStatus = .REMOTE_AND_LOCAL
         self.remoteId = remoteId
