@@ -25,39 +25,39 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             let configLoader = ConfigLoader()
             let config = configLoader.get()
             let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
-            let totalProgress = Progress()
+            let progress = Progress()
 
             let backupUploadService = BackupUploadService(
                 networkFacade: NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI),
                 encryptedContentDirectory: FileManager.default.temporaryDirectory,
                 deviceId: deviceId,
                 bucketId: bucketId,
-                authToken: authToken,
-                backupProgress: totalProgress
+                authToken: authToken
             )
+
+            var totalCount = 0
+            for backupURL in backupURLs {
+                let count = self.getNodesCountFromURL(URL(fileURLWithPath: backupURL))
+                totalCount += count
+            }
+
+            progress.totalUnitCount = Int64(totalCount)
 
             var trees: [BackupTreeNode] = []
             for backupURL in backupURLs {
                 let url = URL(fileURLWithPath: backupURL)
-                let backupTreeGenerator = BackupTreeGenerator(root: url, backupUploadService: backupUploadService)
+                let backupTreeGenerator = BackupTreeGenerator(root: url, backupUploadService: backupUploadService, progress: progress)
 
                 let backupTree = try await backupTreeGenerator.generateTree()
 
                 trees.append(backupTree)
             }
 
-            var totalCount = 0
-            for backupTree in trees {
-                let count = self.getNodesCountFromURL(backupTree: backupTree)
-                totalCount += count
-            }
-
-            totalProgress.totalUnitCount = Int64(totalCount)
-            logger.info("Total progress to backup \(totalProgress.totalUnitCount)")
+            logger.info("Total progress to backup \(progress.totalUnitCount)")
 
             for backupTree in trees {
                 do {
-                    try await backupTree.syncNodes(totalProgress)
+                    try await backupTree.syncNodes()
                 } catch {
                     reply(nil, error.localizedDescription)
                 }
@@ -69,10 +69,10 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
     }
 
-    private func getNodesCountFromURL(backupTree: BackupTreeNode) -> Int {
+    private func getNodesCountFromURL(_ url: URL) -> Int {
         // we start in one so we can count the tree root
         var count = 1
-        if let url = backupTree.url, let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey], options: [.skipsHiddenFiles]) {
+        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey], options: [.skipsHiddenFiles]) {
             for case let fileURL as URL in enumerator {
                 do {
                     let fileAttributes = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey])

@@ -27,18 +27,16 @@ struct BackupUploadService {
     private let completionQueue = OperationQueue()
     private let encryptedContentDirectory: URL
     private let retriesCount = 3
-    private let backupProgress: Progress
     private let deviceId: Int
     private let bucketId: String
     private let authToken: String
 
-    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, backupProgress: Progress) {
+    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
         self.deviceId = deviceId
         self.bucketId = bucketId
         self.authToken = authToken
-        self.backupProgress = backupProgress
     }
 
     // TODO: get auth token from user defaults from XPC Service.
