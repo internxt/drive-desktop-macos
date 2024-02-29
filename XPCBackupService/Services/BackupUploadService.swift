@@ -71,14 +71,14 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode, progress: Progress) async throws -> Int {
+    func doSync(node: BackupTreeNode) async throws -> Int {
         if (node.type == .folder) {
-            return try await self.syncNodeFolder(node: node, progress: progress)
+            return try await self.syncNodeFolder(node: node)
         }
-        return try await self.syncNodeFile(node: node, progress: progress)
+        return try await self.syncNodeFile(node: node)
     }
 
-    func syncNodeFolder(node: BackupTreeNode, progress: Progress) async throws -> Int {
+    func syncNodeFolder(node: BackupTreeNode) async throws -> Int {
         self.logger.info("Creating folder")
 
         do {
@@ -108,16 +108,16 @@ struct BackupUploadService {
             )
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
-            progress.completedUnitCount = 1
+            node.progress.completedUnitCount = 1
             return createdFolder.id
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
-            progress.completedUnitCount = 1
+            node.progress.completedUnitCount = 1
             throw error
         }
     }
 
-    func syncNodeFile(node: BackupTreeNode, progress: Progress) async throws -> Int {
+    func syncNodeFile(node: BackupTreeNode) async throws -> Int {
         self.logger.info("Creating file")
 
         var encryptedContentURL: URL? = nil
@@ -173,7 +173,7 @@ struct BackupUploadService {
 
             self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
-            progress.completedUnitCount = 1
+            node.progress.completedUnitCount = 1
 
             if encryptedContentURL != nil {
                 try FileManager.default.removeItem(at: encryptedContentURL!)
@@ -183,7 +183,7 @@ struct BackupUploadService {
         } catch {
             self.logger.error("❌ Failed to create file: \(self.getErrorDescription(error: error))")
 
-            progress.completedUnitCount = 1
+            node.progress.completedUnitCount = 1
 
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
