@@ -24,7 +24,7 @@ struct UploadFrequencySelector: View {
                     AppSelectorOption(value: UploadFrequencyEnum.daily.rawValue, label: "BACKUP_UPLOAD_FREQUENCY_EVERY_DAY"),
                     AppSelectorOption(value: UploadFrequencyEnum.manually.rawValue, label: "BACKUP_UPLOAD_FREQUENCY_MANUALLY"),
                 ],
-                initialValue: UploadFrequencyEnum.six.rawValue,
+                initialValue: currentFrequency.rawValue,
                 position: .top
             ) { selectedOption in
                 switch selectedOption.value {

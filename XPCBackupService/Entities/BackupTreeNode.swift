@@ -18,8 +18,9 @@ class BackupTreeNode {
     var remoteParentId: Int?
     private(set) var childs: [BackupTreeNode]
     let backupUploadService: BackupUploadService
+    var progress: Progress
 
-    init(id: String, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadService) {
+    init(id: String, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadService, progress: Progress) {
         self.id = id
         self.parentId = parentId
         self.name = name
@@ -28,6 +29,7 @@ class BackupTreeNode {
         self.syncStatus = syncStatus
         self.childs = childs
         self.backupUploadService = backupUploadService
+        self.progress = progress
     }
     
     func addChild(newNode: BackupTreeNode){
@@ -71,7 +73,7 @@ class BackupTreeNode {
     func syncNodes() async throws -> Void {
         // sync current node
         try await self.syncNode()
-        
+
         for child in self.childs {
             // sync each child nodes
             try await child.syncNodes()
@@ -86,6 +88,7 @@ class BackupTreeNode {
             child.remoteParentId = remoteId
         }
     }
+
 }
 
 

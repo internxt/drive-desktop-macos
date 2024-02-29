@@ -11,10 +11,12 @@ import InternxtSwiftCore
 struct DeviceService {
     static var shared = DeviceService()
     private let backupAPI: BackupAPI = APIFactory.Backup
+    private let deviceAPI: DriveAPI = APIFactory.DriveNew
     private let decrypt = Decrypt()
     private let config = ConfigLoader().get()
+    var currentDeviceId: Int? = nil
 
-    public func getAllDevices(deviceName: String?) async throws -> Array<Device> {
+    public mutating func getAllDevices(deviceName: String?) async throws -> Array<Device> {
         let devicesAsFolder = try await backupAPI.getAllDevices()
         var filteredDevices: [Device] = []
         var currentDevice: Device? = nil
@@ -28,6 +30,7 @@ struct DeviceService {
         })
 
         if let currentDevice = currentDevice {
+            self.currentDeviceId = currentDevice.id
             filteredDevices.append(currentDevice)
         }
 
@@ -52,5 +55,10 @@ struct DeviceService {
 
     public func addCurrentDevice(deviceName: String) async throws {
         let _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
+    }
+
+    public func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
+        let response = try await deviceAPI.getFolderFolders(folderId: "\(deviceId)")
+        return response.result
     }
 }

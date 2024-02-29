@@ -27,11 +27,13 @@ class BackupTreeGenerator: BackupTreeGeneration {
     var root: URL
     let rootNode: BackupTreeNode
     let backupUploadService: BackupUploadService
+    let progress: Progress
 
-    init(root: URL, backupUploadService: BackupUploadService) {
+    init(root: URL, backupUploadService: BackupUploadService, progress: Progress) {
 
         self.root = root
         self.backupUploadService = backupUploadService
+        self.progress = progress
         rootNode = BackupTreeNode(
             id: UUID().uuidString,
             parentId: nil,
@@ -40,7 +42,8 @@ class BackupTreeGenerator: BackupTreeGeneration {
             url: self.root,
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
-            backupUploadService: self.backupUploadService
+            backupUploadService: self.backupUploadService,
+            progress: self.progress
         )
     }
     
@@ -112,7 +115,8 @@ class BackupTreeGenerator: BackupTreeGeneration {
             url: url,
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
-            backupUploadService: self.backupUploadService
+            backupUploadService: self.backupUploadService,
+            progress: self.progress
         )
         
         

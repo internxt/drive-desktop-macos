@@ -27,18 +27,16 @@ struct BackupUploadService {
     private let completionQueue = OperationQueue()
     private let encryptedContentDirectory: URL
     private let retriesCount = 3
-    private let backupProgress: Progress
     private let deviceId: Int
     private let bucketId: String
     private let authToken: String
 
-    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, backupProgress: Progress) {
+    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
         self.deviceId = deviceId
         self.bucketId = bucketId
         self.authToken = authToken
-        self.backupProgress = backupProgress
     }
 
     // TODO: get auth token from user defaults from XPC Service.
@@ -82,8 +80,6 @@ struct BackupUploadService {
 
     func syncNodeFolder(node: BackupTreeNode) async throws -> Int {
         self.logger.info("Creating folder")
-        let childProgress = Progress()
-        backupProgress.addChild(childProgress, withPendingUnitCount: 1)
 
         do {
             var remoteParentId: Int? = nil
@@ -112,19 +108,17 @@ struct BackupUploadService {
             )
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
-            childProgress.completedUnitCount = 1
+            node.progress.completedUnitCount = 1
             return createdFolder.id
         } catch {
-            self.logger.error("❌ Failed to create folder: \(error.localizedDescription)")
-            childProgress.completedUnitCount = 1
+            self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
+            node.progress.completedUnitCount = 1
             throw error
         }
     }
 
     func syncNodeFile(node: BackupTreeNode) async throws -> Int {
         self.logger.info("Creating file")
-        let childProgress = Progress()
-        backupProgress.addChild(childProgress, withPendingUnitCount: 1)
 
         var encryptedContentURL: URL? = nil
         do {
@@ -150,10 +144,9 @@ struct BackupUploadService {
                 input: inputStream,
                 encryptedOutput: safeEncryptedContentURL,
                 fileSize: Int(fileURL.fileSize),
-                bucketId: self.bucketId
-            ) { completedProgress in
-                childProgress.completedUnitCount = Int64(completedProgress)
-            }
+                bucketId: self.bucketId,
+                progressHandler: { _ in }
+            )
 
             self.logger.info("Upload completed with id \(result.id)")
 
@@ -180,7 +173,7 @@ struct BackupUploadService {
 
             self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
-            childProgress.completedUnitCount = 1
+            node.progress.completedUnitCount = 1
 
             if encryptedContentURL != nil {
                 try FileManager.default.removeItem(at: encryptedContentURL!)
@@ -188,8 +181,9 @@ struct BackupUploadService {
 
             return createdFile.id
         } catch {
-            self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
-            childProgress.completedUnitCount = 1
+            self.logger.error("❌ Failed to create file: \(self.getErrorDescription(error: error))")
+
+            node.progress.completedUnitCount = 1
 
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
@@ -198,6 +192,14 @@ struct BackupUploadService {
             throw error
         }
 
+    }
+
+    private func getErrorDescription(error: Error) -> String {
+        if let apiClientError = error as? APIClientError {
+            let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
+            return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
+        }
+        return error.localizedDescription
     }
 
 }

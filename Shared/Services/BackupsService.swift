@@ -27,7 +27,8 @@ class BackupsService: ObservableObject {
     private let logger = Logger(subsystem: "com.internxt", category: "BackupsService")
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldernames: [FoldernameToBackup] = []
-    private let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
+    @Published var hasOngoingBackup = false
+    @Published var currentDeviceHasBackup = false
 
     private func getRealm() -> Realm {
         do {
@@ -111,10 +112,19 @@ class BackupsService: ObservableObject {
 
     func loadAllDevices() async {
         do {
-            self.deviceResponse = .success(try await DeviceService.shared.getAllDevices(deviceName: ConfigLoader().getDeviceName()))
+            let response: Result<[Device], Error> = .success(try await DeviceService.shared.getAllDevices(deviceName: ConfigLoader().getDeviceName()))
+            await MainActor.run { [weak self] in
+                self?.deviceResponse = response
+            }
+            if let deviceId = DeviceService.shared.currentDeviceId {
+                let _ = try await self.getDeviceFolders(deviceId: deviceId)
+            }
         } catch {
             error.reportToSentry()
-            self.deviceResponse = .failure(error)
+            let response: Result<[Device], Error> = .failure(error)
+            await MainActor.run { [weak self] in
+                self?.deviceResponse = response
+            }
         }
     }
 
@@ -136,20 +146,37 @@ class BackupsService: ObservableObject {
         return currentDevice
     }
 
+    func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
+        let folders = try await DeviceService.shared.getDeviceFolders(deviceId: deviceId)
+        if DeviceService.shared.currentDeviceId == deviceId {
+            self.currentDeviceHasBackup = !folders.isEmpty
+        }
+        return folders
+    }
+
     private func formatFolderURL(url: String) -> String {
         return url.replacingOccurrences(of: "file://", with: "")
     }
 
-    private func propagateError(errorMessage: String, url: URL) throws {
-        throw AppError.notImplementedError
+    private func propagateError(errorMessage: String) {
+        logger.info("Error backing up device")
+        DispatchQueue.main.async { [weak self] in
+            self?.currentDeviceHasBackup = true
+            self?.hasOngoingBackup = false
+        }
     }
 
-    private func propagateSuccess(url: URL) {
-        logger.info("Backed up \(url) succesfully")
-        //TODO: propagate success backup to UI component
+    private func propagateSuccess() {
+        logger.info("Device backed up successfully")
+        DispatchQueue.main.async { [weak self] in
+            self?.currentDeviceHasBackup = true
+            self?.hasOngoingBackup = false
+        }
     }
 
     @MainActor func startBackup(for folders: [FoldernameToBackup]) async throws {
+        logger.info("Backup started")
+        self.hasOngoingBackup = true
         if self.foldernames.isEmpty {
             throw BackupError.emptyFolders
         }
@@ -166,6 +193,7 @@ class BackupsService: ObservableObject {
         }
 
         //Connection to xpc service
+        let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
         connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
         connectionToService.resume()
 
@@ -187,18 +215,15 @@ class BackupsService: ObservableObject {
             throw BackupError.cannotCreateAuthToken
         }
 
-        let urls = folders.map { URL(fileURLWithPath: self.formatFolderURL(url: $0.url)) }
+        let urlsStrings = folders.map { self.formatFolderURL(url: $0.url) }
 
-        for url in urls {
-            logger.info("Going to backup url \(url)")
-            service?.startBackup(backupAt: url, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, deviceId: currentDevice.id, bucketId: bucketId, with: { _, error in
-                if let error = error {
-                    try? self.propagateError(errorMessage: error, url: url)
-                } else {
-                    self.propagateSuccess(url: url)
-                }
-            })
-        }
+        service?.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+            if let error = error {
+                self.propagateError(errorMessage: error)
+            } else {
+                self.propagateSuccess()
+            }
+        })
 
     }
 }
