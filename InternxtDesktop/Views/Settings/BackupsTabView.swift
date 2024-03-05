@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BackupsTabView: View {
 
+    @Binding var selectedDeviceId: Int?
     @Binding var showFolderSelector: Bool
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
@@ -39,7 +40,11 @@ struct BackupsTabView: View {
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
 
-            WidgetDeviceSelector(backupsService: backupsService, selectedDevice: $selectedDevice)
+            WidgetDeviceSelector(
+                backupsService: backupsService,
+                selectedDevice: $selectedDevice,
+                selectedDeviceId: $selectedDeviceId
+            )
 
             Spacer()
 
@@ -124,5 +129,5 @@ struct BackupsTabView: View {
 }
 
 #Preview {
-    BackupsTabView(showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), backupsService: BackupsService())
+    BackupsTabView(selectedDeviceId: .constant(nil), showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), backupsService: BackupsService())
 }

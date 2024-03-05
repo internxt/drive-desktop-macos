@@ -21,6 +21,7 @@ enum BackupError: Error {
     case bucketIdIsNil
     case cannotInitializeXPCService
     case cannotCreateAuthToken
+    case cannotGetDeviceId
 }
 
 class BackupsService: ObservableObject {
@@ -29,6 +30,7 @@ class BackupsService: ObservableObject {
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var hasOngoingBackup = false
     @Published var currentDeviceHasBackup = false
+    private let backupAPI: BackupAPI = APIFactory.Backup
 
     private func getRealm() -> Realm {
         do {
@@ -144,6 +146,14 @@ class BackupsService: ObservableObject {
         }
 
         return currentDevice
+    }
+
+    func deleteBackup(deviceId: Int?) async throws -> Bool {
+        guard let deviceId = deviceId else {
+            throw BackupError.cannotGetDeviceId
+        }
+
+        return try await backupAPI.deleteBackupFolder(folderId: deviceId, debug: true)
     }
 
     func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {

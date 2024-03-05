@@ -10,6 +10,8 @@ import SwiftUI
 struct DeleteBackupDialog: View {
     
     @Environment(\.colorScheme) var colorScheme
+    @Binding var selectedDeviceId: Int?
+    @StateObject var backupsService: BackupsService
     var onClose: () -> Void
 
     var body: some View {
@@ -48,10 +50,14 @@ struct DeleteBackupDialog: View {
     }
 
     func deleteBackup() throws {
-        throw AppError.notImplementedError
+        Task {
+            let _ = try await self.backupsService.deleteBackup(deviceId: self.selectedDeviceId)
+            await backupsService.loadAllDevices()
+            self.onClose()
+        }
     }
 }
 
 #Preview {
-    DeleteBackupDialog {}
+    DeleteBackupDialog(selectedDeviceId: .constant(nil), backupsService: BackupsService(), onClose: {})
 }

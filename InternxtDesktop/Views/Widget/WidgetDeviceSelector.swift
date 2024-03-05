@@ -12,7 +12,7 @@ struct WidgetDeviceSelector: View {
 
     @StateObject var backupsService: BackupsService
     @Binding var selectedDevice: Device?
-    @State private var selectedDeviceId: Int? = nil
+    @Binding var selectedDeviceId: Int?
 
     var body: some View {
         Group {
@@ -138,5 +138,5 @@ struct DeviceItem: View {
 }
 
 #Preview {
-    WidgetDeviceSelector(backupsService: BackupsService(), selectedDevice: .constant(nil))
+    WidgetDeviceSelector(backupsService: BackupsService(), selectedDevice: .constant(nil), selectedDeviceId: .constant(nil))
 }

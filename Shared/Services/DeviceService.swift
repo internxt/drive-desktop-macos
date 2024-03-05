@@ -17,7 +17,7 @@ struct DeviceService {
     var currentDeviceId: Int? = nil
 
     public mutating func getAllDevices(deviceName: String?) async throws -> Array<Device> {
-        let devicesAsFolder = try await backupAPI.getAllDevices()
+        let devicesAsFolder = try await backupAPI.getAllDevices(debug: true)
         var filteredDevices: [Device] = []
         var currentDevice: Device? = nil
 
@@ -36,7 +36,7 @@ struct DeviceService {
 
         filteredDevices.append(contentsOf: devices.filter { $0.name != currentDevice?.name })
 
-        return filteredDevices
+        return filteredDevices.filter { !$0.deleted }
     }
 
     public func getCurrentDevice() async throws -> Device? {
