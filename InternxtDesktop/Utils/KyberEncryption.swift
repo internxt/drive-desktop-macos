@@ -9,8 +9,8 @@
 import Foundation
 import SwiftKyber
 
-// Resolving compatibility issues
-// Updated Swift version and ensured integration with existing frameworks.
+// Optimization
+// Refactored KyberKeyManager for performance improvements and modularity.
 class KyberKeyManager {
     private var keyPair: (publicKey: Data, privateKey: Data)?
 
