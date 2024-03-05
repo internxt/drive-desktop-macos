@@ -3,4 +3,54 @@
    uuid = "C40A40D7-C0CF-4275-8A04-B3F8568D26B0"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DEE901CC-B18F-4C23-A0C6-B0D65B85ACA1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "XPCBackupService/Services/BackupUploadService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "syncNodeFile(node:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DEE901CC-B18F-4C23-A0C6-B0D65B85ACA1 - be62d892f960848c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for XPCBackupService.BackupUploadService.syncNodeFile(node: XPCBackupService.BackupTreeNode) async throws -&gt; Swift.Int"
+                  moduleName = "XPCBackupService"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/richardascanio/Shokworks/Internxt/drive-desktop-macos/XPCBackupService/Services/BackupUploadService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "183"
+                  endingLineNumber = "183"
+                  offsetFromSymbolStart = "2804">
+               </Location>
+               <Location
+                  uuid = "DEE901CC-B18F-4C23-A0C6-B0D65B85ACA1 - be62d892f960846b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for XPCBackupService.BackupUploadService.syncNodeFile(node: XPCBackupService.BackupTreeNode) async throws -&gt; Swift.Int"
+                  moduleName = "XPCBackupService"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/richardascanio/Shokworks/Internxt/drive-desktop-macos/XPCBackupService/Services/BackupUploadService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "184"
+                  endingLineNumber = "184"
+                  offsetFromSymbolStart = "2056">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

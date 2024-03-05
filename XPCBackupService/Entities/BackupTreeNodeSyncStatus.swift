@@ -11,4 +11,5 @@ enum BackupTreeNodeSyncStatus: String {
     case REMOTE_AND_LOCAL
     case REMOTE_ONLY
     case LOCAL_ONLY
+    case NEEDS_UPDATE
 }

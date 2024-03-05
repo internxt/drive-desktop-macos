@@ -7,6 +7,10 @@
 
 import Foundation
 
+enum BackupTreeNodeError: Error {
+    case cannotGetPath
+}
+
 class BackupTreeNode {
     var id: String
     var parentId: String?
@@ -63,11 +67,33 @@ class BackupTreeNode {
 
         return nil
     }
-    
-    func nodeIsSynced() async throws -> Bool {
-        // This should check if the node is already synced or not, by checking against
-        // the backend, or a local database to avoid network hits
-        return false
+
+    private func getFileModificationDate() throws -> Date? {
+        guard let path = self.url?.path else {
+            throw BackupTreeNodeError.cannotGetPath
+        }
+
+        let attribute = try FileManager.default.attributesOfItem(atPath: path)
+        return attribute[FileAttributeKey.modificationDate] as? Date
+    }
+
+    private func nodeIsSynced() throws -> Bool {
+        let realm = try self.backupUploadService.getRealm()
+        let syncedNode = realm.objects(SyncedNode.self).first { syncedNode in
+            self.url?.absoluteString == syncedNode.url
+        }
+
+        guard let syncedNodeDate = syncedNode?.createdAt, let fileModificationDate = try self.getFileModificationDate() else {
+            return false
+        }
+
+        if (syncedNodeDate < fileModificationDate && self.type != .folder) {
+            self.syncStatus = .NEEDS_UPDATE
+            self.remoteId = syncedNode?.remoteId
+            return false
+        }
+
+        return syncedNode != nil
     }
     
     func syncNodes() async throws -> Void {
@@ -81,11 +107,24 @@ class BackupTreeNode {
     }
     
     private func syncNode() async throws -> Void {
-        let remoteId = try await backupUploadService.doSync(node: self)
-        self.syncStatus = .REMOTE_AND_LOCAL
-        self.remoteId = remoteId
-        for child in self.childs {
-            child.remoteParentId = remoteId
+        let isSynced = try self.nodeIsSynced()
+        if !isSynced {
+            let remoteId = try await backupUploadService.doSync(node: self)
+            self.syncStatus = .REMOTE_AND_LOCAL
+            self.remoteId = remoteId
+            for child in self.childs {
+                child.remoteParentId = remoteId
+            }
+        } else {
+            let realm = try self.backupUploadService.getRealm()
+            let syncedNode = realm.objects(SyncedNode.self).first { syncedNode in
+                self.url?.absoluteString == syncedNode.url
+            }
+            self.syncStatus = .REMOTE_AND_LOCAL
+            self.remoteId = syncedNode?.remoteId
+            for child in self.childs {
+                child.remoteParentId = syncedNode?.remoteId
+            }
         }
     }
 

@@ -30,6 +30,8 @@
 		3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		3120B5772B8518C300F524F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
 		3120B5782B85296400F524F1 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
+		314D64342B9767EB00126E4B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64332B9767EB00126E4B /* Realm */; };
+		314D64362B9767FB00126E4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64352B9767FB00126E4B /* RealmSwift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -436,6 +438,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				314D64362B9767FB00126E4B /* RealmSwift in Frameworks */,
+				314D64342B9767EB00126E4B /* Realm in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
 			);
@@ -942,6 +946,8 @@
 			packageProductDependencies = (
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
+				314D64332B9767EB00126E4B /* Realm */,
+				314D64352B9767FB00126E4B /* RealmSwift */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -2108,6 +2114,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
+		};
+		314D64332B9767EB00126E4B /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		314D64352B9767FB00126E4B /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
