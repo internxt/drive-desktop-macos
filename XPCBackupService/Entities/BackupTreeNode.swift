@@ -91,6 +91,7 @@ class BackupTreeNode {
         if (syncedNodeDate < fileModificationDate && self.type != .folder) {
             self.syncStatus = .NEEDS_UPDATE
             self.remoteId = syncedNode?.remoteId
+            self.remoteUuid = syncedNode?.remoteUuid
             return false
         }
 
@@ -126,6 +127,7 @@ class BackupTreeNode {
             }
             self.syncStatus = .REMOTE_AND_LOCAL
             self.remoteId = syncedNode?.remoteId
+            self.remoteUuid = syncedNode?.remoteUuid
             for child in self.childs {
                 child.remoteParentId = syncedNode?.remoteId
             }

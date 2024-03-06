@@ -32,6 +32,8 @@ class BackupsService: ObservableObject {
 
     private func getRealm() -> Realm {
         do {
+            let config = Realm.Configuration(schemaVersion: 2)
+            Realm.Configuration.defaultConfiguration = config
             return try Realm(fileURL: ConfigLoader.realmURL)
         } catch {
             error.reportToSentry()
@@ -210,14 +212,15 @@ class BackupsService: ObservableObject {
         let configLoader = ConfigLoader()
         let networkAuth = configLoader.getNetworkAuth()
         let authToken = configLoader.getLegacyAuthToken()
+        let newAuthToken = configLoader.getAuthToken()
 
-        guard let authToken = authToken else {
+        guard let authToken = authToken, let newAuthToken = newAuthToken else {
             throw BackupError.cannotCreateAuthToken
         }
 
         let urlsStrings = folders.map { self.formatFolderURL(url: $0.url) }
 
-        service?.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+        service?.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
             if let error = error {
                 self.propagateError(errorMessage: error)
             } else {

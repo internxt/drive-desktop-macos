@@ -14,7 +14,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     public static let shared = XPCBackupService()
     private let logger = Logger(subsystem: "com.internxt", category: "XPCBackupService")
 
-    @objc func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void) {
+    @objc func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void) {
 
         Task {
             guard let networkAuth = networkAuth else {
@@ -32,7 +32,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 encryptedContentDirectory: FileManager.default.temporaryDirectory,
                 deviceId: deviceId,
                 bucketId: bucketId,
-                authToken: authToken
+                authToken: authToken,
+                newAuthToken: newAuthToken
             )
 
             var totalCount = 0

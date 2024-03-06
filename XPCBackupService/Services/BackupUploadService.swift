@@ -37,13 +37,15 @@ struct BackupUploadService {
     private let deviceId: Int
     private let bucketId: String
     private let authToken: String
+    private let newAuthToken: String
 
-    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String) {
+    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, newAuthToken: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
         self.deviceId = deviceId
         self.bucketId = bucketId
         self.authToken = authToken
+        self.newAuthToken = newAuthToken
     }
 
     // TODO: get auth token from user defaults from XPC Service.
@@ -51,8 +53,14 @@ struct BackupUploadService {
         return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: authToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
 
+    private var backupNewAPI: BackupAPI {
+        return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+
     func getRealm() throws -> Realm {
         do {
+            let config = Realm.Configuration(schemaVersion: 2)
+            Realm.Configuration.defaultConfiguration = config
             return try Realm(fileURL: ConfigLoader.realmURL)
         } catch {
             throw BackupUploadError.CannotCreateRealm
@@ -187,7 +195,7 @@ struct BackupUploadService {
                     throw BackupUploadError.MissingRemoteId
                 }
 
-                let updatedFile = try await backupAPI.replaceFileId(
+                let updatedFile = try await backupNewAPI.replaceFileId(
                     fileUuid: remoteUuid,
                     newFileId: result.id,
                     newSize: result.size
