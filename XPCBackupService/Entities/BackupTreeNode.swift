@@ -19,6 +19,7 @@ class BackupTreeNode {
     var url: URL?
     private(set) var syncStatus: BackupTreeNodeSyncStatus
     var remoteId: Int?
+    var remoteUuid: String?
     var remoteParentId: Int?
     private(set) var childs: [BackupTreeNode]
     let backupUploadService: BackupUploadService
@@ -83,7 +84,7 @@ class BackupTreeNode {
             self.url?.absoluteString == syncedNode.url
         }
 
-        guard let syncedNodeDate = syncedNode?.createdAt, let fileModificationDate = try self.getFileModificationDate() else {
+        guard let syncedNodeDate = syncedNode?.updatedAt, let fileModificationDate = try self.getFileModificationDate() else {
             return false
         }
 
@@ -109,9 +110,12 @@ class BackupTreeNode {
     private func syncNode() async throws -> Void {
         let isSynced = try self.nodeIsSynced()
         if !isSynced {
-            let remoteId = try await backupUploadService.doSync(node: self)
+            let ids = try await backupUploadService.doSync(node: self)
+            let remoteId = ids.0
+            let remoteUuid = ids.1
             self.syncStatus = .REMOTE_AND_LOCAL
             self.remoteId = remoteId
+            self.remoteUuid = remoteUuid
             for child in self.childs {
                 child.remoteParentId = remoteId
             }

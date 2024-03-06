@@ -20,6 +20,8 @@ enum BackupUploadError: Error {
     case CannotCreateRealm
     case CannotCreateEncryptedContentURL
     case CannotAddNodeToRealm
+    case CannotEditNodeToRealm
+    case CannotFindNodeToRealm
 }
 
 struct BackupUploadService {
@@ -84,14 +86,14 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode) async throws -> Int {
+    func doSync(node: BackupTreeNode) async throws -> (Int, String) {
         if (node.type == .folder) {
             return try await self.syncNodeFolder(node: node)
         }
         return try await self.syncNodeFile(node: node)
     }
 
-    private func syncNodeFolder(node: BackupTreeNode) async throws -> Int {
+    private func syncNodeFolder(node: BackupTreeNode) async throws -> (Int, String) {
         self.logger.info("Creating folder")
 
         do {
@@ -130,6 +132,7 @@ struct BackupUploadService {
             try self.addSyncedNodeToDB(
                 SyncedNode(
                     remoteId: createdFolder.id,
+                    remoteUuid: "",
                     url: "\(nodeURL)",
                     parentId: node.parentId,
                     remoteParentId: safeRemoteParentId
@@ -137,7 +140,7 @@ struct BackupUploadService {
             )
 
             node.progress.completedUnitCount = 1
-            return createdFolder.id
+            return (createdFolder.id, "")
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
             node.progress.completedUnitCount = 1
@@ -145,7 +148,7 @@ struct BackupUploadService {
         }
     }
 
-    private func syncNodeFile(node: BackupTreeNode) async throws -> Int {
+    private func syncNodeFile(node: BackupTreeNode) async throws -> (Int, String) {
         self.logger.info("Creating file")
 
         var encryptedContentURL: URL? = nil
@@ -180,9 +183,12 @@ struct BackupUploadService {
 
             if node.syncStatus == .NEEDS_UPDATE {
                 // UPDATE FILE REFERENCE
-                let fileUUID = "" //TODO: get uuid from remote id via backend endpoint
+                guard let remoteUuid = node.remoteUuid, let remoteId = node.remoteId else {
+                    throw BackupUploadError.MissingRemoteId
+                }
+
                 let updatedFile = try await backupAPI.replaceFileId(
-                    fileUuid: fileUUID,
+                    fileUuid: remoteUuid,
                     newFileId: result.id,
                     newSize: result.size
                 )
@@ -191,13 +197,14 @@ struct BackupUploadService {
 
                 node.progress.completedUnitCount = 1
 
-                // Edit file id and date in synced database
+                // Edit date in synced database
+                try self.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return 0
+                return (remoteId, remoteUuid)
             } else {
                 // CREATE FILE REFERENCE
                 let stringRemoteParentId = "\(remoteParentId)"
@@ -220,7 +227,6 @@ struct BackupUploadService {
                         plainName: filename.deletingPathExtension
                     )
                 )
-
                 self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
                 node.progress.completedUnitCount = 1
@@ -229,6 +235,7 @@ struct BackupUploadService {
                 try self.addSyncedNodeToDB(
                     SyncedNode(
                         remoteId: createdFile.id,
+                        remoteUuid: createdFile.uuid,
                         url: "\(fileURL)",
                         parentId: node.parentId,
                         remoteParentId: remoteParentId
@@ -239,7 +246,7 @@ struct BackupUploadService {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return createdFile.id
+                return (createdFile.id, createdFile.uuid)
             }
 
         } catch {
@@ -275,27 +282,50 @@ struct BackupUploadService {
         }
     }
 
+    private func editSyncedNodeDate(remoteUuid: String, date: Date) throws {
+        do {
+            let realm = try getRealm()
+            
+            guard let node = realm.objects(SyncedNode.self).first(where: { syncedNode in
+                syncedNode.remoteUuid == remoteUuid
+            }) else {
+                throw BackupUploadError.CannotFindNodeToRealm
+            }
+
+            try realm.write {
+                node.updatedAt = date
+            }
+        } catch {
+            throw BackupUploadError.CannotEditNodeToRealm
+        }
+    }
+
 }
 
 class SyncedNode: Object {
     @Persisted(primaryKey: true) var _id: ObjectId
     @Persisted var remoteId: Int
+    @Persisted var remoteUuid: String
     @Persisted var url: String
     @Persisted var parentId: String?
     @Persisted var remoteParentId: Int?
     @Persisted var createdAt: Date
+    @Persisted var updatedAt: Date
 
     convenience init(
         remoteId: Int,
+        remoteUuid: String,
         url: String,
         parentId: String?,
         remoteParentId: Int?
     ) {
         self.init()
         self.remoteId = remoteId
+        self.remoteUuid = remoteUuid
         self.url = url
         self.parentId = parentId
         self.remoteParentId = remoteParentId
         self.createdAt = Date()
+        self.updatedAt = Date()
     }
 }
