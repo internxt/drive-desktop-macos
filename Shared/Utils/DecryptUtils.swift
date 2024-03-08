@@ -14,4 +14,8 @@ public struct DecryptUtils {
         return "\(config.CRYPTO_SECRET2)-\(bucketId)"
     }
 
+    public func getDecryptPassword(secret: String, bucketId: String) -> String {
+        return "\(secret)-\(bucketId)"
+    }
+
 }

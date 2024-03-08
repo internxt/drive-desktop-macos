@@ -57,16 +57,6 @@ struct BackupUploadService {
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
 
-    func getRealm() throws -> Realm {
-        do {
-            let config = Realm.Configuration(schemaVersion: 2)
-            Realm.Configuration.defaultConfiguration = config
-            return try Realm(fileURL: ConfigLoader.realmURL)
-        } catch {
-            throw BackupUploadError.CannotCreateRealm
-        }
-    }
-
     func syncOperation(node: BackupTreeNode) {
         BackupOperation(node: node, attempLimit: retriesCount)
             .enqueue(in: networkQueue)
@@ -94,14 +84,14 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode) async throws -> (Int, String) {
+    func doSync(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
         if (node.type == .folder) {
             return try await self.syncNodeFolder(node: node)
         }
         return try await self.syncNodeFile(node: node)
     }
 
-    private func syncNodeFolder(node: BackupTreeNode) async throws -> (Int, String) {
+    private func syncNodeFolder(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
         self.logger.info("Creating folder")
 
         do {
@@ -137,7 +127,7 @@ struct BackupUploadService {
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
 
             // Save created folder into synced database
-            try self.addSyncedNodeToDB(
+            try BackupRealm.shared.addSyncedNodeToDB(
                 SyncedNode(
                     remoteId: createdFolder.id,
                     remoteUuid: "",
@@ -148,7 +138,7 @@ struct BackupUploadService {
             )
 
             node.progress.completedUnitCount = 1
-            return (createdFolder.id, "")
+            return BackupTreeNodeSyncResult(resultId: createdFolder.id, resultUuid: nil)
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
             node.progress.completedUnitCount = 1
@@ -156,7 +146,7 @@ struct BackupUploadService {
         }
     }
 
-    private func syncNodeFile(node: BackupTreeNode) async throws -> (Int, String) {
+    private func syncNodeFile(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
         self.logger.info("Creating file")
 
         var encryptedContentURL: URL? = nil
@@ -190,7 +180,6 @@ struct BackupUploadService {
             self.logger.info("Upload completed with id \(result.id)")
 
             if node.syncStatus == .NEEDS_UPDATE {
-                // UPDATE FILE REFERENCE
                 guard let remoteUuid = node.remoteUuid, let remoteId = node.remoteId else {
                     throw BackupUploadError.MissingRemoteId
                 }
@@ -206,20 +195,19 @@ struct BackupUploadService {
                 node.progress.completedUnitCount = 1
 
                 // Edit date in synced database
-                try self.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
+                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return (remoteId, remoteUuid)
+                return BackupTreeNodeSyncResult(resultId: remoteId, resultUuid: remoteUuid)
             } else {
-                // CREATE FILE REFERENCE
                 let stringRemoteParentId = "\(remoteParentId)"
 
                 let encryptedFilename = try encrypt.encrypt(
                     string: filename.deletingPathExtension,
-                    password: "\(config.CRYPTO_SECRET2)-\(stringRemoteParentId)",
+                    password: DecryptUtils().getDecryptPassword(bucketId: stringRemoteParentId),
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
@@ -240,7 +228,7 @@ struct BackupUploadService {
                 node.progress.completedUnitCount = 1
 
                 // Save created file into synced database
-                try self.addSyncedNodeToDB(
+                try BackupRealm.shared.addSyncedNodeToDB(
                     SyncedNode(
                         remoteId: createdFile.id,
                         remoteUuid: createdFile.uuid,
@@ -254,7 +242,7 @@ struct BackupUploadService {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return (createdFile.id, createdFile.uuid)
+                return BackupTreeNodeSyncResult(resultId: createdFile.id, resultUuid: createdFile.uuid)
             }
 
         } catch {
@@ -279,61 +267,4 @@ struct BackupUploadService {
         return error.localizedDescription
     }
 
-    private func addSyncedNodeToDB(_ node: SyncedNode) throws {
-        do {
-            let realm = try getRealm()
-            try realm.write {
-                realm.add(node)
-            }
-        } catch {
-            throw BackupUploadError.CannotAddNodeToRealm
-        }
-    }
-
-    private func editSyncedNodeDate(remoteUuid: String, date: Date) throws {
-        do {
-            let realm = try getRealm()
-            
-            guard let node = realm.objects(SyncedNode.self).first(where: { syncedNode in
-                syncedNode.remoteUuid == remoteUuid
-            }) else {
-                throw BackupUploadError.CannotFindNodeToRealm
-            }
-
-            try realm.write {
-                node.updatedAt = date
-            }
-        } catch {
-            throw BackupUploadError.CannotEditNodeToRealm
-        }
-    }
-
-}
-
-class SyncedNode: Object {
-    @Persisted(primaryKey: true) var _id: ObjectId
-    @Persisted var remoteId: Int
-    @Persisted var remoteUuid: String
-    @Persisted var url: String
-    @Persisted var parentId: String?
-    @Persisted var remoteParentId: Int?
-    @Persisted var createdAt: Date
-    @Persisted var updatedAt: Date
-
-    convenience init(
-        remoteId: Int,
-        remoteUuid: String,
-        url: String,
-        parentId: String?,
-        remoteParentId: Int?
-    ) {
-        self.init()
-        self.remoteId = remoteId
-        self.remoteUuid = remoteUuid
-        self.url = url
-        self.parentId = parentId
-        self.remoteParentId = remoteParentId
-        self.createdAt = Date()
-        self.updatedAt = Date()
-    }
 }

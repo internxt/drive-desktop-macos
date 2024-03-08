@@ -79,7 +79,7 @@ class BackupTreeNode {
     }
 
     private func nodeIsSynced() throws -> Bool {
-        let realm = try self.backupUploadService.getRealm()
+        let realm = try BackupRealm.shared.getRealm()
         let syncedNode = realm.objects(SyncedNode.self).first { syncedNode in
             self.url?.absoluteString == syncedNode.url
         }
@@ -111,9 +111,9 @@ class BackupTreeNode {
     private func syncNode() async throws -> Void {
         let isSynced = try self.nodeIsSynced()
         if !isSynced {
-            let ids = try await backupUploadService.doSync(node: self)
-            let remoteId = ids.0
-            let remoteUuid = ids.1
+            let backupTreeNodeSyncResult = try await backupUploadService.doSync(node: self)
+            let remoteId = backupTreeNodeSyncResult.resultId
+            let remoteUuid = backupTreeNodeSyncResult.resultUuid
             self.syncStatus = .REMOTE_AND_LOCAL
             self.remoteId = remoteId
             self.remoteUuid = remoteUuid
@@ -121,7 +121,7 @@ class BackupTreeNode {
                 child.remoteParentId = remoteId
             }
         } else {
-            let realm = try self.backupUploadService.getRealm()
+            let realm = try BackupRealm.shared.getRealm()
             let syncedNode = realm.objects(SyncedNode.self).first { syncedNode in
                 self.url?.absoluteString == syncedNode.url
             }
