@@ -17,7 +17,7 @@ struct DeviceService {
     var currentDeviceId: Int? = nil
 
     public mutating func getAllDevices(deviceName: String?) async throws -> Array<Device> {
-        let devicesAsFolder = try await backupAPI.getAllDevices(debug: true)
+        let devicesAsFolder = try await backupAPI.getAllDevices()
         var filteredDevices: [Device] = []
         var currentDevice: Device? = nil
 

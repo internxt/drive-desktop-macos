@@ -36,6 +36,7 @@ struct DeleteBackupDialog: View {
                     do {
                         try deleteBackup()
                     } catch {
+                        print("error", error.localizedDescription)
                         error.reportToSentry()
                     }
                 }, type: .danger, isExpanded: true)
