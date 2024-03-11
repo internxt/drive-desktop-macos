@@ -20,6 +20,7 @@ struct SettingsView: View {
     @EnvironmentObject var backupsService: BackupsService
     @State var focusedTab: TabView = .General
     public var updater: SPUUpdater? = nil
+    @State private var selectedDeviceId: Int? = nil
     @State private var showFolderSelector = false
     @State private var showStopBackupDialog = false
     @State private var showDeleteBackupDialog = false
@@ -68,9 +69,13 @@ struct SettingsView: View {
             // delete backup dialog
             if showDeleteBackupDialog {
                 VStack {
-                    DeleteBackupDialog(onClose: {
-                        showDeleteBackupDialog = false
-                    })
+                    DeleteBackupDialog(
+                        selectedDeviceId: self.$selectedDeviceId,
+                        backupsService: backupsService,
+                        onClose: {
+                            showDeleteBackupDialog = false
+                        }
+                    )
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Gray1.opacity(0.8))
@@ -89,7 +94,7 @@ struct SettingsView: View {
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
-            BackupsTabView(showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog, backupsService: backupsService)
+            BackupsTabView(selectedDeviceId: $selectedDeviceId, showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog, backupsService: backupsService)
         default:
             EmptyView()
         }
