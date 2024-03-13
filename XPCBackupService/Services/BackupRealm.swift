@@ -23,7 +23,7 @@ struct BackupRealm {
         }
     }
 
-    func addSyncedNodeToDB(_ node: SyncedNode) throws {
+    func addSyncedNode(_ node: SyncedNode) throws {
         do {
             let realm = try getRealm()
             try realm.write {
@@ -58,7 +58,7 @@ class SyncedNode: Object {
     @Persisted(primaryKey: true) var _id: ObjectId
     @Persisted var remoteId: Int
     @Persisted var remoteUuid: String
-    @Persisted var url: String
+    @Persisted(indexed: true) var url: String
     @Persisted var parentId: String?
     @Persisted var remoteParentId: Int?
     @Persisted var createdAt: Date

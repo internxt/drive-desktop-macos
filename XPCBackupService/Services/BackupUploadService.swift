@@ -126,8 +126,7 @@ struct BackupUploadService {
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
 
-            // Save created folder into synced database
-            try BackupRealm.shared.addSyncedNodeToDB(
+            try BackupRealm.shared.addSyncedNode(
                 SyncedNode(
                     remoteId: createdFolder.id,
                     remoteUuid: "",
@@ -138,7 +137,7 @@ struct BackupUploadService {
             )
 
             node.progress.completedUnitCount = 1
-            return BackupTreeNodeSyncResult(resultId: createdFolder.id, resultUuid: nil)
+            return BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil)
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
             node.progress.completedUnitCount = 1
@@ -201,7 +200,7 @@ struct BackupUploadService {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return BackupTreeNodeSyncResult(resultId: remoteId, resultUuid: remoteUuid)
+                return BackupTreeNodeSyncResult(id: remoteId, uuid: remoteUuid)
             } else {
                 let stringRemoteParentId = "\(remoteParentId)"
 
@@ -227,8 +226,7 @@ struct BackupUploadService {
 
                 node.progress.completedUnitCount = 1
 
-                // Save created file into synced database
-                try BackupRealm.shared.addSyncedNodeToDB(
+                try BackupRealm.shared.addSyncedNode(
                     SyncedNode(
                         remoteId: createdFile.id,
                         remoteUuid: createdFile.uuid,
@@ -242,7 +240,7 @@ struct BackupUploadService {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return BackupTreeNodeSyncResult(resultId: createdFile.id, resultUuid: createdFile.uuid)
+                return BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid)
             }
 
         } catch {

@@ -8,6 +8,6 @@
 import Foundation
 
 struct BackupTreeNodeSyncResult {
-    let resultId: Int
-    let resultUuid: String?
+    let id: Int
+    let uuid: String?
 }

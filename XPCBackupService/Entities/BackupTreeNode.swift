@@ -112,8 +112,8 @@ class BackupTreeNode {
         let isSynced = try self.nodeIsSynced()
         if !isSynced {
             let backupTreeNodeSyncResult = try await backupUploadService.doSync(node: self)
-            let remoteId = backupTreeNodeSyncResult.resultId
-            let remoteUuid = backupTreeNodeSyncResult.resultUuid
+            let remoteId = backupTreeNodeSyncResult.id
+            let remoteUuid = backupTreeNodeSyncResult.uuid
             self.syncStatus = .REMOTE_AND_LOCAL
             self.remoteId = remoteId
             self.remoteUuid = remoteUuid
