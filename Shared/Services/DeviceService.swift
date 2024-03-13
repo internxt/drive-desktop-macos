@@ -36,7 +36,7 @@ struct DeviceService {
 
         filteredDevices.append(contentsOf: devices.filter { $0.name != currentDevice?.name })
 
-        return filteredDevices
+        return filteredDevices.filter { !$0.deleted }
     }
 
     public func getCurrentDevice() async throws -> Device? {
