@@ -30,6 +30,8 @@
 		3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		3120B5772B8518C300F524F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
 		3120B5782B85296400F524F1 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
+		314D64342B9767EB00126E4B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64332B9767EB00126E4B /* Realm */; };
+		314D64362B9767FB00126E4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64352B9767FB00126E4B /* RealmSwift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -43,6 +45,8 @@
 		317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */; };
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
+		319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
+		319436922B9B8293006F4600 /* BackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319436912B9B8293006F4600 /* BackupRealm.swift */; };
 		31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
 		31DEAEB52B75139400E76D53 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB42B75139400E76D53 /* main.swift */; };
@@ -297,6 +301,8 @@
 		316DC7EA2B597BD000FDC746 /* DeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceService.swift; sourceTree = "<group>"; };
 		317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetupComponent.swift; sourceTree = "<group>"; };
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncResult.swift; sourceTree = "<group>"; };
+		319436912B9B8293006F4600 /* BackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRealm.swift; sourceTree = "<group>"; };
 		31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = XPCBackupService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 		31DEAEB02B75139400E76D53 /* XPCBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupService.swift; sourceTree = "<group>"; };
 		31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceProtocol.swift; sourceTree = "<group>"; };
@@ -436,6 +442,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				314D64362B9767FB00126E4B /* RealmSwift in Frameworks */,
+				314D64342B9767EB00126E4B /* Realm in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
 			);
@@ -657,6 +665,7 @@
 				E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */,
 				E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */,
 				E15F8C402B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift */,
+				3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -667,6 +676,7 @@
 				E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */,
 				3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */,
 				3120B56B2B84F65100F524F1 /* BackupOperation.swift */,
+				319436912B9B8293006F4600 /* BackupRealm.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -942,6 +952,8 @@
 			packageProductDependencies = (
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
+				314D64332B9767EB00126E4B /* Realm */,
+				314D64352B9767FB00126E4B /* RealmSwift */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1163,6 +1175,7 @@
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
+				319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */,
 				3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
@@ -1172,6 +1185,7 @@
 				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
+				319436922B9B8293006F4600 /* BackupRealm.swift in Sources */,
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
 				3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */,
 				3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */,
@@ -2108,6 +2122,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
+		};
+		314D64332B9767EB00126E4B /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		314D64352B9767FB00126E4B /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;

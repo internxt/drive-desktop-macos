@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RealmSwift
 import FileProvider
 import InternxtSwiftCore
 import os.log
@@ -14,7 +15,13 @@ enum BackupUploadError: Error {
     case CannotOpenInputStream
     case MissingDocumentSize
     case MissingParentFolder
+    case MissingRemoteId
+    case MissingURL
+    case CannotCreateRealm
     case CannotCreateEncryptedContentURL
+    case CannotAddNodeToRealm
+    case CannotEditNodeToRealm
+    case CannotFindNodeToRealm
 }
 
 struct BackupUploadService {
@@ -30,18 +37,24 @@ struct BackupUploadService {
     private let deviceId: Int
     private let bucketId: String
     private let authToken: String
+    private let newAuthToken: String
 
-    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String) {
+    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, newAuthToken: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
         self.deviceId = deviceId
         self.bucketId = bucketId
         self.authToken = authToken
+        self.newAuthToken = newAuthToken
     }
 
     // TODO: get auth token from user defaults from XPC Service.
     private var backupAPI: BackupAPI {
         return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: authToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+
+    private var backupNewAPI: BackupAPI {
+        return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
 
     func syncOperation(node: BackupTreeNode) {
@@ -61,7 +74,7 @@ struct BackupUploadService {
         completionQueue.waitUntilAllOperationsAreFinished()
     }
 
-    func getEncryptedContentURL(node: BackupTreeNode) throws -> URL {
+    private func getEncryptedContentURL(node: BackupTreeNode) throws -> URL {
         let url = encryptedContentDirectory.appendingPathComponent(node.id)
 
         try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -71,17 +84,21 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode) async throws -> Int {
+    func doSync(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
         if (node.type == .folder) {
             return try await self.syncNodeFolder(node: node)
         }
         return try await self.syncNodeFile(node: node)
     }
 
-    func syncNodeFolder(node: BackupTreeNode) async throws -> Int {
+    private func syncNodeFolder(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
         self.logger.info("Creating folder")
 
         do {
+            guard let nodeURL = node.url else {
+                throw BackupUploadError.MissingURL
+            }
+
             var remoteParentId: Int? = nil
             let foldername = node.name
             self.logger.info("Going to create folder \(foldername)")
@@ -108,8 +125,19 @@ struct BackupUploadService {
             )
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
+
+            try BackupRealm.shared.addSyncedNode(
+                SyncedNode(
+                    remoteId: createdFolder.id,
+                    remoteUuid: "",
+                    url: "\(nodeURL)",
+                    parentId: node.parentId,
+                    remoteParentId: safeRemoteParentId
+                )
+            )
+
             node.progress.completedUnitCount = 1
-            return createdFolder.id
+            return BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil)
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
             node.progress.completedUnitCount = 1
@@ -117,7 +145,7 @@ struct BackupUploadService {
         }
     }
 
-    func syncNodeFile(node: BackupTreeNode) async throws -> Int {
+    private func syncNodeFile(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
         self.logger.info("Creating file")
 
         var encryptedContentURL: URL? = nil
@@ -150,36 +178,71 @@ struct BackupUploadService {
 
             self.logger.info("Upload completed with id \(result.id)")
 
-            let stringRemoteParentId = "\(remoteParentId)"
+            if node.syncStatus == .NEEDS_UPDATE {
+                guard let remoteUuid = node.remoteUuid, let remoteId = node.remoteId else {
+                    throw BackupUploadError.MissingRemoteId
+                }
 
-            let encryptedFilename = try encrypt.encrypt(
-                string: filename.deletingPathExtension,
-                password: "\(config.CRYPTO_SECRET2)-\(stringRemoteParentId)",
-                salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
-                iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
-            )
-
-            let createdFile = try await backupAPI.createBackupFile(
-                createFileData: CreateFileData(
-                    fileId: result.id,
-                    type: filename.pathExtension,
-                    bucket: result.bucket,
-                    size: result.size,
-                    folderId: remoteParentId,
-                    name: encryptedFilename.base64EncodedString(),
-                    plainName: filename.deletingPathExtension
+                let updatedFile = try await backupNewAPI.replaceFileId(
+                    fileUuid: remoteUuid,
+                    newFileId: result.id,
+                    newSize: result.size
                 )
-            )
 
-            self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
+                self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
 
-            node.progress.completedUnitCount = 1
+                node.progress.completedUnitCount = 1
 
-            if encryptedContentURL != nil {
-                try FileManager.default.removeItem(at: encryptedContentURL!)
+                // Edit date in synced database
+                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
+
+                if encryptedContentURL != nil {
+                    try FileManager.default.removeItem(at: encryptedContentURL!)
+                }
+
+                return BackupTreeNodeSyncResult(id: remoteId, uuid: remoteUuid)
+            } else {
+                let stringRemoteParentId = "\(remoteParentId)"
+
+                let encryptedFilename = try encrypt.encrypt(
+                    string: filename.deletingPathExtension,
+                    password: DecryptUtils().getDecryptPassword(bucketId: stringRemoteParentId),
+                    salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
+                    iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
+                )
+
+                let createdFile = try await backupAPI.createBackupFile(
+                    createFileData: CreateFileData(
+                        fileId: result.id,
+                        type: filename.pathExtension,
+                        bucket: result.bucket,
+                        size: result.size,
+                        folderId: remoteParentId,
+                        name: encryptedFilename.base64EncodedString(),
+                        plainName: filename.deletingPathExtension
+                    )
+                )
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
+
+                node.progress.completedUnitCount = 1
+
+                try BackupRealm.shared.addSyncedNode(
+                    SyncedNode(
+                        remoteId: createdFile.id,
+                        remoteUuid: createdFile.uuid,
+                        url: "\(fileURL)",
+                        parentId: node.parentId,
+                        remoteParentId: remoteParentId
+                    )
+                )
+
+                if encryptedContentURL != nil {
+                    try FileManager.default.removeItem(at: encryptedContentURL!)
+                }
+
+                return BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid)
             }
 
-            return createdFile.id
         } catch {
             self.logger.error("❌ Failed to create file: \(self.getErrorDescription(error: error))")
 
