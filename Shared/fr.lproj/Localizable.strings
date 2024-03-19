@@ -73,6 +73,7 @@
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
 "SETTINGS_START_ON_LAUNCH" = "Démarrer Internxt Drive au démarrage du système";
 "SETTINGS_LEARN_MORE" = "En savoir plus sur Internxt Drive";
+"SETTINGS_OPEN_LOGS" = "Ouvrir des registres";
 "SETTINGS_SPANISH_LANGUAGE" = "Español (Espagnol)";
 "SETTINGS_ENGLISH_LANGUAGE" = "English (Anglais)";
 "SETTINGS_FRENCH_LANGUAGE" = "Français (Français)";

@@ -62,13 +62,22 @@ struct GeneralTabView: View {
                 }
                 
             }.padding(.bottom, 16).zIndex(-1)
-            AppText("SETTINGS_LEARN_MORE")
-                .contentShape(Rectangle())
-                .onTapGesture{
-                    handleOpenLearnMore()
-                }
-                .font(.BaseRegular)
-                .foregroundColor(Color.Primary).zIndex(-1)
+            VStack(alignment: .leading,spacing: 4, content: {
+                AppText("SETTINGS_OPEN_LOGS")
+                    .contentShape(Rectangle())
+                    .onTapGesture{
+                        handleOpenLogs()
+                    }
+                    .font(.BaseRegular)
+                    .foregroundColor(Color.Primary).zIndex(-1)
+                AppText("SETTINGS_LEARN_MORE")
+                    .contentShape(Rectangle())
+                    .onTapGesture{
+                        handleOpenLearnMore()
+                    }
+                    .font(.BaseRegular)
+                    .foregroundColor(Color.Primary).zIndex(-1)
+            })
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(20)
@@ -93,9 +102,15 @@ struct GeneralTabView: View {
         
         return "\(version).\(buildNumber)"
     }
+    
     func handleOpenLearnMore() {
         URLDictionary.LEARN_MORE_ABOUT_INTERNXT_DRIVE.open()
     }
+    
+    func handleOpenLogs() {
+        LogService.shared.getLogsDirectory()?.open()
+    }
+    
     func handleCheckUpdates() {}
 }
 

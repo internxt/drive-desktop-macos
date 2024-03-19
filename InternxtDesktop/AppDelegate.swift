@@ -28,7 +28,7 @@ extension AppDelegate: NSPopoverDelegate {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    let logger = Logger(subsystem: "com.internxt", category: "App")
+    let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
@@ -47,6 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
+    var signalEnumeratorTimer: AnyCancellable?
 
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -207,11 +208,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    private func startSignallingFileProvider(domainManager: NSFileProviderManager) {
+        self.signalEnumeratorTimer = Timer.publish(every: 15, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 self.signalFileProvider(domainManager)
+            })
+    }
+    
+    private func signalFileProvider(_ domainManager: NSFileProviderManager) {
+        Task {
+            do {
+                try await domainManager.signalEnumerator(for: .workingSet)
+            } catch {
+                error.reportToSentry()
+                self.logger.error(["Failed to signal enumerator: ", error])
+            }
+        }
+    }
+    
     private func startTokensRefreshing() {
-        self.refreshTokensTimer?.cancel()
-        
-        // Refresh every hour
-        self.refreshTokensTimer =  Timer.publish(every: 3600, on:.main, in: .common).autoconnect().sink(
+        self.refreshTokensTimer =  Timer.publish(every: 60 * 60, on:.main, in: .common).autoconnect().sink(
             receiveValue: {_ in
                 self.refreshTokens()
         })
@@ -230,6 +248,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // If usage fails to load, we'll let the user pass
                 await usageManager.updateUsage()
                 try await domainManager.initFileProvider()
+                guard let manager = domainManager.manager else {
+                    throw FileProviderError.CannotGetFileProviderManager
+                }
+                self.startSignallingFileProvider(domainManager: manager)
                 self.logger.info("Login success")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
@@ -388,6 +410,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 popover?.show(relativeTo: statusBarItemButton.bounds, of: statusBarItemButton, preferredEdge: NSRectEdge.minY)
                 popover?.contentViewController?.view.window?.makeKey()
             }
+            
+            guard let manager = domainManager.manager else {
+                self.logger.error("Cannot signal file provider, FileProvider manager not found")
+                return
+            }
+            self.signalFileProvider(manager)
         }
         
         if delayed == true {
