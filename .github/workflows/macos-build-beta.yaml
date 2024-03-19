@@ -43,11 +43,17 @@ jobs:
       - name: Install create-dmg
         run: npm install -g create-dmg
       
-      
       - name: Run Fastlane release
         run: fastlane beta_ci --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
+
+      - name: Archive logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: Internxt Desktop Build Logs
+          path: /Users/runner/Library/Logs/
+
        
 
 

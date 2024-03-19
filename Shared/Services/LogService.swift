@@ -25,16 +25,10 @@ struct LogService {
             return logsDirectory
         }
         return nil
-        
     }
-    
-   
-    
     
     func createLogger(subsystem: LogSubSystem, category: String) -> XCGLogger {
         let logsDirectory = getLogsDirectory()
-        
-        
         
         let log = XCGLogger(identifier: subsystem.rawValue, includeDefaultDestinations: false)
         
@@ -48,16 +42,12 @@ struct LogService {
         systemDestination.showFileName = true
         systemDestination.showLineNumber = true
         systemDestination.showDate = true
-
-
         log.add(destination: systemDestination)
-
 
         guard let logsDirectoryUnwrapped = logsDirectory else {
             log.logAppDetails()
             return log
         }
-        
         
         let logFile = logsDirectoryUnwrapped.appendingPathComponent("\(subsystem.rawValue).log")
         
@@ -72,10 +62,10 @@ struct LogService {
         fileDestination.showDate = true
         fileDestination.logQueue = DispatchQueue.global(qos: .background)
 
-
         log.add(destination: fileDestination)
         
         log.logAppDetails()
+        
         return log
     }
     
