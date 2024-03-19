@@ -35,9 +35,7 @@ struct DomainManager {
 
         let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
         let newDomain = NSFileProviderDomain(identifier: identifier, displayName: "")
-        print("DONE")
         let domains = try await self.getDomains()
-        print("Domains", domains)
         let firstDomain = domains.first
         let noDomain = firstDomain == nil
         
