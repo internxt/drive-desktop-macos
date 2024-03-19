@@ -34,10 +34,6 @@ jobs:
         with:
           name: "app_store_key.json"
           json: ${{ secrets.APP_STORE_JSON }}
-      
-      # See https://github.com/actions/runner/issues/2958
-      - name: Install Python Setuptools
-        run: sudo -H pip install setuptools
 
       - name: Install Node
         uses: actions/setup-node@v3
