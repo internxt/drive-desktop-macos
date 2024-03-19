@@ -20,7 +20,10 @@ class ActivityManager: ObservableObject {
     
     private func getRealm() -> Realm {
         do {
-            return try Realm(fileURL: ConfigLoader.realmURL)
+            return try Realm(configuration: Realm.Configuration(
+                fileURL: ConfigLoader.realmURL,
+                deleteRealmIfMigrationNeeded: true
+            ))
         } catch {
             error.reportToSentry()
             fatalError("Unable to open Realm")

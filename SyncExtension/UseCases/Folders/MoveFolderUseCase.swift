@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import os.log
 import FileProvider
 import InternxtSwiftCore
 
 
 struct MoveFolderUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "MoveFolder")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "MoveFolder")
     let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem

@@ -6,10 +6,8 @@
 //
 
 import Foundation
-
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 enum GetFolderMetaUseCaseError: Error {
     case InvalidItemId
@@ -20,7 +18,7 @@ enum GetFolderMetaUseCaseError: Error {
 
 
 struct GetFolderMetaUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "GetFolderMeta")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "GetFolderMeta")
     private let driveAPI: DriveAPI = APIFactory.Drive
     private let completionHandler: (NSFileProviderItem?, Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier

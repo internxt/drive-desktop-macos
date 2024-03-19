@@ -8,7 +8,6 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 
 struct FilesAndFoldersAnchor {
@@ -16,7 +15,7 @@ struct FilesAndFoldersAnchor {
     public let foldersAnchorDate: Date
 }
 struct GetRemoteChangesUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "GetRemoteChanges")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "GetRemoteChanges")
     private let driveAPI: DriveAPI = APIFactory.Drive
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let observer: NSFileProviderChangeObserver
@@ -120,11 +119,13 @@ struct GetRemoteChangesUseCase {
                     debug:false
                 )
                 
+                
+                
                 hasMoreFolders = updatedFolders.count == self.enumeratedChangesLimit
                 updatedFolders.forEach{ (folder) in
                     if folder.status == "REMOVED" || folder.status == "TRASHED" {
                         deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
-                        
+                        return
                     }
                     
                     if folder.status == "EXISTS" {

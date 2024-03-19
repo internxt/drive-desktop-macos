@@ -222,15 +222,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
        
         Task {
             do {
-                self.startTokensRefreshing()
-              
-                try await authManager.initializeCurrentUser()
                 
+                self.startTokensRefreshing()
+                self.logger.info("✅ Token refresher started")
+                try await authManager.initializeCurrentUser()
+                self.logger.info("✅ Current user initialized")
                 // If usage fails to load, we'll let the user pass
                 await usageManager.updateUsage()
                 try await domainManager.initFileProvider()
                 self.logger.info("Login success")
             } catch {
+                self.logger.error("Failed to start the app: \(error)" )
                 error.reportToSentry()
                 DispatchQueue.main.async {
                     self.globalUIManager.setAppStatus(.failedToInit)

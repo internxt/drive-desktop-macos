@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import os.log
 import FileProvider
 import InternxtSwiftCore
 
@@ -16,7 +15,7 @@ enum DownloadFileUseCaseError: Error {
 }
 
 struct DownloadFileUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "DownloadFileUseCase")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "DownloadFileUseCase")
     private let cryptoUtils = CryptoUtils()
     private let networkFacade: NetworkFacade
     private let completionHandler: (URL?, NSFileProviderItem?, Error?) -> Void

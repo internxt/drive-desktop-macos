@@ -8,7 +8,6 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 enum UploadFileUseCaseError: Error {
     case InvalidParentId
@@ -18,7 +17,7 @@ enum UploadFileUseCaseError: Error {
 
 
 struct UploadFileUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "UploadFile")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "UploadFile")
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let trashAPI: TrashAPI = APIFactory.Trash
