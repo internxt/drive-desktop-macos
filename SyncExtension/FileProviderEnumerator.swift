@@ -6,7 +6,6 @@
 //
 
 import FileProvider
-import os.log
 import InternxtSwiftCore
 
 
@@ -14,7 +13,7 @@ import InternxtSwiftCore
 let initialAnchor = "\(dateToAnchor(Date()));\(dateToAnchor(Date()))"
    
 class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
-    let logger = Logger(subsystem: "com.internxt", category: "sync")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "FileProviderEnumerator")
     private let enumeratedItemIdentifier: NSFileProviderItemIdentifier
     private let anchor = NSFileProviderSyncAnchor(initialAnchor.data(using: .utf8)!)
     private let driveAPI =  APIFactory.Drive

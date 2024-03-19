@@ -105,10 +105,6 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
     
     var capabilities: NSFileProviderItemCapabilities {
         
-        if parentIdentifier == .trashContainer {
-            return [.allowsDeleting]
-        }
-        
         return [            
             .allowsAddingSubItems,
             .allowsContentEnumerating,

@@ -32,11 +32,10 @@ struct DomainManager {
     
     public mutating func initFileProvider() async throws {
         
+
         let identifier = NSFileProviderDomainIdentifier(rawValue:  NSUUID().uuidString)
         let newDomain = NSFileProviderDomain(identifier: identifier, displayName: "")
-        
         let domains = try await self.getDomains()
-        
         let firstDomain = domains.first
         let noDomain = firstDomain == nil
         
@@ -50,6 +49,7 @@ struct DomainManager {
         
         if let loadedDomain = firstDomain {
             
+        
             if self.resetDomainOnStart {
                 self.logger.info("Resetting domain on start")
                 if #available(macOS 12.0, *) {

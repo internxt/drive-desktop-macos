@@ -6,12 +6,11 @@
 //
 
 import Foundation
-import os.log
 import FileProvider
 import InternxtSwiftCore
 
 struct CreateFolderUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "CreateFolder")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "CreateFolder")
     let driveAPI = APIFactory.Drive
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
@@ -25,6 +24,7 @@ struct CreateFolderUseCase {
     
     func run() -> Progress {
         Task {
+            print("TOKEN", await ConfigLoader.shared.getLegacyAuthToken())
             let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? user.root_folder_id.toString() : itemTemplate.parentItemIdentifier.rawValue
             
             do {

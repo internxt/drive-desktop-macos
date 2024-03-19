@@ -9,7 +9,6 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 enum UpdateFileContentUseCaseError: Error {
     case InvalidParentId
@@ -19,7 +18,7 @@ enum UpdateFileContentUseCaseError: Error {
 
 
 struct UpdateFileContentUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "UpdateFileContent")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "UpdateFileContent")
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let item: NSFileProviderItem

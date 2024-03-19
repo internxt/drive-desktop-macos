@@ -232,6 +232,13 @@
 		E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
 		E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */; };
+		E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */; };
+		E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6C2BA9899400C257E0 /* XCGLogger */; };
+		E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6E2BA989AE00C257E0 /* XCGLogger */; };
+		E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C702BA989B600C257E0 /* XCGLogger */; };
+		E1FD8C732BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
+		E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
+		E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -436,6 +443,7 @@
 		E1FB2D8B2A76C48600473AE1 /* SyncExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SyncExtension.entitlements; sourceTree = "<group>"; };
 		E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1FB2D942A76D01B00473AE1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1FD8C722BA989D900C257E0 /* LogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogService.swift; sourceTree = "<group>"; };
 		E1FD926B2AB8F0FD00580F10 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E1FD926C2AB8F15000580F10 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -449,6 +457,7 @@
 				314D64342B9767EB00126E4B /* Realm in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
+				E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,12 +474,14 @@
 			files = (
 				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
+				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
 				E1A0AC4E2AB3A27F005E71D6 /* Realm in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1A0AC502AB3A27F005E71D6 /* RealmSwift in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
+				E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +492,7 @@
 				E1A0AC6B2AB88A86005E71D6 /* Rudder in Frameworks */,
 				E1A0AC542AB3A8D8005E71D6 /* Realm in Frameworks */,
 				E1A0AC522AB3A8C8005E71D6 /* RealmSwift in Frameworks */,
+				E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
 				E198D7E12AAA3A2800107753 /* SocketIO in Frameworks */,
@@ -612,6 +624,7 @@
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
 				316D24792B4D9997007DE91A /* BackupsService.swift */,
 				316DC7EA2B597BD000FDC746 /* DeviceService.swift */,
+				E1FD8C722BA989D900C257E0 /* LogService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -958,6 +971,7 @@
 				3120B5612B84F32500F524F1 /* Sentry */,
 				314D64332B9767EB00126E4B /* Realm */,
 				314D64352B9767FB00126E4B /* RealmSwift */,
+				E1FD8C702BA989B600C257E0 /* XCGLogger */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1008,6 +1022,8 @@
 				E1A0AC4F2AB3A27F005E71D6 /* RealmSwift */,
 				E1A0AC632AB884F0005E71D6 /* Rudder */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
+				E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */,
+				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1033,6 +1049,7 @@
 				E1A0AC512AB3A8C8005E71D6 /* RealmSwift */,
 				E1A0AC532AB3A8D8005E71D6 /* Realm */,
 				E1A0AC6A2AB88A86005E71D6 /* Rudder */,
+				E1FD8C6E2BA989AE00C257E0 /* XCGLogger */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -1083,6 +1100,7 @@
 				E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
+				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1185,6 +1203,7 @@
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
+				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
 				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
 				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
@@ -1266,6 +1285,7 @@
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
 				311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */,
+				E1FD8C732BA989D900C257E0 /* LogService.swift in Sources */,
 				E1ADD0402AA7229600D95694 /* AppAvatar.swift in Sources */,
 				E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */,
 				E1ADD04F2AA8D54E00D95694 /* RealtimeService.swift in Sources */,
@@ -1377,6 +1397,7 @@
 				E1D0D4182AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
 				E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E1A0AC7A2AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
+				E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */,
 				E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1421,12 +1442,13 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = JR4S3SY396;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1436,9 +1458,11 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1452,11 +1476,12 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JR4S3SY396;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1466,9 +1491,11 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1481,11 +1508,12 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JR4S3SY396;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1495,9 +1523,11 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1625,7 +1655,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 38;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1639,7 +1669,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.1.1;
+				MARKETING_VERSION = 2.2.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				"OTHER_CFLAGS[arch=*]" = (
@@ -1761,7 +1791,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 38;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1781,7 +1811,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.1.1;
+				MARKETING_VERSION = 2.2.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1829,7 +1859,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 38;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1843,7 +1873,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.1.1;
+				MARKETING_VERSION = 2.2.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				"OTHER_CFLAGS[arch=*]" = (
@@ -2116,6 +2146,14 @@
 				kind = branch;
 			};
 		};
+		E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2208,6 +2246,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
+		};
+		E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = ObjcExceptionBridging;
+		};
+		E1FD8C6C2BA9899400C257E0 /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
+		};
+		E1FD8C6E2BA989AE00C257E0 /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
+		};
+		E1FD8C702BA989B600C257E0 /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

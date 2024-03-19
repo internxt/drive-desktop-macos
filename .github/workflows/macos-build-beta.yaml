@@ -34,10 +34,6 @@ jobs:
         with:
           name: "app_store_key.json"
           json: ${{ secrets.APP_STORE_JSON }}
-      
-      # See https://github.com/actions/runner/issues/2958
-      - name: Install Python Setuptools
-        run: sudo -H pip install setuptools
 
       - name: Install Node
         uses: actions/setup-node@v3
@@ -47,11 +43,18 @@ jobs:
       - name: Install create-dmg
         run: npm install -g create-dmg
       
-      
       - name: Run Fastlane release
         run: fastlane beta_ci --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
+
+      - name: Archive logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Internxt Desktop Build Logs
+          path: /Users/runner/Library/Logs/
+
        
 
 

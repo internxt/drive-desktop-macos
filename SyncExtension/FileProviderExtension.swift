@@ -6,7 +6,6 @@
 //
 
 import FileProvider
-import os.log
 import InternxtSwiftCore
 import Combine
 import Foundation
@@ -16,9 +15,8 @@ enum CreateItemError: Error {
 }
 
 
-let useIntervalSignaller = true;
 
-let logger = Logger(subsystem: "com.internxt", category: "sync")
+let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "FileProviderExtension")
 class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
     let fileProviderItemActions = FileProviderItemActionsManager()
     let config = ConfigLoader()
@@ -28,10 +26,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
-    let realtimeFallbackTimer: AnyCancellable
-    let realtime: RealtimeService
+    let signalEnumeratorIntervalTimer: AnyCancellable
+    let refreshTokensIntervalTimer: AnyCancellable
     let activityManager: ActivityManager
     required init(domain: NSFileProviderDomain) {
+        
         
         logger.info("Starting sync extension with version \(Bundle.version())")
         ErrorUtils.start()
@@ -44,56 +43,45 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
         self.manager = manager
         
-        self.authManager = AuthManager()
-        
+        let authManager = AuthManager()
+        self.authManager = authManager
         guard let user = authManager.user else {
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
+        self.signalEnumeratorIntervalTimer = Timer.publish(every: 15, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 Task {
+                     do {
+                         try await manager.signalEnumerator(for: .workingSet)
+                     } catch {
+                         error.reportToSentry()
+                         logger.error(["Failed to signal enumerator: ", error])
+                     }
+                 }
+             })
         
+        self.refreshTokensIntervalTimer = Timer.publish(every: 15, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 Task {
+                     do {
+                         
+                         try await authManager.refreshTokens()
+                         logger.info("Tokens refreshed successfully")
+                     } catch {
+                         error.reportToSentry()
+                         logger.error(["Failed to refresh tokens from sync extension", error])
+                     }
+                     
+                 }
+             })
         
-        let realtime = RealtimeService(
-            token: self.config.getLegacyAuthToken()!,
-            onEvent: {
-                Task {
-                    do {
-                        
-                        // Wait 500ms before asking for updates
-                        try await Task.sleep(nanoseconds: 500_000_000)
-                        try await manager.signalEnumerator(for: .workingSet)
-                        logger.info("✅ Signalled enumerator from realtime event")
-                    } catch {
-                        error.reportToSentry()
-                        logger.error("Failed to signal enumerator")
-                    }
-                    
-                }
-                
-            }
-        )
-        
-        self.realtime = realtime
-        
-        
-        self.realtimeFallbackTimer = Timer.publish(every: 5, on:.main, in: .common).autoconnect().sink(
-            receiveValue: {_ in
-                
-            // If the realtime socket gets disconnected, we will fallback to
-            // checking for updates periodically until it gets reconnected
-            logger.info("About to signal enumerator to ask for changes")
-            logger.info("Realtime is connected: \(realtime.isConnected == true ? "Yes" : "No")")
-            if realtime.isConnected == false && useIntervalSignaller {
-                manager.signalEnumerator(for: .workingSet, completionHandler: {error in
-                    if error != nil {
-                        logger.error("Failed to signal enumerator")
-                    } else {
-                        logger.info("✅ Signalled enumerator from fallback timer because realtime service is not connected")
-                    }
-                    
-                    
-                })
-            }
-        })
+       
+    
         
         ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
@@ -122,6 +110,18 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             logger.error("Failed to clean TMP directory before starting")
             error.reportToSentry()
         }
+        
+        Task {
+            do {
+                try await authManager.refreshTokens()
+                logger.info("Tokens refreshed successfully")
+            } catch {
+                error.reportToSentry()
+                logger.error(["Failed to refresh tokens from sync extension", error])
+            }
+            
+        }
+        
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
                 logger.error("Failed to signal enumerator")
@@ -133,18 +133,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         })
     }
     
+
     func cleanTmpDirectory() throws {
         let files = try FileManager.default.contentsOfDirectory(at: tmpURL, includingPropertiesForKeys: nil)
         
         try files.forEach{fileUrl in
             try FileManager.default.removeItem(at: fileUrl)
         }
-    }
-    
-    func checkUpdates() {
-        manager.signalEnumerator(for: .rootContainer, completionHandler: {_ in
-            logger.info("Enumerator signaled")
-        })
     }
     
     func makeTemporaryURL(_ purpose: String, _ ext: String? = nil) -> URL {
@@ -159,6 +154,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func invalidate() {
         fileProviderItemActions.clean()
+        self.refreshTokensIntervalTimer.cancel()
+        self.signalEnumeratorIntervalTimer.cancel()
     }
     
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
@@ -203,8 +200,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
     
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
-        
-        
         
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")

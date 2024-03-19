@@ -10,7 +10,6 @@ import Foundation
 
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 enum TrashFileUseCaseError: Error {
     case InvalidItemId
@@ -19,7 +18,7 @@ enum TrashFileUseCaseError: Error {
 
 
 struct TrashFileUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "TrashFile")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "TrashFile")
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let item: NSFileProviderItem

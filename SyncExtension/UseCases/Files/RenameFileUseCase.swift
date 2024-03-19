@@ -6,12 +6,11 @@
 //
 
 import Foundation
-import os.log
 import FileProvider
 import InternxtSwiftCore
 
 struct RenameFileUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "RenameFile")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "RenameFile")
     let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem

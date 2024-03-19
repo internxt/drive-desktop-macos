@@ -6,10 +6,8 @@
 //
 
 import Foundation
-
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 enum TrashFolderUseCaseError: Error {
     case InvalidItemId
@@ -26,7 +24,7 @@ extension OptionSet {
 }
 
 struct TrashFolderUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "TrashFolder")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "TrashFolder")
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let item: NSFileProviderItem
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void

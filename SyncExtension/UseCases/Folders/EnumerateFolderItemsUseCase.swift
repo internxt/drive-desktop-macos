@@ -11,7 +11,7 @@ import InternxtSwiftCore
 import os.log
 
 struct EnumerateFolderItemsUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "EnumerateFolderItems")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "EnumerateFolderItems")
     private let observer: NSFileProviderEnumerationObserver
     private let page: NSFileProviderPage
     private let driveAPI: DriveAPI = APIFactory.DriveNew

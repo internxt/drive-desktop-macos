@@ -23,6 +23,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Build Beta DMG
 
+### mac prod_ci
+
+```sh
+[bundle exec] fastlane mac prod_ci
+```
+
+Build Prod DMG
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

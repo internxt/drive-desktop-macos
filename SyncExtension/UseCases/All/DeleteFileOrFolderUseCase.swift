@@ -8,10 +8,9 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 struct DeleteFileOrFolderUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "DeleteFileOrFolder")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "DeleteFileOrFolder")
     private let driveAPI: DriveAPI = APIFactory.Drive
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let completionHandler: (Error?) -> Void

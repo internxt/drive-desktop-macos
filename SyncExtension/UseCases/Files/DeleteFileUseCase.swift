@@ -8,12 +8,11 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 
 
 struct DeleteFileUseCase {
-    let logger = Logger(subsystem: "com.internxt", category: "DeleteFile")
+    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "DeleteFile")
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let identifier: NSFileProviderItemIdentifier
