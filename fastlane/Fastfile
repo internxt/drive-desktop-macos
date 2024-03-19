@@ -41,7 +41,8 @@ platform :mac do
       readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop", 
-        "internxt.InternxtDesktop.sync"
+        "internxt.InternxtDesktop.sync",
+        "com.internxt.XPCBackupService"
       ],
     )
 
@@ -138,7 +139,8 @@ platform :mac do
       readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop", 
-        "internxt.InternxtDesktop.sync"
+        "internxt.InternxtDesktop.sync",
+        "com.internxt.XPCBackupService"
       ],
     )
 
