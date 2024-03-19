@@ -47,6 +47,8 @@
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
 		319436922B9B8293006F4600 /* BackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319436912B9B8293006F4600 /* BackupRealm.swift */; };
+		31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
+		31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
 		31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
 		31DEAEB52B75139400E76D53 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB42B75139400E76D53 /* main.swift */; };
@@ -303,6 +305,7 @@
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncResult.swift; sourceTree = "<group>"; };
 		319436912B9B8293006F4600 /* BackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRealm.swift; sourceTree = "<group>"; };
+		31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedNode.swift; sourceTree = "<group>"; };
 		31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = XPCBackupService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 		31DEAEB02B75139400E76D53 /* XPCBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupService.swift; sourceTree = "<group>"; };
 		31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceProtocol.swift; sourceTree = "<group>"; };
@@ -583,6 +586,7 @@
 				E140C3292AC376AE00A88B9F /* Drive.swift */,
 				E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */,
 				3185496E2B698AAC00D559E1 /* Device.swift */,
+				31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1179,6 +1183,7 @@
 				3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
+				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
 				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
@@ -1246,6 +1251,7 @@
 				E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */,
+				31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */,
 				310452692B4B05AE00984716 /* BackupComponent.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
