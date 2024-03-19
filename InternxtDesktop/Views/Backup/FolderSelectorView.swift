@@ -69,13 +69,7 @@ struct FolderSelectorView: View {
 
                     AppButton(icon: .Minus, title: "", onClick: {
                         if let selectedId = selectedId {
-                            do {
-                                try self.backupsService.removeFoldernameFromBackup(id: selectedId)
-                                self.selectedId = nil
-                            } catch {
-                                error.reportToSentry()
-                                showErrorDialog(message: error.localizedDescription)
-                            }
+                            self.deleteFolder(selectedId: selectedId)
                         }
                     }, type: .secondary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
                 }
@@ -109,6 +103,18 @@ struct FolderSelectorView: View {
                 closeWindow()
             } catch {
                 self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
+            }
+        }
+    }
+
+    private func deleteFolder(selectedId: String) {
+        Task {
+            do {
+                try await self.backupsService.removeFoldernameFromBackup(id: selectedId)
+                self.selectedId = nil
+            } catch {
+                error.reportToSentry()
+                showErrorDialog(message: error.localizedDescription)
             }
         }
     }

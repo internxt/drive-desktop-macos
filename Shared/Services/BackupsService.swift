@@ -70,13 +70,14 @@ class BackupsService: ObservableObject {
         }
     }
 
-    func removeFoldernameFromBackup(id: String) throws {
+    @MainActor func removeFoldernameFromBackup(id: String) async throws {
         let itemToDelete = foldernames.first { foldername in
             return foldername.id == id
         }
         guard let itemToDelete = itemToDelete else {
             throw BackupError.cannotFindFolder
         }
+        let folderUrl = itemToDelete.url
 
         do {
             let realm = getRealm()
@@ -84,6 +85,8 @@ class BackupsService: ObservableObject {
                 realm.delete(itemToDelete)
             }
             self.assignUrls()
+            let _ = try await self.deleteFolderBackup(folderUrl: folderUrl, realm: realm)
+            await self.loadAllDevices()
         } catch {
             error.reportToSentry()
             throw BackupError.cannotDeleteFolder
@@ -169,6 +172,17 @@ class BackupsService: ObservableObject {
         }
 
         return true
+    }
+
+    @MainActor private func deleteFolderBackup(folderUrl: String, realm: Realm) async throws -> Bool {
+        guard let syncedNode = realm.objects(SyncedNode.self).first(where: { node in
+            node.url == folderUrl
+        }) else {
+            // Folder is not synced, so we don't do anything
+            return true
+        }
+
+        return try await backupAPI.deleteBackupFolder(folderId: syncedNode.remoteId, debug: true)
     }
 
     func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
