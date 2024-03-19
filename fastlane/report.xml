@@ -5,37 +5,37 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000186">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000207">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: setup_ci" time="0.000174">
+      <testcase classname="fastlane.lanes" name="1: setup_ci" time="0.000234">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: get_version_number" time="0.047073">
+      <testcase classname="fastlane.lanes" name="2: get_version_number" time="0.05495">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: get_build_number" time="0.078595">
+      <testcase classname="fastlane.lanes" name="3: get_build_number" time="0.083507">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: release_already_exists" time="0.349215">
+      <testcase classname="fastlane.lanes" name="4: release_already_exists" time="0.514707">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: match" time="2.962457">
+      <testcase classname="fastlane.lanes" name="5: match" time="16.797228">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: build_mac_app" time="173.480802">
+      <testcase classname="fastlane.lanes" name="6: build_mac_app" time="20.162775">
         
       </testcase>
     
