@@ -30,8 +30,18 @@
 		3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		3120B5772B8518C300F524F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
 		3120B5782B85296400F524F1 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
+		312BC27D2BAB4FCD00D50D2E /* BackupUploadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31BF4F542BAA317F004B3B2C /* BackupUploadServiceTests.swift */; };
+		312BC27E2BAB4FDB00D50D2E /* MockBackupClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314E0CD42BAB3EA800520C52 /* MockBackupClient.swift */; };
+		312BC27F2BAB500400D50D2E /* BackupClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314E0CD12BAB355800520C52 /* BackupClient.swift */; };
+		312BC2802BAB501500D50D2E /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
+		312BC2812BAB502C00D50D2E /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
+		312BC2822BAB504300D50D2E /* BackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319436912B9B8293006F4600 /* BackupRealm.swift */; };
+		312BC2852BAB527300D50D2E /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
+		312BC2862BAB531A00D50D2E /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
+		312BC2872BAB533C00D50D2E /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
 		314D64342B9767EB00126E4B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64332B9767EB00126E4B /* Realm */; };
 		314D64362B9767FB00126E4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64352B9767FB00126E4B /* RealmSwift */; };
+		314E0CD22BAB355800520C52 /* BackupClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314E0CD12BAB355800520C52 /* BackupClient.swift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -47,8 +57,6 @@
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
 		319436922B9B8293006F4600 /* BackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319436912B9B8293006F4600 /* BackupRealm.swift */; };
-		31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
-		31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
 		31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
 		31DEAEB52B75139400E76D53 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB42B75139400E76D53 /* main.swift */; };
@@ -299,6 +307,8 @@
 		3120B56B2B84F65100F524F1 /* BackupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupOperation.swift; sourceTree = "<group>"; };
 		3120B56E2B84F6C400F524F1 /* Completable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completable.swift; sourceTree = "<group>"; };
 		3120B5702B84F6F400F524F1 /* Enqueueable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enqueueable.swift; sourceTree = "<group>"; };
+		314E0CD12BAB355800520C52 /* BackupClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupClient.swift; sourceTree = "<group>"; };
+		314E0CD42BAB3EA800520C52 /* MockBackupClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupClient.swift; sourceTree = "<group>"; };
 		315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsTabView.swift; sourceTree = "<group>"; };
 		315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDeviceSelector.swift; sourceTree = "<group>"; };
 		315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectorView.swift; sourceTree = "<group>"; };
@@ -313,6 +323,7 @@
 		3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncResult.swift; sourceTree = "<group>"; };
 		319436912B9B8293006F4600 /* BackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRealm.swift; sourceTree = "<group>"; };
 		31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedNode.swift; sourceTree = "<group>"; };
+		31BF4F542BAA317F004B3B2C /* BackupUploadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupUploadServiceTests.swift; sourceTree = "<group>"; };
 		31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = XPCBackupService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 		31DEAEB02B75139400E76D53 /* XPCBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupService.swift; sourceTree = "<group>"; };
 		31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceProtocol.swift; sourceTree = "<group>"; };
@@ -529,9 +540,26 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		314E0CD02BAB354A00520C52 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				314E0CD12BAB355800520C52 /* BackupClient.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
+		314E0CD32BAB3E9200520C52 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				314E0CD42BAB3EA800520C52 /* MockBackupClient.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		31DEAEAF2B75139400E76D53 /* XPCBackupService */ = {
 			isa = PBXGroup;
 			children = (
+				314E0CD02BAB354A00520C52 /* Clients */,
 				3120B56D2B84F6B100F524F1 /* Extensions */,
 				E15F8C0E2B76291B00C60EFA /* Services */,
 				E15F8C0D2B76290B00C60EFA /* Entities */,
@@ -709,6 +737,7 @@
 		E15F8C312B762B3700C60EFA /* Backups */ = {
 			isa = PBXGroup;
 			children = (
+				314E0CD32BAB3E9200520C52 /* Mocks */,
 				E15F8C322B762B5E00C60EFA /* Services */,
 			);
 			path = Backups;
@@ -718,6 +747,7 @@
 			isa = PBXGroup;
 			children = (
 				E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */,
+				31BF4F542BAA317F004B3B2C /* BackupUploadServiceTests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1190,6 +1220,7 @@
 			files = (
 				3120B56F2B84F6C400F524F1 /* Completable.swift in Sources */,
 				31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */,
+				314E0CD22BAB355800520C52 /* BackupClient.swift in Sources */,
 				3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */,
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
@@ -1201,12 +1232,12 @@
 				3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
-				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
 				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
 				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
+				312BC2862BAB531A00D50D2E /* SyncedNode.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				319436922B9B8293006F4600 /* BackupRealm.swift in Sources */,
@@ -1222,16 +1253,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				312BC27F2BAB500400D50D2E /* BackupClient.swift in Sources */,
 				31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */,
+				312BC27E2BAB4FDB00D50D2E /* MockBackupClient.swift in Sources */,
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
 				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
+				312BC2812BAB502C00D50D2E /* DecryptUtils.swift in Sources */,
 				31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */,
 				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
 				31F9EF312B86801B007DAD86 /* Completable.swift in Sources */,
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
 				31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */,
+				312BC27D2BAB4FCD00D50D2E /* BackupUploadServiceTests.swift in Sources */,
+				312BC2822BAB504300D50D2E /* BackupRealm.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
+				312BC2852BAB527300D50D2E /* SyncedNode.swift in Sources */,
+				312BC2802BAB501500D50D2E /* BackupTreeNodeSyncResult.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				31F9EF2C2B867F24007DAD86 /* Error.swift in Sources */,
@@ -1270,7 +1308,6 @@
 				E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */,
-				31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */,
 				310452692B4B05AE00984716 /* BackupComponent.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
@@ -1332,6 +1369,7 @@
 				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
 				317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */,
 				E17C84BE2AB2880B00A58414 /* Color.swift in Sources */,
+				312BC2872BAB533C00D50D2E /* SyncedNode.swift in Sources */,
 				E17C84B82AB2787200A58414 /* OnboardingSlide4View.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
 				3120B5752B84FC5300F524F1 /* BackupTreeNodeSyncStatus.swift in Sources */,
