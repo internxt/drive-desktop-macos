@@ -68,6 +68,13 @@ struct UploadFileOrUpdateContentUseCase {
     func run() -> Progress {
         let progress = Progress(totalUnitCount: 100)
         Task {
+            
+            if(FileUtils.isTmpFile(item.filename)) {
+                self.logger.info("File is a TMP file, not uploading")
+                self.completionHandler(nil, [], false, nil)
+                return progress
+            }
+            
             self.logger.info("Checking if file already exists...")
             guard let fileByName = await self.fileAlreadyExistsByName() else {
                 self.logger.info("File doesn't exists in this folder, uploading")

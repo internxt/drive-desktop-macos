@@ -47,7 +47,9 @@ public struct ConfigLoader {
     static let GroupName = "JR4S3SY396.group.internxt.desktop"
     // We hardcode this value, so no other team can sign with our teamID, this corresponds to our Apps Groups
     static let realmURL: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ConfigLoader.GroupName)!.appendingPathComponent("internxt_desktop.realm")
+    static let backupsIsEnabled = false
     private let SUITE_NAME = ConfigLoader.GroupName
+    
     public init() {
         
     }

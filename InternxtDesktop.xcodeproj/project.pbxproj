@@ -203,6 +203,9 @@
 		E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = E1ADD0512AA8D68D00D95694 /* SocketIO */; };
 		E1B1C9272B0394C30003F001 /* UpdateFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */; };
 		E1BE23612AB0A06A00EAB152 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
+		E1BFEA922BAC2CF6009DCA1B /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BFEA912BAC2CF6009DCA1B /* FileUtils.swift */; };
+		E1BFEA932BAC2CF6009DCA1B /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BFEA912BAC2CF6009DCA1B /* FileUtils.swift */; };
+		E1BFEA942BAC2CF6009DCA1B /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BFEA912BAC2CF6009DCA1B /* FileUtils.swift */; };
 		E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4612AB9FD6300E3BF7A /* URL.swift */; };
 		E1CAB6782AFC3F740006EA1E /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CAB6772AFC3F740006EA1E /* AppSelector.swift */; };
 		E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */; };
@@ -414,6 +417,7 @@
 		E1ADD0432AA7367800D95694 /* UsageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageManager.swift; sourceTree = "<group>"; };
 		E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeService.swift; sourceTree = "<group>"; };
 		E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFileContentUseCase.swift; sourceTree = "<group>"; };
+		E1BFEA912BAC2CF6009DCA1B /* FileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
 		E1CAB6772AFC3F740006EA1E /* AppSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelector.swift; sourceTree = "<group>"; };
 		E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileOrFolderUseCase.swift; sourceTree = "<group>"; };
 		E1CC520B2A98B460009DEEAA /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
@@ -562,6 +566,7 @@
 				E16ECC132A9508B10093D3ED /* ErrorUtils.swift */,
 				E13B839B2AFBBE67009F6684 /* AppUserDefaults.swift */,
 				31ED949C2B7151E200EF699F /* DecryptUtils.swift */,
+				E1BFEA912BAC2CF6009DCA1B /* FileUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1207,6 +1212,7 @@
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
 				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
 				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
+				E1BFEA942BAC2CF6009DCA1B /* FileUtils.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				319436922B9B8293006F4600 /* BackupRealm.swift in Sources */,
@@ -1313,6 +1319,7 @@
 				E1880B972AA6111B001FC171 /* SettingsView.swift in Sources */,
 				E18300B02AA2395100AD023C /* FileExtension.swift in Sources */,
 				E17C84B62AB276C000A58414 /* OnboardingSlide3View.swift in Sources */,
+				E1BFEA922BAC2CF6009DCA1B /* FileUtils.swift in Sources */,
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
@@ -1346,6 +1353,7 @@
 				E16310582A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
 				E17C84C72AB2FEF500A58414 /* ActivityManager.swift in Sources */,
+				E1BFEA932BAC2CF6009DCA1B /* FileUtils.swift in Sources */,
 				E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */,
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E16D3E8B2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,

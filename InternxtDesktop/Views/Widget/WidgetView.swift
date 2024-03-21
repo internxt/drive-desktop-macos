@@ -34,7 +34,7 @@ struct WidgetView: View {
                         .environmentObject(self.globalUIManager)
                         .environmentObject(self.usageManager)
 
-                    if !activityManager.activityEntries.isEmpty && self.showBackupBanner {
+                    if !activityManager.activityEntries.isEmpty && self.showBackupBanner && ConfigLoader.backupsIsEnabled {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
                         }
