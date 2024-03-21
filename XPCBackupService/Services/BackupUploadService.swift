@@ -22,6 +22,7 @@ enum BackupUploadError: Error {
     case CannotAddNodeToRealm
     case CannotEditNodeToRealm
     case CannotFindNodeToRealm
+    case CannotFindNodeInServer
 }
 
 struct BackupUploadService {
@@ -84,41 +85,41 @@ struct BackupUploadService {
         return url
     }
 
-    func doSync(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
+    func doSync(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         if (node.type == .folder) {
-            return try await self.syncNodeFolder(node: node)
+            return await self.syncNodeFolder(node: node)
         }
-        return try await self.syncNodeFile(node: node)
+        return await self.syncNodeFile(node: node)
     }
 
-    private func syncNodeFolder(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
+    private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating folder")
 
+        guard let nodeURL = node.url else {
+            return .failure(BackupUploadError.MissingURL)
+        }
+
+        var remoteParentId: Int? = nil
+        let foldername = node.name
+        self.logger.info("Going to create folder \(foldername)")
+
+        if let _ = node.parentId {
+            guard let parentId = node.remoteParentId else {
+                return .failure(BackupUploadError.MissingParentFolder)
+            }
+
+            remoteParentId = parentId
+        } else {
+            remoteParentId = self.deviceId
+        }
+
+        guard let safeRemoteParentId = remoteParentId else {
+            return .failure(BackupUploadError.MissingParentFolder)
+        }
+
+        self.logger.info("Parent id \(safeRemoteParentId)")
+
         do {
-            guard let nodeURL = node.url else {
-                throw BackupUploadError.MissingURL
-            }
-
-            var remoteParentId: Int? = nil
-            let foldername = node.name
-            self.logger.info("Going to create folder \(foldername)")
-
-            if let _ = node.parentId {
-                guard let parentId = node.remoteParentId else {
-                    throw BackupUploadError.MissingParentFolder
-                }
-
-                remoteParentId = parentId
-            } else {
-                remoteParentId = self.deviceId
-            }
-
-            guard let safeRemoteParentId = remoteParentId else {
-                throw BackupUploadError.MissingParentFolder
-            }
-
-            self.logger.info("Parent id \(safeRemoteParentId)")
-
             let createdFolder = try await backupAPI.createBackupFolder(
                 parentFolderId: safeRemoteParentId,
                 folderName: foldername
@@ -137,33 +138,64 @@ struct BackupUploadService {
             )
 
             node.progress.completedUnitCount = 1
-            return BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil)
+            return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil))
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
             node.progress.completedUnitCount = 1
-            throw error
+
+            if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                // Handle duplicated folder error
+                do {
+                    let parentChilds = try await backupNewAPI.getBackupChilds(folderId: "\(safeRemoteParentId)")
+
+                    let folder = parentChilds.result.first { currentFolder in
+                        currentFolder.plainName == foldername && currentFolder.removed == false
+                    }
+
+                    guard let folder = folder else {
+                        return .failure(BackupUploadError.CannotFindNodeInServer)
+                    }
+
+                    try BackupRealm.shared.addSyncedNode(
+                        SyncedNode(
+                            remoteId: folder.id,
+                            remoteUuid: "",
+                            url: "\(nodeURL)",
+                            parentId: node.parentId,
+                            remoteParentId: safeRemoteParentId
+                        )
+                    )
+
+                    return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: nil))
+                } catch {
+                    self.logger.error("❌ Failed to insert already created folder in database: \(self.getErrorDescription(error: error))")
+                    return .failure(error)
+                }
+            }
+            return .failure(error)
         }
+
     }
 
-    private func syncNodeFile(node: BackupTreeNode) async throws -> BackupTreeNodeSyncResult {
+    private func syncNodeFile(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating file")
 
         var encryptedContentURL: URL? = nil
         do {
             encryptedContentURL = try self.getEncryptedContentURL(node: node)
             guard let safeEncryptedContentURL = encryptedContentURL else {
-                throw BackupUploadError.CannotCreateEncryptedContentURL
+                return .failure(BackupUploadError.CannotCreateEncryptedContentURL)
             }
 
             guard let fileURL = node.url, let inputStream = InputStream(url: fileURL) else {
-                throw BackupUploadError.CannotOpenInputStream
+                return .failure(BackupUploadError.CannotOpenInputStream)
             }
 
             let filename = (node.name as NSString)
             self.logger.info("Starting backing up file \(filename)")
 
             guard let remoteParentId = node.remoteParentId else {
-                throw BackupUploadError.MissingParentFolder
+                return .failure(BackupUploadError.MissingParentFolder)
             }
 
             self.logger.info("Remote parent id \(remoteParentId)")
@@ -180,7 +212,7 @@ struct BackupUploadService {
 
             if node.syncStatus == .NEEDS_UPDATE {
                 guard let remoteUuid = node.remoteUuid, let remoteId = node.remoteId else {
-                    throw BackupUploadError.MissingRemoteId
+                    return .failure(BackupUploadError.MissingRemoteId)
                 }
 
                 let updatedFile = try await backupNewAPI.replaceFileId(
@@ -200,7 +232,7 @@ struct BackupUploadService {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return BackupTreeNodeSyncResult(id: remoteId, uuid: remoteUuid)
+                return .success(BackupTreeNodeSyncResult(id: remoteId, uuid: remoteUuid))
             } else {
                 let stringRemoteParentId = "\(remoteParentId)"
 
@@ -240,7 +272,7 @@ struct BackupUploadService {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
                 }
 
-                return BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid)
+                return .success(BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid))
             }
 
         } catch {
@@ -252,7 +284,7 @@ struct BackupUploadService {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
             }
 
-            throw error
+            return .failure(error)
         }
 
     }
