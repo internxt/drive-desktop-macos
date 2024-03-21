@@ -33,7 +33,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 deviceId: deviceId,
                 bucketId: bucketId,
                 authToken: authToken,
-                newAuthToken: newAuthToken
+                newAuthToken: newAuthToken,
+                backupClient: BackupClient.shared
             )
 
             var totalCount = 0
