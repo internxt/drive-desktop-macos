@@ -43,6 +43,7 @@
 		316DC7EB2B597BD000FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
 		316DC7EC2B59837D00FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
 		317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */; };
+		317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */; };
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
@@ -309,6 +310,7 @@
 		316D24792B4D9997007DE91A /* BackupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsService.swift; sourceTree = "<group>"; };
 		316DC7EA2B597BD000FDC746 /* DeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceService.swift; sourceTree = "<group>"; };
 		317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetupComponent.swift; sourceTree = "<group>"; };
+		317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabManager.swift; sourceTree = "<group>"; };
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncResult.swift; sourceTree = "<group>"; };
 		319436912B9B8293006F4600 /* BackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRealm.swift; sourceTree = "<group>"; };
@@ -898,6 +900,7 @@
 				E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */,
 				E1ADD0432AA7367800D95694 /* UsageManager.swift */,
 				E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */,
+				317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1303,6 +1306,7 @@
 				E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
+				317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */,
 				E1A0AC722AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
 				3104526E2B4B1C5C00984716 /* StopBackupDialog.swift in Sources */,
 				E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */,

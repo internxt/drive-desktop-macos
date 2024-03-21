@@ -18,7 +18,7 @@ struct SettingsView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var backupsService: BackupsService
-    @State var focusedTab: TabView = .General
+    @EnvironmentObject var settingsManager: SettingsTabManager
     public var updater: SPUUpdater? = nil
     @State private var selectedDeviceId: Int? = nil
     @State private var showFolderSelector = false
@@ -86,7 +86,7 @@ struct SettingsView: View {
     
     @ViewBuilder
     var Tabcontent: some View {
-        switch self.focusedTab {
+        switch settingsManager.focusedTab {
         case .General:
             GeneralTabView(updater: updater)
         case .Account:
@@ -108,11 +108,11 @@ struct SettingsView: View {
         
         .padding(.horizontal, 16)
         .padding(.vertical, 6)
-        .background(Color(colorScheme == .dark ? "Gray10" : "Gray5").opacity(focusedTab == id ? 1 : 0))
+        .background(Color(colorScheme == .dark ? "Gray10" : "Gray5").opacity(settingsManager.focusedTab == id ? 1 : 0))
         .cornerRadius(8)
         .contentShape(Rectangle())
         .onTapGesture {
-            focusedTab = id
+            settingsManager.focusedTab = id
         }
     }
 }

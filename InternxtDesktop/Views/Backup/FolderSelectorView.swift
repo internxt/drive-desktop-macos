@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FolderSelectorView: View {
 
+    @Environment(\.colorScheme) var colorScheme
     @StateObject var backupsService: BackupsService
     let closeWindow: () -> Void
     @State private var selectedId: String?
@@ -92,8 +93,9 @@ struct FolderSelectorView: View {
         }
         .frame(width: 480, height: 380, alignment: .top)
         .padding(20)
-        .background(Color.Surface)
+        .background(colorScheme == .dark ? Color.Gray1 : Color.white)
         .cornerRadius(10)
+        .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
     }
 
     private func doBackup() {
