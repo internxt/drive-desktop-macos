@@ -48,6 +48,7 @@ struct DeleteBackupDialog: View {
         .background(colorScheme == .dark ? Color.Gray1 : Color.white)
         .cornerRadius(10)
         .frame(width: 320)
+        .shadow(color: .black.opacity(0.1), radius: 1.5, x: 0, y: 1)
         .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
     }
 

@@ -52,7 +52,7 @@ struct SettingsView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.Gray1.opacity(0.8))
+                .background(Color.Gray40.opacity(0.4))
             }
 
             // stop ongoing backup dialog
@@ -63,7 +63,7 @@ struct SettingsView: View {
                     })
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.Gray1.opacity(0.8))
+                .background(Color.Gray40.opacity(0.4))
             }
 
             // delete backup dialog
@@ -78,7 +78,7 @@ struct SettingsView: View {
                     )
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.Gray1.opacity(0.8))
+                .background(Color.Gray40.opacity(0.4))
             }
         }
         .frame(width: 600)
