@@ -46,10 +46,8 @@ struct WidgetDeviceSelector: View {
                                     isSelected: self.selectedDeviceId == device.id,
                                     isCurrentDevice: device.isCurrentDevice
                                 ) {
-                                    withAnimation {
-                                        self.selectedDeviceId = device.id
-                                        self.selectedDevice = device
-                                    }
+                                    self.selectedDeviceId = device.id
+                                    self.selectedDevice = device                                    
                                 }
                             }
                         }
