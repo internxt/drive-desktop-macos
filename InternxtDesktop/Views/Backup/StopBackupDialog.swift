@@ -10,6 +10,7 @@ import SwiftUI
 struct StopBackupDialog: View {
 
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject var backupsService: BackupsService
     var onClose: () -> Void
 
     var body: some View {
@@ -44,10 +45,11 @@ struct StopBackupDialog: View {
     }
 
     private func stopBackup() throws {
-        throw AppError.notImplementedError
+        try backupsService.stopBackup()
+        self.onClose()
     }
 }
 
 #Preview {
-    StopBackupDialog {}
+    StopBackupDialog(backupsService: BackupsService()) {}
 }

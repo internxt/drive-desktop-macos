@@ -58,7 +58,7 @@ struct SettingsView: View {
             // stop ongoing backup dialog
             if showStopBackupDialog {
                 VStack {
-                    StopBackupDialog(onClose: {
+                    StopBackupDialog(backupsService: backupsService, onClose: {
                         showStopBackupDialog = false
                     })
                 }

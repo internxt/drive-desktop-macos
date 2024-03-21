@@ -11,6 +11,8 @@ import Foundation
     
     func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void)
 
+    func stopBackup()
+
 }
 
 /*

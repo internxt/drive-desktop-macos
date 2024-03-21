@@ -5,7 +5,7 @@
 //  Created by Richard Ascanio on 2/15/24.
 //
 
-import Foundation
+import SwiftUI
 import RealmSwift
 import FileProvider
 import InternxtSwiftCore
@@ -23,9 +23,10 @@ enum BackupUploadError: Error {
     case CannotEditNodeToRealm
     case CannotFindNodeToRealm
     case CannotFindNodeInServer
+    case BackupStoppedManually
 }
 
-struct BackupUploadService {
+class BackupUploadService: ObservableObject {
     private let logger = Logger(subsystem: "com.internxt", category: "BackupUpload")
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
@@ -39,6 +40,7 @@ struct BackupUploadService {
     private let bucketId: String
     private let authToken: String
     private let newAuthToken: String
+    @Published var canDoBackup = true
 
     init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, newAuthToken: String) {
         self.networkFacade = networkFacade
@@ -75,10 +77,14 @@ struct BackupUploadService {
         completionQueue.waitUntilAllOperationsAreFinished()
     }
 
-    private func getEncryptedContentURL(node: BackupTreeNode) throws -> URL {
+    private func getEncryptedContentURL(node: BackupTreeNode) -> URL? {
         let url = encryptedContentDirectory.appendingPathComponent(node.id)
 
-        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        do {
+            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        } catch {
+            return nil
+        }
 
         FileManager.default.createFile(atPath: url.path(), contents: nil)
 
@@ -86,10 +92,20 @@ struct BackupUploadService {
     }
 
     func doSync(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
+        if !canDoBackup {
+            return .failure(BackupUploadError.BackupStoppedManually)
+        }
+
         if (node.type == .folder) {
             return await self.syncNodeFolder(node: node)
         }
         return await self.syncNodeFile(node: node)
+    }
+
+    func stopSync() {
+        DispatchQueue.main.async {
+            self.canDoBackup = false
+        }
     }
 
     private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
@@ -180,26 +196,25 @@ struct BackupUploadService {
     private func syncNodeFile(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating file")
 
-        var encryptedContentURL: URL? = nil
+        var encryptedContentURL = self.getEncryptedContentURL(node: node)
+        guard let safeEncryptedContentURL = encryptedContentURL else {
+            return .failure(BackupUploadError.CannotCreateEncryptedContentURL)
+        }
+
+        guard let fileURL = node.url, let inputStream = InputStream(url: fileURL) else {
+            return .failure(BackupUploadError.CannotOpenInputStream)
+        }
+
+        let filename = (node.name as NSString)
+        self.logger.info("Starting backing up file \(filename)")
+
+        guard let remoteParentId = node.remoteParentId else {
+            return .failure(BackupUploadError.MissingParentFolder)
+        }
+
+        self.logger.info("Remote parent id \(remoteParentId)")
+
         do {
-            encryptedContentURL = try self.getEncryptedContentURL(node: node)
-            guard let safeEncryptedContentURL = encryptedContentURL else {
-                return .failure(BackupUploadError.CannotCreateEncryptedContentURL)
-            }
-
-            guard let fileURL = node.url, let inputStream = InputStream(url: fileURL) else {
-                return .failure(BackupUploadError.CannotOpenInputStream)
-            }
-
-            let filename = (node.name as NSString)
-            self.logger.info("Starting backing up file \(filename)")
-
-            guard let remoteParentId = node.remoteParentId else {
-                return .failure(BackupUploadError.MissingParentFolder)
-            }
-
-            self.logger.info("Remote parent id \(remoteParentId)")
-
             let result = try await networkFacade.uploadFile(
                 input: inputStream,
                 encryptedOutput: safeEncryptedContentURL,
@@ -282,6 +297,37 @@ struct BackupUploadService {
 
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
+            }
+
+            if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                // Handle duplicated folder error
+                do {
+                    let parentChilds = try await backupNewAPI.getBackupFiles(folderId: "\(remoteParentId)")
+
+                    let nodePlainName = (node.name as NSString).deletingPathExtension
+                    let file = parentChilds.result.first { currentFile in
+                        return currentFile.plainName == nodePlainName && currentFile.removed == false
+                    }
+
+                    guard let file = file else {
+                        return .failure(BackupUploadError.CannotFindNodeInServer)
+                    }
+
+                    try BackupRealm.shared.addSyncedNode(
+                        SyncedNode(
+                            remoteId: file.id,
+                            remoteUuid: file.uuid,
+                            url: "\(fileURL)",
+                            parentId: node.parentId,
+                            remoteParentId: remoteParentId
+                        )
+                    )
+
+                    return .success(BackupTreeNodeSyncResult(id: file.id, uuid: file.uuid))
+                } catch {
+                    self.logger.error("❌ Failed to insert already created folder in database: \(self.getErrorDescription(error: error))")
+                    return .failure(error)
+                }
             }
 
             return .failure(error)
