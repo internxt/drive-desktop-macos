@@ -19,34 +19,43 @@ struct WidgetDeviceSelector: View {
             switch backupsService.deviceResponse {
             case .success(let devices):
                 if devices.isEmpty {
-                    VStack(alignment: .center) {
-                        Spacer()
+                    VStack(alignment: .leading) {
+                        HStack(spacing: 5) {
+                            AppText("BACKUP_SETTINGS_DEVICES")
+                                .foregroundColor(.Gray80)
+                                .font(.SMMedium)
 
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                            .scaleEffect(2.0, anchor: .center)
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                                .scaleEffect(0.5, anchor: .center)
+                        }
 
                         Spacer()
                     }
-                    .frame(width: 160, alignment: .center)
+                    .frame(width: 160, alignment: .leading)
                 } else {
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(devices) { device in
-                            DeviceItem(
-                                deviceName: device.plainName ?? "",
-                                isSelected: self.selectedDeviceId == device.id,
-                                isCurrentDevice: device.isCurrentDevice
-                            ) {
-                                withAnimation {
+                    VStack(alignment: .leading, spacing: 8) {
+                        AppText("BACKUP_SETTINGS_DEVICES")
+                            .foregroundColor(.Gray80)
+                            .font(.SMMedium)
+
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(devices) { device in
+                                DeviceItem(
+                                    deviceName: device.plainName ?? "",
+                                    isSelected: self.selectedDeviceId == device.id,
+                                    isCurrentDevice: device.isCurrentDevice
+                                ) {
                                     self.selectedDeviceId = device.id
-                                    self.selectedDevice = device
+                                    self.selectedDevice = device                                    
                                 }
                             }
                         }
-                    }
-                    .onAppear {
-                        self.selectedDeviceId = devices.first?.id
-                        self.selectedDevice = devices.first
+                        .onAppear {
+                            self.selectedDeviceId = devices.first?.id
+                            self.selectedDevice = devices.first
+                        }
+                        .frame(width: 160, alignment: .leading)
                     }
                     .frame(width: 160, alignment: .leading)
                 }
@@ -89,7 +98,7 @@ struct WidgetDeviceSelector: View {
 }
 
 struct DeviceItem: View {
-    
+
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
     var isSelected: Bool
@@ -107,6 +116,8 @@ struct DeviceItem: View {
             AppText(deviceName)
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
+                .lineLimit(1)
+
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.horizontal], 16)
@@ -116,6 +127,7 @@ struct DeviceItem: View {
         .onTapGesture {
             onTap()
         }
+        .help(Text(deviceName))
         .cornerRadius(8.0)
         .shadow(color: isSelected ? .black.opacity(0.05) : .clear, radius: 1, x: 0.0, y: 1.0)
         .overlay(

@@ -41,6 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let activityManager = ActivityManager()
     var globalUIManager = GlobalUIManager()
     let backupsService = BackupsService()
+    let settingsManager = SettingsTabManager()
 
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
@@ -61,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         initializeBackups()
 
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -350,6 +351,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 .environmentObject(self.globalUIManager)
                 .environmentObject(self.usageManager)
                 .environmentObject(self.activityManager)
+                .environmentObject(self.settingsManager)
         )
     }
     
