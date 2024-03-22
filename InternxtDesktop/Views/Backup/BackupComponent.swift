@@ -54,7 +54,7 @@ struct BackupComponent: View {
                     } else {
                         AppButton(title: "COMMON_BACKUP_NOW", onClick: {
                             doBackup()
-                        }, type: .primary, isExpanded: true)
+                        }, type: .primary, isEnabled: !backupsService.foldernames.isEmpty, isExpanded: true)
                     }
                 } else {
                     AppButton(title: "BACKUP_DOWNLOAD", onClick: {
@@ -89,9 +89,6 @@ struct BackupComponent: View {
                     }
                 }
                 .padding([.top], 12)
-
-                UploadFrequencySelector(currentFrequency: self.$currentFrequency)
-                    .padding([.top], 12)
             }
 
             VStack(alignment: .leading, spacing: 8) {

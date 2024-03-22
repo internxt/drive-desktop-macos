@@ -18,7 +18,7 @@ final class BackupTreeGeneratorTests: XCTestCase {
         tmpDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("BACKUP_TREE_GENERATOR_TESTS_\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: tmpDirectoryURL, withIntermediateDirectories: true)
         let networkAPI = NetworkAPI(baseUrl: "", basicAuthToken: "", clientName: "", clientVersion: "")
-        sut = BackupTreeGenerator(root: tmpDirectoryURL, backupUploadService: BackupUploadService(networkFacade: NetworkFacade(mnemonic: "", networkAPI: networkAPI), encryptedContentDirectory: URL(string: "https://drive.internxt.com/app")!, deviceId: 0, bucketId: "", authToken: ""), progress: Progress())
+        sut = BackupTreeGenerator(root: tmpDirectoryURL, backupUploadService: BackupUploadService(networkFacade: NetworkFacade(mnemonic: "", networkAPI: networkAPI), encryptedContentDirectory: URL(string: "https://drive.internxt.com/app")!, deviceId: 0, bucketId: "", authToken: "", newAuthToken: ""), progress: Progress())
     }
     
     override func tearDownWithError() throws {

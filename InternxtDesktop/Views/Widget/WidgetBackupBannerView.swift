@@ -21,6 +21,7 @@ struct ImageContainerView: View {
 
 struct WidgetBackupBannerView: View {
 
+    @EnvironmentObject var settingsManager: SettingsTabManager
     let dismiss: () -> Void
 
     var body: some View {
@@ -57,7 +58,7 @@ struct WidgetBackupBannerView: View {
                 }
 
                 AppButton(title: "BACKUP_BUTTON_LABEL", onClick: {
-                    handleOpenPreferences()
+                    handleOpenBackupSettings()
                 }, size: .SM)
             }
             .padding([.leading], 16)
@@ -70,7 +71,13 @@ struct WidgetBackupBannerView: View {
 
     }
 
-    func handleOpenPreferences() -> Void {
+    func handleOpenBackupSettings() -> Void {
+        do {
+            try ConfigLoader().shouldDisplayBackupsBanner(shouldDisplay: false)
+        } catch {
+            error.reportToSentry()
+        }
+        settingsManager.focusedTab = .Backup
         NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
     }
 }

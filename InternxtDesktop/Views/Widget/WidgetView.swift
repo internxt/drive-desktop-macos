@@ -14,6 +14,7 @@ struct WidgetView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var globalUIManager: GlobalUIManager
     @EnvironmentObject var usageManager: UsageManager
+    @EnvironmentObject var settingsManager: SettingsTabManager
 
     @State private var showBackupBanner = false
     var isEmpty: Bool = true
@@ -33,11 +34,13 @@ struct WidgetView: View {
                         .zIndex(100)
                         .environmentObject(self.globalUIManager)
                         .environmentObject(self.usageManager)
+                        .environmentObject(self.settingsManager)
 
                     if !activityManager.activityEntries.isEmpty && self.showBackupBanner {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
                         }
+                        .environmentObject(self.settingsManager)
                     }
 
                     VStack(alignment: .center) {

@@ -11,6 +11,7 @@ struct SettingsMenuView: View {
     
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
+    @EnvironmentObject var settingsManager: SettingsTabManager
     var openSendFeedback: () -> Void
     var isPreview: Bool = false;
     
@@ -56,6 +57,7 @@ struct SettingsMenuView: View {
     }
     
     func handleOpenPreferences() -> Void {
+        settingsManager.focusedTab = .General
         Task { await usageManager.updateUsage() }
         NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
     }

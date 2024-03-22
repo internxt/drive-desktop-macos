@@ -36,9 +36,6 @@ struct BackupsTabView: View {
 
     var DevicesTab: some View {
         VStack(alignment: .leading, spacing: 8) {
-            AppText("BACKUP_SETTINGS_DEVICES")
-                .foregroundColor(.Gray80)
-                .font(.SMMedium)
 
             WidgetDeviceSelector(
                 backupsService: backupsService,

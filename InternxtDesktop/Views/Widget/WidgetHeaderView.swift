@@ -12,6 +12,7 @@ import Combine
 struct WidgetHeaderView: View {
     @EnvironmentObject var globalUIManager: GlobalUIManager
     @EnvironmentObject var usageManager: UsageManager
+    @EnvironmentObject var settingsManager: SettingsTabManager
     @Environment(\.colorScheme) var colorScheme
 
     @State var settingsMenuOpen = false
@@ -90,12 +91,12 @@ struct WidgetHeaderView: View {
                 
                 if #available(macOS 12, *) {
                     view.overlay(alignment: .bottomLeading) {
-                        SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager).onTapBackground(enabled: settingsMenuOpen) {
+                        SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager).environmentObject(settingsManager).onTapBackground(enabled: settingsMenuOpen) {
                                 self.settingsMenuOpen = false
                             }
                     }
                 } else {
-                    view.overlay(SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+                    view.overlay(SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager).environmentObject(settingsManager)
                                  ,alignment: .bottomLeading)
                 }
                     
