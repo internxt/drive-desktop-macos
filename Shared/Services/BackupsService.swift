@@ -49,6 +49,12 @@ class BackupsService: ObservableObject {
 
     func clean() throws {
         foldernames = []
+        hasOngoingBackup = false
+        currentDeviceHasBackup = false
+        selectedDevice = nil
+        service = nil
+        deviceResponse = nil
+        try self.stopBackup()
         let realm = getRealm()
         try realm.write {
             realm.deleteAll()
@@ -299,6 +305,7 @@ class BackupsService: ObservableObject {
         self.hasOngoingBackup = false
         service?.stopBackup()
     }
+
 }
 
 class FoldernameToBackup: Object {
