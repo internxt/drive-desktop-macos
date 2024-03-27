@@ -12,6 +12,7 @@ struct WidgetDeviceSelector: View {
 
     @StateObject var backupsService: BackupsService
     @Binding var selectedDeviceId: Int?
+    private let deviceName = ConfigLoader().getDeviceName()
 
     var body: some View {
         Group {
@@ -40,7 +41,7 @@ struct WidgetDeviceSelector: View {
 
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(devices) { device in
-                                if (device.hasBackups) {
+                                if (device.hasBackups || device.plainName == deviceName) {
                                     DeviceItem(
                                         deviceName: device.plainName ?? "",
                                         isSelected: self.selectedDeviceId == device.id,
