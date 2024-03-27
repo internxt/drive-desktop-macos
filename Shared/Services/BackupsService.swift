@@ -31,6 +31,7 @@ class BackupsService: ObservableObject {
     @Published var hasOngoingBackup = false
     @Published var currentDeviceHasBackup = false
     private var service: XPCBackupServiceProtocol? = nil
+    @Published var selectedDevice: Device? = nil
     private let backupAPI: BackupAPI = APIFactory.Backup
     private let backupNewAPI: BackupAPI = APIFactory.BackupNew
 
@@ -155,6 +156,14 @@ class BackupsService: ObservableObject {
         return currentDevice
     }
 
+    func updateDeviceDate() async throws {
+        logger.info("Update device date")
+        let currentDevice = try await getCurrentDevice()
+        let newDevice = try await DeviceService.shared.editDevice(deviceId: currentDevice.id, deviceName: currentDevice.plainName ?? "")
+        self.selectedDevice = newDevice
+        await self.loadAllDevices()
+    }
+
     func deleteBackup(deviceId: Int?) async throws -> Bool {
         guard let deviceId = deviceId else {
             throw BackupError.cannotGetDeviceId
@@ -217,6 +226,13 @@ class BackupsService: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
             self?.hasOngoingBackup = false
+        }
+        Task {
+            do {
+                try await self.updateDeviceDate()
+            } catch {
+                error.reportToSentry()
+            }
         }
     }
 

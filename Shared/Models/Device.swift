@@ -24,13 +24,13 @@ struct Device: Codable, Identifiable {
     let createdAt: String
     let updatedAt: String
     let userId: Int?
-    var hasBackup: Bool = false
+    var hasBackups: Bool = false
 
     var isCurrentDevice: Bool {
         return ConfigLoader().getDeviceName() == self.plainName
     }
 
-    init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plainName: String? = nil, bucket: String?, encryptVersion: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, hasBackup: Bool) {
+    init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plainName: String? = nil, bucket: String?, encryptVersion: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, hasBackups: Bool) {
         let decrypt = Decrypt()
 
         self.id = id
@@ -57,7 +57,7 @@ struct Device: Codable, Identifiable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.userId = userId
-        self.hasBackup = hasBackup
+        self.hasBackups = hasBackups
     }
 
     init(from deviceAsFolder: DeviceAsFolder) {
@@ -87,7 +87,7 @@ struct Device: Codable, Identifiable {
         self.createdAt = deviceAsFolder.createdAt
         self.updatedAt = deviceAsFolder.updatedAt
         self.userId = deviceAsFolder.user_id ?? deviceAsFolder.userId
-        self.hasBackup = deviceAsFolder.hasBackup ?? false
+        self.hasBackups = deviceAsFolder.hasBackups ?? false
     }
 
 }

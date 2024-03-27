@@ -30,6 +30,7 @@ struct DeviceService {
         })
 
         if let currentDevice = currentDevice {
+            print("fetch current device", currentDevice.updatedAt)
             self.currentDeviceId = currentDevice.id
             filteredDevices.append(currentDevice)
         }
@@ -55,6 +56,11 @@ struct DeviceService {
 
     public func addCurrentDevice(deviceName: String) async throws {
         let _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
+    }
+
+    public func editDevice(deviceId: Int, deviceName: String) async throws -> Device {
+        let deviceAsFolder = try await backupAPI.editDeviceName(deviceId: deviceId, deviceName: deviceName)
+        return Device(from: deviceAsFolder)
     }
 
     public func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
