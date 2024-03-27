@@ -41,13 +41,15 @@ struct WidgetDeviceSelector: View {
 
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(devices) { device in
-                                DeviceItem(
-                                    deviceName: device.plainName ?? "",
-                                    isSelected: self.selectedDeviceId == device.id,
-                                    isCurrentDevice: device.isCurrentDevice
-                                ) {
-                                    self.selectedDeviceId = device.id
-                                    self.selectedDevice = device                                    
+                                if (device.hasBackups) {
+                                    DeviceItem(
+                                        deviceName: device.plainName ?? "",
+                                        isSelected: self.selectedDeviceId == device.id,
+                                        isCurrentDevice: device.isCurrentDevice
+                                    ) {
+                                        self.selectedDeviceId = device.id
+                                        self.selectedDevice = device
+                                    }
                                 }
                             }
                         }

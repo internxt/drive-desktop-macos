@@ -102,8 +102,8 @@ struct FolderSelectorView: View {
     private func doBackup() {
         Task {
             do {
-                try await self.backupsService.startBackup(for: backupsService.foldernames)
                 closeWindow()
+                try await self.backupsService.startBackup(for: backupsService.foldernames)
             } catch {
                 self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
             }
