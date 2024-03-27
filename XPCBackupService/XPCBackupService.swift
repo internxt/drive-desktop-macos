@@ -12,6 +12,8 @@ import InternxtSwiftCore
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
     public static let shared = XPCBackupService()
+    private var backupUploadService: BackupUploadService? = nil
+    private var trees: [BackupTreeNode] = []
     private let logger = Logger(subsystem: "com.internxt", category: "XPCBackupService")
 
     @objc func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void) {
@@ -27,7 +29,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
             let progress = Progress()
 
-            let backupUploadService = BackupUploadService(
+            backupUploadService = BackupUploadService(
                 networkFacade: NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI),
                 encryptedContentDirectory: FileManager.default.temporaryDirectory,
                 deviceId: deviceId,
@@ -35,6 +37,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 authToken: authToken,
                 newAuthToken: newAuthToken
             )
+
+            guard let backupUploadService = backupUploadService else {
+                reply(nil, "Cannot create backup upload service")
+                return
+            }
+
+            backupUploadService.canDoBackup = true
 
             var totalCount = 0
             for backupURL in backupURLs {
@@ -44,7 +53,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             progress.totalUnitCount = Int64(totalCount)
 
-            var trees: [BackupTreeNode] = []
             for backupURL in backupURLs {
                 let url = URL(fileURLWithPath: backupURL)
                 let backupTreeGenerator = BackupTreeGenerator(root: url, backupUploadService: backupUploadService, progress: progress)
@@ -68,6 +76,12 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
         }
 
+    }
+
+    @objc func stopBackup() {
+        logger.debug("STOP BACKUP")
+        trees = []
+        backupUploadService?.stopSync()
     }
 
     private func getNodesCountFromURL(_ url: URL) -> Int {

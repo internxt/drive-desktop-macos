@@ -30,6 +30,7 @@ class BackupsService: ObservableObject {
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var hasOngoingBackup = false
     @Published var currentDeviceHasBackup = false
+    private var service: XPCBackupServiceProtocol? = nil
     @Published var selectedDevice: Device? = nil
     private let backupAPI: BackupAPI = APIFactory.Backup
     private let backupNewAPI: BackupAPI = APIFactory.BackupNew
@@ -180,6 +181,12 @@ class BackupsService: ObservableObject {
             let _ = try await backupAPI.deleteBackupFolder(folderId: folderId)
         }
 
+        let realm = getRealm()
+        try realm.write {
+            let allSyncedNodes = realm.objects(SyncedNode.self)
+            realm.delete(allSyncedNodes)
+        }
+
         return true
     }
 
@@ -254,12 +261,16 @@ class BackupsService: ObservableObject {
 
         var initializationError: Error? = nil
 
-        let service = connectionToService.remoteObjectProxyWithErrorHandler { error in
+        service = connectionToService.remoteObjectProxyWithErrorHandler { error in
             initializationError = error
         } as? XPCBackupServiceProtocol
 
         if let error = initializationError {
             throw error
+        }
+
+        guard let service = service else {
+            throw BackupError.cannotInitializeXPCService
         }
 
         let configLoader = ConfigLoader()
@@ -273,7 +284,7 @@ class BackupsService: ObservableObject {
 
         let urlsStrings = folders.map { self.formatFolderURL(url: $0.url) }
 
-        service?.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+        service.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
             if let error = error {
                 self.propagateError(errorMessage: error)
             } else {
@@ -281,6 +292,12 @@ class BackupsService: ObservableObject {
             }
         })
 
+    }
+
+    func stopBackup() throws {
+        logger.debug("Going to stop backup")
+        self.hasOngoingBackup = false
+        service?.stopBackup()
     }
 }
 
