@@ -279,6 +279,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             do {
                 try await domainManager.exitDomain()
+                try backupsService.clean()
             } catch {
                 error.reportToSentry()
             }
