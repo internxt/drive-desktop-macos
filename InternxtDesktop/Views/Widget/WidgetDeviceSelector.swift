@@ -11,7 +11,6 @@ import InternxtSwiftCore
 struct WidgetDeviceSelector: View {
 
     @StateObject var backupsService: BackupsService
-    @Binding var selectedDevice: Device?
     @Binding var selectedDeviceId: Int?
 
     var body: some View {
@@ -41,19 +40,21 @@ struct WidgetDeviceSelector: View {
 
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(devices) { device in
-                                DeviceItem(
-                                    deviceName: device.plainName ?? "",
-                                    isSelected: self.selectedDeviceId == device.id,
-                                    isCurrentDevice: device.isCurrentDevice
-                                ) {
-                                    self.selectedDeviceId = device.id
-                                    self.selectedDevice = device                                    
+                                if (device.hasBackups) {
+                                    DeviceItem(
+                                        deviceName: device.plainName ?? "",
+                                        isSelected: self.selectedDeviceId == device.id,
+                                        isCurrentDevice: device.isCurrentDevice
+                                    ) {
+                                        self.selectedDeviceId = device.id
+                                        backupsService.selectedDevice = device
+                                    }
                                 }
                             }
                         }
                         .onAppear {
                             self.selectedDeviceId = devices.first?.id
-                            self.selectedDevice = devices.first
+                            backupsService.selectedDevice = devices.first
                         }
                         .frame(width: 160, alignment: .leading)
                     }
@@ -150,5 +151,5 @@ struct DeviceItem: View {
 }
 
 #Preview {
-    WidgetDeviceSelector(backupsService: BackupsService(), selectedDevice: .constant(nil), selectedDeviceId: .constant(nil))
+    WidgetDeviceSelector(backupsService: BackupsService(), selectedDeviceId: .constant(nil))
 }
