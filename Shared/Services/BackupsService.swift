@@ -30,6 +30,7 @@ class BackupsService: ObservableObject {
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var hasOngoingBackup = false
     @Published var currentDeviceHasBackup = false
+    @Published var selectedDevice: Device? = nil
     private let backupAPI: BackupAPI = APIFactory.Backup
     private let backupNewAPI: BackupAPI = APIFactory.BackupNew
 
@@ -157,7 +158,8 @@ class BackupsService: ObservableObject {
     func updateDeviceDate() async throws {
         logger.info("Update device date")
         let currentDevice = try await getCurrentDevice()
-        let _ = try await DeviceService.shared.editDevice(deviceId: currentDevice.id, deviceName: currentDevice.plainName ?? "")
+        let newDevice = try await DeviceService.shared.editDevice(deviceId: currentDevice.id, deviceName: currentDevice.plainName ?? "")
+        self.selectedDevice = newDevice
         await self.loadAllDevices()
     }
 

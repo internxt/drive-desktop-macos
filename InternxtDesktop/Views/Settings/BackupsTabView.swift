@@ -15,7 +15,6 @@ struct BackupsTabView: View {
     @Binding var showDeleteBackupDialog: Bool
     @StateObject var backupsService: BackupsService
     private let deviceName = ConfigLoader().getDeviceName()
-    @State private var selectedDevice: Device? = nil
     @State var progress: Double = 0.48
 
     var body: some View {
@@ -39,7 +38,6 @@ struct BackupsTabView: View {
 
             WidgetDeviceSelector(
                 backupsService: backupsService,
-                selectedDevice: $selectedDevice,
                 selectedDeviceId: $selectedDeviceId
             )
 
@@ -61,9 +59,9 @@ struct BackupsTabView: View {
 
     var BackupTab: some View {
         Group {
-            if self.selectedDevice == nil {
+            if backupsService.selectedDevice == nil {
                 Spacer()
-            } else if deviceName == self.selectedDevice?.plainName {
+            } else if deviceName == backupsService.selectedDevice?.plainName {
                 if backupsService.hasOngoingBackup {
                     ScrollView(showsIndicators: false) {
                         BackupComponent(
@@ -85,7 +83,7 @@ struct BackupsTabView: View {
                             isCurrentDevice: true,
                             numOfFolders: backupsService.foldernames.count,
                             isLoading: false,
-                            lastUpdated: self.selectedDevice?.updatedAt,
+                            lastUpdated: backupsService.selectedDevice?.updatedAt,
                             backupsService: self.backupsService,
                             progress: .constant(0.0),
                             showStopBackupDialog: $showStopBackupDialog,
@@ -107,11 +105,11 @@ struct BackupsTabView: View {
                 }
             } else {
                 BackupComponent(
-                    deviceName: self.selectedDevice?.plainName ?? "",
+                    deviceName: backupsService.selectedDevice?.plainName ?? "",
                     isCurrentDevice: false,
                     numOfFolders: 0,
                     isLoading: false,
-                    lastUpdated: self.selectedDevice?.updatedAt,
+                    lastUpdated: backupsService.selectedDevice?.updatedAt,
                     backupsService: self.backupsService,
                     progress: .constant(1),
                     showStopBackupDialog: $showStopBackupDialog,

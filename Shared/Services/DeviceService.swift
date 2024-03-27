@@ -30,6 +30,7 @@ struct DeviceService {
         })
 
         if let currentDevice = currentDevice {
+            print("fetch current device", currentDevice.updatedAt)
             self.currentDeviceId = currentDevice.id
             filteredDevices.append(currentDevice)
         }
