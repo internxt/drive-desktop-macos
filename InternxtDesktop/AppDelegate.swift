@@ -59,7 +59,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ErrorUtils.start()
 
         checkVolumeAndEjectIfNeeded()
-        initializeBackups()
 
         self.windowsManager = WindowsManager(
             initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
@@ -173,11 +172,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.logger.error("Failed to eject the Internxt installer: \(error.localizedDescription)")
         }
     }
-    
-    
-    
-    
-    
+
     private func finishOrSkipOnboarding() {
         do {
             self.openFileProviderRoot()
