@@ -7,8 +7,10 @@
 
 import Foundation
 import InternxtSwiftCore
+import os.log
 
 struct DeviceService {
+    private let logger = Logger(subsystem: "com.internxt", category: "DeviceService")
     static var shared = DeviceService()
     private let backupAPI: BackupAPI = APIFactory.Backup
     private let deviceAPI: DriveAPI = APIFactory.DriveNew
@@ -36,7 +38,10 @@ struct DeviceService {
 
         filteredDevices.append(contentsOf: devices.filter { $0.name != currentDevice?.name })
 
-        return filteredDevices.filter { !$0.deleted }
+        let devicesToReturn = filteredDevices.filter { !$0.deleted }
+        logger.debug("devices to return \(devicesToReturn)")
+
+        return devicesToReturn
     }
 
     public func getCurrentDevice() async throws -> Device? {
