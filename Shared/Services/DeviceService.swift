@@ -39,7 +39,7 @@ struct DeviceService {
         filteredDevices.append(contentsOf: devices.filter { $0.name != currentDevice?.name })
 
         let devicesToReturn = filteredDevices.filter { !$0.deleted }
-        logger.debug("devices to return \(devicesToReturn)")
+        logger.info("devices to return \(devicesToReturn)")
 
         return devicesToReturn
     }

@@ -124,7 +124,7 @@ class BackupsService: ObservableObject {
                 folders.append(foldername)
             }
         }
-        logger.debug("Got foldernames successfully")
+        logger.info("Got foldernames successfully")
         self.foldernames = folders
     }
 
@@ -134,7 +134,7 @@ class BackupsService: ObservableObject {
             await MainActor.run { [weak self] in
                 self?.deviceResponse = response
             }
-            logger.debug("Got devices successfully")
+            logger.info("Got devices successfully")
             if let deviceId = DeviceService.shared.currentDeviceId {
                 let _ = try await self.getDeviceFolders(deviceId: deviceId)
             }
@@ -152,7 +152,7 @@ class BackupsService: ObservableObject {
         do {
             if let currentDeviceName = ConfigLoader().getDeviceName() {
                 try await DeviceService.shared.addCurrentDevice(deviceName: currentDeviceName)
-                logger.debug("Added current device \(currentDeviceName)")
+                logger.info("Added current device \(currentDeviceName)")
             }
         } catch {
             logger.error("Error adding device \(error)")
