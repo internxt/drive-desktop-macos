@@ -9,7 +9,6 @@ import SwiftUI
 import RealmSwift
 import FileProvider
 import InternxtSwiftCore
-import os.log
 
 enum BackupUploadError: Error {
     case CannotOpenInputStream
@@ -27,7 +26,7 @@ enum BackupUploadError: Error {
 }
 
 class BackupUploadService: ObservableObject {
-    private let logger = Logger(subsystem: "com.internxt", category: "BackupUpload")
+    private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let config = ConfigLoader().get()

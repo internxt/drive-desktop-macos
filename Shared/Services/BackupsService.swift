@@ -8,7 +8,6 @@
 import Foundation
 import RealmSwift
 import InternxtSwiftCore
-import os.log
 
 enum BackupError: Error {
     case cannotCreateURL
@@ -25,7 +24,7 @@ enum BackupError: Error {
 }
 
 class BackupsService: ObservableObject {
-    private let logger = Logger(subsystem: "com.internxt", category: "BackupsService")
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var hasOngoingBackup = false

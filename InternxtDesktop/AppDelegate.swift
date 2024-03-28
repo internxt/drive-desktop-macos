@@ -9,7 +9,6 @@ import Foundation
 
 import Cocoa
 import SwiftUI
-import os.log
 import FileProvider
 import InternxtSwiftCore
 import Combine

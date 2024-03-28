@@ -7,10 +7,9 @@
 
 import Foundation
 import InternxtSwiftCore
-import os.log
 
 struct DeviceService {
-    private let logger = Logger(subsystem: "com.internxt", category: "DeviceService")
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     static var shared = DeviceService()
     private let backupAPI: BackupAPI = APIFactory.Backup
     private let deviceAPI: DriveAPI = APIFactory.DriveNew

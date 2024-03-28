@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import os.log
 import InternxtSwiftCore
 
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
@@ -14,7 +13,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     public static let shared = XPCBackupService()
     private var backupUploadService: BackupUploadService? = nil
     private var trees: [BackupTreeNode] = []
-    private let logger = Logger(subsystem: "com.internxt", category: "XPCBackupService")
+    private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
 
     @objc func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void) {
 
