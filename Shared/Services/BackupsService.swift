@@ -137,6 +137,7 @@ class BackupsService: ObservableObject {
                 let _ = try await self.getDeviceFolders(deviceId: deviceId)
             }
         } catch {
+            logger.error("error fetching devices \(error)")
             error.reportToSentry()
             let response: Result<[Device], Error> = .failure(error)
             await MainActor.run { [weak self] in
@@ -151,6 +152,7 @@ class BackupsService: ObservableObject {
                 try await DeviceService.shared.addCurrentDevice(deviceName: currentDeviceName)
             }
         } catch {
+            logger.error("error adding device \(error)")
             error.reportToSentry()
         }
     }

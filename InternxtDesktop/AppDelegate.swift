@@ -247,6 +247,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let manager = domainManager.manager else {
                     throw FileProviderError.CannotGetFileProviderManager
                 }
+                self.initializeBackups()
                 self.startSignallingFileProvider(domainManager: manager)
                 self.logger.info("Login success")
             } catch {
