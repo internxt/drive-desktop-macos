@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -545,6 +545,10 @@
 		E1FE2B292BC539810073B26D /* BackupRemoteSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRemoteSync.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		47507F322D09EF570074E081 /* KyberTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = KyberTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		31DEAEAB2B75139400E76D53 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -1027,6 +1031,7 @@
 				E15F8C262B762B0400C60EFA /* XPCBackupServiceTests */,
 				AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */,
 				AA08891A2C4AF29F00D5CC40 /* InternxtDesktopTests */,
+				47507F322D09EF570074E081 /* KyberTests */,
 				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 				E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */,
