@@ -55,7 +55,7 @@ struct FolderSelectorView: View {
                                     if (!urls.contains(url)) {
                                         try self.backupsService.addFoldernameToBackup(
                                           FoldernameToBackup(
-                                              url: url.absoluteString,
+                                              url: url.relativePath,
                                               status: .selected
                                           )
                                         )
