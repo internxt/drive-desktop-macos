@@ -68,7 +68,6 @@ class BackupTreeGenerator: BackupTreeGeneration {
                     for case let url as URL in enumerator {
                         do {
                             try self.insertInTree(url)
-                            logger.info("Node inserted successfully")
                         } catch {
                             // We need to decide what to do in this case, for now, at least log the error
                             logger.error("Failed to insert URL \(url) in the backup tree: \(error)")
@@ -78,7 +77,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
                     continuation.resume(returning: self.rootNode)
 
                 } else {
-                    logger.info("Node \(self.root) is not a directory")
+                    logger.error("Node \(self.root) is not a directory")
                     continuation.resume(throwing: BackupTreeGeneratorError.rootIsNotDirectory)
                 }
             } catch {

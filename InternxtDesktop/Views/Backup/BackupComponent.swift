@@ -127,6 +127,7 @@ struct BackupComponent: View {
             do {
                 try await self.backupsService.startBackup(for: backupsService.foldernames)
             } catch {
+                self.backupsService.hasOngoingBackup = false
                 self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
             }
         }

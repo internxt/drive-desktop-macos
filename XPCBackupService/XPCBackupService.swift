@@ -20,6 +20,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         logger.info("Going to backup folders: \(backupURLs)")
         Task {
             guard let networkAuth = networkAuth else {
+                logger.error("Cannot get network auth")
                 reply(nil, "Cannot get network auth")
                 return
             }
@@ -74,6 +75,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
             }
 
+            logger.info("Synced all nodes.")
             reply("synced all nodes for all trees", nil)
 
         }

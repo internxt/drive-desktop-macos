@@ -250,19 +250,24 @@ class BackupsService: ObservableObject {
 
     @MainActor func startBackup(for folders: [FoldernameToBackup]) async throws {
         logger.info("Backup started")
+        logger.info("Going to backup folders \(folders)")
         self.hasOngoingBackup = true
         if self.foldernames.isEmpty {
+            logger.error("Foldernames are empty")
             throw BackupError.emptyFolders
         }
 
         let currentDevice = try await self.getCurrentDevice()
+        logger.info("Current device id \(currentDevice.id)")
 
         guard let bucketId = currentDevice.bucket else {
+            logger.error("Bucket id is nil")
             throw BackupError.bucketIdIsNil
         }
 
         let authManager = AuthManager()
         guard let mnemonic = authManager.mnemonic else {
+            logger.error("Cannot get mnemonic")
             throw BackupError.cannotGetMnemonic
         }
 
@@ -278,10 +283,12 @@ class BackupsService: ObservableObject {
         } as? XPCBackupServiceProtocol
 
         if let error = initializationError {
+            logger.error("XPC Service initialization error")
             throw error
         }
 
         guard let service = service else {
+            logger.error("XPC Service is nil")
             throw BackupError.cannotInitializeXPCService
         }
 
@@ -291,10 +298,13 @@ class BackupsService: ObservableObject {
         let newAuthToken = configLoader.getAuthToken()
 
         guard let authToken = authToken, let newAuthToken = newAuthToken else {
+            logger.error("Cannot create auth token")
             throw BackupError.cannotCreateAuthToken
         }
 
         let urlsStrings = folders.map { self.formatFolderURL(url: $0.url) }
+
+        logger.info("URL Strings \(urlsStrings)")
 
         service.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
             if let error = error {
