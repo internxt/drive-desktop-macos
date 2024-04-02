@@ -148,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.windowsManager.closeWindow(id: "send-feedback")
     }
 
-    private func initializeBackups() {
+    @MainActor private func initializeBackups() {
         backupsService.assignUrls()
 
         Task {
@@ -246,7 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let manager = domainManager.manager else {
                     throw FileProviderError.CannotGetFileProviderManager
                 }
-                self.initializeBackups()
+                await self.initializeBackups()
                 self.startSignallingFileProvider(domainManager: manager)
                 self.logger.info("Login success")
             } catch {

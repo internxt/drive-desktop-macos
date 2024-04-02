@@ -42,8 +42,8 @@ extension URL {
         NSWorkspace.shared.open(self)
     }
     
-    var isDirectory: Bool {
-       return (try? resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+    func isDirectory() throws -> Bool {
+       return (try resourceValues(forKeys: [.isDirectoryKey])).isDirectory == true
     }
     
     public func directoryContents() -> [URL] {

@@ -61,7 +61,7 @@ class BackupsService: ObservableObject {
         }
     }
 
-    func addFoldernameToBackup(_ foldernameToBackup: FoldernameToBackup) throws {
+    @MainActor func addFoldernameToBackup(_ foldernameToBackup: FoldernameToBackup) throws {
         guard let _ = URL(string: foldernameToBackup.url) else {
             throw BackupError.cannotCreateURL
         }
@@ -101,7 +101,7 @@ class BackupsService: ObservableObject {
         }
     }
 
-    func getFoldernames() -> [String] {
+    @MainActor func getFoldernames() -> [String] {
         let foldernamesToBackup = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: false)
 
         var array: [String] = []
@@ -114,7 +114,7 @@ class BackupsService: ObservableObject {
         return array
     }
 
-    func assignUrls() {
+    @MainActor func assignUrls() {
         let foldernamesToBackup = getRealm().objects(FoldernameToBackup.self).sorted(byKeyPath: "createdAt", ascending: true)
 
         var folders: [FoldernameToBackup] = []
@@ -242,6 +242,7 @@ class BackupsService: ObservableObject {
             do {
                 try await self.updateDeviceDate()
             } catch {
+                logger.error("Cannot update device date \(error)")
                 error.reportToSentry()
             }
         }

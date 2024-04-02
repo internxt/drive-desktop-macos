@@ -53,12 +53,7 @@ struct FolderSelectorView: View {
                                         return URL(string: foldername.url)
                                     }
                                     if (!urls.contains(url)) {
-                                        let folderURL: String
-                                        if #available(macOS 13.0, *) {
-                                            folderURL = url.path()
-                                        } else {
-                                            folderURL = url.path
-                                        }
+                                        let folderURL = url.absoluteString
                                         try self.backupsService.addFoldernameToBackup(
                                           FoldernameToBackup(
                                               url: folderURL,

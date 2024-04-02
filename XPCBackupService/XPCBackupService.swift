@@ -16,7 +16,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
 
     @objc func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void) {
-
+        logger.info("Start backup")
+        logger.info("Going to backup folders: \(backupURLs)")
         Task {
             guard let networkAuth = networkAuth else {
                 reply(nil, "Cannot get network auth")
@@ -38,6 +39,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             )
 
             guard let backupUploadService = backupUploadService else {
+                logger.error("Cannot create backup upload service")
                 reply(nil, "Cannot create backup upload service")
                 return
             }
@@ -46,27 +48,28 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             var totalCount = 0
             for backupURL in backupURLs {
-                let count = self.getNodesCountFromURL(URL(fileURLWithPath: backupURL))
-                totalCount += count
+                let count = self.getNodesCountFromURL(URL(fileURLWithPath: backupURL.removingPercentEncoding ?? ""))
+                totalCount = totalCount + count
             }
+
+            logger.info("Total progress to backup \(totalCount)")
 
             progress.totalUnitCount = Int64(totalCount)
 
             for backupURL in backupURLs {
-                let url = URL(fileURLWithPath: backupURL)
-                let backupTreeGenerator = BackupTreeGenerator(root: url, backupUploadService: backupUploadService, progress: progress)
+                let backupTreeGenerator = BackupTreeGenerator(root: URL(fileURLWithPath: backupURL.removingPercentEncoding ?? ""), backupUploadService: backupUploadService, progress: progress)
 
                 let backupTree = try await backupTreeGenerator.generateTree()
+                logger.info("Backup tree created successfully")
 
                 trees.append(backupTree)
             }
-
-            logger.info("Total progress to backup \(progress.totalUnitCount)")
 
             for backupTree in trees {
                 do {
                     try await backupTree.syncNodes()
                 } catch {
+                    logger.error("Error backing up device \(error)")
                     reply(nil, error.localizedDescription)
                 }
             }
