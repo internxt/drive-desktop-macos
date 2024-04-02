@@ -15,9 +15,10 @@ struct BackupRealm {
 
     func getRealm() throws -> Realm {
         do {
-            let config = Realm.Configuration(schemaVersion: 2)
-            Realm.Configuration.defaultConfiguration = config
-            return try Realm(fileURL: ConfigLoader.realmURL)
+            return try Realm(configuration: Realm.Configuration(
+                fileURL: ConfigLoader.realmURL,
+                deleteRealmIfMigrationNeeded: true
+            ))
         } catch {
             throw BackupUploadError.CannotCreateRealm
         }
