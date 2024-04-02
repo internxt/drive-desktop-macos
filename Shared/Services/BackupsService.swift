@@ -8,7 +8,6 @@
 import Foundation
 import RealmSwift
 import InternxtSwiftCore
-import os.log
 
 enum BackupError: Error {
     case cannotCreateURL
@@ -25,7 +24,7 @@ enum BackupError: Error {
 }
 
 class BackupsService: ObservableObject {
-    private let logger = Logger(subsystem: "com.internxt", category: "BackupsService")
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldernames: [FoldernameToBackup] = []
     @Published var hasOngoingBackup = false
@@ -37,9 +36,10 @@ class BackupsService: ObservableObject {
 
     private func getRealm() -> Realm {
         do {
-            let config = Realm.Configuration(schemaVersion: 2)
-            Realm.Configuration.defaultConfiguration = config
-            return try Realm(fileURL: ConfigLoader.realmURL)
+            return try Realm(configuration: Realm.Configuration(
+                fileURL: ConfigLoader.realmURL,
+                deleteRealmIfMigrationNeeded: true
+            ))
         } catch {
             error.reportToSentry()
             fatalError("Unable to open Realm")
@@ -123,6 +123,7 @@ class BackupsService: ObservableObject {
                 folders.append(foldername)
             }
         }
+        logger.info("Got foldernames successfully")
         self.foldernames = folders
     }
 
@@ -132,10 +133,12 @@ class BackupsService: ObservableObject {
             await MainActor.run { [weak self] in
                 self?.deviceResponse = response
             }
+            logger.info("Got devices successfully")
             if let deviceId = DeviceService.shared.currentDeviceId {
                 let _ = try await self.getDeviceFolders(deviceId: deviceId)
             }
         } catch {
+            logger.error("Error fetching devices \(error)")
             error.reportToSentry()
             let response: Result<[Device], Error> = .failure(error)
             await MainActor.run { [weak self] in
@@ -148,8 +151,10 @@ class BackupsService: ObservableObject {
         do {
             if let currentDeviceName = ConfigLoader().getDeviceName() {
                 try await DeviceService.shared.addCurrentDevice(deviceName: currentDeviceName)
+                logger.info("Added current device \(currentDeviceName)")
             }
         } catch {
+            logger.error("Error adding device \(error)")
             error.reportToSentry()
         }
     }

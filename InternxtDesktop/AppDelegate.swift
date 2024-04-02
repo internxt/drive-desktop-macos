@@ -9,7 +9,6 @@ import Foundation
 
 import Cocoa
 import SwiftUI
-import os.log
 import FileProvider
 import InternxtSwiftCore
 import Combine
@@ -59,7 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ErrorUtils.start()
 
         checkVolumeAndEjectIfNeeded()
-        initializeBackups()
 
         self.windowsManager = WindowsManager(
             initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
@@ -173,11 +171,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.logger.error("Failed to eject the Internxt installer: \(error.localizedDescription)")
         }
     }
-    
-    
-    
-    
-    
+
     private func finishOrSkipOnboarding() {
         do {
             self.openFileProviderRoot()
@@ -252,6 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let manager = domainManager.manager else {
                     throw FileProviderError.CannotGetFileProviderManager
                 }
+                self.initializeBackups()
                 self.startSignallingFileProvider(domainManager: manager)
                 self.logger.info("Login success")
             } catch {
