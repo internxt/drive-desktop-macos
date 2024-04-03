@@ -148,15 +148,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.windowsManager.closeWindow(id: "send-feedback")
     }
 
-    @MainActor private func initializeBackups() {
-        backupsService.assignUrls()
-
-        Task {
-            await backupsService.addCurrentDevice()
-            await backupsService.loadAllDevices()
-        }
-    }
-
     private func checkVolumeAndEjectIfNeeded() {
         do {
             let mountedVolumes = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [])
@@ -246,7 +237,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let manager = domainManager.manager else {
                     throw FileProviderError.CannotGetFileProviderManager
                 }
-                await self.initializeBackups()
                 self.startSignallingFileProvider(domainManager: manager)
                 self.logger.info("Login success")
             } catch {

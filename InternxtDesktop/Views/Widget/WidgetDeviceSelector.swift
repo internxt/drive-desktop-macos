@@ -93,6 +93,10 @@ struct WidgetDeviceSelector: View {
         }
         .onAppear {
             Task {
+                if backupsService.foldernames.isEmpty {
+                    backupsService.assignUrls()
+                    await backupsService.addCurrentDevice()
+                }
                 await backupsService.loadAllDevices()
             }
         }
