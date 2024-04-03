@@ -85,7 +85,14 @@ class BackupUploadService: ObservableObject {
             return nil
         }
 
-        FileManager.default.createFile(atPath: url.path(), contents: nil)
+        let path: String
+        if #available(macOS 13.0, *) {
+            path = url.path()
+        } else {
+            path = url.path
+        }
+
+        FileManager.default.createFile(atPath: path, contents: nil)
 
         return url
     }
@@ -240,7 +247,13 @@ class BackupUploadService: ObservableObject {
                 node.progress.completedUnitCount = 1
 
                 // Edit date in synced database
-                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
+                let date: Date
+                if #available(macOS 12, *) {
+                    date = Date.now
+                } else {
+                    date = Date()
+                }
+                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: date)
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
