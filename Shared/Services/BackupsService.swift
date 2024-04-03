@@ -282,9 +282,6 @@ class BackupsService: ObservableObject {
             initializationError = error
         } as? XPCBackupServiceProtocol
 
-        logger.info("service \(service)")
-        logger.info("initialization error \(initializationError)")
-
         if let error = initializationError {
             logger.error("XPC Service initialization error")
             throw error
@@ -294,8 +291,6 @@ class BackupsService: ObservableObject {
             logger.error("XPC Service is nil")
             throw BackupError.cannotInitializeXPCService
         }
-
-        logger.info("XPC Service \(service)")
 
         let configLoader = ConfigLoader()
         let networkAuth = configLoader.getNetworkAuth()
