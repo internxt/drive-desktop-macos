@@ -79,6 +79,10 @@ struct APIFactory {
 
         return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
+    
+    static func getBackupsClient() -> BackupAPI {
+        return Backup
+    }
 
     static var BackupNew: BackupAPI {
         let configLoader = ConfigLoader()
@@ -87,5 +91,9 @@ struct APIFactory {
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
 
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+    
+    static func getNewBackupsClient() -> BackupAPI {
+        return BackupNew
     }
 }

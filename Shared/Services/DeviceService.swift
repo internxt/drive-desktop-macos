@@ -8,16 +8,16 @@
 import Foundation
 import InternxtSwiftCore
 
-struct DeviceService {
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
-    static var shared = DeviceService()
-    private let backupAPI: BackupAPI = APIFactory.Backup
-    private let deviceAPI: DriveAPI = APIFactory.DriveNew
+struct BackupsDeviceService {
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "BackupsDevicesService")
+    static var shared = BackupsDeviceService()
+   
     private let decrypt = Decrypt()
     private let config = ConfigLoader().get()
     var currentDeviceId: Int? = nil
 
     public mutating func getAllDevices(deviceName: String?) async throws -> Array<Device> {
+        let backupAPI = APIFactory.getBackupsClient()
         let devicesAsFolder = try await backupAPI.getAllDevices()
         var filteredDevices: [Device] = []
         var currentDevice: Device? = nil
@@ -43,6 +43,7 @@ struct DeviceService {
     }
 
     public func getCurrentDevice() async throws -> Device? {
+        let backupAPI = APIFactory.getBackupsClient()
         let devicesAsFolder = try await backupAPI.getAllDevices()
 
         let devices = devicesAsFolder.map { deviceAsFolder in
@@ -57,15 +58,18 @@ struct DeviceService {
     }
 
     public func addCurrentDevice(deviceName: String) async throws {
-        let _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
+        let backupAPI = APIFactory.getBackupsClient()
+        _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
     }
 
     public func editDevice(deviceId: Int, deviceName: String) async throws -> Device {
+        let backupAPI = APIFactory.getBackupsClient()
         let deviceAsFolder = try await backupAPI.editDeviceName(deviceId: deviceId, deviceName: deviceName)
         return Device(from: deviceAsFolder)
     }
 
     public func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
+        let deviceAPI = APIFactory.DriveNew
         let response = try await deviceAPI.getFolderFolders(folderId: "\(deviceId)")
         return response.result
     }

@@ -36,16 +36,16 @@ struct LogService {
 
         systemDestination.outputLevel = .debug
         systemDestination.showLogIdentifier = false
-        systemDestination.showFunctionName = true
+        systemDestination.showFunctionName = false
         systemDestination.showThreadName = false
         systemDestination.showLevel = true
         systemDestination.showFileName = true
         systemDestination.showLineNumber = true
         systemDestination.showDate = true
+        
         log.add(destination: systemDestination)
 
         guard let logsDirectoryUnwrapped = logsDirectory else {
-            log.logAppDetails()
             return log
         }
         
@@ -53,18 +53,17 @@ struct LogService {
         
         let fileDestination = FileDestination(writeToFile: logFile, identifier: "\(subsystem.rawValue).\(category).fileDestination", shouldAppend: true)
 
+        
         fileDestination.outputLevel = .debug
         fileDestination.showLogIdentifier = false
         fileDestination.showThreadName = false
-        fileDestination.showFunctionName = true
+        fileDestination.showFunctionName = false
         fileDestination.showLevel = true
         fileDestination.showFileName = true
         fileDestination.showDate = true
         fileDestination.logQueue = DispatchQueue.global(qos: .background)
 
         log.add(destination: fileDestination)
-        
-        log.logAppDetails()
         
         return log
     }

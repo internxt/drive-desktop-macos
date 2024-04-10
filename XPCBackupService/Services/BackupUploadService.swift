@@ -59,22 +59,7 @@ class BackupUploadService: ObservableObject {
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
 
-    func syncOperation(node: BackupTreeNode) {
-        BackupOperation(node: node, attempLimit: retriesCount)
-            .enqueue(in: networkQueue)
-            .addCompletionOperation(on: completionQueue) { operation in
-                if let result = operation.result {
-                    dump(result)
-                } else if let error = operation.lastError {
-                    dump(error)
-                } else {
-                    dump("Unknown Error")
-                }
-            }
-            .start()
-
-        completionQueue.waitUntilAllOperationsAreFinished()
-    }
+    
 
     private func getEncryptedContentURL(node: BackupTreeNode) -> URL? {
         let url = encryptedContentDirectory.appendingPathComponent(node.id)
@@ -146,17 +131,17 @@ class BackupUploadService: ObservableObject {
                 SyncedNode(
                     remoteId: createdFolder.id,
                     remoteUuid: "",
-                    url: "\(nodeURL)",
+                    url: nodeURL,
+                    rootBackupFolder: node.rootBackupFolder,
                     parentId: node.parentId,
                     remoteParentId: safeRemoteParentId
                 )
             )
 
-            node.progress.completedUnitCount = 1
             return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil))
         } catch {
             self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
-            node.progress.completedUnitCount = 1
+
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
@@ -175,7 +160,8 @@ class BackupUploadService: ObservableObject {
                         SyncedNode(
                             remoteId: folder.id,
                             remoteUuid: "",
-                            url: "\(nodeURL)",
+                            url: nodeURL,
+                            rootBackupFolder: node.rootBackupFolder,
                             parentId: node.parentId,
                             remoteParentId: safeRemoteParentId
                         )
@@ -194,8 +180,7 @@ class BackupUploadService: ObservableObject {
 
     private func syncNodeFile(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating file")
-
-        var encryptedContentURL = self.getEncryptedContentURL(node: node)
+        let encryptedContentURL = self.getEncryptedContentURL(node: node)
         guard let safeEncryptedContentURL = encryptedContentURL else {
             return .failure(BackupUploadError.CannotCreateEncryptedContentURL)
         }
@@ -237,7 +222,6 @@ class BackupUploadService: ObservableObject {
 
                 self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
 
-                node.progress.completedUnitCount = 1
 
                 // Edit date in synced database
                 try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
@@ -249,7 +233,7 @@ class BackupUploadService: ObservableObject {
                 return .success(BackupTreeNodeSyncResult(id: remoteId, uuid: remoteUuid))
             } else {
                 let stringRemoteParentId = "\(remoteParentId)"
-
+                
                 let encryptedFilename = try encrypt.encrypt(
                     string: filename.deletingPathExtension,
                     password: DecryptUtils().getDecryptPassword(bucketId: stringRemoteParentId),
@@ -270,13 +254,13 @@ class BackupUploadService: ObservableObject {
                 )
                 self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
-                node.progress.completedUnitCount = 1
 
                 try BackupRealm.shared.addSyncedNode(
                     SyncedNode(
                         remoteId: createdFile.id,
                         remoteUuid: createdFile.uuid,
-                        url: "\(fileURL)",
+                        url: fileURL,
+                        rootBackupFolder: node.rootBackupFolder,
                         parentId: node.parentId,
                         remoteParentId: remoteParentId
                     )
@@ -290,10 +274,10 @@ class BackupUploadService: ObservableObject {
             }
 
         } catch {
-            self.logger.error("❌ Failed to create file: \(self.getErrorDescription(error: error))")
+            self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(self.getErrorDescription(error: error))")
 
-            node.progress.completedUnitCount = 1
 
+            
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
             }
@@ -316,7 +300,8 @@ class BackupUploadService: ObservableObject {
                         SyncedNode(
                             remoteId: file.id,
                             remoteUuid: file.uuid,
-                            url: "\(fileURL)",
+                            url: fileURL,
+                            rootBackupFolder: node.rootBackupFolder,
                             parentId: node.parentId,
                             remoteParentId: remoteParentId
                         )

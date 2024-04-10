@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-
+    
     
     // Managers
     var windowsManager: WindowsManager! = nil
@@ -41,14 +41,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var globalUIManager = GlobalUIManager()
     let backupsService = BackupsService()
     let settingsManager = SettingsTabManager()
-
+    
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
-
+    
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
@@ -56,9 +56,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
         ErrorUtils.start()
-
+        
+        
         checkVolumeAndEjectIfNeeded()
-
+        
         self.windowsManager = WindowsManager(
             initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
@@ -94,10 +95,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.globalUIManager.setAppStatus(.loading)
                 self.loginSuccess()
             } else {
+                self.destroyWidget()
                 self.logger.info("User is logged out, closing session")
                 self.refreshTokensTimer?.cancel()
                 self.globalUIManager.setAppStatus(.loading)
-                self.destroyWidget()
+                
                 self.logoutSuccess()
                 do {
                     try self.activityManager.clean()
@@ -105,7 +107,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     error.reportToSentry()
                 }
             }
-           
+            
         })
         if ConfigLoader.isDevMode == false && self.updaterController.updater.canCheckForUpdates == true {
             self.updaterController.updater.checkForUpdatesInBackground()
@@ -147,16 +149,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func closeSendFeedbackWindow() {
         self.windowsManager.closeWindow(id: "send-feedback")
     }
-
-    @MainActor private func initializeBackups() {
+    
+    private func initializeBackups() async -> Void {
+        
+        
+        self.logger.info("🔨 Initializing backups...")
+        await backupsService.addCurrentDevice()
+        self.logger.info("✅ Backups device registered")
+        /**  Attempt to prevent this https://inxt.atlassian.net/browse/PB-1446 **/
+        try! await Task.sleep(nanoseconds: 1_000_000_000)
+        await backupsService.loadAllDevices()
+        self.logger.info("✅ Backups devices loaded")
         backupsService.assignUrls()
-
-        Task {
-            await backupsService.addCurrentDevice()
-            await backupsService.loadAllDevices()
-        }
     }
-
+    
     private func checkVolumeAndEjectIfNeeded() {
         do {
             let mountedVolumes = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [])
@@ -171,7 +177,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.logger.error("Failed to eject the Internxt installer: \(error.localizedDescription)")
         }
     }
-
+    
     private func finishOrSkipOnboarding() {
         do {
             self.openFileProviderRoot()
@@ -207,9 +213,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.signalEnumeratorTimer = Timer.publish(every: 15, on:.main, in: .common)
             .autoconnect()
             .sink(
-             receiveValue: {_ in
-                 self.signalFileProvider(domainManager)
-            })
+                receiveValue: {_ in
+                    self.signalFileProvider(domainManager)
+                })
     }
     
     private func signalFileProvider(_ domainManager: NSFileProviderManager) {
@@ -227,26 +233,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.refreshTokensTimer =  Timer.publish(every: 60 * 60, on:.main, in: .common).autoconnect().sink(
             receiveValue: {_ in
                 self.refreshTokens()
-        })
+            })
     }
     private func loginSuccess() {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
-       
+        
+        
+        // Update usage async
+        Task {
+            self.startTokensRefreshing()
+            self.logger.info("✅ Token refresher started")
+            await usageManager.updateUsage()
+            self.logger.info("✅ Usage updated")
+            try await authManager.initializeCurrentUser()
+        }
+        
+        
         Task {
             do {
-                
-                self.startTokensRefreshing()
-                self.logger.info("✅ Token refresher started")
-                try await authManager.initializeCurrentUser()
                 self.logger.info("✅ Current user initialized")
-                // If usage fails to load, we'll let the user pass
-                await usageManager.updateUsage()
                 try await domainManager.initFileProvider()
                 guard let manager = domainManager.manager else {
                     throw FileProviderError.CannotGetFileProviderManager
                 }
-                await self.initializeBackups()
+                
                 self.startSignallingFileProvider(domainManager: manager)
                 self.logger.info("Login success")
             } catch {
@@ -256,6 +267,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.globalUIManager.setAppStatus(.failedToInit)
                 }
             }
+        }
+        
+        Task {
+            self.logger.info("Initializing backups...")
+            await self.initializeBackups()
         }
         
         self.setupWidget()
@@ -271,10 +287,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.windowsManager.displayDockIcon()
         self.openAuthWindow()
         self.windowsManager.closeAll(except: ["auth"])
+        self.destroyWidget()
+        do {
+            try backupsService.clean()
+        } catch {
+            error.reportToSentry()
+        }
+        
         Task {
             do {
                 try await domainManager.exitDomain()
-                try backupsService.clean()
             } catch {
                 error.reportToSentry()
             }
@@ -290,7 +312,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openSettingsWindow() {
         self.windowsManager.openWindow(id: "settings")
     }
-
+    
     @objc func openOnboardingWindow() {
         self.windowsManager.openWindow(id: "onboarding")
     }
@@ -398,7 +420,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
     }
-   
+    
     
     private func openWidget(delayed: Bool = false) {
         

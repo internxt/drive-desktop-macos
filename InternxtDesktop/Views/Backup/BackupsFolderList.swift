@@ -10,11 +10,11 @@ import SwiftUI
 struct BackupsFolderList: View {
 
     @Environment(\.colorScheme) var colorScheme
-    @Binding var foldernames: [FoldernameToBackup]
+    @Binding var foldersToBackup: [FolderToBackup]
     @Binding var selectedId: String?
 
     var body: some View {
-        if foldernames.count == 0 {
+        if self.foldersToBackup.isEmpty {
             VStack {
                 AppText("BACKUP_SETTINGS_ADD_FOLDERS")
                     .font(.BaseRegular)
@@ -32,27 +32,8 @@ struct BackupsFolderList: View {
             VStack {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(0..<foldernames.count, id: \.self) { index in
-                            HStack(alignment: .center, spacing: 8) {
-                                Image("folder")
-
-                                AppText(URL(string: foldernames[index].url)?.lastPathComponent ?? "")
-                                    .font(.LGRegular)
-                                    .foregroundColor(selectedId == foldernames[index].id ? .white : .Gray80)
-                                    .padding([.vertical], 10)
-
-                                Spacer()
-                            }
-                            .padding([.horizontal], 10)
-                            .background(getRowBackgroundColor(for: index))
-                            .gesture(
-                                onMultipleTaps(firstCount: 2, firstAction: {
-                                    self.openFolderInFinder(url: foldernames[index].url)
-                                    }, secondCount: 1, secondAction: {
-                                        self.selectedId = foldernames[index].id
-                                    }
-                                )
-                            )
+                        ForEach(0..<self.foldersToBackup.count, id: \.self) { index in
+                            FolderRow(index: index)
                         }
                     }
                 }
@@ -66,9 +47,32 @@ struct BackupsFolderList: View {
             )
         }
     }
+    
+    func FolderRow(index: Int) -> some View {
+        HStack(alignment: .center, spacing: 8) {
+            Image("folder")
+            
+            AppText(self.foldersToBackup[index].url.lastPathComponent.removingPercentEncoding ?? "Unknown folder")
+                .font(.LGRegular)
+                .foregroundColor(selectedId == self.foldersToBackup[index].id ? .white : .Gray80)
+                .padding([.vertical], 10)
+            
+            Spacer()
+        }
+        .padding([.horizontal], 10)
+        .background(getRowBackgroundColor(for: index))
+        .gesture(
+            onMultipleTaps(firstCount: 2, firstAction: {
+                self.openFolderInFinder(url: self.foldersToBackup[index].url)
+            }, secondCount: 1, secondAction: {
+                self.selectedId = self.foldersToBackup[index].id
+            }
+                          )
+        )
+    }
 
     private func getRowBackgroundColor(for index: Int) -> Color {
-        if selectedId == foldernames[index].id {
+        if selectedId == foldersToBackup[index].id {
             return .Primary
         }
 
@@ -83,8 +87,7 @@ struct BackupsFolderList: View {
         return .white
     }
 
-    private func openFolderInFinder(url: String) {
-        let safeUrl = URL(fileURLWithPath: url.replacingOccurrences(of: "file:///", with: "/"), isDirectory: true)
-        NSWorkspace.shared.open(safeUrl)
+    private func openFolderInFinder(url: URL) {
+        NSWorkspace.shared.open(url)
     }
 }

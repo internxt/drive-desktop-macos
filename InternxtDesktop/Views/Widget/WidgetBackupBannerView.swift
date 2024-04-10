@@ -44,11 +44,13 @@ struct WidgetBackupBannerView: View {
                             .frame(width: 20, height: 20)
                             .foregroundColor(.Gray60)
                             .onTapGesture {
-                                withAnimation {
+                                do {
                                     dismiss()
+                                    try ConfigLoader().shouldDisplayBackupsBanner(shouldDisplay: false)
+                                } catch {
+                                    error.reportToSentry()
                                 }
                             }
-
                     }
 
                     AppText("BACKUPS_BODY")

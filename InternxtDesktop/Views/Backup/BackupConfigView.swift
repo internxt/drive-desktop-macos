@@ -11,14 +11,14 @@ enum UploadFrequencyEnum: String {
     case six = "6", twelve = "12", daily = "24", manually = "0"
 }
 
-struct BackupComponent: View {
+struct BackupConfigView: View {
     var deviceName: String
     var isCurrentDevice: Bool
     var numOfFolders: Int
-    var isLoading: Bool
+    var backupInProgress: Bool
     var lastUpdated: String?
     @StateObject var backupsService: BackupsService
-    @Binding var progress: Double
+    
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @Binding var showFolderSelector: Bool
@@ -37,24 +37,26 @@ struct BackupComponent: View {
                 .font(.SMMedium)
                 .foregroundColor(.Gray80)
 
-            DeviceCardComponent(
+            BackupStatusView(
                 deviceName: self.deviceName,
                 isCurrentDevice: self.isCurrentDevice,
-                isLoading: self.isLoading,
+                backupInProgress: self.backupInProgress,
                 lastUpdated: formattedDate,
-                progress: self.$progress
+                progress: $backupsService.currentBackupProgress
             )
 
             HStack(spacing: 8) {
                 if isCurrentDevice {
-                    if isLoading {
+                    if backupInProgress {
                         AppButton(title: "BACKUP_STOP_BACKUP", onClick: {
                             showStopBackupDialog = true
                         }, type: .primary, isExpanded: true)
                     } else {
                         AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                            doBackup()
-                        }, type: .primary, isEnabled: !backupsService.foldernames.isEmpty, isExpanded: true)
+                            Task {
+                                await doBackup()
+                            }
+                        }, type: .primary, isExpanded: true)
                     }
                 } else {
                     AppButton(title: "BACKUP_DOWNLOAD", onClick: {
@@ -122,14 +124,16 @@ struct BackupComponent: View {
         URLDictionary.BACKUPS_WEB.open()
     }
 
-    private func doBackup() {
-        Task {
-            do {
-                try await self.backupsService.startBackup(for: backupsService.foldernames)
-            } catch {
-                self.backupsService.hasOngoingBackup = false
-                self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
+    private func doBackup() async {
+        do {
+            if(backupsService.foldersToBackup.isEmpty) {
+                self.changeFolders()
+            } else {
+                try await self.backupsService.startBackup(onProgress: {progress in })
             }
+            
+        } catch {
+            self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
         }
     }
 
@@ -144,5 +148,5 @@ struct BackupComponent: View {
 }
 
 #Preview {
-    BackupComponent(deviceName: "Mac Mini M1", isCurrentDevice: true, numOfFolders: 16, isLoading: false, lastUpdated: "2016-06-05T16:56:57.019+01:00", backupsService: BackupsService(), progress: .constant(0.5), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), showFolderSelector: .constant(false))
+    BackupConfigView(deviceName: "Mac Mini M1", isCurrentDevice: true, numOfFolders: 16, backupInProgress: false, lastUpdated: "2016-06-05T16:56:57.019+01:00", backupsService: BackupsService(), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), showFolderSelector: .constant(false))
 }

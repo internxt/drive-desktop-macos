@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		310452692B4B05AE00984716 /* BackupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310452682B4B05AE00984716 /* BackupComponent.swift */; };
+		310452692B4B05AE00984716 /* BackupConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310452682B4B05AE00984716 /* BackupConfigView.swift */; };
 		3104526C2B4B1C4900984716 /* DeleteBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */; };
 		3104526E2B4B1C5C00984716 /* StopBackupDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */; };
 		311612A02B47873D003C8EE8 /* BackupsFolderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */; };
@@ -22,7 +22,6 @@
 		3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		3120B5692B84F47700F524F1 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
 		3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
-		3120B56C2B84F65100F524F1 /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56B2B84F65100F524F1 /* BackupOperation.swift */; };
 		3120B56F2B84F6C400F524F1 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
 		3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
 		3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */; };
@@ -33,16 +32,14 @@
 		314D64342B9767EB00126E4B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64332B9767EB00126E4B /* Realm */; };
 		314D64362B9767FB00126E4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64352B9767FB00126E4B /* RealmSwift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
-		315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */; };
+		315BC68F2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
-		316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24712B4D88FA007DE91A /* DeviceCardComponent.swift */; };
-		316D24742B4D89F5007DE91A /* ProgressFieldComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */; };
-		316D24762B4D8A38007DE91A /* ProgressBarComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */; };
+		316D24722B4D88FA007DE91A /* BackupStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24712B4D88FA007DE91A /* BackupStatusView.swift */; };
 		316D24782B4D8B94007DE91A /* UploadFrequencySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */; };
 		316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
 		316DC7EB2B597BD000FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
 		316DC7EC2B59837D00FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
-		317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */; };
+		317B70BB2B583F6600CEBC08 /* BackupSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetup.swift */; };
 		317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */; };
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
@@ -66,7 +63,6 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
-		31F9EF302B86800E007DAD86 /* BackupOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56B2B84F65100F524F1 /* BackupOperation.swift */; };
 		31F9EF312B86801B007DAD86 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
 		31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
@@ -223,6 +219,9 @@
 		E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB295E2A7D6A03009036B8 /* WidgetView.swift */; };
 		E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29602A7D6B80009036B8 /* WidgetContentView.swift */; };
 		E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29622A7D6BA5009036B8 /* WidgetFooterView.swift */; };
+		E1E56C222BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
+		E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
+		E1E56C242BC0443900DBA0BF /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		E1F616072A8D7DF8008C9E62 /* SignInWithBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F616062A8D7DF8008C9E62 /* SignInWithBrowserView.swift */; };
 		E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F616082A8D7E6F008C9E62 /* AppButton.swift */; };
 		E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
@@ -240,6 +239,7 @@
 		E1FD8C732BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
+		E1FE2B2A2BC539810073B26D /* BackupRemoteSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FE2B292BC539810073B26D /* BackupRemoteSync.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -292,24 +292,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		310452682B4B05AE00984716 /* BackupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupComponent.swift; sourceTree = "<group>"; };
+		310452682B4B05AE00984716 /* BackupConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigView.swift; sourceTree = "<group>"; };
 		3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteBackupDialog.swift; sourceTree = "<group>"; };
 		3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopBackupDialog.swift; sourceTree = "<group>"; };
 		3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsFolderList.swift; sourceTree = "<group>"; };
 		3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupUploadService.swift; sourceTree = "<group>"; };
-		3120B56B2B84F65100F524F1 /* BackupOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupOperation.swift; sourceTree = "<group>"; };
 		3120B56E2B84F6C400F524F1 /* Completable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completable.swift; sourceTree = "<group>"; };
 		3120B5702B84F6F400F524F1 /* Enqueueable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enqueueable.swift; sourceTree = "<group>"; };
 		315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsTabView.swift; sourceTree = "<group>"; };
-		315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDeviceSelector.swift; sourceTree = "<group>"; };
+		315BC68E2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupAvailableDevicesView.swift; sourceTree = "<group>"; };
 		315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderSelectorView.swift; sourceTree = "<group>"; };
-		316D24712B4D88FA007DE91A /* DeviceCardComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCardComponent.swift; sourceTree = "<group>"; };
-		316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressFieldComponent.swift; sourceTree = "<group>"; };
-		316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarComponent.swift; sourceTree = "<group>"; };
+		316D24712B4D88FA007DE91A /* BackupStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupStatusView.swift; sourceTree = "<group>"; };
 		316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFrequencySelector.swift; sourceTree = "<group>"; };
 		316D24792B4D9997007DE91A /* BackupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsService.swift; sourceTree = "<group>"; };
 		316DC7EA2B597BD000FDC746 /* DeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceService.swift; sourceTree = "<group>"; };
-		317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetupComponent.swift; sourceTree = "<group>"; };
+		317B70BA2B583F6600CEBC08 /* BackupSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetup.swift; sourceTree = "<group>"; };
 		317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabManager.swift; sourceTree = "<group>"; };
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncResult.swift; sourceTree = "<group>"; };
@@ -430,6 +427,7 @@
 		E1DB295E2A7D6A03009036B8 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		E1DB29602A7D6B80009036B8 /* WidgetContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentView.swift; sourceTree = "<group>"; };
 		E1DB29622A7D6BA5009036B8 /* WidgetFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFooterView.swift; sourceTree = "<group>"; };
+		E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupProgressUpdate.swift; sourceTree = "<group>"; };
 		E1F616062A8D7DF8008C9E62 /* SignInWithBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithBrowserView.swift; sourceTree = "<group>"; };
 		E1F616082A8D7E6F008C9E62 /* AppButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButton.swift; sourceTree = "<group>"; };
 		E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Internxt Drive.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -448,6 +446,7 @@
 		E1FD8C722BA989D900C257E0 /* LogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogService.swift; sourceTree = "<group>"; };
 		E1FD926B2AB8F0FD00580F10 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E1FD926C2AB8F15000580F10 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E1FE2B292BC539810073B26D /* BackupRemoteSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRemoteSync.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -508,16 +507,15 @@
 		3104526A2B4B1C3A00984716 /* Backup */ = {
 			isa = PBXGroup;
 			children = (
+				315BC68E2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift */,
 				3116129F2B47873D003C8EE8 /* BackupsFolderList.swift */,
-				310452682B4B05AE00984716 /* BackupComponent.swift */,
-				316D24712B4D88FA007DE91A /* DeviceCardComponent.swift */,
-				316D24752B4D8A38007DE91A /* ProgressBarComponent.swift */,
-				316D24732B4D89F5007DE91A /* ProgressFieldComponent.swift */,
+				310452682B4B05AE00984716 /* BackupConfigView.swift */,
+				316D24712B4D88FA007DE91A /* BackupStatusView.swift */,
 				3104526B2B4B1C4900984716 /* DeleteBackupDialog.swift */,
 				3104526D2B4B1C5C00984716 /* StopBackupDialog.swift */,
 				315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */,
 				316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */,
-				317B70BA2B583F6600CEBC08 /* BackupSetupComponent.swift */,
+				317B70BA2B583F6600CEBC08 /* BackupSetup.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -685,6 +683,7 @@
 				E15F8C3D2B762E6400C60EFA /* BackupTreeNodeType.swift */,
 				E15F8C402B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift */,
 				3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */,
+				E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -694,8 +693,8 @@
 			children = (
 				E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */,
 				3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */,
-				3120B56B2B84F65100F524F1 /* BackupOperation.swift */,
 				319436912B9B8293006F4600 /* BackupRealm.swift */,
+				E1FE2B292BC539810073B26D /* BackupRemoteSync.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -822,7 +821,6 @@
 				E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */,
 				E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */,
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
-				315BC68E2B3DE84F004C85D8 /* WidgetDeviceSelector.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 			);
 			path = Widget;
@@ -1196,7 +1194,6 @@
 				3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */,
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
-				3120B56C2B84F65100F524F1 /* BackupOperation.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
@@ -1205,6 +1202,7 @@
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
+				E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
@@ -1217,6 +1215,7 @@
 				3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */,
 				3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */,
 				3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */,
+				E1FE2B2A2BC539810073B26D /* BackupRemoteSync.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1239,7 +1238,6 @@
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				31F9EF2C2B867F24007DAD86 /* Error.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
-				31F9EF302B86800E007DAD86 /* BackupOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1247,8 +1245,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				316D24762B4D8A38007DE91A /* ProgressBarComponent.swift in Sources */,
 				E1D0D4172AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
+				E1E56C222BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
 				E19136962AA108D200CAF0FA /* View.swift in Sources */,
 				E17C84B02AB225CD00A58414 /* WelcomeSlideView.swift in Sources */,
 				E1A0AC772AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
@@ -1269,12 +1267,12 @@
 				E17C84B42AB2315D00A58414 /* OnboardingSlideIndicator.swift in Sources */,
 				E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */,
 				E13B839C2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
-				315BC68F2B3DE84F004C85D8 /* WidgetDeviceSelector.swift in Sources */,
+				315BC68F2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift in Sources */,
 				E106D4642ABAEE4400E3BF7A /* Date.swift in Sources */,
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
-				316D24722B4D88FA007DE91A /* DeviceCardComponent.swift in Sources */,
+				316D24722B4D88FA007DE91A /* BackupStatusView.swift in Sources */,
 				31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */,
-				310452692B4B05AE00984716 /* BackupComponent.swift in Sources */,
+				310452692B4B05AE00984716 /* BackupConfigView.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
@@ -1322,7 +1320,6 @@
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
 				E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
-				316D24742B4D89F5007DE91A /* ProgressFieldComponent.swift in Sources */,
 				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
 				E1880BA02AA63215001FC171 /* StartOnLaunchView.swift in Sources */,
@@ -1334,7 +1331,7 @@
 				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
-				317B70BB2B583F6600CEBC08 /* BackupSetupComponent.swift in Sources */,
+				317B70BB2B583F6600CEBC08 /* BackupSetup.swift in Sources */,
 				E17C84BE2AB2880B00A58414 /* Color.swift in Sources */,
 				E17C84B82AB2787200A58414 /* OnboardingSlide4View.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
@@ -1365,6 +1362,7 @@
 				E13B839A2AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E1A0AC752AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
 				E1B1C9272B0394C30003F001 /* UpdateFileContentUseCase.swift in Sources */,
+				E1E56C242BC0443900DBA0BF /* BackupProgressUpdate.swift in Sources */,
 				E145E16D2A82A21500B07E0B /* Time.swift in Sources */,
 				E10B0FE02A94143F00B97874 /* Int.swift in Sources */,
 				E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */,
@@ -1449,7 +1447,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				CURRENT_PROJECT_VERSION = 40;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -1483,7 +1481,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1515,7 +1513,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1659,7 +1657,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1795,7 +1793,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1863,7 +1861,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 41;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;

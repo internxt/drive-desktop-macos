@@ -13,6 +13,7 @@ enum BackupTreeGeneratorError: Error {
     case rootIsNotDirectory
     case enumeratorNotFound
     case cannotGetNodeType
+    case missingRootRemoteId
 }
 
 protocol BackupTreeGeneration {
@@ -26,15 +27,16 @@ class BackupTreeGenerator: BackupTreeGeneration {
     var root: URL
     let rootNode: BackupTreeNode
     let backupUploadService: BackupUploadService
-    let progress: Progress
+    let backupTotalProgress: Progress
 
-    init(root: URL, backupUploadService: BackupUploadService, progress: Progress) {
+    init(root: URL, backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
 
         self.root = root
         self.backupUploadService = backupUploadService
-        self.progress = progress
+        self.backupTotalProgress = backupTotalProgress
         rootNode = BackupTreeNode(
             id: UUID().uuidString,
+            rootBackupFolder: root,
             parentId: nil,
             name: root.lastPathComponent,
             type: BackupTreeNodeType.folder,
@@ -42,7 +44,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
             backupUploadService: self.backupUploadService,
-            progress: self.progress
+            backupTotalProgress: self.backupTotalProgress
         )
     }
     
@@ -111,10 +113,13 @@ class BackupTreeGenerator: BackupTreeGeneration {
         guard let type = UTType(typeID) else {
             throw BackupTreeGeneratorError.cannotGetNodeType
         }
+        
+        
 
         // 3. We have a parent, and the node does not exists, create the BackupTreeNode
         let newNode = BackupTreeNode(
             id: UUID().uuidString,
+            rootBackupFolder: root,
             parentId: parentNode.id,
             name: url.lastPathComponent,
             type: type,
@@ -122,7 +127,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
             backupUploadService: self.backupUploadService,
-            progress: self.progress
+            backupTotalProgress: self.backupTotalProgress
         )
         
         

@@ -2,14 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>JoinExisitingSession</key>
+	<true/>
+	<key>RunLoopType</key>
+	<string>NSRunLoop</string>
 	<key>XPCService</key>
 	<dict>
 		<key>ServiceType</key>
 		<string>Application</string>
 	</dict>
-	<key>JoinExisitingSession</key>
-	<true/>
-	<key>RunLoopType</key>
-	<string>NSRunLoop</string>
 </dict>
 </plist>

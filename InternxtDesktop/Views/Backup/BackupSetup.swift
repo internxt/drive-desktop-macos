@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BackupSetupComponent: View {
+struct BackupSetup: View {
     var callback: () -> Void
 
     var body: some View {
@@ -35,5 +35,5 @@ struct BackupSetupComponent: View {
 }
 
 #Preview {
-    BackupSetupComponent {}
+    BackupSetup {}
 }

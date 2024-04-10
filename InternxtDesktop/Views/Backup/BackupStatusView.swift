@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-struct DeviceCardComponent: View {
+struct BackupStatusView: View {
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
     var isCurrentDevice: Bool
-    var isLoading: Bool
+    var backupInProgress: Bool
     var lastUpdated: String?
     @Binding var progress: Double
-    @State private var progressBarWidth: CGFloat = .zero
 
     var body: some View {
         VStack(spacing: 10) {
@@ -36,8 +35,17 @@ struct DeviceCardComponent: View {
                         .font(.SMMedium)
                         .foregroundColor(.Gray80)
 
-                    if isLoading {
-                        ProgressFieldComponent()
+                    if backupInProgress {
+                        HStack(spacing: 4) {
+                            Image(systemName: "arrow.up.circle.fill")
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .foregroundColor(.Primary)
+
+                            AppText("BACKUP_BACKING_UP")
+                                .font(.SMMedium)
+                                .foregroundColor(.Primary)
+                        }
                     } else {
                         Text("BACKUP_LAST_UPLOADED_\(lastUpdated ?? "")")
                             .font(.SMRegular)
@@ -47,17 +55,16 @@ struct DeviceCardComponent: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                if isLoading {
+                if backupInProgress {
                     AppText("\(Int(progress * 100))%")
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
-                        .hidden()
+                 
                 }
             }
 
-            if isLoading {
-                // show progress bar
-                ProgressView()
+            if backupInProgress {
+                ProgressView(value: progress)
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.Primary))
             }
 
@@ -75,5 +82,5 @@ struct DeviceCardComponent: View {
 }
 
 #Preview {
-    DeviceCardComponent(deviceName: "", isCurrentDevice: true, isLoading: true, lastUpdated: "", progress: .constant(20))
+    BackupStatusView(deviceName: "", isCurrentDevice: true, backupInProgress:  true, lastUpdated: "", progress: .constant(34))
 }

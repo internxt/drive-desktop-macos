@@ -220,9 +220,9 @@ public struct ConfigLoader {
     }
 
     public func shouldShowBackupsBanner() -> Bool {
-        let show = self.getFromUserDefaults(key: "ShowBackupBanner")
+        let shouldShow = self.getFromUserDefaults(key: "ShowBackupBanner") == "1"
 
-        return show == nil
+        return shouldShow
     }
 
     public func removeUser() throws -> Void  {
