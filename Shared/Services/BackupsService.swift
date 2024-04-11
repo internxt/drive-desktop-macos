@@ -294,6 +294,8 @@ class BackupsService: ObservableObject {
                     self.backupStatus = .Done
                 }
                 
+                await UsageManager.shared.updateUsage()
+                
             } catch {
                 logger.error("Cannot update device date \(error)")
                 error.reportToSentry()
