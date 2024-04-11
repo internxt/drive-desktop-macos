@@ -29,7 +29,11 @@ struct BackupAvailableDevicesView: View {
     }
     
     func getBackupDevices() -> [Device] {
-        return (try? backupsService.deviceResponse?.get()) ?? []
+        let devices = (try? backupsService.deviceResponse?.get()) ?? []
+        
+        print("DEVICE", devices)
+        
+        return devices
     }
     
     func backupDevicesFetchingFailed() -> Bool {
@@ -54,6 +58,7 @@ struct BackupAvailableDevicesView: View {
                     }.frame( maxWidth:.infinity,maxHeight: 20, alignment: .leading )
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(getBackupDevices()) { device in
+                            
                             if (device.hasBackups || device.plainName == deviceName) {
                                 BackupDeviceItem(
                                     deviceName: device.plainName ?? "",
@@ -68,8 +73,10 @@ struct BackupAvailableDevicesView: View {
                     }
                     .onAppear {
                         let devices = getBackupDevices()
-                        self.selectedDeviceId = devices.first?.id
-                        backupsService.selectedDevice = devices.first
+                        if(self.selectedDeviceId == nil) {
+                            self.selectedDeviceId = devices.first?.id
+                            backupsService.selectedDevice = devices.first
+                        }
                     }
                 }
                 .frame(alignment: .leading)

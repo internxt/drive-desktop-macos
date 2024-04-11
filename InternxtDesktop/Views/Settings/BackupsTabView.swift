@@ -132,6 +132,21 @@ struct BackupsTabView: View {
     var BackupTab: some View {
         Group {
             
+            if(backupIsInProgress() || hasSelectedDevice()) {
+                ScrollView(showsIndicators: false) {
+                    BackupConfigView(
+                        deviceName: getSelectedDevice()?.plainName ?? "Unknown device",
+                        isCurrentDevice: getSelectedDevice()?.isCurrentDevice ?? false,
+                        numOfFolders: backupsService.foldersToBackup.count,
+                        backupInProgress: backupIsInProgress(),
+                        lastUpdated: getSelectedDevice()?.updatedAt ?? "No date",
+                        backupsService: self.backupsService,
+                        showStopBackupDialog: $showStopBackupDialog,
+                        showDeleteBackupDialog: $showDeleteBackupDialog,
+                        showFolderSelector: $showFolderSelector
+                    )
+                }
+            }
             // No device, display nothing
             if(!hasSelectedDevice()) {
                 Spacer()
@@ -143,21 +158,7 @@ struct BackupsTabView: View {
                 }
             }
             
-            if(backupIsInProgress() || hasSelectedDevice()) {
-                ScrollView(showsIndicators: false) {
-                    BackupConfigView(
-                        deviceName: deviceName ?? "Unknown device",
-                        isCurrentDevice: true,
-                        numOfFolders: backupsService.foldersToBackup.count,
-                        backupInProgress: backupIsInProgress(),
-                        lastUpdated: getSelectedDevice()?.updatedAt ?? "No date",
-                        backupsService: self.backupsService,
-                        showStopBackupDialog: $showStopBackupDialog,
-                        showDeleteBackupDialog: $showDeleteBackupDialog,
-                        showFolderSelector: $showFolderSelector
-                    )
-                }
-            }
+            
         }
     }
 }
