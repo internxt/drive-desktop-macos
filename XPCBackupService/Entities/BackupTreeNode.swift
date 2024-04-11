@@ -14,6 +14,7 @@ enum BackupTreeNodeError: Error {
 class BackupTreeNode {
     var id: String
     var parentId: String?
+    var deviceId: Int
     var name: String
     var type: BackupTreeNodeType
     var url: URL?
@@ -26,8 +27,9 @@ class BackupTreeNode {
     var backupTotalPogress: Progress
     var rootBackupFolder: URL
 
-    init(id: String, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
+    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
         self.id = id
+        self.deviceId = deviceId
         self.parentId = parentId
         self.rootBackupFolder = rootBackupFolder
         self.name = name
@@ -70,6 +72,13 @@ class BackupTreeNode {
 
         return nil
     }
+    
+    func removeChildNodes() -> Void {
+        self.childs.forEach{childNode in
+            childNode.removeChildNodes()
+        }
+        self.childs = []
+    }
 
     private func getFileModificationDate() throws -> Date? {
         guard let path = self.url?.path else {
@@ -80,10 +89,10 @@ class BackupTreeNode {
         return attribute[FileAttributeKey.modificationDate] as? Date
     }
 
-    private func nodeIsSynced(url: String) throws -> Bool {
+    private func nodeIsSynced(url: String, deviceId: Int) throws -> Bool {
         let realm = try BackupRealm.shared.getRealm()
         let syncedNode = realm.objects(SyncedNode.self).first { syncedNode in
-            url == syncedNode.url
+            url == syncedNode.url && deviceId == syncedNode.deviceId
         }
 
         guard let syncedNodeDate = syncedNode?.updatedAt, let fileModificationDate = try self.getFileModificationDate() else {
@@ -94,6 +103,7 @@ class BackupTreeNode {
             self.syncStatus = .NEEDS_UPDATE
             self.remoteId = syncedNode?.remoteId
             self.remoteUuid = syncedNode?.remoteUuid
+            
             return false
         }
 
@@ -115,7 +125,7 @@ class BackupTreeNode {
         guard let filePath = self.url?.absoluteString else {
             throw BackupTreeNodeError.cannotGetPath
         }
-        let isSynced = try self.nodeIsSynced(url: filePath)
+        let isSynced = try self.nodeIsSynced(url: filePath, deviceId: self.deviceId)
         
         if !isSynced {
             let syncResult = await backupUploadService.doSync(node: self)
@@ -132,8 +142,15 @@ class BackupTreeNode {
                     child.remoteParentId = remoteId
                 }
             case .failure(let error):
-                backupTotalPogress.completedUnitCount += 1
-                error.reportToSentry()
+                let backupStopped = error as? BackupUploadError
+
+                if case BackupUploadError.BackupStoppedManually = error {
+                    // Noop, this was stopped
+                } else {
+                    backupTotalPogress.completedUnitCount += 1
+                    error.reportToSentry()
+                }
+                
                 return
             }
 

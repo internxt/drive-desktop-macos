@@ -56,7 +56,7 @@ struct BackupStatusView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 if backupInProgress {
-                    AppText("\(Int(progress * 100))%")
+                    AppText("\(String(format: "%.2f", Float(progress * 100)))%")
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
                  

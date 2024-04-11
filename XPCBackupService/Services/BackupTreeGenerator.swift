@@ -28,14 +28,16 @@ class BackupTreeGenerator: BackupTreeGeneration {
     let rootNode: BackupTreeNode
     let backupUploadService: BackupUploadService
     let backupTotalProgress: Progress
-
-    init(root: URL, backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
+    let deviceId: Int
+    init(root: URL, deviceId: Int, backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
 
         self.root = root
         self.backupUploadService = backupUploadService
         self.backupTotalProgress = backupTotalProgress
+        self.deviceId = deviceId
         rootNode = BackupTreeNode(
             id: UUID().uuidString,
+            deviceId: deviceId,
             rootBackupFolder: root,
             parentId: nil,
             name: root.lastPathComponent,
@@ -119,6 +121,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
         // 3. We have a parent, and the node does not exists, create the BackupTreeNode
         let newNode = BackupTreeNode(
             id: UUID().uuidString,
+            deviceId: self.deviceId,
             rootBackupFolder: root,
             parentId: parentNode.id,
             name: url.lastPathComponent,

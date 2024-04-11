@@ -18,9 +18,11 @@ class SyncedNode: Object {
     @Persisted var remoteParentId: Int?
     @Persisted var createdAt: Date
     @Persisted var updatedAt: Date
+    @Persisted var deviceId: Int
 
     convenience init(
         remoteId: Int,
+        deviceId: Int,
         remoteUuid: String,
         url: URL,
         rootBackupFolder: URL,
@@ -28,6 +30,7 @@ class SyncedNode: Object {
         remoteParentId: Int?
     ) {
         self.init()
+        self.deviceId = deviceId
         self.remoteId = remoteId
         self.remoteUuid = remoteUuid
         self.url = url.absoluteString

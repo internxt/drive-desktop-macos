@@ -73,7 +73,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             for backupURL in backupURLs {
                 do {
-                    let backupTreeGenerator = BackupTreeGenerator(root: URL(fileURLWithPath: backupURL), backupUploadService: backupUploadService,backupTotalProgress: backupTotalProgress)
+                    let backupTreeGenerator = BackupTreeGenerator(root: URL(fileURLWithPath: backupURL),deviceId: deviceId, backupUploadService: backupUploadService,backupTotalProgress: backupTotalProgress)
 
                     let backupTree = try await backupTreeGenerator.generateTree()
                     logger.info("Backup tree created successfully")

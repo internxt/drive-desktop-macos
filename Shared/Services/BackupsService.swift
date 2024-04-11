@@ -403,9 +403,6 @@ class BackupsService: ObservableObject {
                 return
             }
             
-           
-            
-       
             DispatchQueue.main.async {
                 
                 self.backupStatus = backupStatusUpdate?.status ?? .Idle
@@ -429,7 +426,6 @@ class FolderToBackup {
     
     init(folderToBackupRealmObject: FolderToBackupRealmObject) {
         self.id = folderToBackupRealmObject.id
-        print("URL REALM OBJECT", folderToBackupRealmObject.url)
         self.url = URL(fileURLWithPath: folderToBackupRealmObject.url.removingPercentEncoding?.replacingOccurrences(of: "file://", with: "") ?? "")
         self.status = folderToBackupRealmObject.status
         self.createdAt = folderToBackupRealmObject.createdAt

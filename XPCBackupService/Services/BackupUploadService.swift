@@ -77,6 +77,7 @@ class BackupUploadService: ObservableObject {
 
     func doSync(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         if !canDoBackup {
+            node.removeChildNodes()
             return .failure(BackupUploadError.BackupStoppedManually)
         }
 
@@ -130,6 +131,7 @@ class BackupUploadService: ObservableObject {
             try BackupRealm.shared.addSyncedNode(
                 SyncedNode(
                     remoteId: createdFolder.id,
+                    deviceId: node.deviceId,
                     remoteUuid: "",
                     url: nodeURL,
                     rootBackupFolder: node.rootBackupFolder,
@@ -159,6 +161,7 @@ class BackupUploadService: ObservableObject {
                     try BackupRealm.shared.addSyncedNode(
                         SyncedNode(
                             remoteId: folder.id,
+                            deviceId: node.deviceId,
                             remoteUuid: "",
                             url: nodeURL,
                             rootBackupFolder: node.rootBackupFolder,
@@ -258,6 +261,7 @@ class BackupUploadService: ObservableObject {
                 try BackupRealm.shared.addSyncedNode(
                     SyncedNode(
                         remoteId: createdFile.id,
+                        deviceId: node.deviceId,
                         remoteUuid: createdFile.uuid,
                         url: fileURL,
                         rootBackupFolder: node.rootBackupFolder,
@@ -299,6 +303,7 @@ class BackupUploadService: ObservableObject {
                     try BackupRealm.shared.addSyncedNode(
                         SyncedNode(
                             remoteId: file.id,
+                            deviceId: node.deviceId,
                             remoteUuid: file.uuid,
                             url: fileURL,
                             rootBackupFolder: node.rootBackupFolder,

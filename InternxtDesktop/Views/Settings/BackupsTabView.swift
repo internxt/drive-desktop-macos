@@ -45,6 +45,10 @@ struct BackupsTabView: View {
             return false
         }
     }
+    
+    func shouldDisplayBackupsSidebar() -> Bool {
+        return backupsService.selectedDevice != nil || backupsService.devicesFetchingStatus == .Ready
+    }
     var body: some View {
         Group {
             if(backupsService.devicesFetchingStatus == .LoadingDevices && backupsService.selectedDevice == nil) {
@@ -70,14 +74,13 @@ struct BackupsTabView: View {
                     
                     AppButton(title: "BACKUP_TRY_AGAIN") {
                         Task {
+                            await backupsService.addCurrentDevice()
                             await backupsService.loadAllDevices()
                         }
                     }
                     Spacer()
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            
-            if(backupsService.selectedDevice != nil || backupsService.devicesFetchingStatus == .Ready){
+            } else if(shouldDisplayBackupsSidebar()){
                 HStack(spacing: 0) {
                     BackupsSidebar
                         .padding([.leading, .vertical], 20)
@@ -94,6 +97,11 @@ struct BackupsTabView: View {
             }
             
             
+        }.onAppear{
+            Task {
+                await backupsService.addCurrentDevice()
+                await backupsService.loadAllDevices()
+            }
         }
     }
     

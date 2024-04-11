@@ -25,6 +25,8 @@ struct BackupsDeviceService {
         let devices = devicesAsFolder.map { deviceAsFolder in
             return Device(from: deviceAsFolder)
         }
+        
+        logger.info(["Devices as folder found:", devices.count])
 
         currentDevice = devices.first(where: { device in
             device.isCurrentDevice
@@ -35,9 +37,10 @@ struct BackupsDeviceService {
             filteredDevices.append(currentDevice)
         }
 
-        filteredDevices.append(contentsOf: devices.filter { $0.name != currentDevice?.name })
-
-        let devicesToReturn = filteredDevices.filter { !$0.deleted }
+        
+        let devicesToReturn = devices.filter { device in
+            return !(device.removed == true || device.deleted == true)
+        }
 
         return devicesToReturn
     }
@@ -71,6 +74,7 @@ struct BackupsDeviceService {
     public func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {
         let deviceAPI = APIFactory.DriveNew
         let response = try await deviceAPI.getFolderFolders(folderId: "\(deviceId)")
+        logger.info(["Get Backup Devices response: ", response])
         return response.result
     }
 }
