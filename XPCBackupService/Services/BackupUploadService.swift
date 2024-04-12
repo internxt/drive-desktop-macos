@@ -70,7 +70,7 @@ class BackupUploadService: ObservableObject {
             return nil
         }
 
-        FileManager.default.createFile(atPath: url.path(), contents: nil)
+        FileManager.default.createFile(atPath: url.absoluteString, contents: nil)
 
         return url
     }
@@ -227,7 +227,7 @@ class BackupUploadService: ObservableObject {
 
 
                 // Edit date in synced database
-                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date.now)
+                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date())
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)

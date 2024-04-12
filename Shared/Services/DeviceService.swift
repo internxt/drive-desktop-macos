@@ -41,8 +41,12 @@ struct BackupsDeviceService {
         let devicesToReturn = devices.filter { device in
             return !(device.removed == true || device.deleted == true)
         }
+        
+       
 
-        return devicesToReturn
+        return devicesToReturn.sorted { (device1, device2) -> Bool in
+            return device1.isCurrentDevice && !device2.isCurrentDevice
+        }
     }
 
     public func getCurrentDevice() async throws -> Device? {
