@@ -60,6 +60,7 @@
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		47507F312D09ED760074E081 /* KyberEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47507F302D09ED6F0074E081 /* KyberEncryption.swift */; };
+		47507F352D09F0040074E081 /* KyberEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47507F342D09EFFF0074E081 /* KyberEncryptor.swift */; };
 		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
@@ -397,6 +398,7 @@
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
 		47507F302D09ED6F0074E081 /* KyberEncryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyberEncryption.swift; sourceTree = "<group>"; };
+		47507F342D09EFFF0074E081 /* KyberEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyberEncryptor.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1099,6 +1101,7 @@
 		E1FB2D532A76C02500473AE1 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				47507F342D09EFFF0074E081 /* KyberEncryptor.swift */,
 				47507F302D09ED6F0074E081 /* KyberEncryption.swift */,
 				E18300AF2AA2395100AD023C /* FileExtension.swift */,
 			);
@@ -1641,6 +1644,7 @@
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */,
 				E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */,
+				47507F352D09F0040074E081 /* KyberEncryptor.swift in Sources */,
 				E17DB70A2C539A1F0031B465 /* BackupContentNavigatorViewModel.swift in Sources */,
 				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
