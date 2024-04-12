@@ -26,7 +26,6 @@ enum BackupStatus: String {
         self.completedSyncs = progress.completedUnitCount
         self.totalSyncs = progress.totalUnitCount
         self.progress = progress.fractionCompleted
-        print("PROGRESS FRACTION", self.progress)
         self.status = status
     }
     func encode(with coder: NSCoder) {

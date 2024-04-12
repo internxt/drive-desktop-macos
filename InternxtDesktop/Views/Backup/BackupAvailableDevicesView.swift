@@ -30,9 +30,7 @@ struct BackupAvailableDevicesView: View {
     
     func getBackupDevices() -> [Device] {
         let devices = (try? backupsService.deviceResponse?.get()) ?? []
-        
-        print("DEVICE", devices)
-        
+                
         return devices
     }
     

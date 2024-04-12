@@ -19,10 +19,8 @@ struct BackupStatusView: View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
                 if isCurrentDevice {
-                    Image("apple")
+                    Image("AppleSVG")
                         .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(.Gray40)
                         .frame(width: 32, height: 32)
                 } else {
                     Image("backup_folder")
