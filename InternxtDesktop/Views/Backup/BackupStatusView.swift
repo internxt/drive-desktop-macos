@@ -9,16 +9,20 @@ import SwiftUI
 
 struct BackupStatusView: View {
     @Environment(\.colorScheme) var colorScheme
-    var deviceName: String
-    var isCurrentDevice: Bool
-    var backupInProgress: Bool
-    var lastUpdated: String?
+    @Binding var backupStatus: BackupStatus
+    @Binding var device: Device
     @Binding var progress: Double
 
+    private var formattedDate: String {
+        guard let lastUpdatedDate = Time.dateFromISOString(self.device.updatedAt) else {
+            return ""
+        }
+        return Time.stringDateFromDate(lastUpdatedDate, dateStyle: .long, timeStyle: .short)
+    }
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                if isCurrentDevice {
+                if self.device.isCurrentDevice {
                     Image("AppleSVG")
                         .resizable()
                         .frame(width: 32, height: 32)
@@ -29,11 +33,11 @@ struct BackupStatusView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 0) {
-                    AppText(deviceName)
+                    AppText(self.device.plainName ?? "Unknown device")
                         .font(.SMMedium)
                         .foregroundColor(.Gray80)
 
-                    if backupInProgress {
+                    if self.backupStatus == .InProgress {
                         HStack(spacing: 4) {
                             Image(systemName: "arrow.up.circle.fill")
                                 .resizable()
@@ -45,7 +49,7 @@ struct BackupStatusView: View {
                                 .foregroundColor(.Primary)
                         }
                     } else {
-                        Text("BACKUP_LAST_UPLOADED_\(lastUpdated ?? "")")
+                        Text("BACKUP_LAST_UPLOADED_\(formattedDate )")
                             .font(.SMRegular)
                             .foregroundColor(.Gray50)
                             .lineLimit(1)
@@ -53,7 +57,7 @@ struct BackupStatusView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                if backupInProgress {
+                if self.backupStatus == .InProgress {
                     AppText("\(String(format: "%.2f", Float(progress * 100)))%")
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
@@ -61,7 +65,7 @@ struct BackupStatusView: View {
                 }
             }
 
-            if backupInProgress {
+            if self.backupStatus == .InProgress {
                 ProgressView(value: progress)
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.Primary))
             }
@@ -80,5 +84,27 @@ struct BackupStatusView: View {
 }
 
 #Preview {
-    BackupStatusView(deviceName: "", isCurrentDevice: true, backupInProgress:  true, lastUpdated: "", progress: .constant(34))
+    BackupStatusView(
+        backupStatus: .constant(.InProgress),
+        device: .constant(
+            Device(
+                id: 1,
+                uuid: UUID().uuidString,
+                parentId: "parentId",
+                parentUuid: UUID().uuidString,
+                name: "cqwefweqfwq",
+                bucket: nil,
+                encryptVersion: nil,
+                deleted: false,
+                deletedAt: nil,
+                removed: false,
+                removedAt: nil,
+                createdAt: "",
+                updatedAt: "",
+                userId: 123,
+                hasBackups: true
+            )
+        ),
+        progress: .constant(34)
+    )
 }

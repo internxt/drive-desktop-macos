@@ -81,4 +81,25 @@ struct BackupsDeviceService {
         logger.info(["Get Backup Devices response: ", response])
         return response.result
     }
+    
+    public func getDeviceForPreview() -> Device {
+        return Device(
+            id: 1,
+            uuid: UUID().uuidString,
+            parentId: "parentId",
+            parentUuid: UUID().uuidString,
+            name: "encrypted_name",
+            plainName: "Macbook Pro",
+            bucket: nil,
+            encryptVersion: nil,
+            deleted: false,
+            deletedAt: nil,
+            removed: false,
+            removedAt: nil,
+            createdAt: "",
+            updatedAt: "",
+            userId: 123,
+            hasBackups: true
+        )
+    }
 }

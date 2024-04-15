@@ -17,7 +17,7 @@
 		3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
 		3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
-		3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
+		3120B5662B84F41300F524F1 /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
 		3120B5672B84F45600F524F1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		3120B5692B84F47700F524F1 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DD32A9629790051DD46 /* Error.swift */; };
@@ -37,8 +37,8 @@
 		316D24722B4D88FA007DE91A /* BackupStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24712B4D88FA007DE91A /* BackupStatusView.swift */; };
 		316D24782B4D8B94007DE91A /* UploadFrequencySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */; };
 		316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
-		316DC7EB2B597BD000FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
-		316DC7EC2B59837D00FDC746 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* DeviceService.swift */; };
+		316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
+		316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
 		317B70BB2B583F6600CEBC08 /* BackupSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetup.swift */; };
 		317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */; };
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
@@ -305,7 +305,7 @@
 		316D24712B4D88FA007DE91A /* BackupStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupStatusView.swift; sourceTree = "<group>"; };
 		316D24772B4D8B94007DE91A /* UploadFrequencySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFrequencySelector.swift; sourceTree = "<group>"; };
 		316D24792B4D9997007DE91A /* BackupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsService.swift; sourceTree = "<group>"; };
-		316DC7EA2B597BD000FDC746 /* DeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceService.swift; sourceTree = "<group>"; };
+		316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsDeviceService.swift; sourceTree = "<group>"; };
 		317B70BA2B583F6600CEBC08 /* BackupSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetup.swift; sourceTree = "<group>"; };
 		317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabManager.swift; sourceTree = "<group>"; };
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
@@ -623,7 +623,7 @@
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
 				316D24792B4D9997007DE91A /* BackupsService.swift */,
-				316DC7EA2B597BD000FDC746 /* DeviceService.swift */,
+				316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */,
 				E1FD8C722BA989D900C257E0 /* LogService.swift */,
 			);
 			path = Services;
@@ -1198,7 +1198,7 @@
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
 				319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */,
-				3120B5662B84F41300F524F1 /* DeviceService.swift in Sources */,
+				3120B5662B84F41300F524F1 /* BackupsDeviceService.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
@@ -1256,7 +1256,7 @@
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
-				316DC7EC2B59837D00FDC746 /* DeviceService.swift in Sources */,
+				316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */,
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
@@ -1387,7 +1387,7 @@
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
-				316DC7EB2B597BD000FDC746 /* DeviceService.swift in Sources */,
+				316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,

@@ -12,24 +12,17 @@ enum UploadFrequencyEnum: String {
 }
 
 struct BackupConfigView: View {
-    var deviceName: String
-    var isCurrentDevice: Bool
     var numOfFolders: Int
-    var backupInProgress: Bool
-    var lastUpdated: String?
     @StateObject var backupsService: BackupsService
-    
+    @Binding var backupStatus: BackupStatus
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @Binding var showFolderSelector: Bool
+    @Binding var device: Device
+    
     @State private var currentFrequency: UploadFrequencyEnum = .manually
     
-    private var formattedDate: String {
-        guard let lastUpdated, let lastUpdatedDate = Time.dateFromISOString(lastUpdated) else {
-            return ""
-        }
-        return Time.stringDateFromDate(lastUpdatedDate, dateStyle: .long, timeStyle: .short)
-    }
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -38,16 +31,14 @@ struct BackupConfigView: View {
                 .foregroundColor(.Gray80)
             
             BackupStatusView(
-                deviceName: self.deviceName,
-                isCurrentDevice: self.isCurrentDevice,
-                backupInProgress: self.backupInProgress,
-                lastUpdated: formattedDate,
+                backupStatus: self.$backupStatus,
+                device: self.$device,
                 progress: $backupsService.currentBackupProgress
             )
             
             BackupActionsView.frame(maxWidth: .infinity)
             
-            if isCurrentDevice {
+            if self.device.isCurrentDevice {
                 VStack(alignment: .leading, spacing: 8) {
                     AppText("BACKUP_SELECTED_FOLDERS")
                         .font(.SMMedium)
@@ -87,8 +78,8 @@ struct BackupConfigView: View {
     
     var BackupActionsView: some View {
         HStack(spacing: 8) {
-            if isCurrentDevice {
-                if backupInProgress {
+            if self.device.isCurrentDevice {
+                if self.backupStatus == .InProgress {
                     AppButton(title: "BACKUP_STOP_BACKUP", onClick: {
                         showStopBackupDialog = true
                     }, type: .primary, isExpanded: true)
@@ -148,5 +139,13 @@ struct BackupConfigView: View {
 }
 
 #Preview {
-    BackupConfigView(deviceName: "Mac Mini M1", isCurrentDevice: true, numOfFolders: 16, backupInProgress: false, lastUpdated: "2016-06-05T16:56:57.019+01:00", backupsService: BackupsService(), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), showFolderSelector: .constant(false))
+    BackupConfigView(
+        numOfFolders: 16,
+        backupsService: BackupsService(),
+        backupStatus: .constant(.InProgress),
+        showStopBackupDialog: .constant(false),
+        showDeleteBackupDialog: .constant(false),
+        showFolderSelector: .constant(false),
+        device: .constant(BackupsDeviceService.shared.getDeviceForPreview())
+    )
 }

@@ -132,18 +132,18 @@ struct BackupsTabView: View {
     var BackupTab: some View {
         Group {
             
+            
+          
             if(backupIsInProgress() || hasSelectedDevice()) {
                 ScrollView(showsIndicators: false) {
                     BackupConfigView(
-                        deviceName: getSelectedDevice()?.plainName ?? "Unknown device",
-                        isCurrentDevice: getSelectedDevice()?.isCurrentDevice ?? false,
                         numOfFolders: backupsService.foldersToBackup.count,
-                        backupInProgress: backupIsInProgress(),
-                        lastUpdated: getSelectedDevice()?.updatedAt ?? "No date",
                         backupsService: self.backupsService,
+                        backupStatus: $backupsService.backupStatus,
                         showStopBackupDialog: $showStopBackupDialog,
                         showDeleteBackupDialog: $showDeleteBackupDialog,
-                        showFolderSelector: $showFolderSelector
+                        showFolderSelector: $showFolderSelector,
+                        device: Binding($backupsService.selectedDevice)!
                     )
                 }
             }
@@ -164,5 +164,11 @@ struct BackupsTabView: View {
 }
 
 #Preview {
-    BackupsTabView(selectedDeviceId: .constant(nil), showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), backupsService: BackupsService())
+    BackupsTabView(
+        selectedDeviceId: .constant(nil),
+        showFolderSelector: .constant(false),
+        showStopBackupDialog: .constant(false),
+        showDeleteBackupDialog: .constant(false),
+        backupsService: BackupsService()
+    )
 }
