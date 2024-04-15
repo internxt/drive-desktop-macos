@@ -165,10 +165,8 @@ class BackupsService: ObservableObject {
             
             DispatchQueue.main.async {
                 self.deviceResponse = response
-                if(self.selectedDevice == nil) {
-                    self.selectedDevice = allDevices.first{device in
-                        device.plainName == currentDeviceName
-                    }
+                self.selectedDevice = allDevices.first{device in
+                    return device.plainName == currentDeviceName && device.removed != true && device.deleted != true
                 }
                 self.devicesFetchingStatus = .Ready
             }
@@ -215,11 +213,8 @@ class BackupsService: ObservableObject {
     func updateDeviceDate() async throws {
         logger.info("Update device date")
         let currentDevice = try await getCurrentDevice()
-        let newDevice = try await BackupsDeviceService.shared.editDevice(deviceId: currentDevice.id, deviceName: currentDevice.plainName ?? "")
-        DispatchQueue.main.async {
-            self.selectedDevice = newDevice
-        }
-        
+        let _ = try await BackupsDeviceService.shared.editDevice(deviceId: currentDevice.id, deviceName: currentDevice.plainName ?? "")
+ 
         await self.loadAllDevices()
     }
 

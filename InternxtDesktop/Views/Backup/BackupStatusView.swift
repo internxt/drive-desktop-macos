@@ -19,6 +19,12 @@ struct BackupStatusView: View {
         }
         return Time.stringDateFromDate(lastUpdatedDate, dateStyle: .long, timeStyle: .short)
     }
+    
+    private func deviceIsRunningBackup() -> Bool {
+        
+        
+        return self.device.isCurrentDevice && self.backupStatus == .InProgress
+    }
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
@@ -37,7 +43,7 @@ struct BackupStatusView: View {
                         .font(.SMMedium)
                         .foregroundColor(.Gray80)
 
-                    if self.backupStatus == .InProgress {
+                    if deviceIsRunningBackup() {
                         HStack(spacing: 4) {
                             Image(systemName: "arrow.up.circle.fill")
                                 .resizable()
@@ -57,7 +63,7 @@ struct BackupStatusView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                if self.backupStatus == .InProgress {
+                if deviceIsRunningBackup() {
                     AppText("\(String(format: "%.2f", Float(progress * 100)))%")
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
@@ -65,7 +71,7 @@ struct BackupStatusView: View {
                 }
             }
 
-            if self.backupStatus == .InProgress {
+            if deviceIsRunningBackup() {
                 ProgressView(value: progress)
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.Primary))
             }

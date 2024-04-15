@@ -27,7 +27,7 @@ struct Device: Codable, Identifiable {
     var hasBackups: Bool = false
 
     var isCurrentDevice: Bool {
-        return ConfigLoader().getDeviceName() == self.plainName && !self.deleted && !self.removed
+        return ConfigLoader().getDeviceName() == self.plainName && self.deleted != true && self.removed != true
     }
 
     init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plainName: String? = nil, bucket: String?, encryptVersion: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, hasBackups: Bool) {
