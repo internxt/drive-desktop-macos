@@ -308,7 +308,7 @@ class BackupsService: ObservableObject {
                 
             } catch {
                 if let apiError = error as? APIClientError {
-                    logger.error("Cannot update device date \(apiError.responseBody.toString())")
+                    logger.error("Cannot update device date \(String(decoding:apiError.responseBody, as:  UTF8.self))")
                 } else {
                     logger.error("Cannot update device date \(error)")
                 }
