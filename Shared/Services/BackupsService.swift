@@ -214,10 +214,11 @@ class BackupsService: ObservableObject {
     }
 
     func updateDeviceDate(device: Device) async throws {
-        logger.info("Update device date")
-        guard let deviceName = device.plainName ?? ConfigLoader.shared.getDeviceName() else {
+        
+        guard let deviceName = ConfigLoader.shared.getDeviceName() else {
             throw BackupError.deviceHasNoName
         }
+        logger.info("Updating device date with name: \(deviceName)")
         let _ = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
         await self.loadAllDevices()
     }
