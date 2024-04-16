@@ -218,7 +218,7 @@ class BackupsService: ObservableObject {
         guard let deviceName = ConfigLoader.shared.getDeviceName() else {
             throw BackupError.deviceHasNoName
         }
-        logger.info("Updating device date with name: \(deviceName)")
+        logger.info("Updating device \(device.id) date with name: \(deviceName)")
         let _ = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
         await self.loadAllDevices()
     }
@@ -244,7 +244,14 @@ class BackupsService: ObservableObject {
         try realm.write {
             let allSyncedNodes = realm.objects(SyncedNode.self)
             realm.delete(allSyncedNodes)
+            let foldersToBackup = realm.objects(FolderToBackupRealmObject.self)
+            realm.delete(foldersToBackup)
         }
+        
+        DispatchQueue.main.async {
+            self.foldersToBackup = []
+        }
+        
 
         return true
     }
@@ -300,7 +307,12 @@ class BackupsService: ObservableObject {
                 await UsageManager.shared.updateUsage()
                 
             } catch {
-                logger.error("Cannot update device date \(error)")
+                if let apiError = error as? APIClientError {
+                    logger.error("Cannot update device date \(apiError.responseBody.toString())")
+                } else {
+                    logger.error("Cannot update device date \(error)")
+                }
+                
                 error.reportToSentry()
             }
         }
