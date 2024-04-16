@@ -24,6 +24,7 @@ enum BackupError: Error {
     case cannotGetDeviceId
     case folderToBackupRealmObjectNotFound
     case deviceCreatedButNotFound
+    case deviceHasNoName
 }
 
 enum BackupDevicesFetchingStatus {
@@ -33,6 +34,7 @@ enum BackupDevicesFetchingStatus {
 }
 class BackupsService: ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
+    var currentDevice: Device? = nil
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldersToBackup: [FolderToBackup] = []
     @Published var currentDeviceHasBackup = false
@@ -168,6 +170,7 @@ class BackupsService: ObservableObject {
                 self.selectedDevice = allDevices.first{device in
                     return device.plainName == currentDeviceName && device.removed != true && device.deleted != true
                 }
+                self.currentDevice = self.selectedDevice
                 self.devicesFetchingStatus = .Ready
             }
         } catch {
@@ -210,11 +213,12 @@ class BackupsService: ObservableObject {
         return currentDevice
     }
 
-    func updateDeviceDate() async throws {
+    func updateDeviceDate(device: Device) async throws {
         logger.info("Update device date")
-        let currentDevice = try await getCurrentDevice()
-        let _ = try await BackupsDeviceService.shared.editDevice(deviceId: currentDevice.id, deviceName: currentDevice.plainName ?? "")
- 
+        guard let deviceName = device.plainName ?? ConfigLoader.shared.getDeviceName() else {
+            throw BackupError.deviceHasNoName
+        }
+        let _ = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
         await self.loadAllDevices()
     }
 
@@ -284,7 +288,10 @@ class BackupsService: ObservableObject {
         }
         Task {
             do {
-                try await self.updateDeviceDate()
+                guard let currentDevice = self.currentDevice else {
+                    throw BackupError.cannotGetCurrentDevice
+                }
+                try await self.updateDeviceDate(device: currentDevice)
                 DispatchQueue.main.async {
                     self.backupStatus = .Done
                 }
