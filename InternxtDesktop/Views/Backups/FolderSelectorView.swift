@@ -37,7 +37,7 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            BackupsFolderList(foldersToBackup: $backupsService.foldersToBackup, selectedId: $selectedId)
+            BackupsFolderListView(foldersToBackup: $backupsService.foldersToBackup, selectedId: $selectedId)
 
             HStack {
                 HStack(spacing: 8) {

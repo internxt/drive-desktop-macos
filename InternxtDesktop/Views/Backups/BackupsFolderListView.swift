@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BackupsFolderList: View {
+struct BackupsFolderListView: View {
 
     @Environment(\.colorScheme) var colorScheme
     @Binding var foldersToBackup: [FolderToBackup]

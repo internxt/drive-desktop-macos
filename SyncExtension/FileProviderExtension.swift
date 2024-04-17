@@ -229,6 +229,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         
+        // This is a Microsoft Office tmp file, we don't want to sync this
+        if(itemTemplate.filename.hasPrefix("~$")) {
+            logger.info("⚠️ Microsoft Office tmp file detected with name: \(itemTemplate.filename)")
+            completionHandler(itemTemplate, [], false, nil)
+            return Progress()
+        }
+        
+        logger.info("Creating file with name \(itemTemplate.filename)")
+        
         let shouldCreateFolder = itemTemplate.contentType == .folder
         let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
                 

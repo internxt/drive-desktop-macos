@@ -58,7 +58,7 @@ struct SettingsView: View {
             // stop ongoing backup dialog
             if showStopBackupDialog {
                 VStack {
-                    StopBackupDialog(backupsService: backupsService, onClose: {
+                    StopBackupDialogView(backupsService: backupsService, onClose: {
                         showStopBackupDialog = false
                     })
                 }
@@ -69,7 +69,7 @@ struct SettingsView: View {
             // delete backup dialog
             if showDeleteBackupDialog {
                 VStack {
-                    DeleteBackupDialog(
+                    DeleteBackupDialogView(
                         selectedDeviceId: self.$selectedDeviceId,
                         backupsService: backupsService,
                         onClose: {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UploadFrequencySelector: View {
+struct UploadFrequencySelectorView: View {
     @Binding var currentFrequency: UploadFrequencyEnum
 
     var body: some View {
@@ -50,5 +50,5 @@ struct UploadFrequencySelector: View {
 }
 
 #Preview {
-    UploadFrequencySelector(currentFrequency: .constant(.six))
+    UploadFrequencySelectorView(currentFrequency: .constant(.six))
 }

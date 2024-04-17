@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DeleteBackupDialog: View {
+struct DeleteBackupDialogView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Binding var selectedDeviceId: Int?
@@ -61,5 +61,5 @@ struct DeleteBackupDialog: View {
 }
 
 #Preview {
-    DeleteBackupDialog(selectedDeviceId: .constant(nil), backupsService: BackupsService(), onClose: {})
+    DeleteBackupDialogView(selectedDeviceId: .constant(nil), backupsService: BackupsService(), onClose: {})
 }

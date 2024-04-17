@@ -153,7 +153,7 @@ struct BackupsTabView: View {
             }
             
             if(!self.deviceHasBackups()) {
-                BackupSetup {
+                BackupSetupView {
                     showFolderSelector = true
                 }
             }
