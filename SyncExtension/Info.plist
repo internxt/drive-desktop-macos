@@ -12,6 +12,8 @@
 	</dict>
 	<key>NSExtension</key>
 	<dict>
+		<key>NSExtensionFileProviderUploadPipelineDepth</key>
+		<string></string>
 		<key>NSExtensionFileProviderActions</key>
 		<array>
 			<dict>
@@ -71,6 +73,10 @@
 			</dict>
 		</array>
 	</dict>
+	<key>NSExtensionFileProviderDownloadPipelineDepth</key>
+	<integer>10</integer>
+	<key>NSExtensionFileProviderUploadPipelineDepth</key>
+	<integer>10</integer>
 	<key>SUPublicEDKey</key>
 	<string>GnCaC4F6fdZw43QuFHnPfOrQQVHGSd5fmWYqK4XcVAU=</string>
 </dict>

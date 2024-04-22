@@ -127,6 +127,7 @@ struct EnumerateFolderItemsUseCase {
 
                 if hasMoreFiles || hasMoreFolders {
                     let nextOffset = limit + getOffset()
+                    self.logger.info("There are more files and folders, current offset is \(nextOffset)")
                     // The next page is the offset we reached at the end of this page
                     observer.finishEnumerating(upTo: NSFileProviderPage(rawValue: Data(String(nextOffset).utf8)))
                 } else {
