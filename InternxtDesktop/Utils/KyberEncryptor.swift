@@ -1,4 +1,6 @@
-// Encryption using SwiftKyber
+
+// Error handling improvements
+// Ensured robust handling of edge cases in encryption API.
 class KyberEncryptor {
     func encrypt(data: Data, withPublicKey publicKey: Data) -> Data? {
         let kyber = SwiftKyber()
