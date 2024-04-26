@@ -253,7 +253,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             do {
                 self.logger.info("✅ Current user initialized")
-                try await domainManager.initFileProvider()
+                guard let user = self.authManager.user else {
+                    throw AuthError.noUserFound
+                }
+                try await domainManager.initFileProviderForUser(user:user)
                 guard let manager = domainManager.manager else {
                     throw FileProviderError.CannotGetFileProviderManager
                 }

@@ -96,6 +96,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         do {
             self.tmpURL = try manager.temporaryDirectoryURL()
+            logger.info("TMP directory at \(self.tmpURL)")
         } catch {
             ErrorUtils.fatal("Cannot get tmp directory URL, file provider cannot work")
         }
@@ -210,6 +211,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             do {
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
             } catch {
+                logger.error("Failed to cleanup TMP files for item \(itemIdentifier.rawValue)")
                 error.reportToSentry()
             }
             

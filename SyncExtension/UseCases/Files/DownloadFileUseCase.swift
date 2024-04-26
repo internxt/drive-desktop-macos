@@ -46,7 +46,6 @@ struct DownloadFileUseCase {
     
     
     private func trackStart(driveFile: DriveFile, processIdentifier: String) -> Date {
-        
         let event = DownloadStartedEvent(
             fileName: driveFile.name,
             fileExtension: driveFile.type ?? "",
@@ -64,6 +63,7 @@ struct DownloadFileUseCase {
     }
     
     private func trackEnd(driveFile: DriveFile, processIdentifier: String, startedAt: Date) {
+
         let event = DownloadCompletedEvent(
             fileName: driveFile.name,
             fileExtension: driveFile.type ?? "",
@@ -99,6 +99,7 @@ struct DownloadFileUseCase {
     public func run() -> Progress {
         let progress = Progress(totalUnitCount: 100)
         
+        
         Task {
            
             var driveFile: DriveFile? = nil
@@ -124,6 +125,7 @@ struct DownloadFileUseCase {
                     fileId: file.fileId
                 )
                 
+            
                 guard let driveFileUnrawpped = driveFile else {
                     throw DownloadFileUseCaseError.DriveFileMissing
                 }
@@ -168,8 +170,9 @@ struct DownloadFileUseCase {
                 }
                 
                 error.reportToSentry()
-                self.logger.error("❌ Failed to fetch file content: \(error.localizedDescription)")
-                completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.localizedDescription)")
+                
+                completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
             }
         }
         

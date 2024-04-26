@@ -61,9 +61,10 @@ struct LogService {
         fileDestination.showLevel = true
         fileDestination.showFileName = true
         fileDestination.showDate = true
+        
         fileDestination.logQueue = DispatchQueue.global(qos: .background)
 
-        log.add(destination: fileDestination)
+        //log.add(destination: fileDestination)
         
         return log
     }
