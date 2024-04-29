@@ -60,6 +60,7 @@
 "BACKUP_STOP_ONGOING_BACKUP" = "Arrêter la sauvegarde en cours";
 "BACKUP_STOP_BACKUP_BODY" = "Il y a encore des fichiers qui n'ont pas encore été téléchargés. Arrêter la sauvegarde de toute façon ?";
 "BACKUP_STOP_BACKUP" = "Arrêter la sauvegarde";
+"BACKUP_FETCHING_DEVICES" = "Obtenir vos appareils avec les sauvegardes";
 "BACKUP_ERROR_FETCHING_DEVICES" = "Erreur dans l'extraction des dispositifs, veuillez réessayer";
 "BACKUP_TRY_AGAIN" = "Réessayer";
 "BACKUP_ERROR_BACKING_UP" = "Erreur de sauvegarde de ce dispositif";

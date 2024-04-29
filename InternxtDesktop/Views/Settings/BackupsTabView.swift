@@ -8,41 +8,113 @@
 import SwiftUI
 
 struct BackupsTabView: View {
-
+    
     @Binding var selectedDeviceId: Int?
     @Binding var showFolderSelector: Bool
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @StateObject var backupsService: BackupsService
     private let deviceName = ConfigLoader().getDeviceName()
-    @State var progress: Double = 0.48
-
-    var body: some View {
-        HStack(spacing: 0) {
-            DevicesTab
-                .padding([.leading, .vertical], 20)
-                .padding([.trailing], 16)
-
-            Divider()
-                .background(Color.Gray10)
-                .padding([.vertical], 20)
-
-            BackupTab
-
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    
+    
+    func getSelectedDevice() -> Device? {
+        return backupsService.selectedDevice
     }
-
-    var DevicesTab: some View {
+    
+    func hasSelectedDevice() -> Bool {
+        guard getSelectedDevice() != nil else {
+            return false
+        }
+        
+        return true
+    }
+    
+    func deviceHasBackups() -> Bool {
+        return true
+    }
+    
+    func backupIsInProgress() -> Bool {
+        return backupsService.backupStatus == .InProgress
+    }
+    
+    func thereAreDevicesLoaded() -> Bool {
+        do {
+            let devices = try backupsService.deviceResponse?.get()
+            return devices?.isEmpty ?? false ? false : true
+        } catch {
+            return false
+        }
+    }
+    
+    func shouldDisplayBackupsSidebar() -> Bool {
+        return backupsService.selectedDevice != nil || backupsService.devicesFetchingStatus == .Ready
+    }
+    var body: some View {
+        Group {
+            if(backupsService.devicesFetchingStatus == .LoadingDevices && backupsService.selectedDevice == nil) {
+             HStack(alignment: .center, spacing: 8) {
+             Spacer()
+             ProgressView()
+             .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+             .scaleEffect(0.6, anchor: .center)
+             AppText("BACKUP_FETCHING_DEVICES")
+             .font(.SMMedium)
+             .multilineTextAlignment(.center)
+             
+             Spacer()
+             }.frame(maxWidth: .infinity, maxHeight: .infinity)
+             }
+            
+            if(backupsService.devicesFetchingStatus == .Failed) {
+                VStack(alignment: .center, spacing: 20) {
+                    Spacer()
+                    AppText("BACKUP_ERROR_FETCHING_DEVICES")
+                        .font(.SMMedium)
+                        .multilineTextAlignment(.center)
+                    
+                    AppButton(title: "BACKUP_TRY_AGAIN") {
+                        Task {
+                            await backupsService.addCurrentDevice()
+                            await backupsService.loadAllDevices()
+                        }
+                    }
+                    Spacer()
+                }.frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if(shouldDisplayBackupsSidebar()){
+                HStack(spacing: 0) {
+                    BackupsSidebar
+                        .padding([.leading, .vertical], 20)
+                        .padding([.trailing], 16)
+                        .frame(alignment: .topLeading)
+                    
+                    Divider()
+                        .background(Color.Gray10)
+                        .padding([.vertical], 20)
+                    
+                    BackupTab
+                    
+                }.frame(maxWidth: .infinity, minHeight: 360, maxHeight: .infinity)
+            }
+            
+            
+        }.onAppear{
+            Task {
+                await backupsService.addCurrentDevice()
+                await backupsService.loadAllDevices()
+            }
+        }
+    }
+    
+    var BackupsSidebar: some View {
         VStack(alignment: .leading, spacing: 8) {
-
-            WidgetDeviceSelector(
+            
+            BackupAvailableDevicesView(
                 backupsService: backupsService,
                 selectedDeviceId: $selectedDeviceId
-            )
-
+            ).frame(width: 160)
+            
             Spacer()
-
+            
             HStack(alignment: .center, spacing: 4) {
                 Image(systemName: "questionmark.circle")
                     .resizable()
@@ -56,73 +128,47 @@ struct BackupsTabView: View {
             }
         }
     }
-
+    
     var BackupTab: some View {
         Group {
-            if backupsService.selectedDevice == nil {
-                Spacer()
-            } else if deviceName == backupsService.selectedDevice?.plainName {
-                if backupsService.hasOngoingBackup {
-                    ScrollView(showsIndicators: false) {
-                        BackupComponent(
-                            deviceName: deviceName ?? "",
-                            isCurrentDevice: true,
-                            numOfFolders: backupsService.foldernames.count,
-                            isLoading: true,
-                            backupsService: self.backupsService,
-                            progress: $progress,
-                            showStopBackupDialog: $showStopBackupDialog,
-                            showDeleteBackupDialog: $showDeleteBackupDialog,
-                            showFolderSelector: $showFolderSelector
-                        )
-                    }
-                } else if self.backupsService.currentDeviceHasBackup {
-                    ScrollView(showsIndicators: false) {
-                        BackupComponent(
-                            deviceName: deviceName ?? "",
-                            isCurrentDevice: true,
-                            numOfFolders: backupsService.foldernames.count,
-                            isLoading: false,
-                            lastUpdated: backupsService.selectedDevice?.updatedAt,
-                            backupsService: self.backupsService,
-                            progress: .constant(0.0),
-                            showStopBackupDialog: $showStopBackupDialog,
-                            showDeleteBackupDialog: $showDeleteBackupDialog,
-                            showFolderSelector: $showFolderSelector
-                        )
-                    }
-                } else {
-                    VStack {
-                        Spacer()
-
-                        BackupSetupComponent {
-                            showFolderSelector = true
-                        }
-
-                        Spacer()
-                    }
-                    .padding(20)
+            
+            
+          
+            if(backupIsInProgress() || hasSelectedDevice()) {
+                ScrollView(showsIndicators: false) {
+                    BackupConfigView(
+                        numOfFolders: backupsService.foldersToBackup.count,
+                        backupsService: self.backupsService,
+                        backupStatus: $backupsService.backupStatus,
+                        showStopBackupDialog: $showStopBackupDialog,
+                        showDeleteBackupDialog: $showDeleteBackupDialog,
+                        showFolderSelector: $showFolderSelector,
+                        device: Binding($backupsService.selectedDevice)!
+                    )
                 }
-            } else {
-                BackupComponent(
-                    deviceName: backupsService.selectedDevice?.plainName ?? "",
-                    isCurrentDevice: false,
-                    numOfFolders: 0,
-                    isLoading: false,
-                    lastUpdated: backupsService.selectedDevice?.updatedAt,
-                    backupsService: self.backupsService,
-                    progress: .constant(1),
-                    showStopBackupDialog: $showStopBackupDialog,
-                    showDeleteBackupDialog: $showDeleteBackupDialog,
-                    showFolderSelector: $showFolderSelector
-                )
             }
+            // No device, display nothing
+            if(!hasSelectedDevice()) {
+                Spacer()
+            }
+            
+            if(!self.deviceHasBackups()) {
+                BackupSetupView {
+                    showFolderSelector = true
+                }
+            }
+            
+            
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
-
 }
 
 #Preview {
-    BackupsTabView(selectedDeviceId: .constant(nil), showFolderSelector: .constant(false), showStopBackupDialog: .constant(false), showDeleteBackupDialog: .constant(false), backupsService: BackupsService())
+    BackupsTabView(
+        selectedDeviceId: .constant(nil),
+        showFolderSelector: .constant(false),
+        showStopBackupDialog: .constant(false),
+        showDeleteBackupDialog: .constant(false),
+        backupsService: BackupsService()
+    )
 }

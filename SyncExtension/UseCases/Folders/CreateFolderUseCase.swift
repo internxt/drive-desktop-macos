@@ -24,7 +24,6 @@ struct CreateFolderUseCase {
     
     func run() -> Progress {
         Task {
-            print("TOKEN", await ConfigLoader.shared.getLegacyAuthToken())
             let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? user.root_folder_id.toString() : itemTemplate.parentItemIdentifier.rawValue
             
             do {

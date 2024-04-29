@@ -249,7 +249,6 @@ struct UploadFileUseCase {
                 fileSize: Int(size),
                 bucketId: user.bucket,
                 progressHandler:{progress in
-                    print("Thumbnail progress: ", progress)
                 }
             )
             var fileExtension: String = ""

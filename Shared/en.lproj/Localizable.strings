@@ -60,6 +60,7 @@
 "BACKUP_STOP_ONGOING_BACKUP" = "Stop ongoing backup";
 "BACKUP_STOP_BACKUP_BODY" = "There are still files that have not yet been uploaded. Stop backup anyway?";
 "BACKUP_STOP_BACKUP" = "Stop backup";
+"BACKUP_FETCHING_DEVICES" = "Getting your Backups devices";
 "BACKUP_ERROR_FETCHING_DEVICES" = "Error fetching devices, please try again";
 "BACKUP_TRY_AGAIN" = "Try again";
 "BACKUP_ERROR_BACKING_UP" = "Error backing up this device";

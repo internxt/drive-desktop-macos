@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import os.log
 import UniformTypeIdentifiers
 
 enum BackupTreeGeneratorError: Error {
@@ -14,6 +13,7 @@ enum BackupTreeGeneratorError: Error {
     case rootIsNotDirectory
     case enumeratorNotFound
     case cannotGetNodeType
+    case missingRootRemoteId
 }
 
 protocol BackupTreeGeneration {
@@ -23,19 +23,22 @@ protocol BackupTreeGeneration {
     
 }
 class BackupTreeGenerator: BackupTreeGeneration {
-    let logger = Logger(subsystem: "com.internxt", category: "BackupTreeGenerator")
+    private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
     var root: URL
     let rootNode: BackupTreeNode
     let backupUploadService: BackupUploadService
-    let progress: Progress
-
-    init(root: URL, backupUploadService: BackupUploadService, progress: Progress) {
+    let backupTotalProgress: Progress
+    let deviceId: Int
+    init(root: URL, deviceId: Int, backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
 
         self.root = root
         self.backupUploadService = backupUploadService
-        self.progress = progress
+        self.backupTotalProgress = backupTotalProgress
+        self.deviceId = deviceId
         rootNode = BackupTreeNode(
             id: UUID().uuidString,
+            deviceId: deviceId,
+            rootBackupFolder: root,
             parentId: nil,
             name: root.lastPathComponent,
             type: BackupTreeNodeType.folder,
@@ -43,7 +46,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
             backupUploadService: self.backupUploadService,
-            progress: self.progress
+            backupTotalProgress: self.backupTotalProgress
         )
     }
     
@@ -52,35 +55,42 @@ class BackupTreeGenerator: BackupTreeGeneration {
      * Generates a tree from a list of URLs of the system
      **/
     func generateTree() async throws -> BackupTreeNode {
-        
-        return try await withUnsafeThrowingContinuation{ continuation in
-            if self.root.isDirectory {
-                guard let enumerator = FileManager.default.enumerator(
-                    at: self.root,
-                    includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey],
-                    options: [.skipsHiddenFiles]
-                ) else {
-                    continuation.resume(throwing: BackupTreeGeneratorError.enumeratorNotFound)
-                    return
-                }
 
-                for case let url as URL in enumerator {
-                    do {
-                        try self.insertInTree(url)
-                    } catch{
-                        // We need to decide what to do in this case, for now, at least log the error
-                        logger.error("Failed to insert URL \(url) in the backup tree: \(error)")
+        return try await withUnsafeThrowingContinuation { continuation in
+            do {
+                if try self.root.isDirectory() {
+                    guard let enumerator = FileManager.default.enumerator(
+                        at: self.root,
+                        includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey],
+                        options: [.skipsHiddenFiles]
+                    ) else {
+                        logger.error("Enumerator not found")
+                        continuation.resume(throwing: BackupTreeGeneratorError.enumeratorNotFound)
+                        return
                     }
+
+                    for case let url as URL in enumerator {
+                        do {
+                            try self.insertInTree(url)
+                        } catch {
+                            // We need to decide what to do in this case, for now, at least log the error
+                            logger.error("Failed to insert URL \(url) in the backup tree: \(error)")
+                        }
+                    }
+
+                    continuation.resume(returning: self.rootNode)
+
+                } else {
+                    logger.error("Node \(self.root) is not a directory")
+                    continuation.resume(throwing: BackupTreeGeneratorError.rootIsNotDirectory)
                 }
-                
-                continuation.resume(returning: self.rootNode)
-                
-                
-            } else {
+            } catch {
+                logger.error(["Cannot check if node \(self.root) is directory", error])
+                error.reportToSentry()
                 continuation.resume(throwing: BackupTreeGeneratorError.rootIsNotDirectory)
             }
         }
-        
+
     }
     
     func insertInTree(_ url: URL) throws {
@@ -105,10 +115,14 @@ class BackupTreeGenerator: BackupTreeGeneration {
         guard let type = UTType(typeID) else {
             throw BackupTreeGeneratorError.cannotGetNodeType
         }
+        
+        
 
         // 3. We have a parent, and the node does not exists, create the BackupTreeNode
         let newNode = BackupTreeNode(
             id: UUID().uuidString,
+            deviceId: self.deviceId,
+            rootBackupFolder: root,
             parentId: parentNode.id,
             name: url.lastPathComponent,
             type: type,
@@ -116,7 +130,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
             backupUploadService: self.backupUploadService,
-            progress: self.progress
+            backupTotalProgress: self.backupTotalProgress
         )
         
         

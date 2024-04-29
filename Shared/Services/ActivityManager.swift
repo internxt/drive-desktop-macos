@@ -17,16 +17,18 @@ class ActivityManager: ObservableObject {
     private let activityActionsLimit = 50
     private var notificationToken: NotificationToken?
     @Published var activityEntries: [ActivityEntry] = []
+    private var realm: Realm? = nil
     
-    private func getRealm() -> Realm {
+    private func getRealm() -> Realm? {
         do {
             return try Realm(configuration: Realm.Configuration(
                 fileURL: ConfigLoader.realmURL,
                 deleteRealmIfMigrationNeeded: true
             ))
+            
         } catch {
             error.reportToSentry()
-            fatalError("Unable to open Realm")
+            return nil
         }
         
     }
@@ -34,8 +36,8 @@ class ActivityManager: ObservableObject {
     func clean() throws {
         activityEntries = []
         let realm = getRealm()
-        try realm.write{
-            realm.deleteAll()
+        try realm?.write{
+            realm?.deleteAll()
         }
         
         
@@ -45,8 +47,8 @@ class ActivityManager: ObservableObject {
         
         do {
             let realm = getRealm()
-            try realm.write {
-                realm.add(entry)
+            try realm?.write {
+                realm?.add(entry)
             }
         } catch {
             error.reportToSentry()
@@ -55,7 +57,10 @@ class ActivityManager: ObservableObject {
     }
 
     func updateActivityEntries() {
-        let entries = getRealm().objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
+        guard let realm = getRealm() else {
+            return
+        }
+        let entries = realm.objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
         
         var newEntries: [ActivityEntry] = []
         for i in 0..<activityActionsLimit {
@@ -73,7 +78,10 @@ class ActivityManager: ObservableObject {
 
     func observeLatestActivityEntries() -> Void {
         if self.notificationToken == nil {
-            let result = getRealm().objects(ActivityEntry.self)
+            guard let realm = getRealm() else {
+                return
+            }
+            let result = realm.objects(ActivityEntry.self)
             self.notificationToken = result.observe{[weak self] (changes: RealmCollectionChange) in
                 switch changes {
                     case .initial:
@@ -81,7 +89,7 @@ class ActivityManager: ObservableObject {
                     case .update:
                         self?.updateActivityEntries()
                     case .error(let error):
-                        fatalError("\(error)")
+                        return
                     }
             }
         }

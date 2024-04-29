@@ -8,105 +8,108 @@
 import SwiftUI
 import InternxtSwiftCore
 
-struct WidgetDeviceSelector: View {
-
+struct BackupAvailableDevicesView: View {
+    
     @StateObject var backupsService: BackupsService
     @Binding var selectedDeviceId: Int?
     private let deviceName = ConfigLoader().getDeviceName()
-
+    
+    func isFetchingBackupDevices() -> Bool {
+        return backupsService.devicesFetchingStatus == .LoadingDevices
+    }
+    func thereAreBackupDevices() -> Bool {
+        switch backupsService.deviceResponse {
+        case .success(let devices):
+            return devices.isEmpty ? false : true
+        case .failure:
+            return false
+        case .none:
+            return false
+        }
+    }
+    
+    func getBackupDevices() -> [Device] {
+        let devices = (try? backupsService.deviceResponse?.get()) ?? []
+                
+        return devices
+    }
+    
+    func backupDevicesFetchingFailed() -> Bool {
+        return backupsService.devicesFetchingStatus == .Failed
+    }
+    
     var body: some View {
         Group {
-            switch backupsService.deviceResponse {
-            case .success(let devices):
-                if devices.isEmpty {
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 5) {
-                            AppText("BACKUP_SETTINGS_DEVICES")
-                                .foregroundColor(.Gray80)
-                                .font(.SMMedium)
-
+            
+            if(thereAreBackupDevices() || isFetchingBackupDevices()) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 5) {
+                        AppText("BACKUP_SETTINGS_DEVICES")
+                            .foregroundColor(.Gray80)
+                            .font(.SMMedium)
+                            
+                        if(isFetchingBackupDevices()) {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                                 .scaleEffect(0.5, anchor: .center)
                         }
-
-                        Spacer()
-                    }
-                    .frame(width: 160, alignment: .leading)
-                } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        AppText("BACKUP_SETTINGS_DEVICES")
-                            .foregroundColor(.Gray80)
-                            .font(.SMMedium)
-
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(devices) { device in
-                                if (device.hasBackups || device.plainName == deviceName) {
-                                    DeviceItem(
-                                        deviceName: device.plainName ?? "",
-                                        isSelected: self.selectedDeviceId == device.id,
-                                        isCurrentDevice: device.isCurrentDevice
-                                    ) {
-                                        self.selectedDeviceId = device.id
-                                        backupsService.selectedDevice = device
-                                    }
+                    }.frame( maxWidth:.infinity,maxHeight: 20, alignment: .leading )
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(getBackupDevices()) { device in
+                            
+                            if (device.hasBackups || device.plainName == deviceName) {
+                                BackupDeviceItem(
+                                    deviceName: device.plainName ?? "",
+                                    isSelected: self.selectedDeviceId == device.id,
+                                    isCurrentDevice: device.isCurrentDevice
+                                ) {
+                                    self.selectedDeviceId = device.id
+                                    backupsService.selectedDevice = device
                                 }
                             }
                         }
-                        .onAppear {
+                    }
+                    .onAppear {
+                        let devices = getBackupDevices()
+                        if(self.selectedDeviceId == nil) {
                             self.selectedDeviceId = devices.first?.id
                             backupsService.selectedDevice = devices.first
                         }
-                        .frame(width: 160, alignment: .leading)
                     }
-                    .frame(width: 160, alignment: .leading)
                 }
-            case .failure(_):
+                .frame(alignment: .leading)
+            }
+            
+            if(backupDevicesFetchingFailed() && !thereAreBackupDevices()) {
                 VStack(alignment: .center, spacing: 20) {
                     Spacer()
-
+                    
                     AppText("BACKUP_ERROR_FETCHING_DEVICES")
                         .font(.SMMedium)
                         .multilineTextAlignment(.center)
-
+                    
                     AppButton(title: "BACKUP_TRY_AGAIN") {
                         Task {
                             await backupsService.loadAllDevices()
                         }
                     }
-
+                    
                     Spacer()
                 }
-                .frame(width: 160, alignment: .center)
-            default:
-                VStack(alignment: .center) {
-                    Spacer()
-
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        .scaleEffect(2.0, anchor: .center)
-
-                    Spacer()
-                }
-                .frame(width: 160, alignment: .center)
-            }
-        }
-        .onAppear {
-            Task {
-                await backupsService.loadAllDevices()
+                .frame(width: .infinity, alignment: .center)
             }
         }
     }
 }
 
-struct DeviceItem: View {
-
+struct BackupDeviceItem: View {
+    
     @Environment(\.colorScheme) var colorScheme
     var deviceName: String
     var isSelected: Bool
     var isCurrentDevice: Bool
     var onTap: () -> Void
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if (isCurrentDevice) {
@@ -114,12 +117,12 @@ struct DeviceItem: View {
                     .foregroundColor(.Primary)
                     .font(.XXSSemibold)
             }
-
+            
             AppText(deviceName)
                 .foregroundColor(.Gray80)
                 .font(.SMMedium)
                 .lineLimit(1)
-
+            
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.horizontal], 16)
@@ -138,7 +141,7 @@ struct DeviceItem: View {
                 .stroke(isSelected ? Color.Gray10 : .clear, lineWidth: 1)
         )
     }
-
+    
     func getBackgroundColor() -> Color {
         if isSelected {
             if colorScheme == .dark {
@@ -152,5 +155,5 @@ struct DeviceItem: View {
 }
 
 #Preview {
-    WidgetDeviceSelector(backupsService: BackupsService(), selectedDeviceId: .constant(nil))
+    BackupAvailableDevicesView(backupsService: BackupsService(), selectedDeviceId: .constant(nil)).frame(width: 160, height: 200).padding(16)
 }

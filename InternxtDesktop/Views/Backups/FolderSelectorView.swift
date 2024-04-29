@@ -15,10 +15,10 @@ struct FolderSelectorView: View {
     @State private var selectedId: String?
 
     private var foldersCountLabel: Text {
-        if backupsService.foldernames.count == 1 {
+        if backupsService.foldersToBackup.count == 1 {
             return Text("BACKUP_SETTINGS_ONE_FOLDER")
         } else {
-            return Text("BACKUP_SETTINGS_\("\(backupsService.foldernames.count)")_FOLDERS")
+            return Text("BACKUP_SETTINGS_\("\(backupsService.foldersToBackup.count)")_FOLDERS")
         }
     }
 
@@ -37,7 +37,7 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            BackupsFolderList(foldernames: $backupsService.foldernames, selectedId: $selectedId)
+            BackupsFolderListView(foldersToBackup: $backupsService.foldersToBackup, selectedId: $selectedId)
 
             HStack {
                 HStack(spacing: 8) {
@@ -49,16 +49,14 @@ struct FolderSelectorView: View {
                         if panel.runModal() == .OK {
                             for url in panel.urls {
                                 do {
-                                    let urls = backupsService.foldernames.map { foldername in
-                                        return URL(string: foldername.url)
+                                    let urls = backupsService.foldersToBackup.map { foldernToBackup in
+                                        return foldernToBackup.url
                                     }
                                     if (!urls.contains(url)) {
-                                        try self.backupsService.addFoldernameToBackup(
-                                          FoldernameToBackup(
-                                              url: url.absoluteString,
-                                              status: .selected
-                                          )
-                                        )
+                                        
+                                        try self.backupsService.addFolderToBackup(url:url)
+                                            
+                                        
                                     }
                                 } catch {
                                     error.reportToSentry()
@@ -72,7 +70,7 @@ struct FolderSelectorView: View {
                         if let selectedId = selectedId {
                             self.deleteFolder(selectedId: selectedId)
                         }
-                    }, type: .secondary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
+                    }, type: .secondary, size: .SM, isEnabled: backupsService.foldersToBackup.count != 0)
                 }
 
                 Spacer()
@@ -86,7 +84,7 @@ struct FolderSelectorView: View {
 
                     AppButton(title: "COMMON_BACKUP_NOW", onClick: {
                         doBackup()
-                    }, type: .primary, size: .SM, isEnabled: backupsService.foldernames.count != 0)
+                    }, type: .primary, size: .SM, isEnabled: !backupsService.foldersToBackup.isEmpty)
                 }
             }
 
@@ -103,7 +101,8 @@ struct FolderSelectorView: View {
         Task {
             do {
                 closeWindow()
-                try await self.backupsService.startBackup(for: backupsService.foldernames)
+                try await self.backupsService.startBackup( onProgress: {progress in
+                })
             } catch {
                 self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
             }
@@ -113,7 +112,7 @@ struct FolderSelectorView: View {
     private func deleteFolder(selectedId: String) {
         Task {
             do {
-                try await self.backupsService.removeFoldernameFromBackup(id: selectedId)
+                try await self.backupsService.removeFolderToBackup(id: selectedId)
                 self.selectedId = nil
             } catch {
                 error.reportToSentry()

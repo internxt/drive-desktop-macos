@@ -1,5 +1,4 @@
 {
-  "originHash" : "c6189e930f7981170b18cd77a341ede077498747a25b08be829bc4beb44abce1",
   "pins" : [
     {
       "identity" : "idzswiftcommoncrypto",
@@ -97,7 +96,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "main",
-        "revision" : "804ecd299513a8a1b3b46a24b90be7749609cb0b"
+        "revision" : "0c469fa83d84f4b972aaae426ffe07cb8b903d8c"
       }
     },
     {

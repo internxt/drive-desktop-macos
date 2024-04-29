@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BackupSetupComponent: View {
+struct BackupSetupView: View {
     var callback: () -> Void
 
     var body: some View {
@@ -28,14 +28,12 @@ struct BackupSetupComponent: View {
             }
 
             AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                withAnimation {
-                    callback()
-                }
+                callback()
             }, type: .primary, size: .MD)
         }
     }
 }
 
 #Preview {
-    BackupSetupComponent {}
+    BackupSetupView {}
 }

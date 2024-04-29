@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StopBackupDialog: View {
+struct StopBackupDialogView: View {
 
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var backupsService: BackupsService
@@ -53,5 +53,5 @@ struct StopBackupDialog: View {
 }
 
 #Preview {
-    StopBackupDialog(backupsService: BackupsService()) {}
+    StopBackupDialogView(backupsService: BackupsService()) {}
 }

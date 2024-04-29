@@ -9,7 +9,7 @@ import Foundation
 
 
 class UsageManager: ObservableObject {
-    
+    static let shared = UsageManager()
     @Published var loadingUsage: Bool = true
     @Published var usageError: Error? = nil
     // Just to avoid accidentally dividing by 0

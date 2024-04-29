@@ -13,22 +13,28 @@ class SyncedNode: Object {
     @Persisted var remoteId: Int
     @Persisted var remoteUuid: String
     @Persisted(indexed: true) var url: String
+    @Persisted(indexed: true) var rootBackupFolder: String
     @Persisted var parentId: String?
     @Persisted var remoteParentId: Int?
     @Persisted var createdAt: Date
     @Persisted var updatedAt: Date
+    @Persisted var deviceId: Int
 
     convenience init(
         remoteId: Int,
+        deviceId: Int,
         remoteUuid: String,
-        url: String,
+        url: URL,
+        rootBackupFolder: URL,
         parentId: String?,
         remoteParentId: Int?
     ) {
         self.init()
+        self.deviceId = deviceId
         self.remoteId = remoteId
         self.remoteUuid = remoteUuid
-        self.url = url
+        self.url = url.absoluteString
+        self.rootBackupFolder = url.absoluteString
         self.parentId = parentId
         self.remoteParentId = remoteParentId
         self.createdAt = Date()
