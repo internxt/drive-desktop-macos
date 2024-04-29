@@ -39,7 +39,6 @@ struct AccountUsageView: View {
                 HStack(alignment: .center, spacing: 16) {
                     UsageLegendItem(label: "Drive", color: .Primary)
                     UsageLegendItem(label: "Backups", color: .Indigo)
-                    UsageLegendItem(label: "Photos", color: .Orange)
                 }
             }
             
@@ -78,7 +77,7 @@ struct AccountUsageView: View {
             HStack(alignment: .center, spacing: 0) {
                 DriveUsageSegment(totalWidth: proxy.size.width)
                 BackupsUsageSegment(totalWidth: proxy.size.width)
-                PhotosUsageSegment(totalWidth: proxy.size.width)
+                
                 Spacer()
             }
         }
@@ -136,28 +135,7 @@ struct AccountUsageView: View {
         URLDictionary.UPGRADE_PLAN.open()
     }
     
-    func PhotosUsageSegment(totalWidth: CGFloat) -> some View {
-        
-        func getWidth() -> Int64 {
-            
-            if usageManager.photosUsage == 0 {
-                return 0
-            }
-            
-            let segmentWidth = (usageManager.photosUsage * Int64(totalWidth)) / usageManager.limit
-            
-            return segmentWidth < MIN_SEGMENT_WIDTH ? MIN_SEGMENT_WIDTH : segmentWidth
-        }
-        
-        return  Rectangle()
-            .fill(Color("Orange"))
-            .frame(
-                maxWidth: CGFloat(getWidth()),
-                maxHeight: .infinity
-            ).overlay(Rectangle()
-                .frame(width: 2, height: nil, alignment: .trailing).foregroundColor(Color("Surface")), alignment: .trailing)
-            
-    }
+    
 }
 
 struct AccountUsageView_Previews: PreviewProvider {
