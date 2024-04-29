@@ -199,10 +199,10 @@ platform :mac do
 
     # Send an slack message with the new DMG ready
     # TODO: Add changelog and latest changes from previous release
-    slack(
-      pretext: "🚀[RELEASE]🚀 Drive Desktop MacOS v#{version} production release is ready in draft mode\n<#{dmg_download_url}|Download DMG Installer>\n\nInstructions:\nLogout and then uninstall totally the previous app version to prevent unpredictable effects",
-      slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
-    )
+    #slack(
+    #  pretext: "🚀[RELEASE]🚀 Drive Desktop MacOS v#{version} production release is ready in draft mode\n<#{dmg_download_url}|Download DMG Installer>\n\nInstructions:\nLogout and then uninstall totally the previous app version to prevent unpredictable effects",
+    #  slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
+    #)
 
 
   end
