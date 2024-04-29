@@ -63,8 +63,12 @@ struct LogService {
         fileDestination.showDate = true
         
         fileDestination.logQueue = DispatchQueue.global(qos: .background)
-
-        //log.add(destination: fileDestination)
+        // Writing logs for the SyncExtension raises a "too many files open" error 
+        // at some point, needs investigation
+        if subsystem != .SyncExtension {
+            log.add(destination: fileDestination)
+        }
+        
         
         return log
     }

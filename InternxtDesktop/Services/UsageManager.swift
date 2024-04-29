@@ -14,12 +14,11 @@ class UsageManager: ObservableObject {
     @Published var usageError: Error? = nil
     // Just to avoid accidentally dividing by 0
     @Published var limit: Int64 = 1
-    @Published var photosUsage: Int64 = 0
     @Published var driveUsage: Int64 = 0
     @Published var backupsUsage: Int64 = 0
     
     public func getUsedPercentage() -> String {
-        let totalUsed = driveUsage + backupsUsage + photosUsage
+        let totalUsed = driveUsage + backupsUsage
         let percentage = (totalUsed * 100) / limit
         
         return "\(percentage)%"
@@ -34,13 +33,11 @@ class UsageManager: ObservableObject {
             let limit = try await APIFactory.Drive.getLimit()
             
             let driveUsage = try await APIFactory.Drive.getUsage()
-            let photosUsage = try await APIFactory.Photos.getUsage()
             
             DispatchQueue.main.async{
                 self.limit = limit.maxSpaceBytes
                 self.driveUsage = driveUsage.drive
                 self.backupsUsage = driveUsage.backups
-                self.photosUsage = photosUsage.usage
                 self.loadingUsage = false
             }
             
@@ -56,7 +53,7 @@ class UsageManager: ObservableObject {
     
     
     public func getFormattedTotalUsage() -> String {
-        let total = driveUsage + backupsUsage + photosUsage
+        let total = driveUsage + backupsUsage
         
         return self.format(bytes: total)
     }
