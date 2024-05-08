@@ -1,14 +1,12 @@
-
-// Error handling improvements
-// Ensured robust handling of edge cases in encryption API.
-class KyberEncryptor {
-    func encrypt(data: Data, withPublicKey publicKey: Data) -> Data? {
+// Decryption using SwiftKyber
+class KyberDecryptor {
+    func decrypt(data: Data, withPrivateKey privateKey: Data) -> Data? {
         let kyber = SwiftKyber()
-        return kyber.encrypt(data, publicKey: publicKey)
+        return kyber.decrypt(data, privateKey: privateKey)
     }
 }
 
-let encryptor = KyberEncryptor()
-if let encryptedData = encryptor.encrypt(data: "Hello World".data(using: .utf8)!, withPublicKey: keyManager.getPublicKey()!) {
-    print("Encryption successful: \(encryptedData)")
+let decryptor = KyberDecryptor()
+if let decryptedData = decryptor.decrypt(data: encryptedData!, withPrivateKey: keyManager.getPrivateKey()!) {
+    print("Decryption successful: \(String(data: decryptedData, encoding: .utf8)!)")
 }
