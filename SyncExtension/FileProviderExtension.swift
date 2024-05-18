@@ -9,6 +9,8 @@ import FileProvider
 import InternxtSwiftCore
 import Combine
 import Foundation
+import AppKit
+
 
 enum CreateItemError: Error {
     case NoParentIdFound
@@ -475,6 +477,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             return Progress()
         }
         
+        if actionIdentifier == FileProviderItemActionsManager.OpenWebBrowser {
+            // open browser
+            if let url = URL(string: "https://www.google.com") {
+                NSWorkspace.shared.open(url)
+                
+            }
+            
+            return Progress()
+        }
         
         return Progress()
     }

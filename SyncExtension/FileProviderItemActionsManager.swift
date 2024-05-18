@@ -12,6 +12,7 @@ class FileProviderItemActionsManager{
     static let MakeAvailableOnline = NSFileProviderExtensionActionIdentifier(rawValue: "internxt.InternxtDesktop.sync.Action.AvailableOnlineOnly")
     static let MakeAvailableOffline = NSFileProviderExtensionActionIdentifier(rawValue: "internxt.InternxtDesktop.sync.Action.AvailableOffline")
     static let RefreshContent = NSFileProviderExtensionActionIdentifier(rawValue: "internxt.InternxtDesktop.sync.Action.RefreshContent")
+    static let OpenWebBrowser = NSFileProviderExtensionActionIdentifier(rawValue: "internxt.InternxtDesktop.sync.Action.OpenWebBrowser")
     let userDefaults = UserDefaults.standard
 
         
