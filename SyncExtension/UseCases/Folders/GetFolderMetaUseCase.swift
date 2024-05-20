@@ -18,7 +18,7 @@ enum GetFolderMetaUseCaseError: Error {
 
 
 struct GetFolderMetaUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "GetFolderMeta")
+    let logger = syncExtensionLogger
     private let driveAPI: DriveAPI = APIFactory.Drive
     private let completionHandler: (NSFileProviderItem?, Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier

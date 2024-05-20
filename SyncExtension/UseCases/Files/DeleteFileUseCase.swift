@@ -12,7 +12,7 @@ import InternxtSwiftCore
 
 
 struct DeleteFileUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "DeleteFile")
+    let logger = syncExtensionLogger
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let identifier: NSFileProviderItemIdentifier

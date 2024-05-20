@@ -92,3 +92,6 @@ struct LogService {
         return true
     }
  }
+
+let syncExtensionLogger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "SyncExtension")
+

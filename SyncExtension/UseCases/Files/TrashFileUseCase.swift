@@ -18,7 +18,7 @@ enum TrashFileUseCaseError: Error {
 
 
 struct TrashFileUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "TrashFile")
+    let logger = syncExtensionLogger
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let item: NSFileProviderItem

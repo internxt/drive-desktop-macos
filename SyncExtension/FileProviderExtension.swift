@@ -18,7 +18,7 @@ enum CreateItemError: Error {
 
 
 
-let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "FileProviderExtension")
+let logger = syncExtensionLogger
 class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
     let fileProviderItemActions = FileProviderItemActionsManager()
     let config = ConfigLoader()

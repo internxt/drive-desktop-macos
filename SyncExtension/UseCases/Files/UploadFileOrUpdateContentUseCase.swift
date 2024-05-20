@@ -10,7 +10,7 @@ import InternxtSwiftCore
 import FileProvider
 
 struct UploadFileOrUpdateContentUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "UploadFileOrUpdateContent")
+    let logger = syncExtensionLogger
     
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()

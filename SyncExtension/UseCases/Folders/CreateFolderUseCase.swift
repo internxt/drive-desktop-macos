@@ -10,7 +10,7 @@ import FileProvider
 import InternxtSwiftCore
 
 struct CreateFolderUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "CreateFolder")
+    let logger = syncExtensionLogger
     let driveAPI = APIFactory.Drive
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
