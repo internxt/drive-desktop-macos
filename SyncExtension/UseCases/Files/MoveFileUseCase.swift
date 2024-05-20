@@ -11,7 +11,7 @@ import InternxtSwiftCore
 
 
 struct MoveFileUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "MoveFile")
+    let logger = syncExtensionLogger
     let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem

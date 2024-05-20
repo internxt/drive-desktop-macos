@@ -24,7 +24,7 @@ extension OptionSet {
 }
 
 struct TrashFolderUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "TrashFolder")
+    let logger = syncExtensionLogger
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let item: NSFileProviderItem
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
