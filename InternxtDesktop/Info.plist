@@ -21,6 +21,8 @@
 	<true/>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
 	<key>SUFeedURL</key>
 	<string>https://internxt.github.io/drive-desktop-macos/appcast.xml</string>
 	<key>SUPublicEDKey</key>
