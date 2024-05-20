@@ -478,10 +478,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if actionIdentifier == FileProviderItemActionsManager.OpenWebBrowser {
-            // open browser
-            if let url = URL(string: "https://www.google.com") {
-                NSWorkspace.shared.open(url)
+            Task {
+                for identifier in itemIdentifiers {
+                    let fileId = identifier.rawValue
+                    if let url = URL(string: "\(URLDictionary.DRIVE_WEB_FILE)\(fileId)") {
+                        NSWorkspace.shared.open(url)
+                    } else {
+                        logger.info("Error: URL is invalid")
+                    }
+                }
                 
+                completionHandler(nil)
             }
             
             return Progress()
