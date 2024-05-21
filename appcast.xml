@@ -22,7 +22,7 @@
             <pubDate>Tue, 21 May 2024 10:11:24 +0200</pubDate>
             <link>https://github.com/internxt/drive-desktop-macos/releases/download/v2.2.2.54/Internxt_Drive_2.2.2.54.dmg</link>
             <sparkle:tags>
-                <sparkle:criticalUpdate></sparkle:criticalUpdate>
+                <sparkle:criticalUpdate sparkle:version="2.2.1"></sparkle:criticalUpdate>
             </sparkle:tags>
             <sparkle:version>54</sparkle:version>
             <sparkle:shortVersionString>2.2.2</sparkle:shortVersionString>
