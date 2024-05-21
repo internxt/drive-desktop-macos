@@ -12,7 +12,13 @@
         </item>
         <item>
             <title>Internxt Drive 2.2.2 available via web</title>
-            <description sparkle:format="plain-text">A new version of the Internxt Drive app is available, click the link below to download and install it via web</description>
+            description><![CDATA[
+        <h2>Internxt Drive 2.2.2.54 is available</h2>
+        <p>A new version of the Internxt Drive app is available, click the link below to download and install it via web</p>
+        <a href="https://github.com/internxt/drive-desktop-macos/releases/download/v2.2.2.54/Internxt_Drive_2.2.2.54.dmg">Download Internxt Drive 2.2.2.54</a>
+
+    ]]>
+            </description>
             <pubDate>Tue, 21 May 2024 10:11:24 +0200</pubDate>
             <link>https://github.com/internxt/drive-desktop-macos/releases/download/v2.2.2.54/Internxt_Drive_2.2.2.54.dmg</link>
             <sparkle:tags>
