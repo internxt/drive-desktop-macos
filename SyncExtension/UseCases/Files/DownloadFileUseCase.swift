@@ -15,7 +15,7 @@ enum DownloadFileUseCaseError: Error {
 }
 
 struct DownloadFileUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "DownloadFileUseCase")
+    let logger = syncExtensionLogger
     private let cryptoUtils = CryptoUtils()
     private let networkFacade: NetworkFacade
     private let completionHandler: (URL?, NSFileProviderItem?, Error?) -> Void

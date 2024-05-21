@@ -21,8 +21,10 @@
 	<true/>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
 	<key>SUFeedURL</key>
-	<string>https://internxt.github.io/drive-desktop-macos/appcast.xml</string>
+	<string>https://internxt.github.io/drive-desktop-macos/appcast-prod.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>GnCaC4F6fdZw43QuFHnPfOrQQVHGSd5fmWYqK4XcVAU=</string>
 	<key>SUScheduledCheckInterval</key>

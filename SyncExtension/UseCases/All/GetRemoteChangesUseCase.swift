@@ -15,7 +15,7 @@ struct FilesAndFoldersAnchor {
     public let foldersAnchorDate: Date
 }
 struct GetRemoteChangesUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "GetRemoteChanges")
+    let logger = syncExtensionLogger
     private let driveAPI: DriveAPI = APIFactory.Drive
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let observer: NSFileProviderChangeObserver

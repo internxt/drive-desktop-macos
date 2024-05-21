@@ -17,7 +17,7 @@ enum UploadFileUseCaseError: Error {
 
 
 struct UploadFileUseCase {
-    let logger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "UploadFile")
+    let logger = syncExtensionLogger
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let trashAPI: TrashAPI = APIFactory.Trash
