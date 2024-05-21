@@ -16,4 +16,5 @@ struct URLDictionary {
     public static var HELP_CENTER = URL(string:"https://help.internxt.com")!
     public static var BACKUPS_WEB = URL(string: "https://drive.internxt.com/backups")!
     public static var DRIVE_WEB_FILE = "https://drive.internxt.com/file/"
+    public static var DRIVE_WEB_FOLDER = "https://drive.internxt.com/folder/"
 }
