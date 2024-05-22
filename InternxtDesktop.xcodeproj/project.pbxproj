@@ -65,6 +65,7 @@
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		31F9EF312B86801B007DAD86 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
 		31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
+		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE72BFD762600BA0145 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
@@ -460,6 +461,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA059A352BFE36C500A07D45 /* Rudder in Frameworks */,
 				314D64362B9767FB00126E4B /* RealmSwift in Frameworks */,
 				314D64342B9767EB00126E4B /* Realm in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
@@ -987,6 +989,7 @@
 				314D64332B9767EB00126E4B /* Realm */,
 				314D64352B9767FB00126E4B /* RealmSwift */,
 				E1FD8C702BA989B600C257E0 /* XCGLogger */,
+				AA059A342BFE36C500A07D45 /* Rudder */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -2198,6 +2201,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		AA059A342BFE36C500A07D45 /* Rudder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
+			productName = Rudder;
 		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
