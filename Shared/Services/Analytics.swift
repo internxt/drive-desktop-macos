@@ -79,5 +79,12 @@ struct Analytics {
             "os": getOSContextProperties()
         ].merging(event.getAllProperties()){ (_, new) in new })
     }
+    
+    func track(event: BackupEventPayload) {
+        client.track(event.eventName.rawValue, properties: [
+            "app": getAppContextProperties(),
+            "os": getOSContextProperties()
+        ].merging(event.getAllProperties()){ (_, new) in new })
+    }
 
 }

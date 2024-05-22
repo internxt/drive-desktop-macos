@@ -13,6 +13,8 @@ enum NetworkAnalyticsEvent: String {
     case DOWNLOAD_STARTED = "Download Started"
     case DOWNLOAD_COMPLETED = "Download Completed"
     case DOWNLOAD_ERROR = "Download Error"
+    case SUCCESS_BACKUP = "Success Backup"
+    case FAILURE_BACKUP = "Failure Backup"
 }
 
 func getBandwidthUsage(fileSizeBytes: Int64, durationMs: Int) -> Int {
@@ -49,6 +51,13 @@ protocol UploadAnalyticsEventPayload {
     
 }
 
+protocol BackupEventPayload {
+    var eventName: NetworkAnalyticsEvent { get set }
+    var foldersToBackup: Int {get set}
+    func getProperties() -> [String: Any]
+
+}
+
 extension UploadAnalyticsEventPayload {
     func getAllProperties() -> [String: Any] {
         
@@ -76,6 +85,15 @@ extension DownloadAnalyticsEventPayload {
             "file_size": self.fileSize,
             "parent_folder_id": self.parentFolderId,
             "is_multiple": 0,
+        ].merging(self.getProperties()){ (_, new) in new }
+    }
+}
+
+extension BackupEventPayload {
+    func getAllProperties() -> [String: Any] {
+
+        return [
+            "folders_number": self.foldersToBackup,
         ].merging(self.getProperties()){ (_, new) in new }
     }
 }
@@ -191,4 +209,25 @@ struct DownloadErrorEvent: DownloadAnalyticsEventPayload {
     }
 }
 
+struct SuccessBackupEvent: BackupEventPayload {
+    var eventName = NetworkAnalyticsEvent.SUCCESS_BACKUP
+    var foldersToBackup: Int
+    func getProperties() -> [String : Any] {
+        return [:]
+    }
+}
+
+struct FailureBackupEvent: BackupEventPayload{
+    var eventName = NetworkAnalyticsEvent.FAILURE_BACKUP
+    var foldersToBackup: Int
+    var error: any Error
+
+    func getProperties() -> [String : Any] {
+        return [
+            "error_message_user": self.error.localizedDescription,
+            "error_message": self.error.localizedDescription,
+            "stack_trace": "NOT_AVAILABLE_DESKTOP_MACOS"
+        ]
+    }
+}
 

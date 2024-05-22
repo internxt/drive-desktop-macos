@@ -121,10 +121,12 @@ struct BackupConfigView: View {
                 self.changeFolders()
             } else {
                 try await self.backupsService.startBackup(onProgress: {progress in })
+                EventsUtils.trackSuccessBackup(foldersToBackup: backupsService.foldersToBackup.count)
             }
             
         } catch {
             self.showErrorDialog(message: "BACKUP_ERROR_BACKING_UP")
+            EventsUtils.trackFailureBackup(error: error, foldersToBackup: backupsService.foldersToBackup.count)
         }
     }
     
