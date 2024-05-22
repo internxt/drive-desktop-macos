@@ -98,11 +98,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 } catch {
                     self.status = .Failed
                     logger.error("Error backing up device \(error)")
+                    Analytics.shared.track(event: FailureBackupEvent(foldersToBackup: backupURLs.count, error: error))
                     reply(nil, error.localizedDescription)
                 }
             }
 
             self.status = .Done
+            Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: backupURLs.count))
             logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
             reply("synced all nodes for all trees", nil)
 

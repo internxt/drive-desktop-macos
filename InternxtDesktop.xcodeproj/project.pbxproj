@@ -65,6 +65,10 @@
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		31F9EF312B86801B007DAD86 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
 		31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
+		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
+		AA5EABE72BFD762600BA0145 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
+		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
+		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -1205,6 +1209,7 @@
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
+				AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
 				319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */,
@@ -1224,10 +1229,13 @@
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
 				3120B5712B84F6F400F524F1 /* Enqueueable.swift in Sources */,
 				3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */,
+				AA5EABE72BFD762600BA0145 /* Analytics.swift in Sources */,
 				3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */,
 				E13DBC692BCD4E5B00F6B43E /* BackupsService.swift in Sources */,
+				AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */,
 				E13DBC6A2BCD4F2900F6B43E /* UsageManager.swift in Sources */,
 				E1FE2B2A2BC539810073B26D /* BackupRemoteSync.swift in Sources */,
+				AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
