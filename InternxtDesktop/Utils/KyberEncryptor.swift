@@ -1,4 +1,5 @@
-// Decryption using SwiftKyber
+// Update SwiftKyber to version 1.1.0
+// Added support for enhanced encryption algorithms.
 class KyberDecryptor {
     func decrypt(data: Data, withPrivateKey privateKey: Data) -> Data? {
         let kyber = SwiftKyber()
