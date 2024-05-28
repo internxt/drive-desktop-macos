@@ -65,6 +65,7 @@
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		31F9EF312B86801B007DAD86 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
 		31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
+		AA059A3A2BFF069E00A07D45 /* GetItemMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA059A392BFF069E00A07D45 /* GetItemMetaUseCase.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -323,6 +324,7 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		AA059A392BFF069E00A07D45 /* GetItemMetaUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetItemMetaUseCase.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
 		E106D4612AB9FD6300E3BF7A /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
@@ -673,6 +675,7 @@
 				E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */,
 				E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */,
 				E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */,
+				AA059A392BFF069E00A07D45 /* GetItemMetaUseCase.swift */,
 			);
 			path = All;
 			sourceTree = "<group>";
@@ -1385,6 +1388,7 @@
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
 				E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */,
+				AA059A3A2BFF069E00A07D45 /* GetItemMetaUseCase.swift in Sources */,
 				E1581DD22A9629620051DD46 /* Generic.swift in Sources */,
 				E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */,
 				E1CC521F2AA0A895009DEEAA /* String.swift in Sources */,

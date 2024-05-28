@@ -480,11 +480,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         if actionIdentifier == FileProviderItemActionsManager.OpenWebBrowser {
             Task {
-                let request = NSFileProviderRequest()
                 for identifier in itemIdentifiers {
                     do {
-                        let item = try await self.itemById(for: identifier, request: request)
-                        await openURL(for: item, id: identifier.rawValue)
+                        let item = try await GetItemMetaUseCase().fetchFileOrFolderItem(identifier: identifier)
+                        if let uuid = item.uuid {
+                            generateURL(isFile: !item.isFolder, id: uuid).open()
+                        }
+
                     } catch {
                         completionHandler(error)
                     }
@@ -497,42 +499,5 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         return Progress()
     }
-    
-    private func itemById(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest) async throws -> NSFileProviderItem {
-        return try await withCheckedThrowingContinuation { continuation in
-            _ = self.item(for: identifier, request: request) { (item, error) in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else if let item = item {
-                    continuation.resume(returning: item)
-                } else {
-                    continuation.resume(throwing: NSError(domain: "UnknownError", code: -1, userInfo: nil))
-                }
-            }
-        }
-    }
-    
-    private func openURL(for item: NSFileProviderItem, id: String) async {
-        var urlString: String?
-        
-        switch item.contentType {
-        case .folder:
-            do {
-                let folder = try await self.driveNewAPI.getFolderMetaById(id: id)
-                if let fileId = folder.uuid {
-                    urlString = "\(URLDictionary.DRIVE_WEB_FOLDER)\(fileId)"
-                }
-            } catch {
-                logger.error("Error fetching folder: \(error)")
-            }
-        default:
-            urlString = "\(URLDictionary.DRIVE_WEB_FILE)\(id)"
-        }
-        
-        if let urlString = urlString, let url = URL(string: urlString) {
-            NSWorkspace.shared.open(url)
-        } else {
-            logger.info("Error: URL is invalid")
-        }
-    }
+            
 }

@@ -28,3 +28,10 @@ func anchorToDate(_ string: String) -> Date? {
 func getParentId(item: NSFileProviderItem, user: DriveUser) -> String {
     return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
 }
+
+func generateURL(isFile:Bool, id: String) -> URL{
+    if isFile {
+        return URL(string: "\(URLDictionary.DRIVE_WEB_FILE)\(id)")!
+    }
+    return URL(string: "\(URLDictionary.DRIVE_WEB_FOLDER)\(id)")!
+}
