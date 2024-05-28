@@ -482,9 +482,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             Task {
                 for identifier in itemIdentifiers {
                     do {
-                        let item = try await GetItemMetaUseCase().fetchFileOrFolderItem(identifier: identifier)
+                        let item = try await driveNewAPI.getFolderOrFileMetaById(id: identifier.rawValue)
                         if let uuid = item.uuid {
-                            generateURL(isFile: !item.isFolder, id: uuid).open()
+                            generateDriveWebURL(isFile: !item.isFolder, uuid: uuid).open()
                         }
 
                     } catch {

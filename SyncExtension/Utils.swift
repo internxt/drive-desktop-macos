@@ -29,9 +29,9 @@ func getParentId(item: NSFileProviderItem, user: DriveUser) -> String {
     return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
 }
 
-func generateURL(isFile:Bool, id: String) -> URL{
+func generateDriveWebURL(isFile:Bool, uuid: String) -> URL{
     if isFile {
-        return URL(string: "\(URLDictionary.DRIVE_WEB_FILE)\(id)")!
+        return URL(string: "\(URLDictionary.DRIVE_WEB_FILE)\(uuid)")!
     }
-    return URL(string: "\(URLDictionary.DRIVE_WEB_FOLDER)\(id)")!
+    return URL(string: "\(URLDictionary.DRIVE_WEB_FOLDER)\(uuid)")!
 }
