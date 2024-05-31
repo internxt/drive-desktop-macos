@@ -29,12 +29,14 @@ class BackupTreeGenerator: BackupTreeGeneration {
     let backupUploadService: BackupUploadService
     let backupTotalProgress: Progress
     let deviceId: Int
-    init(root: URL, deviceId: Int, backupUploadService: BackupUploadService, backupTotalProgress: Progress) {
+    let backupRealm: BackupRealm
+    init(root: URL, deviceId: Int, backupUploadService: BackupUploadService, backupTotalProgress: Progress, backupRealm: BackupRealm) {
 
         self.root = root
         self.backupUploadService = backupUploadService
         self.backupTotalProgress = backupTotalProgress
         self.deviceId = deviceId
+        self.backupRealm = backupRealm
         rootNode = BackupTreeNode(
             id: UUID().uuidString,
             deviceId: deviceId,
@@ -46,6 +48,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
             backupUploadService: self.backupUploadService,
+            backupRealm: self.backupRealm,
             backupTotalProgress: self.backupTotalProgress
         )
     }
@@ -130,6 +133,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
             syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
             childs: [],
             backupUploadService: self.backupUploadService,
+            backupRealm: self.backupRealm,
             backupTotalProgress: self.backupTotalProgress
         )
         

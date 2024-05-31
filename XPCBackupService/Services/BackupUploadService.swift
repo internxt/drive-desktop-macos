@@ -227,7 +227,7 @@ class BackupUploadService: ObservableObject {
 
 
                 // Edit date in synced database
-                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date())
+                //try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date())
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)

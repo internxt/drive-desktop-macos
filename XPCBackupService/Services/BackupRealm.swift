@@ -9,16 +9,17 @@ import Foundation
 import RealmSwift
 
 struct BackupRealm {
-    static let shared = BackupRealm()
-
+    static var shared = BackupRealm()
+    private var realm: Realm?
     private init() {}
 
-    func getRealm() throws -> Realm {
+    func getRealm() throws -> Realm? {
         do {
             return try Realm(configuration: Realm.Configuration(
                 fileURL: ConfigLoader.realmURL,
                 deleteRealmIfMigrationNeeded: true
             ))
+            
         } catch {
             throw BackupUploadError.CannotCreateRealm
         }
@@ -27,11 +28,25 @@ struct BackupRealm {
     func addSyncedNode(_ node: SyncedNode) throws {
         do {
             let realm = try getRealm()
-            try realm.write {
-                realm.add(node)
+            try realm?.write {
+                realm?.add(node)
             }
         } catch {
             throw BackupUploadError.CannotAddNodeToRealm
+        }
+    }
+    
+    func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode? {
+        do {
+            let realm = try getRealm()
+
+            let syncedNode = realm?.objects(SyncedNode.self).first { syncedNode in
+                url.absoluteString == syncedNode.url && deviceId == syncedNode.deviceId
+            } 
+            
+            return syncedNode
+        } catch {
+            return nil
         }
     }
 
@@ -39,13 +54,13 @@ struct BackupRealm {
         do {
             let realm = try getRealm()
 
-            guard let node = realm.objects(SyncedNode.self).first(where: { syncedNode in
+            guard let node = realm?.objects(SyncedNode.self).first(where: { syncedNode in
                 syncedNode.remoteUuid == remoteUuid
             }) else {
                 throw BackupUploadError.CannotFindNodeToRealm
             }
 
-            try realm.write {
+            try realm?.write {
                 node.updatedAt = date
             }
         } catch {
