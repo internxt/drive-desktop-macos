@@ -399,17 +399,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if lastUsedDateHasChanged {
-            let itemExtension = (item.filename as NSString).pathExtension
-            let fileProviderItem = FileProviderItem(
-                identifier: item.itemIdentifier,
-                filename: item.filename,
-                parentId: item.parentItemIdentifier,
-                createdAt: (item.creationDate ?? Date()) ?? Date(),
-                updatedAt: Date(),
-                itemExtension: itemExtension,
-                itemType: item.contentType == .folder ? .folder : .file
-            )
-            completionHandler(fileProviderItem, [], false, nil)
+            logger.info("File last use date has changed, let it pass")
+            completionHandler(item, [], false, nil)
             return Progress()
         }
                 
