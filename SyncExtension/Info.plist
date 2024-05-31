@@ -40,6 +40,14 @@
 				<key>NSExtensionFileProviderActionName</key>
 				<string>CONTEXT_MENU_AVAILABLE_OFFLINE</string>
 			</dict>
+            <dict>
+            <key>NSExtensionFileProviderActionActivationRule</key>
+            <string>TRUEPREDICATE</string>
+            <key>NSExtensionFileProviderActionName</key>
+            <string>CONTEXT_MENU_OPEN_WEB_BROWSER</string>
+            <key>NSExtensionFileProviderActionIdentifier</key>
+            <string>internxt.InternxtDesktop.sync.Action.OpenWebBrowser</string>
+            </dict>
 		</array>
 		<key>NSExtensionFileProviderDocumentGroup</key>
 		<string>$(TeamIdentifierPrefix)group.internxt.desktop</string>

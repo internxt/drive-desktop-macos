@@ -110,7 +110,7 @@
 "CONTEXT_MENU_AVAILABLE_OFFLINE" = "Make Available Offline";
 "CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Make Online Only";
 "CONTEXT_MENU_REFRESH_CONTENT" = "Refresh content";
-
+"CONTEXT_MENU_OPEN_WEB_BROWSER" = "Open in web browser";
 // Decorations
 "AvailableOfflineLabel" = "Available offline";
 
