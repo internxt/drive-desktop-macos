@@ -138,7 +138,6 @@ class BackupTreeNode {
         
        
         for child in self.childs {
-            //try child.syncBelowNodes(withOperationQueue: withOperationQueue)
             if(self.type == .folder) {
                 // If current node is a folder, make below sync operations dependent of the folder sync operation
                 try child.syncBelowNodes(withOperationQueue: withOperationQueue, dependingOfOperation: operation)
