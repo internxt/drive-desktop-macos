@@ -137,7 +137,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     
     
     func getBackupStatus(with reply: @escaping (BackupProgressUpdate?, String?) -> Void) {
-        //logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
         reply(BackupProgressUpdate(status: self.status, progress: backupTotalProgress), nil)
     }
 
