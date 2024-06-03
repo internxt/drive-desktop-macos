@@ -9,6 +9,8 @@ import FileProvider
 import InternxtSwiftCore
 import Combine
 import Foundation
+import AppKit
+
 
 enum CreateItemError: Error {
     case NoParentIdFound
@@ -29,6 +31,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let signalEnumeratorIntervalTimer: AnyCancellable
     let refreshTokensIntervalTimer: AnyCancellable
     let activityManager: ActivityManager
+    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     required init(domain: NSFileProviderDomain) {
         
         
@@ -396,17 +399,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if lastUsedDateHasChanged {
-            let itemExtension = (item.filename as NSString).pathExtension
-            let fileProviderItem = FileProviderItem(
-                identifier: item.itemIdentifier,
-                filename: item.filename,
-                parentId: item.parentItemIdentifier,
-                createdAt: (item.creationDate ?? Date()) ?? Date(),
-                updatedAt: Date(),
-                itemExtension: itemExtension,
-                itemType: item.contentType == .folder ? .folder : .file
-            )
-            completionHandler(fileProviderItem, [], false, nil)
+            logger.info("File last use date has changed, let it pass")
+            completionHandler(item, [], false, nil)
             return Progress()
         }
                 
@@ -475,8 +469,26 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             return Progress()
         }
         
+        if actionIdentifier == FileProviderItemActionsManager.OpenWebBrowser {
+            Task {
+                for identifier in itemIdentifiers {
+                    do {
+                        let item = try await driveNewAPI.getFolderOrFileMetaById(id: identifier.rawValue)
+                        if let uuid = item.uuid {
+                            generateDriveWebURL(isFile: !item.isFolder, uuid: uuid).open()
+                        }
+
+                    } catch {
+                        completionHandler(error)
+                    }
+                }
+                completionHandler(nil)
+            }
+            
+            return Progress()
+        }
         
         return Progress()
     }
-    
+            
 }
