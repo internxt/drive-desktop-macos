@@ -214,6 +214,11 @@
 		E1D24AF52C0468AF0009EC83 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D24AF32C0468AF0009EC83 /* AsyncOperation.swift */; };
 		E1D24AF62C0468AF0009EC83 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D24AF32C0468AF0009EC83 /* AsyncOperation.swift */; };
 		E1D24AF72C0468AF0009EC83 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D24AF32C0468AF0009EC83 /* AsyncOperation.swift */; };
+		E1D24AF82C0DA3D00009EC83 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
+		E1D24AF92C0DA3DD0009EC83 /* BackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319436912B9B8293006F4600 /* BackupRealm.swift */; };
+		E1D24AFA2C0DA4100009EC83 /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
+		E1D24AFB2C0DA4210009EC83 /* BackupTreeNodeSyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D24AEF2C0467710009EC83 /* BackupTreeNodeSyncOperation.swift */; };
+		E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
 		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
 		E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
 		E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
@@ -1244,11 +1249,16 @@
 				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
 				31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */,
+				E1D24AFA2C0DA4100009EC83 /* SyncedNode.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
+				E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
+				E1D24AF92C0DA3DD0009EC83 /* BackupRealm.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
+				E1D24AFB2C0DA4210009EC83 /* BackupTreeNodeSyncOperation.swift in Sources */,
 				31F9EF2C2B867F24007DAD86 /* Error.swift in Sources */,
+				E1D24AF82C0DA3D00009EC83 /* LogService.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
