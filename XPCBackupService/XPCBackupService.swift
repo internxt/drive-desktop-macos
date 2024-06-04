@@ -103,6 +103,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             }
 
             self.status = .Done
+            
             logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
             reply("synced all nodes for all trees", nil)
 

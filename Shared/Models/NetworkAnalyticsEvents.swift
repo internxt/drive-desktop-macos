@@ -13,6 +13,8 @@ enum NetworkAnalyticsEvent: String {
     case DOWNLOAD_STARTED = "Download Started"
     case DOWNLOAD_COMPLETED = "Download Completed"
     case DOWNLOAD_ERROR = "Download Error"
+    case SUCCESS_BACKUP = "Success Backup"
+    case FAILURE_BACKUP = "Failure Backup"
 }
 
 func getBandwidthUsage(fileSizeBytes: Int64, durationMs: Int) -> Int {
@@ -22,8 +24,12 @@ func getBandwidthUsage(fileSizeBytes: Int64, durationMs: Int) -> Int {
      **/
     return 0
 }
+/** PROTOCOLS */
+protocol BaseEvent {
+    func getProperties() -> [String: Any]
+}
 
-protocol DownloadAnalyticsEventPayload {
+protocol DownloadAnalyticsEventPayload: BaseEvent {
     var eventName: NetworkAnalyticsEvent { get set }
     var fileName: String { get set }
     var fileExtension: String { get set }
@@ -31,12 +37,9 @@ protocol DownloadAnalyticsEventPayload {
     var fileUuid: String { get set }
     var fileId: String {get set}
     var parentFolderId: Int { get set }
-    
-    func getProperties() -> [String: Any]
-    
 }
 
-protocol UploadAnalyticsEventPayload {
+protocol UploadAnalyticsEventPayload: BaseEvent {
     var eventName: NetworkAnalyticsEvent { get set }
     var fileName: String { get set }
     var fileExtension: String { get set }
@@ -44,13 +47,18 @@ protocol UploadAnalyticsEventPayload {
     var fileUploadId: String {get set}
     var processIdentifier: String {get set}
     var parentFolderId: Int { get set }
-    
-    func getProperties() -> [String: Any]
-    
 }
 
+protocol BackupEventPayload: BaseEvent {
+    var eventName: NetworkAnalyticsEvent { get set }
+    var foldersToBackup: Int {get set}
+}
+
+/** PROTOCOLS END */
+
+/** EVENT PAYLOADS */
 extension UploadAnalyticsEventPayload {
-    func getAllProperties() -> [String: Any] {
+    func getProperties() -> [String: Any] {
         
         return [
             "process_identifier": self.processIdentifier,
@@ -61,12 +69,12 @@ extension UploadAnalyticsEventPayload {
             "parent_folder_id": self.parentFolderId,
             "is_multiple": 0,
             "is_brave": false
-        ].merging(self.getProperties()){ (_, new) in new }
+        ]
     }
 }
 
 extension DownloadAnalyticsEventPayload {
-    func getAllProperties() -> [String: Any] {
+    func getProperties() -> [String: Any] {
         
         return [
             "process_identifier": self.fileUuid,
@@ -76,11 +84,22 @@ extension DownloadAnalyticsEventPayload {
             "file_size": self.fileSize,
             "parent_folder_id": self.parentFolderId,
             "is_multiple": 0,
+        ]
+    }
+}
+
+extension BackupEventPayload {
+    func getProperties() -> [String: Any] {
+
+        return [
+            "folders_number": self.foldersToBackup,
         ].merging(self.getProperties()){ (_, new) in new }
     }
 }
 
-// Upload events
+/** EVENT PAYLOADS END */
+
+/** UPLOAD EVENTS */
 struct UploadStartedEvent: UploadAnalyticsEventPayload {
     
     
@@ -92,7 +111,7 @@ struct UploadStartedEvent: UploadAnalyticsEventPayload {
     var processIdentifier: String
     var parentFolderId: Int
     
-    func getProperties() -> [String : Any] {
+    internal func getMergedProperties() -> [String : Any] {
         return [:]
     }
 }
@@ -107,7 +126,7 @@ struct UploadCompletedEvent: UploadAnalyticsEventPayload {
     var parentFolderId: Int
     var elapsedTimeMs: Double
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "elapsedTimeMs": self.elapsedTimeMs,
             "bandwidth": getBandwidthUsage(fileSizeBytes: self.fileSize, durationMs: Int(self.elapsedTimeMs))
@@ -128,7 +147,7 @@ struct UploadErrorEvent: UploadAnalyticsEventPayload {
     var parentFolderId: Int
     var error: any Error
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "error_message_user": self.error.localizedDescription,
             "error_message": self.error.localizedDescription,
@@ -137,7 +156,9 @@ struct UploadErrorEvent: UploadAnalyticsEventPayload {
     }
 }
 
+/** UPLOAD EVENTS END */
 
+/** DOWNLOAD EVENTS */
 struct DownloadStartedEvent: DownloadAnalyticsEventPayload {
     var eventName = NetworkAnalyticsEvent.DOWNLOAD_STARTED
     var fileName: String
@@ -147,7 +168,7 @@ struct DownloadStartedEvent: DownloadAnalyticsEventPayload {
     var fileId: String
     var parentFolderId: Int
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [:]
     }
 }
@@ -162,7 +183,7 @@ struct DownloadCompletedEvent: DownloadAnalyticsEventPayload {
     var parentFolderId: Int
     var elapsedTimeMs: Double
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "elapsedTimeMs": self.elapsedTimeMs,
             "bandwidth": getBandwidthUsage(fileSizeBytes: self.fileSize, durationMs: Int(self.elapsedTimeMs))
@@ -182,7 +203,7 @@ struct DownloadErrorEvent: DownloadAnalyticsEventPayload {
     var parentFolderId: Int
     var error: any Error
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "error_message_user": self.error.localizedDescription,
             "error_message": self.error.localizedDescription,
@@ -191,4 +212,30 @@ struct DownloadErrorEvent: DownloadAnalyticsEventPayload {
     }
 }
 
+/** UPLOAD EVENTS END */
 
+/** BACKUP EVENTS */
+struct SuccessBackupEvent: BackupEventPayload {
+    var eventName = NetworkAnalyticsEvent.SUCCESS_BACKUP
+    var foldersToBackup: Int
+    internal func getProperties() -> [String : Any] {
+        return [:]
+    }
+}
+
+struct FailureBackupEvent: BackupEventPayload {
+    var eventName = NetworkAnalyticsEvent.FAILURE_BACKUP
+    var foldersToBackup: Int
+    var error: String
+
+    internal func getProperties() -> [String : Any] {
+        return [
+            "error_message_user": self.error,
+            "error_message": self.error,
+            "stack_trace": "NOT_AVAILABLE_DESKTOP_MACOS"
+        ]
+    }
+}
+
+
+/** BACKUP EVENTS END */
