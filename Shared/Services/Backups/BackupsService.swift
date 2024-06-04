@@ -285,6 +285,7 @@ class BackupsService: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
             self?.backupStatus = .Failed
+            Analytics.shared.track(event: FailureBackupEvent(foldersToBackup: self?.foldersToBackup.count ?? 0, error: errorMessage))
         }
     }
 
@@ -305,7 +306,7 @@ class BackupsService: ObservableObject {
                 }
                 
                 await UsageManager.shared.updateUsage()
-                
+                Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: self.foldersToBackup.count))
             } catch {
                 if let apiError = error as? APIClientError {
                     logger.error("Cannot update device date \(String(decoding:apiError.responseBody, as:  UTF8.self))")

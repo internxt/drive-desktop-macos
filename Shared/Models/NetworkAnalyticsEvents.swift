@@ -75,7 +75,7 @@ extension UploadAnalyticsEventPayload {
 }
 
 extension DownloadAnalyticsEventPayload {
-    func getAllProperties() -> [String: Any] {
+    func getMergedProperties() -> [String: Any] {
         
         return [
             "process_identifier": self.fileUuid,
@@ -90,7 +90,7 @@ extension DownloadAnalyticsEventPayload {
 }
 
 extension BackupEventPayload {
-    func getAllProperties() -> [String: Any] {
+    func getMergedProperties() -> [String: Any] {
 
         return [
             "folders_number": self.foldersToBackup,
@@ -110,7 +110,7 @@ struct UploadStartedEvent: UploadAnalyticsEventPayload {
     var processIdentifier: String
     var parentFolderId: Int
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [:]
     }
 }
@@ -125,7 +125,7 @@ struct UploadCompletedEvent: UploadAnalyticsEventPayload {
     var parentFolderId: Int
     var elapsedTimeMs: Double
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "elapsedTimeMs": self.elapsedTimeMs,
             "bandwidth": getBandwidthUsage(fileSizeBytes: self.fileSize, durationMs: Int(self.elapsedTimeMs))
@@ -146,7 +146,7 @@ struct UploadErrorEvent: UploadAnalyticsEventPayload {
     var parentFolderId: Int
     var error: any Error
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "error_message_user": self.error.localizedDescription,
             "error_message": self.error.localizedDescription,
@@ -165,7 +165,7 @@ struct DownloadStartedEvent: DownloadAnalyticsEventPayload {
     var fileId: String
     var parentFolderId: Int
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [:]
     }
 }
@@ -180,7 +180,7 @@ struct DownloadCompletedEvent: DownloadAnalyticsEventPayload {
     var parentFolderId: Int
     var elapsedTimeMs: Double
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "elapsedTimeMs": self.elapsedTimeMs,
             "bandwidth": getBandwidthUsage(fileSizeBytes: self.fileSize, durationMs: Int(self.elapsedTimeMs))
@@ -200,7 +200,7 @@ struct DownloadErrorEvent: DownloadAnalyticsEventPayload {
     var parentFolderId: Int
     var error: any Error
     
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
             "error_message_user": self.error.localizedDescription,
             "error_message": self.error.localizedDescription,
@@ -212,7 +212,7 @@ struct DownloadErrorEvent: DownloadAnalyticsEventPayload {
 struct SuccessBackupEvent: BackupEventPayload {
     var eventName = NetworkAnalyticsEvent.SUCCESS_BACKUP
     var foldersToBackup: Int
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [:]
     }
 }
@@ -220,12 +220,12 @@ struct SuccessBackupEvent: BackupEventPayload {
 struct FailureBackupEvent: BackupEventPayload{
     var eventName = NetworkAnalyticsEvent.FAILURE_BACKUP
     var foldersToBackup: Int
-    var error: any Error
+    var error: String
 
-    func getProperties() -> [String : Any] {
+    internal func getProperties() -> [String : Any] {
         return [
-            "error_message_user": self.error.localizedDescription,
-            "error_message": self.error.localizedDescription,
+            "error_message_user": self.error,
+            "error_message": self.error,
             "stack_trace": "NOT_AVAILABLE_DESKTOP_MACOS"
         ]
     }
