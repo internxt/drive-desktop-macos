@@ -42,6 +42,14 @@ struct Analytics {
         
     }
     
+    private func getTrackOptions() -> RSOption {
+        let option = RSOption()
+        option.putCustomContext(getAppContextProperties(), withKey: "app")
+        option.putCustomContext(getOSContextProperties(), withKey: "os")
+        
+        return option
+    }
+    
     init() {
         let config: RSConfig = RSConfig(writeKey: ConfigLoader.shared.get().RUDDERSTACK_WRITE_KEY)
             .dataPlaneURL(ConfigLoader.shared.get().RUDDERSTACK_DATA_PLANE_URL)
@@ -60,35 +68,19 @@ struct Analytics {
         
     
     func track(key: AnalyticsEvent, props: [String: String]) {
-        let option = RSOption()
-        option.putCustomContext(getAppContextProperties(), withKey: "app")
-        option.putCustomContext(getOSContextProperties(), withKey: "os")
-        
-        client.track(key.rawValue, properties: props, option: option)
+        client.track(key.rawValue, properties: props, option: self.getTrackOptions())
     }
     
     func track(event: UploadAnalyticsEventPayload) {
-        let option = RSOption()
-        option.putCustomContext(getAppContextProperties(), withKey: "app")
-        option.putCustomContext(getOSContextProperties(), withKey: "os")
-        
-        client.track(event.eventName.rawValue, properties: event.getAllProperties(), option: option)
+        client.track(event.eventName.rawValue, properties: event.getProperties(), option: self.getTrackOptions())
     }
     
     func track(event: DownloadAnalyticsEventPayload) {
-        let option = RSOption()
-        option.putCustomContext(getAppContextProperties(), withKey: "app")
-        option.putCustomContext(getOSContextProperties(), withKey: "os")
-        
-        client.track(event.eventName.rawValue, properties: event.getMergedProperties(), option: option)
+        client.track(event.eventName.rawValue, properties: event.getProperties(), option: self.getTrackOptions())
     }
     
     func track(event: BackupEventPayload) {
-        let option = RSOption()
-        option.putCustomContext(getAppContextProperties(), withKey: "app")
-        option.putCustomContext(getOSContextProperties(), withKey: "os")
-        
-        client.track(event.eventName.rawValue, properties: event.getMergedProperties(), option: option)
+        client.track(event.eventName.rawValue, properties: event.getProperties(), option: self.getTrackOptions())
     }
 
 }

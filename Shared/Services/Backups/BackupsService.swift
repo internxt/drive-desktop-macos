@@ -290,13 +290,16 @@ class BackupsService: ObservableObject {
     }
 
     private func propagateSuccess() {
-        logger.info("Device backed up successfully")
+        logger.info("Device backed up successfully, tracking backup success event")
+        Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: self.foldersToBackup.count))
         DispatchQueue.main.async { [weak self] in
             self?.currentBackupProgress = 1
             self?.currentDeviceHasBackup = true
         }
         Task {
             do {
+                
+
                 guard let currentDevice = self.currentDevice else {
                     throw BackupError.cannotGetCurrentDevice
                 }
@@ -306,7 +309,6 @@ class BackupsService: ObservableObject {
                 }
                 
                 await UsageManager.shared.updateUsage()
-                Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: self.foldersToBackup.count))
             } catch {
                 if let apiError = error as? APIClientError {
                     logger.error("Cannot update device date \(String(decoding:apiError.responseBody, as:  UTF8.self))")
