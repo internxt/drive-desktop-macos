@@ -95,17 +95,27 @@ class BackupTreeNode {
         return attribute[FileAttributeKey.modificationDate] as? Date
     }
 
-    private func nodeIsSynced(url: URL, deviceId: Int) throws -> ThreadSafeReference<SyncedNode>? {
-        let syncedNode = autoreleasepool {
-            let syncedNode = BackupRealm.shared.findSyncedNode(url: url, deviceId: deviceId)
+    private func nodeIsSynced(url: URL, deviceId: Int) throws -> SyncedNode? {
+        let syncedNodeThreadRef = autoreleasepool {
+            let syncedNodeThreadRef = BackupRealm.shared.findSyncedNode(url: url, deviceId: deviceId)
             
-            return syncedNode
+            return syncedNodeThreadRef
         }
+        
+        guard let syncedNodeThreadRefUnwrapped = syncedNodeThreadRef else {
+            return nil
+        }
+        guard let realm = try backupRealm.getRealm() else {
+            return nil
+        }
+        
+        let syncedNode = realm.resolve(syncedNodeThreadRefUnwrapped)
         
         guard let syncedNodeUnwrapped = syncedNode else {
             return nil
         }
         
+    
         let syncedNodeDate = syncedNodeUnwrapped.updatedAt
         
         guard let fileModificationDate = try self.getFileModificationDate() else {
@@ -121,7 +131,7 @@ class BackupTreeNode {
         }
         
 
-        return ThreadSafeReference(to: syncedNodeUnwrapped)
+        return syncedNodeUnwrapped
     }
     
     func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil) throws -> Void {
@@ -157,17 +167,13 @@ class BackupTreeNode {
             throw BackupTreeNodeError.cannotGetPath
         }
         
-        let currentSyncedNodeThreadReference = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
-        if let threadRealm = try BackupRealm.shared.getRealm(), let currentSyncedNodeThreadReferenceUnwrapped = currentSyncedNodeThreadReference {
-            let currentSyncedNode = threadRealm.resolve(currentSyncedNodeThreadReferenceUnwrapped)
-            
-            if(currentSyncedNode != nil) {
-                try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNode!.remoteId, syncedNoteRemoteUuid: currentSyncedNode!.remoteUuid)
-                
-                return
-            }
+        let currentSyncedNode = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
+        if let threadRealm = try BackupRealm.shared.getRealm(), let currentSyncedNodeUnwrapped = currentSyncedNode {
+            try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNodeUnwrapped.remoteId, syncedNoteRemoteUuid: currentSyncedNodeUnwrapped.remoteUuid)
             
             logger.info("Node \(self.name) is synced: \(currentSyncedNode != nil)")
+            
+            return
         }
         
         

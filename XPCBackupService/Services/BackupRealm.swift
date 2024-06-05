@@ -36,15 +36,17 @@ struct BackupRealm {
         }
     }
     
-    func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode? {
+    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>? {
         do {
             let realm = try getRealm()
 
             let syncedNode = realm?.objects(SyncedNode.self).first { syncedNode in
                 url.absoluteString == syncedNode.url && deviceId == syncedNode.deviceId
             } 
-            
-            return syncedNode
+            guard let syncedNodeUnwrapped = syncedNode else {
+                return nil
+            }
+            return ThreadSafeReference(to: syncedNodeUnwrapped)
         } catch {
             return nil
         }

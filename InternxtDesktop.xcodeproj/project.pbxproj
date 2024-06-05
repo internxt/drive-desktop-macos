@@ -61,8 +61,6 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
-		31F9EF312B86801B007DAD86 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B56E2B84F6C400F524F1 /* Completable.swift */; };
-		31F9EF322B868025007DAD86 /* Enqueueable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B5702B84F6F400F524F1 /* Enqueueable.swift */; };
 		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
@@ -81,6 +79,7 @@
 		E10B0FDD2A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
+		E12479D92C107C52000DAC11 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
 		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
@@ -1229,8 +1228,8 @@
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
+				E12479D92C107C52000DAC11 /* Analytics.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
-				E1D24AFD2C0E3A8C0009EC83 /* Analytics.swift in Sources */,
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
 				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
