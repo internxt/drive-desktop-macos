@@ -35,6 +35,7 @@ enum BackupDevicesFetchingStatus {
 class BackupsService: ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     var currentDevice: Device? = nil
+    @Published var thereAreMissingFoldersToBackup = false
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldersToBackup: [FolderToBackup] = []
     @Published var currentDeviceHasBackup = false
@@ -81,7 +82,7 @@ class BackupsService: ObservableObject {
         do {
             let realm = getRealm()
             
-            let folderToBackupRealmObject = FolderToBackupRealmObject(url: url.absoluteString, status: .selected)
+            let folderToBackupRealmObject = FolderToBackupRealmObject(url: url, status: .selected)
             try realm.write {
                 realm.add(folderToBackupRealmObject)
             }
@@ -93,12 +94,12 @@ class BackupsService: ObservableObject {
         }
     }
 
-    func removeFolderToBackup(id: String) async throws {
+    func removeFolderToBackup(folderToBackupId: String) async throws {
        
         do {
             let realm = getRealm()
 
-            guard let folderToBackupRealmObject = realm.object(ofType: FolderToBackupRealmObject.self, forPrimaryKey: try ObjectId(string:id)) else {
+            guard let folderToBackupRealmObject = realm.object(ofType: FolderToBackupRealmObject.self, forPrimaryKey: try ObjectId(string:folderToBackupId)) else {
                 throw BackupError.folderToBackupRealmObjectNotFound
             }
             
@@ -107,7 +108,7 @@ class BackupsService: ObservableObject {
             }
 
             
-            self.assignUrls()
+            self.loadFoldersToBackup()
             
             //try await self.cleanBackupLocalData(folderUrl: folderToBackupRealmObject.url, realm: realm)
             //try await backupAPI.deleteBackupFolder(folderId: folderToBackupRealmObject.id, debug: true)
@@ -132,20 +133,46 @@ class BackupsService: ObservableObject {
         return array
     }
 
-    func assignUrls() {
+    func loadFoldersToBackup() {
         let folderToBackupRealmObjects = getRealm().objects(FolderToBackupRealmObject.self).sorted(byKeyPath: "createdAt", ascending: true)
-
+        var folderToBackupMissing = false
         var foldersToBackup: [FolderToBackup] = []
         for folderToBackupRealmObject in folderToBackupRealmObjects {
-            foldersToBackup.append(FolderToBackup(folderToBackupRealmObject: folderToBackupRealmObject))
+            let folderToBackup = FolderToBackup(folderToBackupRealmObject: folderToBackupRealmObject)
+            self.logger.info(["Missing folder to backup", folderToBackup.folderIsMissing()])
+            if folderToBackupMissing == false {
+                folderToBackupMissing = folderToBackup.folderIsMissing()
+            }
+                
+            foldersToBackup.append(folderToBackup)
         }
         
-        DispatchQueue.main.sync {
+        
+        DispatchQueue.main.async {
+            self.thereAreMissingFoldersToBackup = folderToBackupMissing
             self.foldersToBackup = foldersToBackup
-            logger.info(["Got foldernames successfully", self.foldersToBackup])
+            if self.thereAreMissingFoldersToBackup {
+                self.logger.info(["Unable to locate some folders to backup"])
+            }
+            
+            self.logger.info(["Got FoldersToBackup successfully", self.foldersToBackup])
         }
         
         
+        
+    }
+    
+    func updateFolderToBackupURL(folderToBackup: FolderToBackup, newURL: URL) throws {
+        let realm = getRealm()
+        let folderToBackupRealmObject = realm.object(ofType: FolderToBackupRealmObject.self,
+                                                     forPrimaryKey: try ObjectId(string: folderToBackup.id))
+        
+        guard let folderToBackupRealmObjectUnwrapped = folderToBackupRealmObject else {
+            return
+        }
+        try realm.write{
+            folderToBackupRealmObjectUnwrapped.url = newURL.absoluteString
+        }
         
     }
 
@@ -363,6 +390,12 @@ class BackupsService: ObservableObject {
         //Connection to xpc service
         let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
         connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
+        connectionToService.interruptionHandler = {
+            appLogger.error("Connection with XPCBackupsService interrupted")
+        }
+        connectionToService.invalidationHandler = {
+            appLogger.error("Connection with XPCBackupsService interrupted")
+        }
         connectionToService.resume()
 
         var initializationError: Error? = nil
@@ -454,6 +487,7 @@ class FolderToBackup {
     let status: FolderToBackupStatus
     let createdAt: Date
     
+    
     init(folderToBackupRealmObject: FolderToBackupRealmObject) {
         self.id = folderToBackupRealmObject.id
         self.url = URL(fileURLWithPath: folderToBackupRealmObject.url.removingPercentEncoding?.replacingOccurrences(of: "file://", with: "") ?? "")
@@ -467,6 +501,14 @@ class FolderToBackup {
         self.status = status
         self.createdAt = createdAt
     }
+    
+    
+    
+    
+    func folderIsMissing() -> Bool {
+        var isDirectory: ObjCBool = true
+        return !FileManager.default.fileExists(atPath: self.url.path, isDirectory: &isDirectory)
+    }
 }
 
 
@@ -477,11 +519,11 @@ class FolderToBackupRealmObject: Object {
     @Persisted var createdAt: Date
 
     convenience init(
-        url: String,
+        url: URL,
         status: FolderToBackupStatus
     ) {
         self.init()
-        self.url = url
+        self.url = url.absoluteString
         self.createdAt = Date()
         self.status = status
     }

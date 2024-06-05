@@ -62,6 +62,9 @@
 "BACKUP_STOP_BACKUP" = "Detener copia de seguridad";
 "BACKUP_ERROR_FETCHING_DEVICES" = "Error obteniendo dispositivos, por favor inténtelo de nuevo";
 "BACKUP_TRY_AGAIN" = "Intentar de nuevo";
+"BACKUP_MISSING_FOLDERS_ERROR" = "No se han encontrado algunas carpetas";
+"BACKUP_MISSING_FOLDER_ERROR" = "No se ha encontrado";
+"BACKUP_LOCATE_FOLDER" = "Encontrar carpeta";
 "BACKUP_FETCHING_DEVICES" = "Obteniendo tus dispositivos con Backups";
 "BACKUP_ERROR_BACKING_UP" = "Error al realizar la copia de seguridad de este dispositivo";
 

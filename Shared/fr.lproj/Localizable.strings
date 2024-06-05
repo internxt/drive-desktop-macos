@@ -63,6 +63,7 @@
 "BACKUP_FETCHING_DEVICES" = "Obtenir vos appareils avec les sauvegardes";
 "BACKUP_ERROR_FETCHING_DEVICES" = "Erreur dans l'extraction des dispositifs, veuillez réessayer";
 "BACKUP_TRY_AGAIN" = "Réessayer";
+"BACKUP_LOCATE_FOLDER" = "Localiser le dossier";
 "BACKUP_ERROR_BACKING_UP" = "Erreur de sauvegarde de ce dispositif";
 
 // Settings
@@ -88,6 +89,8 @@
 "BACKUP_SETTINGS_%@_FOLDERS" = "%@ dossiers";
 "BACKUP_SETTINGS_ONE_FOLDER" = "1 dossier";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Cliquez sur + pour sélectionner les dossiers\nque vous souhaitez sauvegarder.";
+"BACKUP_MISSING_FOLDERS_ERROR" = "Certains dossiers sont manquants";
+"BACKUP_MISSING_FOLDER_ERROR" = "Non trouvé";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Ce dossier est déjà sélectionné";
 
 // Common

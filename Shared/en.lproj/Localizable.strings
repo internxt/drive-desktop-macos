@@ -62,7 +62,10 @@
 "BACKUP_STOP_BACKUP" = "Stop backup";
 "BACKUP_FETCHING_DEVICES" = "Getting your Backups devices";
 "BACKUP_ERROR_FETCHING_DEVICES" = "Error fetching devices, please try again";
+"BACKUP_MISSING_FOLDERS_ERROR" = "Some folders are missing";
+"BACKUP_MISSING_FOLDER_ERROR" = "Not found";
 "BACKUP_TRY_AGAIN" = "Try again";
+"BACKUP_LOCATE_FOLDER" = "Locate folder";
 "BACKUP_ERROR_BACKING_UP" = "Error backing up this device";
 
 // Settings

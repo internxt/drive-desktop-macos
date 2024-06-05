@@ -24,6 +24,7 @@ struct SettingsView: View {
     @State private var showFolderSelector = false
     @State private var showStopBackupDialog = false
     @State private var showDeleteBackupDialog = false
+    @State private var isEditingSelectedFolders: Bool = false
 
     var body: some View {
         ZStack {
@@ -47,9 +48,14 @@ struct SettingsView: View {
             // folder selector
             if showFolderSelector {
                 VStack {
-                    FolderSelectorView(backupsService: backupsService) {
-                        showFolderSelector = false
-                    }
+                    FolderSelectorView(
+                        backupsService: backupsService,
+                        closeWindow: {
+                            isEditingSelectedFolders = false
+                            showFolderSelector = false
+                        }, 
+                        isEditingSelectedFolders: $isEditingSelectedFolders
+                    )
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Gray40.opacity(0.4))
@@ -94,7 +100,10 @@ struct SettingsView: View {
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
-            BackupsTabView(selectedDeviceId: $selectedDeviceId, showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog, backupsService: backupsService)
+            BackupsTabView(selectedDeviceId: $selectedDeviceId, showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog,
+                isEditingSelectedFolders: $isEditingSelectedFolders,
+                backupsService: backupsService
+            )
         default:
             EmptyView()
         }

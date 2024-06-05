@@ -18,6 +18,7 @@ enum AppIconName: String {
     case Plus = "EC87"
     case Minus = "EBF9"
     case ClockCounterClockwise = "EA45"
+    case WarningCircle = "EDBF"
 }
 
 

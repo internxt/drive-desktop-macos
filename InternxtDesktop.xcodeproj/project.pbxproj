@@ -37,7 +37,7 @@
 		316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
 		316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
 		316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
-		317B70BB2B583F6600CEBC08 /* BackupSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupSetupView.swift */; };
+		317B70BB2B583F6600CEBC08 /* BackupsFeatureNeedsSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317B70BA2B583F6600CEBC08 /* BackupsFeatureNeedsSetupView.swift */; };
 		317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */; };
 		3185496F2B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
 		318549702B698AAC00D559E1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
@@ -317,7 +317,7 @@
 		316D24772B4D8B94007DE91A /* UploadFrequencySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFrequencySelectorView.swift; sourceTree = "<group>"; };
 		316D24792B4D9997007DE91A /* BackupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsService.swift; sourceTree = "<group>"; };
 		316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsDeviceService.swift; sourceTree = "<group>"; };
-		317B70BA2B583F6600CEBC08 /* BackupSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupSetupView.swift; sourceTree = "<group>"; };
+		317B70BA2B583F6600CEBC08 /* BackupsFeatureNeedsSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsFeatureNeedsSetupView.swift; sourceTree = "<group>"; };
 		317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabManager.swift; sourceTree = "<group>"; };
 		3185496E2B698AAC00D559E1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncResult.swift; sourceTree = "<group>"; };
@@ -521,6 +521,7 @@
 		3104526A2B4B1C3A00984716 /* Backups */ = {
 			isa = PBXGroup;
 			children = (
+				315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */,
 				315BC68E2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift */,
 				3116129F2B47873D003C8EE8 /* BackupsFolderListView.swift */,
 				310452682B4B05AE00984716 /* BackupConfigView.swift */,
@@ -529,7 +530,7 @@
 				3104526D2B4B1C5C00984716 /* StopBackupDialogView.swift */,
 				315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */,
 				316D24772B4D8B94007DE91A /* UploadFrequencySelectorView.swift */,
-				317B70BA2B583F6600CEBC08 /* BackupSetupView.swift */,
+				317B70BA2B583F6600CEBC08 /* BackupsFeatureNeedsSetupView.swift */,
 			);
 			path = Backups;
 			sourceTree = "<group>";
@@ -804,7 +805,6 @@
 				E1880BA12AA63CF2001FC171 /* AccountTabView.swift */,
 				E1ADD0412AA7272100D95694 /* AccountUsageView.swift */,
 				E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */,
-				315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1365,7 +1365,7 @@
 				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
-				317B70BB2B583F6600CEBC08 /* BackupSetupView.swift in Sources */,
+				317B70BB2B583F6600CEBC08 /* BackupsFeatureNeedsSetupView.swift in Sources */,
 				E17C84BE2AB2880B00A58414 /* Color.swift in Sources */,
 				E17C84B82AB2787200A58414 /* OnboardingSlide4View.swift in Sources */,
 				E17AA0242A8A70CE00C7EE6E /* AuthManager.swift in Sources */,
@@ -1581,7 +1581,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1613,7 +1613,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1643,7 +1643,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;

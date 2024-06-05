@@ -54,7 +54,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 authToken: authToken,
                 newAuthToken: newAuthToken
             )
-
+            
             
             guard let backupUploadService = self.backupUploadService else {
                 logger.error("Cannot create backup upload service")
