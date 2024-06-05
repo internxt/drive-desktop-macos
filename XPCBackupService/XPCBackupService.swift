@@ -119,6 +119,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             }
 
             logger.info("Backups scheduled in OperationQueue")
+            self.status = .Done
             logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
 
         }
