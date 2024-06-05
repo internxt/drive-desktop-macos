@@ -25,6 +25,15 @@ struct BackupStatusView: View {
         
         return self.device.isCurrentDevice && self.backupStatus == .InProgress
     }
+    
+    private func getBackupProgressPercentage() -> String {
+        var progress = Float(progress * 100)
+        
+        if(progress > 100.0) {
+            progress = 100.0
+        }
+        return "\(String(format: "%.2f", progress))%"
+    }
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
@@ -64,7 +73,7 @@ struct BackupStatusView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 if deviceIsRunningBackup() {
-                    AppText("\(String(format: "%.2f", Float(progress * 100)))%")
+                    AppText(getBackupProgressPercentage())
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
                  

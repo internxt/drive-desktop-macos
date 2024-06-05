@@ -139,10 +139,13 @@ class BackupsService: ObservableObject {
         for folderToBackupRealmObject in folderToBackupRealmObjects {
             foldersToBackup.append(FolderToBackup(folderToBackupRealmObject: folderToBackupRealmObject))
         }
-        logger.info("Got foldernames successfully")
+        
         DispatchQueue.main.sync {
             self.foldersToBackup = foldersToBackup
+            logger.info(["Got foldernames successfully", self.foldersToBackup])
         }
+        
+        
         
     }
 
@@ -170,6 +173,7 @@ class BackupsService: ObservableObject {
                 self.selectedDevice = allDevices.first{device in
                     return device.plainName == currentDeviceName && device.removed != true && device.deleted != true
                 }
+                self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt) ")
                 self.currentDevice = self.selectedDevice
                 self.devicesFetchingStatus = .Ready
             }
@@ -218,9 +222,15 @@ class BackupsService: ObservableObject {
         guard let deviceName = ConfigLoader.shared.getDeviceName() else {
             throw BackupError.deviceHasNoName
         }
-        logger.info("Updating device \(device.id) date with name: \(deviceName)")
-        let _ = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
-        await self.loadAllDevices()
+        logger.info("Updating device \(device.id) date with name: \(deviceName) at \(Date())")
+        let updatedCurrentDevice = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
+        
+    
+        DispatchQueue.main.sync {
+            self.currentDevice = updatedCurrentDevice
+            self.selectedDevice = self.currentDevice
+        }
+        
     }
 
     func deleteBackup(deviceId: Int?) async throws -> Bool {

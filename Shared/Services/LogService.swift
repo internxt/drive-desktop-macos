@@ -66,7 +66,7 @@ struct LogService {
         // Writing logs for the SyncExtension raises a "too many files open" error 
         // at some point, needs investigation
         if subsystem != .SyncExtension {
-            log.add(destination: fileDestination)
+           log.add(destination: fileDestination)
         }
         
         

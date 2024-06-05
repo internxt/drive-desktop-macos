@@ -19,7 +19,8 @@ struct ErrorUtils {
             options.dsn = dsn
             options.debug = false
             options.enableAppHangTracking = false
-            options.tracesSampleRate = 1.0
+            options.tracesSampleRate = 0.5
+            options.sampleRate = 0.5
         }
         
         

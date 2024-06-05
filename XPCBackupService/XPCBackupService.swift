@@ -8,12 +8,14 @@
 import Foundation
 import InternxtSwiftCore
 
+let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupService")
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     
     private var backupUploadService: BackupUploadService? = nil
     private var trees: [BackupTreeNode] = []
-    private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupService")
+    
     private var backupTotalProgress: Progress = Progress()
+    private var uploadOperationQueue = OperationQueue()
     private var status: BackupStatus = .Idle
     
     @objc func startBackup(
@@ -26,7 +28,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) -> Void {
-        
+        let backupRealm = BackupRealm.shared
+        self.uploadOperationQueue.maxConcurrentOperationCount = 10
         logger.info("Going to backup folders: \(backupURLs)")
         self.status = .InProgress
         self.backupTotalProgress = Progress()
@@ -53,7 +56,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             )
 
             
-            guard let backupUploadService = backupUploadService else {
+            guard let backupUploadService = self.backupUploadService else {
                 logger.error("Cannot create backup upload service")
                 reply(nil, "Cannot create backup upload service")
                 return
@@ -61,27 +64,27 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             backupUploadService.canDoBackup = true
 
-            var totalCount = backupURLs.count
-            for backupURL in backupURLs {
-                let count = self.getNodesCountFromURL(URL(fileURLWithPath: backupURL))
-                totalCount += count
-            }
-
-            logger.info("Total progress to backup \(totalCount)")
-
-            backupTotalProgress.totalUnitCount = Int64(totalCount)
             
+            var totalNodesCount = 0
+
+            
+          
             for backupURL in backupURLs {
                 do {
+                    let startGeneratingTreeAt = Date()
+                    let nodesCount = self.getNodesCountFromURL(URL(fileURLWithPath: backupURL))
+                    totalNodesCount += nodesCount
                     let backupTreeGenerator = BackupTreeGenerator(
                         root: URL(fileURLWithPath: backupURL),
                         deviceId: deviceId,
                         backupUploadService: backupUploadService,
-                        backupTotalProgress: backupTotalProgress
+                        backupTotalProgress: self.backupTotalProgress,
+                        backupRealm: backupRealm
                     )
 
                     let backupTree = try await backupTreeGenerator.generateTree()
-                    logger.info("Backup tree created successfully")
+                    let elapsedTime = Date().timeIntervalSince(startGeneratingTreeAt)
+                    logger.info("🌳 Backup tree created successfully in \(Float(elapsedTime * 1000))ms with \(nodesCount) nodes ")
 
                     trees.append(backupTree)
                 } catch {
@@ -90,22 +93,34 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 
             }
             
-            
+            backupTotalProgress.totalUnitCount = Int64(totalNodesCount)
+            logger.info("Total progress to backup \(totalNodesCount)")
+
+            logger.info("⏱️ About to start node sync process for \(trees.count) BackupTrees...")
             
             for backupTree in trees {
                 do {
-                    try await backupTree.syncNodes()
+                    logger.error("Adding nodes sync operations")
+                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue)
                 } catch {
                     self.status = .Failed
                     logger.error("Error backing up device \(error)")
                     reply(nil, error.localizedDescription)
                 }
             }
-
-            self.status = .Done
             
+            self.uploadOperationQueue.addBarrierBlock {
+                logger.info("Sync nodes operations completed")
+                self.status = .Done
+                
+                self.trees = []
+                self.uploadOperationQueue.cancelAllOperations()
+                reply("synced all nodes for all trees", nil)
+            }
+
+            logger.info("Backups scheduled in OperationQueue")
+            self.status = .Done
             logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
-            reply("synced all nodes for all trees", nil)
 
         }
 
@@ -114,14 +129,15 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     @objc func stopBackup() {
         logger.debug("STOP BACKUP")
         trees = []
+        
         self.status = .Stopped
+        self.uploadOperationQueue.cancelAllOperations()
         backupUploadService?.stopSync()
     }
     
     
     
     func getBackupStatus(with reply: @escaping (BackupProgressUpdate?, String?) -> Void) {
-        logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
         reply(BackupProgressUpdate(status: self.status, progress: backupTotalProgress), nil)
     }
 
