@@ -32,4 +32,5 @@ struct AppUserDefault<T> {
 
 enum DefaultsKeys: String {
   case selectedLanguage = "INTERNXT_SELECTED_LANGUAGE"
+  case selectedBackupFrequency = "INTERNXT_SELECTED_BACKUP_FREQUENCY"
 }

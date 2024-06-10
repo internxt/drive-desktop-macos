@@ -47,7 +47,7 @@
 "BACKUP_%@_NUMBER_OF_FOLDERS_SELECTED" = "%@ folders selected";
 "BACKUP_UPLOAD_FREQUENCY" = "Upload frequency";
 "BACKUP_UPLOAD_FREQUENCY_6_HRS" = "Every 6 hours";
-"BACKUP_UPLOAD_FREQUENCY_12_HRS" = "Every 12 hours";
+"BACKUP_UPLOAD_FREQUENCY_1_HRS" = "Every hour";
 "BACKUP_UPLOAD_FREQUENCY_EVERY_DAY" = "Every day";
 "BACKUP_UPLOAD_FREQUENCY_MANUALLY" = "Manually";
 "BACKUP_UPLOAD_FREQUENCY_MANUALLY_TOOLTIP" = "Folders won't automatically backup until you click\n\"Backup now\". This mode is not recommended";

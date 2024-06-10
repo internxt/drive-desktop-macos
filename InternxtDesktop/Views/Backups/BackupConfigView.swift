@@ -21,7 +21,9 @@ struct BackupConfigView: View {
     @Binding var isEditingSelectedFolders: Bool
     @Binding var device: Device
     
-    @State private var currentFrequency: UploadFrequencyEnum = .manually
+    @State var backupManager: ScheduledBackupManager = ScheduledBackupManager()
+    @ObservedObject var appSettings = AppSettings.shared
+    @State private var selectedFrequency: BackupFrequencyEnum = AppSettings.shared.selectedBackupFrequency
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -77,6 +79,10 @@ struct BackupConfigView: View {
                 }
                 .padding([.top], 12)
             }
+           
+            BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, onClick: { option in
+                ScheduledBackupManager.shared.startBackupTimer(frequency: option)
+            })
             
             VStack(alignment: .leading, spacing: 8) {
                 AppText("BACKUP_UPLOAD_DELETE_BACKUP")

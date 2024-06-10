@@ -283,6 +283,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             self.openWidget(delayed: true)
         }
+        ScheduledBackupManager.shared.resumeBackupScheduler()
         
     }
     
