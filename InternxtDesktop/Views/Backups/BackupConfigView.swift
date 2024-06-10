@@ -18,11 +18,10 @@ struct BackupConfigView: View {
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @Binding var showFolderSelector: Bool
+    @Binding var isEditingSelectedFolders: Bool
     @Binding var device: Device
     
     @State private var currentFrequency: UploadFrequencyEnum = .manually
-    
-    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -43,16 +42,38 @@ struct BackupConfigView: View {
                     AppText("BACKUP_SELECTED_FOLDERS")
                         .font(.SMMedium)
                         .foregroundColor(.Gray80)
-                    
                     HStack(spacing: 10) {
-                        AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
-                            changeFolders()
-                        }, type: .secondary)
-                        
-                        Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
-                            .font(.SMRegular)
-                            .foregroundColor(.Gray60)
+                        if backupsService.thereAreMissingFoldersToBackup {
+                            AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
+                                fixMissingFolders()
+                            }, type: .secondary)
+                            HStack(spacing:4) {
+                                ZStack {
+                                    Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
+                                    Image("warning-circle-fill")
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .frame(width:16, height: 16)
+                                        .foregroundColor(.Red)
+                                }
+                                
+                                
+                                
+                                Text("BACKUP_MISSING_FOLDERS_ERROR")
+                                    .font(.SMRegular)
+                                    .foregroundColor(.Red)
+                            }
+                        } else {
+                            AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
+                                changeFolders()
+                            }, type: .secondary)
+                            
+                            Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
+                                .font(.SMRegular)
+                                .foregroundColor(.Gray60)
+                        }
                     }
+                    
                 }
                 .padding([.top], 12)
             }
@@ -107,7 +128,18 @@ struct BackupConfigView: View {
         throw AppError.notImplementedError
     }
     
+    func selectFoldersAndStartBackup() {
+        self.isEditingSelectedFolders = false
+        self.showFolderSelector = true
+    }
+    
     func changeFolders() {
+        self.isEditingSelectedFolders = true
+        self.showFolderSelector = true
+    }
+    
+    func fixMissingFolders() {
+        self.isEditingSelectedFolders = true
         self.showFolderSelector = true
     }
     
@@ -118,7 +150,7 @@ struct BackupConfigView: View {
     private func doBackup() async {
         do {
             if(backupsService.foldersToBackup.isEmpty) {
-                self.changeFolders()
+                self.selectFoldersAndStartBackup()
             } else {
                 try await self.backupsService.startBackup(onProgress: {progress in })
             }
@@ -146,6 +178,7 @@ struct BackupConfigView: View {
         showStopBackupDialog: .constant(false),
         showDeleteBackupDialog: .constant(false),
         showFolderSelector: .constant(false),
+        isEditingSelectedFolders: .constant(true),
         device: .constant(BackupsDeviceService.shared.getDeviceForPreview())
     )
 }

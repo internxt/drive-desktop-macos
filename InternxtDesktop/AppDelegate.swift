@@ -160,7 +160,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
         await backupsService.loadAllDevices()
         self.logger.info("✅ Backups devices loaded")
-        backupsService.assignUrls()
+        backupsService.loadFoldersToBackup()
     }
     
     private func checkVolumeAndEjectIfNeeded() {

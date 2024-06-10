@@ -12,7 +12,7 @@ struct BackupsFolderListView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var foldersToBackup: [FolderToBackup]
     @Binding var selectedId: String?
-
+    let onMissingFolderURLLocated: (FolderToBackup, URL) -> Void
     var body: some View {
         if self.foldersToBackup.isEmpty {
             VStack {
@@ -48,24 +48,60 @@ struct BackupsFolderListView: View {
         }
     }
     
+    func locateMissingFolderToBackup(folderToBackupMissing: FolderToBackup) {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        let panelResponse = panel.runModal()
+        
+        if panelResponse == .OK {
+            guard let newURL = panel.url else {
+                return
+            }
+            Task {onMissingFolderURLLocated(folderToBackupMissing, newURL)}
+        }
+        
+    }
+    
     func FolderRow(index: Int) -> some View {
-        HStack(alignment: .center, spacing: 8) {
+        let folderToBackup = self.foldersToBackup[index];
+        
+        return HStack(alignment: .center, spacing: 8) {
             Image("folder")
-            
-            AppText(self.foldersToBackup[index].url.lastPathComponent.removingPercentEncoding ?? "Unknown folder")
+            AppText(folderToBackup.url.lastPathComponent.removingPercentEncoding ?? "Unknown folder")
                 .font(.LGRegular)
                 .foregroundColor(selectedId == self.foldersToBackup[index].id ? .white : .Gray80)
                 .padding([.vertical], 10)
             
             Spacer()
+            if folderToBackup.folderIsMissing() {
+                HStack(spacing: 4) {
+                    ZStack {
+                        Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
+                        Image("warning-circle-fill")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width:16, height: 16)
+                            .foregroundColor(.Red)
+                    }
+                    HStack(spacing:8) {
+                        AppText("BACKUP_MISSING_FOLDER_ERROR").font(.XSRegular).foregroundColor(.Red)
+                        AppButton(title: "BACKUP_LOCATE_FOLDER", onClick: {
+                            locateMissingFolderToBackup(folderToBackupMissing: folderToBackup)
+                        } , type: .secondary)
+                    }
+                    
+                }
+            }
         }
         .padding([.horizontal], 10)
         .background(getRowBackgroundColor(for: index))
         .gesture(
             onMultipleTaps(firstCount: 2, firstAction: {
-                self.openFolderInFinder(url: self.foldersToBackup[index].url)
+                self.openFolderInFinder(url: folderToBackup.url)
             }, secondCount: 1, secondAction: {
-                self.selectedId = self.foldersToBackup[index].id
+                self.selectedId = folderToBackup.id
             }
                           )
         )
