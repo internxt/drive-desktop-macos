@@ -19,6 +19,7 @@ struct SettingsView: View {
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var backupsService: BackupsService
     @EnvironmentObject var settingsManager: SettingsTabManager
+    @EnvironmentObject var scheduleManager: ScheduledBackupManager
     public var updater: SPUUpdater? = nil
     @State private var selectedDeviceId: Int? = nil
     @State private var showFolderSelector = false
@@ -88,8 +89,20 @@ struct SettingsView: View {
             }
         }
         .frame(width: 600)
+        .onChange(of: scheduleManager.backupError) { error in
+            if !error.isEmpty {
+                showErrorDialog(message: error)
+            }
+        }
     }
     
+    private func showErrorDialog(message: String) {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
     @ViewBuilder
     var Tabcontent: some View {
         switch settingsManager.focusedTab {
@@ -102,7 +115,7 @@ struct SettingsView: View {
         case .Backup:
             BackupsTabView(selectedDeviceId: $selectedDeviceId, showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog,
                 isEditingSelectedFolders: $isEditingSelectedFolders,
-                backupsService: backupsService
+                           backupsService: backupsService, scheduleManager: scheduleManager
             )
         default:
             EmptyView()

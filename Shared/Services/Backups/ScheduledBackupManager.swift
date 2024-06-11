@@ -8,15 +8,20 @@
 import Foundation
 import Combine
 
-class ScheduledBackupManager {
+class ScheduledBackupManager : ObservableObject{
     
-    static let shared = ScheduledBackupManager()
+    //  static let shared = ScheduledBackupManager()
     private var backupTimer: AnyCancellable?
-    private let backupsService: BackupsService = BackupsService()
+    private let backupsService: BackupsService //= BackupsService()
     private let userDefaults = UserDefaults.standard
     private var initialTimer: Timer?
     private let BACKUP_FREQUENCY_KEY = "INTERNXT_SELECTED_BACKUP_FREQUENCY"
     private let LAST_BACKUP_TIME_KEY = "INTERNXT_LAST_BACKUP_TIME_KEY"
+    @Published var backupError: String = ""
+    
+    init(backupsService : BackupsService ) {
+        self.backupsService = backupsService
+    }
     
     func startBackupTimer(frequency : BackupFrequencyEnum) {
         
@@ -54,8 +59,13 @@ class ScheduledBackupManager {
                 backupsService.loadFoldersToBackup()
                 try await backupsService.startBackup { progress in}
                 userDefaults.set(Date(), forKey: LAST_BACKUP_TIME_KEY)
+                DispatchQueue.main.async {
+                    self.backupError = ""
+                }
             } catch {
-                
+                DispatchQueue.main.async {
+                    self.backupError = error.localizedDescription
+                }
             }
         }
     }

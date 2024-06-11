@@ -21,7 +21,7 @@ struct BackupConfigView: View {
     @Binding var isEditingSelectedFolders: Bool
     @Binding var device: Device
     
-    @State var backupManager: ScheduledBackupManager = ScheduledBackupManager()
+    @State var backupManager: ScheduledBackupManager
     @ObservedObject var appSettings = AppSettings.shared
     @State private var selectedFrequency: BackupFrequencyEnum = AppSettings.shared.selectedBackupFrequency
     
@@ -81,7 +81,7 @@ struct BackupConfigView: View {
             }
            
             BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, onClick: { option in
-                ScheduledBackupManager.shared.startBackupTimer(frequency: option)
+                self.backupManager.startBackupTimer(frequency: option)
             })
             
             VStack(alignment: .leading, spacing: 8) {
@@ -185,6 +185,6 @@ struct BackupConfigView: View {
         showDeleteBackupDialog: .constant(false),
         showFolderSelector: .constant(false),
         isEditingSelectedFolders: .constant(true),
-        device: .constant(BackupsDeviceService.shared.getDeviceForPreview())
+        device: .constant(BackupsDeviceService.shared.getDeviceForPreview()), backupManager: ScheduledBackupManager(backupsService: BackupsService())
     )
 }
