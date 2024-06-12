@@ -80,7 +80,9 @@ struct BackupConfigView: View {
                 .padding([.top], 12)
             }
            
-            BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, onClick: { option in
+            BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, nextBackupTime: $backupManager.nextBackupTime, onClick: { option in
+                // restart date
+                self.removeBackupDate()
                 self.backupManager.startBackupTimer(frequency: option)
             })
             
@@ -174,6 +176,9 @@ struct BackupConfigView: View {
         alert.runModal()
     }
     
+    private func removeBackupDate(){
+        UserDefaults.standard.removeObject(forKey: "INTERNXT_LAST_BACKUP_TIME_KEY")
+    }
 }
 
 #Preview {

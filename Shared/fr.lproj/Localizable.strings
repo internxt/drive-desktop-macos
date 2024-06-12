@@ -65,6 +65,7 @@
 "BACKUP_TRY_AGAIN" = "Réessayer";
 "BACKUP_LOCATE_FOLDER" = "Localiser le dossier";
 "BACKUP_ERROR_BACKING_UP" = "Erreur de sauvegarde de ce dispositif";
+"BACKUP_NEXT_DATE" = "Prochaine sauvegarde à %@";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";

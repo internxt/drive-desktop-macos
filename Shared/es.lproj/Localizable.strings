@@ -67,6 +67,7 @@
 "BACKUP_LOCATE_FOLDER" = "Encontrar carpeta";
 "BACKUP_FETCHING_DEVICES" = "Obteniendo tus dispositivos con Backups";
 "BACKUP_ERROR_BACKING_UP" = "Error al realizar la copia de seguridad de este dispositivo";
+"BACKUP_NEXT_DATE" = "Próxima copia de seguridad en %@";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";

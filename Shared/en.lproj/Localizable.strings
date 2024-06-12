@@ -67,6 +67,7 @@
 "BACKUP_TRY_AGAIN" = "Try again";
 "BACKUP_LOCATE_FOLDER" = "Locate folder";
 "BACKUP_ERROR_BACKING_UP" = "Error backing up this device";
+"BACKUP_NEXT_DATE" = "Next backup at %@";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
