@@ -85,6 +85,7 @@ struct BackupConfigView: View {
                 self.removeBackupDate()
                 self.backupManager.startBackupTimer(frequency: option)
             })
+            .padding(.top,20)
             
             VStack(alignment: .leading, spacing: 8) {
                 AppText("BACKUP_UPLOAD_DELETE_BACKUP")
