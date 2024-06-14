@@ -60,7 +60,7 @@ struct EnumerateFolderItemsUseCase {
                 
                 
                 folders.result.forEach{ (folder) in
-                    if folder.status != "EXISTS" || folder.deleted == true || folder.removed == true {
+                    if folder.status != "EXISTS" {
                         return
                     }
                     
@@ -88,7 +88,7 @@ struct EnumerateFolderItemsUseCase {
                 }
                 
                 files.result.forEach{ (file) in
-                    if file.status != "EXISTS" || file.deleted == true || file.removed == true {
+                    if file.status != "EXISTS" {
                         return
                     }
                     
