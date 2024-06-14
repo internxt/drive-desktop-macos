@@ -133,7 +133,7 @@ class AuthManager: ObservableObject {
         }
         
         let plainMnemonic = String(data: decodedMnemonic, encoding: .utf8)!
-        let validMnemonic = true || cryptoUtils.validate(mnemonic: plainMnemonic)
+        let validMnemonic = cryptoUtils.validate(mnemonic: plainMnemonic)
         
         if validMnemonic == false {
             self.logger.info("The decoded mnemonic is not valid")
