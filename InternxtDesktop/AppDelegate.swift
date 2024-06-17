@@ -244,20 +244,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
         
-        
-        // Update usage async
-        Task {
-            self.startTokensRefreshing()
-            self.logger.info("✅ Token refresher started")
-            await usageManager.updateUsage()
-            self.logger.info("✅ Usage updated")
-            try await authManager.initializeCurrentUser()
-        }
-        
-        
         Task {
             do {
+                self.startTokensRefreshing()
+                self.logger.info("✅ Token refresher started")
+                await usageManager.updateUsage()
+                self.logger.info("✅ Usage updated")
+                try await authManager.initializeCurrentUser()
                 self.logger.info("✅ Current user initialized")
+                
                 guard let user = self.authManager.user else {
                     throw AuthError.noUserFound
                 }
@@ -297,6 +292,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.openAuthWindow()
         self.windowsManager.closeAll(except: ["auth"])
         self.destroyWidget()
+        self.cleanUpTimers()
         do {
             try backupsService.clean()
         } catch {
@@ -304,11 +300,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         Task {
-            do {
-                try await domainManager.exitDomain()
-            } catch {
-                error.reportToSentry()
-            }
+            await domainManager.exitDomain()
         }
         
     }
@@ -428,6 +420,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             popover?.contentViewController?.view.window?.resignKey()
         }
         
+    }
+    
+    private func cleanUpTimers() {
+        self.signalEnumeratorTimer?.cancel()
+        self.refreshTokensTimer?.cancel()
     }
     
     
