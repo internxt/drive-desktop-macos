@@ -39,12 +39,7 @@ struct URLFileAttribute {
 
 extension URL {
     func open() {
-        let hasAccess = self.startAccessingSecurityScopedResource()
-        if(hasAccess) {
-            NSWorkspace.shared.open(self)
-            self.stopAccessingSecurityScopedResource()
-        }
-        
+        NSWorkspace.shared.open(self)
     }
     
     func isDirectory() throws -> Bool {
