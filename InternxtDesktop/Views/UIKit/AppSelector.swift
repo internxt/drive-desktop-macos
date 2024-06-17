@@ -66,8 +66,8 @@ struct AppSelector: View {
                     
                 }.padding(.horizontal,12)
                 RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color.Gray10, lineWidth: 2)
-            }.frame(height: getAppSelectorHeight(size) ).fixedSize(horizontal: true, vertical: true).contentShape(Rectangle()).onTapGesture {
+                    .stroke(Color.Gray10, lineWidth: 1)
+            }.frame(minWidth:geometry.size.width, minHeight: getAppSelectorHeight(size) ).fixedSize(horizontal: true, vertical: true).contentShape(Rectangle()).onTapGesture {
                 withAnimation {
                     self.optionsVisible = !self.optionsVisible
                 }

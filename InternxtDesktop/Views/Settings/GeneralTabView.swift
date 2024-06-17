@@ -43,7 +43,7 @@ struct GeneralTabView: View {
                                     appSettings.selectedLanguage = language
                                 }
                             }
-                    }.padding(.top, 24)
+                    }.frame(width: 140).padding(.top, 24)
                 }
             }
             Divider().background(Color.Gray10).padding(.vertical, 24).zIndex(-1)
