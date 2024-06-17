@@ -47,7 +47,7 @@
 "BACKUP_%@_NUMBER_OF_FOLDERS_SELECTED" = "%@ carpetas seleccionadas";
 "BACKUP_UPLOAD_FREQUENCY" = "Frecuencia de carga";
 "BACKUP_UPLOAD_FREQUENCY_6_HRS" = "Cada 6 horas";
-"BACKUP_UPLOAD_FREQUENCY_12_HRS" = "Cada 12 horas";
+"BACKUP_UPLOAD_FREQUENCY_1_HRS" = "Cada 1 hora";
 "BACKUP_UPLOAD_FREQUENCY_EVERY_DAY" = "Cada día";
 "BACKUP_UPLOAD_FREQUENCY_MANUALLY" = "Manualmente";
 "BACKUP_UPLOAD_FREQUENCY_MANUALLY_TOOLTIP" = "Las carpetas no se copiarán automáticamente hasta que haga clic en\n\"Copiar ahora\". No se recomienda este modo";
@@ -67,6 +67,7 @@
 "BACKUP_LOCATE_FOLDER" = "Encontrar carpeta";
 "BACKUP_FETCHING_DEVICES" = "Obteniendo tus dispositivos con Backups";
 "BACKUP_ERROR_BACKING_UP" = "Error al realizar la copia de seguridad de este dispositivo";
+"BACKUP_NEXT_DATE" = "Próxima copia de seguridad en %@";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";

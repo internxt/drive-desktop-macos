@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var globalUIManager = GlobalUIManager()
     let backupsService = BackupsService()
     let settingsManager = SettingsTabManager()
-    
+    var scheduledManager: ScheduledBackupManager!
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
@@ -53,6 +53,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
     
+    override init() {
+        super.init()
+        self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+    }
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
         ErrorUtils.start()
@@ -61,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -278,6 +283,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             self.openWidget(delayed: true)
         }
+        self.scheduledManager.resumeBackupScheduler()
         
     }
     
@@ -446,5 +452,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             display()
         }
+        self.scheduledManager.resumeBackupScheduler()
     }
 }

@@ -47,7 +47,7 @@
 "BACKUP_%@_NUMBER_OF_FOLDERS_SELECTED" = "%@ dossiers sélectionnés";
 "BACKUP_UPLOAD_FREQUENCY" = "Fréquence de téléchargement";
 "BACKUP_UPLOAD_FREQUENCY_6_HRS" = "Toutes les 6 heures";
-"BACKUP_UPLOAD_FREQUENCY_12_HRS" = "Toutes les 12 heures";
+"BACKUP_UPLOAD_FREQUENCY_1_HRS" = "Toutes les heures";
 "BACKUP_UPLOAD_FREQUENCY_EVERY_DAY" = "Tous les jours";
 "BACKUP_UPLOAD_FREQUENCY_MANUALLY" = "Manuellement";
 "BACKUP_UPLOAD_FREQUENCY_MANUALLY_TOOLTIP" = "Les dossiers ne seront pas sauvegardés automatiquement tant que vous n'aurez pas cliqué sur\n\"Sauvegarder maintenant\". Ce mode n'est pas recommandé";
@@ -65,6 +65,7 @@
 "BACKUP_TRY_AGAIN" = "Réessayer";
 "BACKUP_LOCATE_FOLDER" = "Localiser le dossier";
 "BACKUP_ERROR_BACKING_UP" = "Erreur de sauvegarde de ce dispositif";
+"BACKUP_NEXT_DATE" = "Prochaine sauvegarde à %@";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";

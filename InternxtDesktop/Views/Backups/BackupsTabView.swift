@@ -15,6 +15,7 @@ struct BackupsTabView: View {
     @Binding var showDeleteBackupDialog: Bool
     @Binding var isEditingSelectedFolders: Bool
     @StateObject var backupsService: BackupsService
+    @StateObject var scheduleManager: ScheduledBackupManager
     private let deviceName = ConfigLoader().getDeviceName()
     
     
@@ -145,7 +146,7 @@ struct BackupsTabView: View {
                         showDeleteBackupDialog: $showDeleteBackupDialog,
                         showFolderSelector: $showFolderSelector,
                         isEditingSelectedFolders: $isEditingSelectedFolders,
-                        device: Binding($backupsService.selectedDevice)!
+                        device: Binding($backupsService.selectedDevice)!, backupManager: self.scheduleManager
                     )
                 }
             }
@@ -173,6 +174,6 @@ struct BackupsTabView: View {
         showStopBackupDialog: .constant(false),
         showDeleteBackupDialog: .constant(false),
         isEditingSelectedFolders: .constant(false),
-        backupsService: BackupsService()
+        backupsService: BackupsService(), scheduleManager: ScheduledBackupManager(backupsService: BackupsService())
     )
 }

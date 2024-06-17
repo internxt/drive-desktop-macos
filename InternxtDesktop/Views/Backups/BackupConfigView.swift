@@ -21,7 +21,9 @@ struct BackupConfigView: View {
     @Binding var isEditingSelectedFolders: Bool
     @Binding var device: Device
     
-    @State private var currentFrequency: UploadFrequencyEnum = .manually
+    @State var backupManager: ScheduledBackupManager
+    @ObservedObject var appSettings = AppSettings.shared
+    @State private var selectedFrequency: BackupFrequencyEnum = AppSettings.shared.selectedBackupFrequency
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -77,6 +79,13 @@ struct BackupConfigView: View {
                 }
                 .padding([.top], 12)
             }
+           
+            BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, nextBackupTime: $backupManager.nextBackupTime, onClick: { option in
+                // restart date
+                self.removeBackupDate()
+                self.backupManager.startBackupTimer(frequency: option)
+            })
+            .padding(.top,20)
             
             VStack(alignment: .leading, spacing: 8) {
                 AppText("BACKUP_UPLOAD_DELETE_BACKUP")
@@ -168,6 +177,9 @@ struct BackupConfigView: View {
         alert.runModal()
     }
     
+    private func removeBackupDate(){
+        UserDefaults.standard.removeObject(forKey: "INTERNXT_LAST_BACKUP_TIME_KEY")
+    }
 }
 
 #Preview {
@@ -179,6 +191,6 @@ struct BackupConfigView: View {
         showDeleteBackupDialog: .constant(false),
         showFolderSelector: .constant(false),
         isEditingSelectedFolders: .constant(true),
-        device: .constant(BackupsDeviceService.shared.getDeviceForPreview())
+        device: .constant(BackupsDeviceService.shared.getDeviceForPreview()), backupManager: ScheduledBackupManager(backupsService: BackupsService())
     )
 }
