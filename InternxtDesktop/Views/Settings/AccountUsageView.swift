@@ -50,7 +50,6 @@ struct AccountUsageView: View {
         .cornerRadius(12)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .inset(by: -0.5)
                 .stroke(Color("Gray10"), lineWidth: 1)
         )
     }

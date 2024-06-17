@@ -48,7 +48,7 @@ struct BackupConfigView: View {
                         if backupsService.thereAreMissingFoldersToBackup {
                             AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
                                 fixMissingFolders()
-                            }, type: .secondary)
+                            }, type: .secondary, size: .MD)
                             HStack(spacing:4) {
                                 ZStack {
                                     Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
@@ -68,7 +68,7 @@ struct BackupConfigView: View {
                         } else {
                             AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
                                 changeFolders()
-                            }, type: .secondary)
+                            }, type: .secondary, size: .MD)
                             
                             Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
                                 .font(.SMRegular)

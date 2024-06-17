@@ -25,7 +25,6 @@ struct BackupsFolderListView: View {
             .cornerRadius(8.0)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .inset(by: -0.5)
                     .stroke(Color.Gray10, lineWidth: 1)
             )
         } else {
@@ -42,7 +41,6 @@ struct BackupsFolderListView: View {
             .cornerRadius(8.0)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .inset(by: -0.5)
                     .stroke(Color.Gray10, lineWidth: 1)
             )
         }

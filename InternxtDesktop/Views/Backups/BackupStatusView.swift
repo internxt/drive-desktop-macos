@@ -92,7 +92,6 @@ struct BackupStatusView: View {
         .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .inset(by: -0.5)
                 .stroke(Color.Gray10, lineWidth: 1)
         )
     }

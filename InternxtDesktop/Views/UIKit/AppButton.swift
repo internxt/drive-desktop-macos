@@ -23,9 +23,9 @@ enum AppButtonType {
 func getHeightBySize(size: AppButtonSize) -> CGFloat {
     switch size {
     case .SM:
-        return 28
-    case .MD:
         return 32
+    case .MD:
+        return 36
     case .LG:
         return 40
     }
@@ -131,7 +131,7 @@ struct SecondaryAppButtonStyle: ButtonStyle {
             .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .inset(by: -0.5)
+                    
                     .stroke(getStrokeColor(), lineWidth: 1)
             )
 

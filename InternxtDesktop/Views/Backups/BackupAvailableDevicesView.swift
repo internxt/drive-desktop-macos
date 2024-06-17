@@ -137,7 +137,6 @@ struct BackupDeviceItem: View {
         .shadow(color: isSelected ? .black.opacity(0.05) : .clear, radius: 1, x: 0.0, y: 1.0)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .inset(by: -0.5)
                 .stroke(isSelected ? Color.Gray10 : .clear, lineWidth: 1)
         )
     }
