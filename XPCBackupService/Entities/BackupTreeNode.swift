@@ -26,13 +26,13 @@ class BackupTreeNode {
     var remoteUuid: String?
     var remoteParentId: Int?
     private(set) var childs: [BackupTreeNode]
-    let backupUploadService: BackupUploadService
+    let backupUploadService: BackupUploadServiceProtocol
     var backupTotalPogress: Progress
     var rootBackupFolder: URL
     var syncRetries: UInt64 = 0
-    var backupRealm: BackupRealm
+    var backupRealm: BackupRealmProtocol
     
-    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadService, backupRealm: BackupRealm, backupTotalProgress: Progress) {
+    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadServiceProtocol, backupRealm: BackupRealmProtocol, backupTotalProgress: Progress) {
         self.id = id
         self.deviceId = deviceId
         self.parentId = parentId
@@ -97,7 +97,7 @@ class BackupTreeNode {
 
     private func nodeIsSynced(url: URL, deviceId: Int) throws -> SyncedNode? {
         let syncedNodeThreadRef = autoreleasepool {
-            let syncedNodeThreadRef = BackupRealm.shared.findSyncedNode(url: url, deviceId: deviceId)
+            let syncedNodeThreadRef = backupRealm.findSyncedNode(url: url, deviceId: deviceId)
             
             return syncedNodeThreadRef
         }
@@ -168,7 +168,7 @@ class BackupTreeNode {
         }
         
         let currentSyncedNode = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
-        if let threadRealm = try BackupRealm.shared.getRealm(), let currentSyncedNodeUnwrapped = currentSyncedNode {
+        if let threadRealm = try self.backupRealm.getRealm(), let currentSyncedNodeUnwrapped = currentSyncedNode {
             try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNodeUnwrapped.remoteId, syncedNoteRemoteUuid: currentSyncedNodeUnwrapped.remoteUuid)
             
             logger.info("Node \(self.name) is synced: \(currentSyncedNode != nil)")
@@ -194,8 +194,6 @@ class BackupTreeNode {
                     child.remoteParentId = remoteId
                 }
             case .failure(let error):
-                let backupStopped = error as? BackupUploadError
-
                 if case BackupUploadError.BackupStoppedManually = error {
                     // Noop, this was stopped
                 } else {

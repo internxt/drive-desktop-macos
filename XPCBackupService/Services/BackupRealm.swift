@@ -8,7 +8,14 @@
 import Foundation
 import RealmSwift
 
-struct BackupRealm {
+protocol BackupRealmProtocol {
+    func getRealm() throws -> Realm?
+    func addSyncedNode(_ node: SyncedNode) throws
+    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>?
+    func editSyncedNodeDate(remoteUuid: String, date: Date) throws
+}
+
+struct BackupRealm : BackupRealmProtocol {
     static var shared = BackupRealm()
     private var realm: Realm?
     private init() {}
@@ -42,7 +49,7 @@ struct BackupRealm {
 
             let syncedNode = realm?.objects(SyncedNode.self).first { syncedNode in
                 url.absoluteString == syncedNode.url && deviceId == syncedNode.deviceId
-            } 
+            }
             guard let syncedNodeUnwrapped = syncedNode else {
                 return nil
             }
