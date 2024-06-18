@@ -1109,7 +1109,6 @@
 					E15F8C242B762B0400C60EFA = {
 						CreatedOnToolsVersion = 15.2;
 						LastSwiftMigration = 1520;
-						TestTargetID = E1FB2D232A76BF0200473AE1;
 					};
 					E1FB2D232A76BF0200473AE1 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -1595,7 +1594,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1620,7 +1618,6 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Internxt Drive.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Internxt Drive";
 			};
 			name = Debug;
 		};
@@ -1628,7 +1625,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1650,7 +1646,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "InternxtDesktopTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Internxt Drive.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Internxt Drive";
 			};
 			name = Release;
 		};
@@ -1658,7 +1653,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1680,7 +1674,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "InternxtDesktopTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Internxt Drive.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Internxt Drive";
 			};
 			name = Beta;
 		};
