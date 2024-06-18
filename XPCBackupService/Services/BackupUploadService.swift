@@ -30,6 +30,12 @@ enum BackupDownloadError: Error {
 }
 
 class BackupUploadService: ObservableObject {
+protocol BackupUploadServiceProtocol {
+    func doSync(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error>
+    func stopSync()
+}
+
+class BackupUploadService: BackupUploadServiceProtocol ,ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()

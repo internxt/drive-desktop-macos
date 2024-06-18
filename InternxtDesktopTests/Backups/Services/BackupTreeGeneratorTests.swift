@@ -31,7 +31,7 @@ final class BackupTreeGeneratorTests: XCTestCase {
             root: tmpDirectoryURL,
             deviceId: 999,
             backupUploadService: backupUploadService,
-            backupTotalProgress: Progress()
+            backupTotalProgress: Progress(), backupRealm: BackupRealm.shared
         )
     }
     
