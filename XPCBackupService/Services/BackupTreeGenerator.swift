@@ -26,11 +26,11 @@ class BackupTreeGenerator: BackupTreeGeneration {
     private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
     var root: URL
     let rootNode: BackupTreeNode
-    let backupUploadService: BackupUploadService
+    let backupUploadService: BackupUploadServiceProtocol
     let backupTotalProgress: Progress
     let deviceId: Int
-    let backupRealm: BackupRealm
-    init(root: URL, deviceId: Int, backupUploadService: BackupUploadService, backupTotalProgress: Progress, backupRealm: BackupRealm) {
+    let backupRealm: BackupRealmProtocol
+    init(root: URL, deviceId: Int, backupUploadService: BackupUploadServiceProtocol, backupTotalProgress: Progress, backupRealm: BackupRealmProtocol) {
 
         self.root = root
         self.backupUploadService = backupUploadService
