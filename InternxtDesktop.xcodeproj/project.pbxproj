@@ -66,6 +66,15 @@
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
+		AAC188E02C222E1A007E321A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188DF2C222E1A007E321A /* RealmSwift */; };
+		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
+		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
+		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
+		AAC188E82C222EB3007E321A /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E72C222EB3007E321A /* Sentry */; };
+		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
+		AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
+		AAC188EB2C222F35007E321A /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
+		AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -490,6 +499,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAC188E82C222EB3007E321A /* Sentry in Frameworks */,
+				AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */,
+				AAC188E02C222E1A007E321A /* RealmSwift in Frameworks */,
+				AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */,
+				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1029,6 +1043,13 @@
 				E15F8C2A2B762B0400C60EFA /* PBXTargetDependency */,
 			);
 			name = InternxtDesktopTests;
+			packageProductDependencies = (
+				AAC188DF2C222E1A007E321A /* RealmSwift */,
+				AAC188E12C222E1A007E321A /* ObjcExceptionBridging */,
+				AAC188E32C222E1A007E321A /* XCGLogger */,
+				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
+				AAC188E72C222EB3007E321A /* Sentry */,
+			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1281,13 +1302,17 @@
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
+				AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */,
+				AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */,
 				E1D24AF92C0DA3DD0009EC83 /* BackupRealm.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
+				AAC188EB2C222F35007E321A /* XPCBackupServiceProtocol.swift in Sources */,
 				E1D24AFB2C0DA4210009EC83 /* BackupTreeNodeSyncOperation.swift in Sources */,
 				31F9EF2C2B867F24007DAD86 /* Error.swift in Sources */,
 				E1D24AF82C0DA3D00009EC83 /* LogService.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
+				AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2237,6 +2262,31 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
 			productName = Rudder;
+		};
+		AAC188DF2C222E1A007E321A /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		AAC188E12C222E1A007E321A /* ObjcExceptionBridging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = ObjcExceptionBridging;
+		};
+		AAC188E32C222E1A007E321A /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
+		};
+		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		AAC188E72C222EB3007E321A /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
