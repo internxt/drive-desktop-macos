@@ -234,13 +234,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    private func startTokensRefreshing() {
+        self.refreshTokensTimer =  Timer.publish(every: 30, on:.main, in: .common).autoconnect().sink(
+            receiveValue: {_ in
+                self.checkRefreshToken()
+            })
+    }
+    
     private func loginSuccess() {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
         
         Task {
             do {
-                self.checkRefreshToken()
+                self.startTokensRefreshing()
                 await usageManager.updateUsage()
                 self.logger.info("✅ Usage updated")
                 try await authManager.initializeCurrentUser()
@@ -446,7 +453,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
-        self.checkRefreshToken()
     }
     
     private func checkRefreshToken(){
