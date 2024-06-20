@@ -38,6 +38,8 @@ struct BackupDownloadService {
         let backupFolders = try await backupAPI.getBackupChilds(folderId: folderId)
         
         backupDownloadProgress.totalUnitCount += Int64(backupFolders.result.count)
+        
+        // Create each folder, and request the folders childs
         try backupFolders.result.forEach{backupFolder in
             let backupFolderName = try backupFolder.plainName ?? self.decryptName(name: backupFolder.name, bucketId: backupBucket)
             let folderURL = self.getURLForItem(
@@ -57,6 +59,7 @@ struct BackupDownloadService {
             
         }
         
+        // Download files
         let backupFiles = try await backupAPI.getBackupFiles(folderId: folderId)
         backupDownloadProgress.totalUnitCount += Int64(backupFiles.result.count)
         for backupFile in backupFiles.result {

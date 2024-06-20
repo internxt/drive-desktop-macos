@@ -185,10 +185,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     
     @objc func stopBackupDownload() {
         logger.debug("STOP BACKUP DOWNLOAD")
-        trees = []
         self.backupDownloadStatus = .Stopped
         self.downloadOperationQueue.cancelAllOperations()
-        backupUploadService?.stopSync()
     }
     
     
