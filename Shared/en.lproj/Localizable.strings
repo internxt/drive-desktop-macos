@@ -41,6 +41,7 @@
 "BACKUP_BACKING_UP" = "Backing up...";
 "BACKUP_STOP_BACKUP" = "Stop backup";
 "BACKUP_DOWNLOAD" = "Download";
+"BACKUP_DOWNLOAD_STOP" = "Stop download";
 "BACKUP_BROWSE_FILES" = "Browse files";
 "BACKUP_SELECTED_FOLDERS" = "Selected folders";
 "BACKUP_CHANGE_FOLDERS" = "Change folders";
@@ -68,6 +69,9 @@
 "BACKUP_LOCATE_FOLDER" = "Locate folder";
 "BACKUP_ERROR_BACKING_UP" = "Error backing up this device";
 "BACKUP_NEXT_DATE" = "Next backup at %@";
+"%@_BACKUP_DOWNLOADED_ITEMS" = "%@ items downloaded";
+"BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE" = "Backup download in progress";
+"BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE" = "A backup download is already in progress, please wait until it is finished.";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";

@@ -15,6 +15,7 @@ struct WidgetView: View {
     @EnvironmentObject var globalUIManager: GlobalUIManager
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
+    @EnvironmentObject var backupsService: BackupsService
 
     @State private var showBackupBanner = false
     var isEmpty: Bool = true
@@ -24,6 +25,23 @@ struct WidgetView: View {
     init(openFileProviderRoot:  @escaping () -> Void,openSendFeedback:  @escaping () -> Void) {
         self.openFileProviderRoot = openFileProviderRoot
         self.openSendFeedback = openSendFeedback
+    }
+    
+    
+    func shouldDisplayBackupBanner() -> Bool {
+        return !self.shouldDisplayActivityEntries() && self.showBackupBanner
+    }
+    
+    func shouldDisplayActivityEntries() -> Bool {
+        if backupsService.backupDownloadStatus == .InProgress {
+            return true
+        }
+        
+        if !activityManager.activityEntries.isEmpty {
+            return true
+        }
+        
+        return false
     }
     var body: some View {
         AppSettingsManagerView {
@@ -36,7 +54,7 @@ struct WidgetView: View {
                         .environmentObject(self.usageManager)
                         .environmentObject(self.settingsManager)
 
-                    if !activityManager.activityEntries.isEmpty && self.showBackupBanner {
+                    if shouldDisplayBackupBanner() {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
                         }
@@ -44,8 +62,7 @@ struct WidgetView: View {
                     }
 
                     VStack(alignment: .center) {
-                        
-                        if activityManager.activityEntries.isEmpty {
+                        if !shouldDisplayActivityEntries() {
                             Image("SyncedStack")
                                .resizable()
                                .scaledToFit()
@@ -60,7 +77,7 @@ struct WidgetView: View {
                             }
                             .padding(.top, 22)
                         } else {
-                            WidgetContentView(activityEntries: $activityManager.activityEntries)
+                            WidgetContentView(activityEntries: $activityManager.activityEntries).environmentObject(backupsService)
                         }
                     }.frame(maxWidth: .infinity,maxHeight: .infinity)
                     WidgetFooterView()
@@ -87,7 +104,9 @@ struct WidgetView_Previews: PreviewProvider {
         WidgetView(openFileProviderRoot: {}, openSendFeedback: {})
             .environmentObject(AuthManager())
             .environmentObject(GlobalUIManager())
+            .environmentObject(SettingsTabManager())
             .environmentObject(UsageManager())
             .environmentObject(ActivityManager())
+            .environmentObject(BackupsService())
     }
 }

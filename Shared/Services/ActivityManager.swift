@@ -88,7 +88,7 @@ class ActivityManager: ObservableObject {
                         self?.updateActivityEntries()
                     case .update:
                         self?.updateActivityEntries()
-                    case .error(let error):
+                    case .error:
                         return
                     }
             }
@@ -133,6 +133,7 @@ enum ActivityEntryOperationKind: String, PersistableEnum {
     case download
     case upload
     case move
+    case backupDownload
 }
 
 enum ActivityEntryStatus: String, PersistableEnum {
