@@ -62,6 +62,10 @@
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
+		AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
+		AA0B47AA2C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
+		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
+		AA0B47AC2C24D9EE0036FE1A /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
 		AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */; };
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
@@ -92,7 +96,6 @@
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
 		E12479D92C107C52000DAC11 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
-		E12479DB2C19B2D5000DAC11 /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
 		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
@@ -1266,7 +1269,6 @@
 				E1D24AF62C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
-				E12479DB2C19B2D5000DAC11 /* BackupDownloadService.swift in Sources */,
 				AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
@@ -1298,6 +1300,7 @@
 				AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1EEB5862C1C4B8800370D77 /* BackupDownloadItemOperation.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
+				AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1313,14 +1316,17 @@
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
 				AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */,
 				31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */,
+				AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */,
 				E1D24AFA2C0DA4100009EC83 /* SyncedNode.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */,
 				AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */,
+				AA0B47AC2C24D9EE0036FE1A /* Time.swift in Sources */,
 				AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */,
 				E1D24AF92C0DA3DD0009EC83 /* BackupRealm.swift in Sources */,
+				AA0B47AA2C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */,
 				E15F8C442B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C3F2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				AAC188EB2C222F35007E321A /* XPCBackupServiceProtocol.swift in Sources */,
