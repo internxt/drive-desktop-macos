@@ -19,4 +19,5 @@ enum AuthError: Error {
     case UnableToRefreshToken
     case LegacyAuthTokenNotInConfig
     case noUserFound
+    case InvalidTokenExp
 }
