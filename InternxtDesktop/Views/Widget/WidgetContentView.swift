@@ -9,13 +9,20 @@ import SwiftUI
 import FileProvider
 import RealmSwift
 struct WidgetContentView: View {
-    
+    @EnvironmentObject var backupsService: BackupsService
     @Binding var activityEntries: [ActivityEntry]
 
+    func backupDownloadInProgress() -> Bool {
+        backupsService.backupDownloadStatus == .InProgress
+    }
+    
+ 
     var body: some View {
-        
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading,spacing: 0) {
+                if(backupDownloadInProgress()) {
+                    WidgetBackupOperationEntryView(deviceName: backupsService.deviceDownloading?.plainName ?? "Device", status: .inProgress, downloadedItems: $backupsService.backupDownloadedItems)
+                }
                 ForEach(activityEntries) { activityEntry in
                    WidgetSyncEntryView(
                     filename: activityEntry.filename,
@@ -23,7 +30,7 @@ struct WidgetContentView: View {
                     status: activityEntry.status
                    )
                 }.listRowInsets(EdgeInsets()).frame(maxWidth: .infinity)
-            }.padding(.top, 8)
+            }.padding(.top, 0)
             
         }
         .padding(.horizontal, 0)
@@ -39,6 +46,15 @@ struct WidgetContentView: View {
 
 struct WidgetContentView_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetContentView(activityEntries: .constant([]))
+        VStack {
+            WidgetContentView(activityEntries: .constant([
+                ActivityEntry(filename: "file123.png", kind: .download, status: .finished),
+                ActivityEntry(filename: "video2.mp4", kind:.trash, status: .finished),
+                ActivityEntry(filename: "image.jpg", kind:.trash, status: .finished),
+                ActivityEntry(filename: "dog.mp4", kind:.trash, status: .finished),
+                ActivityEntry(filename: "audio.mp3", kind:.trash, status: .finished),
+                ActivityEntry(filename: "design.fig", kind:.trash, status: .finished)])).environmentObject(BackupsService())
+        }.frame(maxWidth: 400,maxHeight: 600)
+        
     }
 }

@@ -10,15 +10,17 @@ import InternxtSwiftCore
 
 let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupService")
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
-    
     private var backupUploadService: BackupUploadService? = nil
     private var trees: [BackupTreeNode] = []
     
-    private var backupTotalProgress: Progress = Progress()
+    private var backupUploadProgress: Progress = Progress()
+    private var backupDownloadProgress: Progress = Progress()
     private var uploadOperationQueue = OperationQueue()
-    private var status: BackupStatus = .Idle
+    private var downloadOperationQueue = OperationQueue()
+    private var backupUploadStatus: BackupStatus = .Idle
+    private var backupDownloadStatus: BackupStatus = .Idle
     
-    @objc func startBackup(
+    @objc func uploadDeviceBackup(
         backupAt backupURLs: [String],
         mnemonic: String,
         networkAuth: String?,
@@ -31,8 +33,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         let backupRealm = BackupRealm.shared
         self.uploadOperationQueue.maxConcurrentOperationCount = 10
         logger.info("Going to backup folders: \(backupURLs)")
-        self.status = .InProgress
-        self.backupTotalProgress = Progress()
+        self.backupUploadStatus = .InProgress
+        self.backupUploadProgress = Progress()
         
         Task {
             
@@ -78,7 +80,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                         root: URL(fileURLWithPath: backupURL),
                         deviceId: deviceId,
                         backupUploadService: backupUploadService,
-                        backupTotalProgress: self.backupTotalProgress,
+                        backupTotalProgress: self.backupUploadProgress,
                         backupRealm: backupRealm
                     )
 
@@ -93,7 +95,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 
             }
             
-            backupTotalProgress.totalUnitCount = Int64(totalNodesCount)
+            backupUploadProgress.totalUnitCount = Int64(totalNodesCount)
             logger.info("Total progress to backup \(totalNodesCount)")
 
             logger.info("⏱️ About to start node sync process for \(trees.count) BackupTrees...")
@@ -103,7 +105,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                     logger.error("Adding nodes sync operations")
                     try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue)
                 } catch {
-                    self.status = .Failed
+                    self.backupUploadStatus = .Failed
                     logger.error("Error backing up device \(error)")
                     reply(nil, error.localizedDescription)
                 }
@@ -111,7 +113,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             self.uploadOperationQueue.addBarrierBlock {
                 logger.info("Sync nodes operations completed")
-                self.status = .Done
+                self.backupUploadStatus = .Done
                 
                 self.trees = []
                 self.uploadOperationQueue.cancelAllOperations()
@@ -119,26 +121,84 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             }
 
             logger.info("Backups scheduled in OperationQueue")
-            self.status = .Done
-            logger.info(["Backup sync status: \(backupTotalProgress.completedUnitCount) of \(backupTotalProgress.totalUnitCount) nodes synced"])
+            
+            // If the backup failed, don't set the status to Done
+            if self.backupUploadStatus != .Failed {
+                self.backupUploadStatus = .Done
+            }
+            
+            logger.info(["Backup sync status: \(backupUploadProgress.completedUnitCount) of \(backupUploadProgress.totalUnitCount) nodes synced"])
 
         }
 
     }
+    
+    @objc func downloadDeviceBackup(
+        downloadAt downloadAtURL: String,
+        mnemonic: String,
+        networkAuth: String,
+        authToken: String,
+        newAuthToken: String,
+        deviceId: Int,
+        bucketId: String,
+        with reply: @escaping (_ result: String?, _ error: String?) -> Void
+    ) {
+        self.backupDownloadStatus = .InProgress
+        self.backupDownloadProgress = Progress()
+        let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
+        let config = ConfigLoader().get()
+        let backupAPI = BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+        let driveNewAPI = DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+        let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
+        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, debug: true)
+        self.downloadOperationQueue.maxConcurrentOperationCount = 10
+        
+        let backupDownloadService = BackupDownloadService(downloadOperationQueue: downloadOperationQueue, backupAPI: backupAPI, driveNewAPI: driveNewAPI, networkFacade: networkFacade, encryptedContentURL: FileManager.default.temporaryDirectory, decrypt: Decrypt(), backupBucket: bucketId, backupDownloadProgress: backupDownloadProgress)
+        Task {
+            do {
+                try await backupDownloadService.downloadDeviceBackup(deviceId: deviceId, downloadAt: downloadAtURL)
+                self.downloadOperationQueue.addBarrierBlock {
+                    logger.info("Download operations completed")
+                    self.backupDownloadStatus = .Done
+                    self.downloadOperationQueue.cancelAllOperations()
+                    reply(nil, nil)
+                }
+                
+                
+            } catch {
+                self.backupDownloadStatus = .Failed
+                logger.error(["Failed to download backup", error])
+                error.reportToSentry()
+                reply(nil, error.localizedDescription)
+            }
+        }
+    }
 
-    @objc func stopBackup() {
-        logger.debug("STOP BACKUP")
+    @objc func stopBackupUpload() {
+        logger.debug("STOP BACKUP UPLOAD")
         trees = []
         
-        self.status = .Stopped
+        self.backupUploadStatus = .Stopped
         self.uploadOperationQueue.cancelAllOperations()
+        backupUploadService?.stopSync()
+    }
+    
+    @objc func stopBackupDownload() {
+        logger.debug("STOP BACKUP DOWNLOAD")
+        trees = []
+        self.backupDownloadStatus = .Stopped
+        self.downloadOperationQueue.cancelAllOperations()
         backupUploadService?.stopSync()
     }
     
     
     
-    func getBackupStatus(with reply: @escaping (BackupProgressUpdate?, String?) -> Void) {
-        reply(BackupProgressUpdate(status: self.status, progress: backupTotalProgress), nil)
+    func getBackupUploadStatus(with reply: @escaping (BackupProgressUpdate?, String?) -> Void) {
+        reply(BackupProgressUpdate(status: self.backupUploadStatus, progress: backupUploadProgress), nil)
+    }
+    
+    func getBackupDownloadStatus(with reply: @escaping (BackupProgressUpdate?, String?) -> Void) {
+        reply(BackupProgressUpdate(status: self.backupDownloadStatus, progress: backupDownloadProgress), nil)
     }
 
     private func getNodesCountFromURL(_ url: URL) -> Int {
