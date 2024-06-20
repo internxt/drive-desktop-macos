@@ -1,0 +1,45 @@
+{
+  "configurations" : [
+    {
+      "id" : "CBDC78F9-92B6-46BD-97A2-A91363CFEB64",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:InternxtDesktop.xcodeproj",
+      "identifier" : "E1FB2D232A76BF0200473AE1",
+      "name" : "InternxtDesktop"
+    }
+  },
+  "testTargets" : [
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:InternxtDesktop.xcodeproj",
+        "identifier" : "E1FB2D3E2A76BF0300473AE1",
+        "name" : "InternxtDesktopUITests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:InternxtDesktop.xcodeproj",
+        "identifier" : "E15F8C242B762B0400C60EFA",
+        "name" : "InternxtDesktopTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:InternxtDesktop.xcodeproj",
+        "identifier" : "AAC188AA2C1F962C007E321A",
+        "name" : "XpcTestService"
+      }
+    }
+  ],
+  "version" : 1
+}

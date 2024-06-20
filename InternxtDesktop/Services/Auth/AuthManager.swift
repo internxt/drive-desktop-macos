@@ -15,6 +15,7 @@ class AuthManager: ObservableObject {
     @Published public var user: DriveUser? = nil
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
+    private let REFRESH_TOKEN_DEADLINE = 3
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
@@ -166,7 +167,7 @@ class AuthManager: ObservableObject {
             return true
         }
 
-        return daysUntilExpiration <= 3
+        return daysUntilExpiration <= REFRESH_TOKEN_DEADLINE
     }
 }
 
