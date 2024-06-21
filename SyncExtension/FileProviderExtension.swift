@@ -72,9 +72,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
              receiveValue: {_ in
                  Task {
                      do {
-                         
-                         try await authManager.refreshTokens()
-                         logger.info("Tokens refreshed successfully")
+                         if try authManager.needRefreshToken(){
+                             try await authManager.refreshTokens()
+                             logger.info("Tokens refreshed successfully")
+                         }else {
+                             logger.info("Dont need refresh")
+                         }
+
                      } catch {
                          error.reportToSentry()
                          logger.error(["Failed to refresh tokens from sync extension", error])

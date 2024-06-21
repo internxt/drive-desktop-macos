@@ -8,3 +8,4 @@ app_store_key.json
 report.xml
 *.xcuserstate
 xcschememanagement.plist
+.DS_Store

@@ -235,11 +235,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func startTokensRefreshing() {
-        self.refreshTokensTimer =  Timer.publish(every: 60 * 60, on:.main, in: .common).autoconnect().sink(
+        self.refreshTokensTimer =  Timer.publish(every: 30, on:.main, in: .common).autoconnect().sink(
             receiveValue: {_ in
-                self.refreshTokens()
+                self.checkRefreshToken()
             })
     }
+    
     private func loginSuccess() {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
@@ -247,7 +248,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             do {
                 self.startTokensRefreshing()
-                self.logger.info("✅ Token refresher started")
                 await usageManager.updateUsage()
                 self.logger.info("✅ Usage updated")
                 try await authManager.initializeCurrentUser()
@@ -454,5 +454,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
+    }
+    
+    private func checkRefreshToken(){
+        do {
+            if try authManager.needRefreshToken(){
+                self.refreshTokens()
+                self.logger.info("✅ Token refresher started")
+            }else {
+                self.logger.info("✅ Token dont need refresh ")
+            }
+        }
+        catch {
+            self.logger.error("Error check refreshing token \(error)")
+        }
+
     }
 }

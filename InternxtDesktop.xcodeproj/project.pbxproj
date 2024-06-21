@@ -81,6 +81,10 @@
 		AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */; };
 		AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */; };
+		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
+		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
+		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
+		AAED64A42C23EA1800CD971B /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -355,6 +359,7 @@
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
+		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
 		E106D4612AB9FD6300E3BF7A /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
@@ -616,6 +621,7 @@
 				E13B839B2AFBBE67009F6684 /* AppUserDefaults.swift */,
 				31ED949C2B7151E200EF699F /* DecryptUtils.swift */,
 				E1D24AF32C0468AF0009EC83 /* AsyncOperation.swift */,
+				AAED64A02C23E85000CD971B /* JWTDecoder.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1270,6 +1276,7 @@
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
 				AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */,
+				AAED64A42C23EA1800CD971B /* Date.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
 				319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */,
@@ -1301,6 +1308,7 @@
 				E1EEB5862C1C4B8800370D77 /* BackupDownloadItemOperation.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 				AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */,
+				AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1351,6 +1359,7 @@
 				E17C84CA2AB31E0400A58414 /* OnboardingFinishView.swift in Sources */,
 				E18300A22AA161ED00AD023C /* DomainManager.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
+				AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
 				316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */,
@@ -1490,6 +1499,7 @@
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
 				316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
+				AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
 				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
