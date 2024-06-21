@@ -47,7 +47,7 @@ struct StopBackupDialogView: View {
     }
 
     private func stopBackup() throws {
-        try backupsService.stopBackup()
+        try backupsService.stopBackupUpload()
         self.onClose()
     }
 }

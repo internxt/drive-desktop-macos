@@ -14,7 +14,7 @@ enum UploadFrequencyEnum: String {
 struct BackupConfigView: View {
     var numOfFolders: Int
     @StateObject var backupsService: BackupsService
-    @Binding var backupStatus: BackupStatus
+    @Binding var backupUploadStatus: BackupStatus
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @Binding var showFolderSelector: Bool
@@ -32,9 +32,9 @@ struct BackupConfigView: View {
                 .foregroundColor(.Gray80)
             
             BackupStatusView(
-                backupStatus: self.$backupStatus,
+                backupUploadStatus: self.$backupUploadStatus,
                 device: self.$device,
-                progress: $backupsService.currentBackupProgress
+                progress: $backupsService.backupUploadProgress
             )
             
             BackupActionsView.frame(maxWidth: .infinity)
@@ -80,12 +80,15 @@ struct BackupConfigView: View {
                 .padding([.top], 12)
             }
            
-            BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, nextBackupTime: $backupManager.nextBackupTime, onClick: { option in
-                // restart date
-                self.removeBackupDate()
-                self.backupManager.startBackupTimer(frequency: option)
-            })
-            .padding(.top,20)
+            if self.device.isCurrentDevice {
+                BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, nextBackupTime: $backupManager.nextBackupTime, onClick: { option in
+                    // restart date
+                    self.removeBackupDate()
+                    self.backupManager.startBackupTimer(frequency: option)
+                })
+                .padding([.vertical, .trailing], 20)
+            }
+            
             
             VStack(alignment: .leading, spacing: 8) {
                 AppText("BACKUP_UPLOAD_DELETE_BACKUP")
@@ -106,10 +109,14 @@ struct BackupConfigView: View {
         .padding([.leading], 16)
     }
     
+    func isDownloadingBackup() -> Bool {
+        return self.device.id == backupsService.deviceDownloading?.id && backupsService.backupDownloadStatus == .InProgress
+    }
+    
     var BackupActionsView: some View {
         HStack(spacing: 8) {
             if self.device.isCurrentDevice {
-                if self.backupStatus == .InProgress {
+                if self.backupUploadStatus == .InProgress {
                     AppButton(title: "BACKUP_STOP_BACKUP", onClick: {
                         showStopBackupDialog = true
                     }, type: .primary, isExpanded: true)
@@ -120,21 +127,73 @@ struct BackupConfigView: View {
                         }
                     }, type: .primary, isExpanded: true)
                 }
-                AppButton(title: "BACKUP_BROWSE_FILES", onClick: {
-                    browseFiles()
-                }, type: .secondary, isExpanded: true)
+                if self.isDownloadingBackup() {
+                    AppButton(title: "BACKUP_DOWNLOAD_STOP", onClick: {
+                        stopBackupDownload()
+                    }, type: .secondary, isExpanded: true)
+                } else {
+                    AppButton(title: "BACKUP_DOWNLOAD", onClick: {
+                        downloadBackup()
+                    }, type: .secondary, isExpanded: true)
+                }
+                
             } else {
+                if self.isDownloadingBackup() {
+                    AppButton(title: "BACKUP_DOWNLOAD_STOP", onClick: {
+                        stopBackupDownload()
+                    }, type: .secondary, isExpanded: true)
+                } else {
+                    AppButton(title: "BACKUP_DOWNLOAD", onClick: {
+                        downloadBackup()
+                    }, type: .secondary, isExpanded: true)
+                }
                 AppButton(title: "BACKUP_BROWSE_FILES", onClick: {
                     browseFiles()
                 }, type: .secondary, isExpanded: true)
-                Spacer().frame(maxWidth: .infinity)
             }
         }
         
     }
     
-    func downloadBackup() throws {
-        throw AppError.notImplementedError
+    func stopBackupDownload() {
+        Task {
+            do {
+                try backupsService.stopBackupDownload()
+            } catch {
+                error.reportToSentry()
+            }
+        }
+    }
+    
+    func downloadBackup() {
+        if(backupsService.backupDownloadStatus == .InProgress) {
+            let alert = NSAlert()
+            let title = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE", comment: "")
+            let message = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE", comment: "")
+            alert.messageText = title
+            alert.informativeText = message
+            alert.runModal()
+            return
+        }
+        
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        let panelResponse = panel.runModal()
+        if(panelResponse == .OK) {
+            guard let url = panel.url else {
+                return
+            }
+            Task {
+                do {
+                    try await backupsService.downloadBackup(device: device, downloadAt: url)
+                } catch {
+                    appLogger.error(["Error downloading backup", error])
+                }
+                
+            }
+        }
     }
     
     func selectFoldersAndStartBackup() {
@@ -186,7 +245,7 @@ struct BackupConfigView: View {
     BackupConfigView(
         numOfFolders: 16,
         backupsService: BackupsService(),
-        backupStatus: .constant(.InProgress),
+        backupUploadStatus: .constant(.InProgress),
         showStopBackupDialog: .constant(false),
         showDeleteBackupDialog: .constant(false),
         showFolderSelector: .constant(false),

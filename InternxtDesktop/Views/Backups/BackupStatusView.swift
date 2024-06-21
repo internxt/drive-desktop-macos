@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BackupStatusView: View {
     @Environment(\.colorScheme) var colorScheme
-    @Binding var backupStatus: BackupStatus
+    @Binding var backupUploadStatus: BackupStatus
     @Binding var device: Device
     @Binding var progress: Double
 
@@ -22,8 +22,7 @@ struct BackupStatusView: View {
     
     private func deviceIsRunningBackup() -> Bool {
         
-        
-        return self.device.isCurrentDevice && self.backupStatus == .InProgress
+        return self.device.isCurrentDevice && self.backupUploadStatus == .InProgress
     }
     
     private func getBackupProgressPercentage() -> String {
@@ -99,7 +98,7 @@ struct BackupStatusView: View {
 
 #Preview {
     BackupStatusView(
-        backupStatus: .constant(.InProgress),
+        backupUploadStatus: .constant(.InProgress),
         device: .constant(
             Device(
                 id: 1,

@@ -36,7 +36,7 @@ struct BackupsTabView: View {
     }
     
     func backupIsInProgress() -> Bool {
-        return backupsService.backupStatus == .InProgress
+        return backupsService.backupUploadStatus == .InProgress
     }
     
     func thereAreDevicesLoaded() -> Bool {
@@ -141,7 +141,7 @@ struct BackupsTabView: View {
                     BackupConfigView(
                         numOfFolders: backupsService.foldersToBackup.count,
                         backupsService: self.backupsService,
-                        backupStatus: $backupsService.backupStatus,
+                        backupUploadStatus: $backupsService.backupUploadStatus,
                         showStopBackupDialog: $showStopBackupDialog,
                         showDeleteBackupDialog: $showDeleteBackupDialog,
                         showFolderSelector: $showFolderSelector,
