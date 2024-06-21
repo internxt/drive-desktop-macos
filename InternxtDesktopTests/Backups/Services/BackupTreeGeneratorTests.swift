@@ -11,35 +11,26 @@ import InternxtSwiftCore
 final class BackupTreeGeneratorTests: XCTestCase {
     var sut: BackupTreeGenerator!
     var tmpDirectoryURL: URL!
+    var backupRealm: BackupRealmProtocol!
+    var mockBackupUploadService: MockBackupUploadService!
+    private var uploadOperationQueue = OperationQueue()
     
     override func setUpWithError() throws {
-        try super.setUpWithError()
-        
-        tmpDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("BACKUP_TREE_GENERATOR_TESTS_\(UUID().uuidString)", isDirectory: true)
+        tmpDirectoryURL = URL(fileURLWithPath: "/private\(NSTemporaryDirectory())").appendingPathComponent("BACKUP_TREE_GENERATOR_TESTS_\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: tmpDirectoryURL, withIntermediateDirectories: true)
-        let networkAPI = NetworkAPI(baseUrl: "", basicAuthToken: "", clientName: "", clientVersion: "")
-        let backupUploadService = BackupUploadService(
-            networkFacade: NetworkFacade(mnemonic: "", networkAPI: networkAPI),
-            encryptedContentDirectory: URL(string: "https://drive.internxt.com/app")!,
-            deviceId: 0,
-            bucketId: "",
-            authToken: "",
-            newAuthToken: ""
-        )
         
+        backupRealm = MockBackupRealm()
+        mockBackupUploadService = MockBackupUploadService()
         sut = BackupTreeGenerator(
             root: tmpDirectoryURL,
             deviceId: 999,
-            backupUploadService: backupUploadService,
-            backupTotalProgress: Progress()
+            backupUploadService: mockBackupUploadService,
+            backupTotalProgress: Progress(), backupRealm: backupRealm
         )
     }
     
     override func tearDownWithError() throws {
-        // Remove the temporary directory after the test
-        try FileManager.default.removeItem(at: tmpDirectoryURL)
-        
-        try super.tearDownWithError()
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
     private func createFileInTmpDir(_ fileRelativePath: String) throws -> URL {
@@ -60,8 +51,69 @@ final class BackupTreeGeneratorTests: XCTestCase {
     }
     
     
-    func testGenerateTreeFromUrls() async throws {
+    func testNodeSync() async throws {
+        let fileTest1 = try createFileInTmpDir("test1.txt")
+        let folderA = try createDirectoryInTmpDir("folderA")
+        let fileTest2 = try createFileInTmpDir("folderA/test3.txt")
+        let backupTree = try await sut.generateTree()
+        try await backupTree.syncNode()
         
+        XCTAssertEqual(backupTree.syncStatus, .REMOTE_AND_LOCAL )
+    }
+    
+    
+    func testNodeSyncOperationQueue() async throws {
+        let fileTest1 = try createFileInTmpDir("test1.txt")
+        let folderA = try createDirectoryInTmpDir("folderA")
+        let fileTest2 = try createFileInTmpDir("folderA/test3.txt")
+        let backupTree = try await sut.generateTree()
+        XCTAssertNoThrow(try backupTree.syncBelowNodes(withOperationQueue: uploadOperationQueue))
+    }
+    
+    func testNodeSyncRetries() async throws {
+        let backupTree = try await sut.generateTree()
+        mockBackupUploadService.syncResult = .failure(BackupUploadError.CannotCreateEncryptedContentURL)
+        try await backupTree.syncNode()
+        XCTAssertEqual(backupTree.syncRetries, 3 )
+    }
+    
+    func testNodeUrlIsMissing() async throws {
+        let backupTree = try await sut.generateTree()
+        backupTree.url = nil
+        let expectation = self.expectation(description: "syncNode() should throw")
+        
+        Task {
+            do {
+                try await backupTree.syncNode()
+                XCTFail("syncNode() should throw an error")
+            } catch {
+                XCTAssertEqual(error as? BackupTreeNodeError, .cannotGetPath)
+                expectation.fulfill()
+            }
+        }
+        
+        await fulfillment(of: [expectation], timeout: 5)
+    }
+    
+    func testNodeisAlreadySync() async throws {
+        
+        let backupTree = try await sut.generateTree()
+        let node = SyncedNode(
+            remoteId: 2,
+            deviceId: 999,
+            remoteUuid: "",
+            url: tmpDirectoryURL,
+            rootBackupFolder: tmpDirectoryURL,
+            parentId: "22",
+            remoteParentId: 10
+        )
+        
+        try backupRealm.addSyncedNode(node)
+        try await backupTree.syncNode()
+        XCTAssertEqual(backupTree.syncStatus, .REMOTE_AND_LOCAL )
+    }
+    
+    func testGenerateTreeFromUrlsTest() async throws {
         let fileTest1 = try createFileInTmpDir("test1.txt")
         let folderA = try createDirectoryInTmpDir("folderA")
         let fileTest2 = try createFileInTmpDir("folderA/test3.txt")
