@@ -15,6 +15,7 @@ class AuthManager: ObservableObject {
     @Published public var user: DriveUser? = nil
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
+    private let REFRESH_TOKEN_DEADLINE = 3
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
@@ -148,6 +149,26 @@ class AuthManager: ObservableObject {
         return true
     }
     
+    func needRefreshToken() throws -> Bool {
+        guard let legacyAuthToken = config.getLegacyAuthToken() else {
+            throw AuthError.LegacyAuthTokenNotInConfig
+        }
+
+        let responseDecodeLegacy = try JWTDecoder.decode(jwtToken: legacyAuthToken)
+        
+        guard let expTimestamp = responseDecodeLegacy["exp"] as? Int else {
+            throw AuthError.InvalidTokenExp
+        }
+        
+        let expDate = Date(timeIntervalSince1970: TimeInterval(expTimestamp))
+        let currentDate = Date()
+
+        guard let daysUntilExpiration = currentDate.daysUntil(expDate) else {
+            return true
+        }
+
+        return daysUntilExpiration <= REFRESH_TOKEN_DEADLINE
+    }
 }
 
 
