@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sparkle-project/Sparkle",
       "state" : {
-        "revision" : "0a4caaf7a81eea2cece651ef4b17331fa0634dff",
-        "version" : "2.6.0"
+        "revision" : "1f07f4096e52f19b5e7abaa697b7fc592b7ff57c",
+        "version" : "2.5.1"
       }
     },
     {
@@ -96,7 +96,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "main",
-        "revision" : "0c469fa83d84f4b972aaae426ffe07cb8b903d8c"
+        "revision" : "1bbfcaa9e7acb4091866a4cffbf7e11a5faa72c9"
       }
     },
     {
