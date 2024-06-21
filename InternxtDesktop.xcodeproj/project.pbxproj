@@ -85,6 +85,7 @@
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
 		E12479D92C107C52000DAC11 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
+		E12479DB2C19B2D5000DAC11 /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
 		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
@@ -240,6 +241,10 @@
 		E1E56C222BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		E1E56C242BC0443900DBA0BF /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
+		E1EEB5862C1C4B8800370D77 /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
+		E1EEB5872C1C52A900370D77 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
+		E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */; };
+		E1EEB5922C23025900370D77 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C32AB2FEF500A58414 /* ActivityManager.swift */; };
 		E1F616072A8D7DF8008C9E62 /* SignInWithBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F616062A8D7DF8008C9E62 /* SignInWithBrowserView.swift */; };
 		E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F616082A8D7E6F008C9E62 /* AppButton.swift */; };
 		E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
@@ -348,6 +353,7 @@
 		E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderUseCase.swift; sourceTree = "<group>"; };
 		E10B0FDC2A94143F00B97874 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		E112933E2A77221A003DEADF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupDownloadService.swift; sourceTree = "<group>"; };
 		E13B83962AFBBCD7009F6684 /* AppSettingsManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsManagerView.swift; sourceTree = "<group>"; };
 		E13B83982AFBBD50009F6684 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		E13B839B2AFBBE67009F6684 /* AppUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUserDefaults.swift; sourceTree = "<group>"; };
@@ -448,6 +454,8 @@
 		E1DB29602A7D6B80009036B8 /* WidgetContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetContentView.swift; sourceTree = "<group>"; };
 		E1DB29622A7D6BA5009036B8 /* WidgetFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFooterView.swift; sourceTree = "<group>"; };
 		E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupProgressUpdate.swift; sourceTree = "<group>"; };
+		E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupDownloadItemOperation.swift; sourceTree = "<group>"; };
+		E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupDownloadEntryView.swift; sourceTree = "<group>"; };
 		E1F616062A8D7DF8008C9E62 /* SignInWithBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithBrowserView.swift; sourceTree = "<group>"; };
 		E1F616082A8D7E6F008C9E62 /* AppButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButton.swift; sourceTree = "<group>"; };
 		E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Internxt Drive.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -706,6 +714,7 @@
 				3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */,
 				E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */,
 				E1D24AEF2C0467710009EC83 /* BackupTreeNodeSyncOperation.swift */,
+				E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -717,6 +726,7 @@
 				3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */,
 				319436912B9B8293006F4600 /* BackupRealm.swift */,
 				E1FE2B292BC539810073B26D /* BackupRemoteSync.swift */,
+				E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -853,6 +863,7 @@
 				E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */,
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
+				E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -1227,6 +1238,7 @@
 				E1D24AF62C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
+				E12479DB2C19B2D5000DAC11 /* BackupDownloadService.swift in Sources */,
 				AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */,
 				AAED64A42C23EA1800CD971B /* Date.swift in Sources */,
 				31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
@@ -1238,6 +1250,7 @@
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
+				E1EEB5872C1C52A900370D77 /* Time.swift in Sources */,
 				E12479D92C107C52000DAC11 /* Analytics.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
@@ -1252,9 +1265,11 @@
 				3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */,
 				E13DBC692BCD4E5B00F6B43E /* BackupsService.swift in Sources */,
 				AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */,
+				E1EEB5922C23025900370D77 /* ActivityManager.swift in Sources */,
 				E13DBC6A2BCD4F2900F6B43E /* UsageManager.swift in Sources */,
 				E1FE2B2A2BC539810073B26D /* BackupRemoteSync.swift in Sources */,
 				AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */,
+				E1EEB5862C1C4B8800370D77 /* BackupDownloadItemOperation.swift in Sources */,
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 				AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */,
 			);
@@ -1305,6 +1320,7 @@
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
+				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
 				E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E17C84B22AB22C1400A58414 /* OnboardingSlide2View.swift in Sources */,
 				E1A0AC612AB8639C005E71D6 /* AppTextArea.swift in Sources */,
@@ -2167,7 +2183,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = main;
+				branch = "feature/debug-network-requests";
 				kind = branch;
 			};
 		};

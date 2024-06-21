@@ -41,6 +41,7 @@
 "BACKUP_BACKING_UP" = "Sauvegardons...";
 "BACKUP_STOP_BACKUP" = "Arrêter la sauvegarde";
 "BACKUP_DOWNLOAD" = "Télécharger";
+"BACKUP_DOWNLOAD_STOP" = "Arrêter le déchargement";
 "BACKUP_BROWSE_FILES" = "Parcourir les fichiers";
 "BACKUP_SELECTED_FOLDERS" = "Dossiers sélectionnés";
 "BACKUP_CHANGE_FOLDERS" = "Modifier les dossiers";
@@ -66,6 +67,10 @@
 "BACKUP_LOCATE_FOLDER" = "Localiser le dossier";
 "BACKUP_ERROR_BACKING_UP" = "Erreur de sauvegarde de ce dispositif";
 "BACKUP_NEXT_DATE" = "Prochaine sauvegarde à %@";
+"%@_BACKUP_DOWNLOADED_ITEMS" = "%@ éléments téléchargés";
+"BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE" = "Le téléchargement de la sauvegarde est déjà en cours";
+"BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE" = "Un téléchargement de sauvegarde est déjà en cours, veuillez patienter jusqu'à ce qu'il soit terminé" ;
+
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";

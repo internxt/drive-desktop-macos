@@ -25,6 +25,8 @@ enum BackupError: Error {
     case folderToBackupRealmObjectNotFound
     case deviceCreatedButNotFound
     case deviceHasNoName
+    case invalidDownloadURL
+    case missingNetworkAuth
 }
 
 enum BackupDevicesFetchingStatus {
@@ -35,17 +37,22 @@ enum BackupDevicesFetchingStatus {
 class BackupsService: ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     var currentDevice: Device? = nil
+    let activityManager = ActivityManager()
     @Published var thereAreMissingFoldersToBackup = false
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldersToBackup: [FolderToBackup] = []
     @Published var currentDeviceHasBackup = false
-    private var service: XPCBackupServiceProtocol? = nil
+    private var xpcBackupService: XPCBackupServiceProtocol? = nil
     @Published var selectedDevice: Device? = nil
-    @Published var currentBackupProgress: Double = 0.0
-    @Published var backupStatus: BackupStatus = .Idle
+    @Published var backupUploadProgress: Double = 0.0
+    @Published var backupDownloadedItems: Int64 = 0
+    @Published var backupUploadStatus: BackupStatus = .Idle
+    @Published var backupDownloadStatus: BackupStatus = .Idle
+    @Published var deviceDownloading: Device? = nil
     @Published var devicesFetchingStatus: BackupDevicesFetchingStatus = .LoadingDevices
     
-    private var backupProgressTimer: AnyCancellable?
+    private var backupUploadProgressTimer: AnyCancellable?
+    private var backupDownloadProgressTimer: AnyCancellable?
     private func getRealm() -> Realm {
         do {
             return try Realm(configuration: Realm.Configuration(
@@ -62,15 +69,17 @@ class BackupsService: ObservableObject {
     func clean() throws {
         DispatchQueue.main.async {
             self.foldersToBackup = []
-            self.backupStatus = .Idle
+            self.backupUploadStatus = .Idle
+            self.backupDownloadStatus = .Idle
             self.currentDeviceHasBackup = false
             self.selectedDevice = nil
-            self.service = nil
+            self.xpcBackupService = nil
             self.deviceResponse = nil
             self.devicesFetchingStatus = .LoadingDevices
         }
         
-        try self.stopBackup()
+        try self.stopBackupUpload()
+        try self.stopBackupDownload()
         let realm = getRealm()
         try realm.write {
             realm.deleteAll()
@@ -197,11 +206,15 @@ class BackupsService: ObservableObject {
             
             DispatchQueue.main.async {
                 self.deviceResponse = response
-                self.selectedDevice = allDevices.first{device in
+                let currentDevice = allDevices.first{device in
                     return device.plainName == currentDeviceName && device.removed != true && device.deleted != true
                 }
+                if self.selectedDevice == nil {
+                    self.selectedDevice = currentDevice 
+                }
+                
                 self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt) ")
-                self.currentDevice = self.selectedDevice
+                self.currentDevice = currentDevice
                 self.devicesFetchingStatus = .Ready
             }
         } catch {
@@ -321,16 +334,16 @@ class BackupsService: ObservableObject {
         logger.info("Error backing up device")
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
-            self?.backupStatus = .Failed
+            self?.backupUploadStatus = .Failed
             Analytics.shared.track(event: FailureBackupEvent(foldersToBackup: self?.foldersToBackup.count ?? 0, error: errorMessage))
         }
     }
 
-    private func propagateSuccess() {
+    private func propagateUploadSuccess() {
         logger.info("Device backed up successfully, tracking backup success event")
         Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: self.foldersToBackup.count))
         DispatchQueue.main.async { [weak self] in
-            self?.currentBackupProgress = 1
+            self?.backupUploadProgress = 1
             self?.currentDeviceHasBackup = true
         }
         Task {
@@ -342,7 +355,7 @@ class BackupsService: ObservableObject {
                 }
                 try await self.updateDeviceDate(device: currentDevice)
                 DispatchQueue.main.async {
-                    self.backupStatus = .Done
+                    self.backupUploadStatus = .Done
                 }
                 
                 await UsageManager.shared.updateUsage()
@@ -368,8 +381,8 @@ class BackupsService: ObservableObject {
         }
 
         DispatchQueue.main.sync {
-            self.backupStatus = .InProgress
-            self.currentBackupProgress = 0
+            self.backupUploadStatus = .InProgress
+            self.backupUploadProgress = 0
         }
         
         let currentDevice = try await self.getCurrentDevice()
@@ -388,31 +401,9 @@ class BackupsService: ObservableObject {
 
         logger.info("Setting connection to XPCBackupService...")
         //Connection to xpc service
-        let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
-        connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
-        connectionToService.interruptionHandler = {
-            appLogger.error("Connection with XPCBackupsService interrupted")
-        }
-        connectionToService.invalidationHandler = {
-            appLogger.error("Connection with XPCBackupsService interrupted")
-        }
-        connectionToService.resume()
-
-        var initializationError: Error? = nil
-
-        service = connectionToService.remoteObjectProxyWithErrorHandler { error in
-            initializationError = error
-        } as? XPCBackupServiceProtocol
-        
-        if let error = initializationError {
-            logger.error("XPC Service initialization error")
-            throw error
-        }
-
-        guard let service = service else {
-            logger.error("XPC Service is nil")
-            throw BackupError.cannotInitializeXPCService
-        }
+        let xpcBackupService = try await getXPCBackupServiceProtocol(onConnectionIssue: {
+            self.logger.error("❌ XPCBackupService connection interrupted")
+        })
         
         logger.info("✅ Connection to XPCBackupService stablished")
         let configLoader = ConfigLoader()
@@ -428,39 +419,160 @@ class BackupsService: ObservableObject {
         let urlsStrings = foldersToBackup.map { folderToBackup in folderToBackup.url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? "" }
 
 
-        service.startBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
             if let error = error {
                 self.propagateError(errorMessage: error)
             } else {
-                self.propagateSuccess()
+                self.propagateUploadSuccess()
             }
         })
         
         
-        backupProgressTimer?.cancel()
-        self.backupProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
+        backupUploadProgressTimer?.cancel()
+        self.backupUploadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
             .autoconnect()
             .sink(
              receiveValue: {_ in
-                 self.checkBackupProgress()
+                 self.checkBackupUploadProgress()
             })
     }
+    
+    func downloadBackup(device: Device, downloadAt: URL) async throws {
+        self.deviceDownloading = device
+        logger.info("Preparint backup for download")
+        logger.info("Device to download is \(device.plainName) with ID \(device.id)")
+        
+        DispatchQueue.main.sync {
+            self.backupDownloadStatus = .InProgress
+            self.backupDownloadedItems = 0
+        }
+        guard let deviceBucketId = device.bucket else {
+            logger.error("Bucket id is nil")
+            throw BackupError.bucketIdIsNil
+        }
 
-    func stopBackup() throws {
-        logger.debug("Going to stop backup")
-        DispatchQueue.main.async {
-            self.backupStatus = .Idle
+        let authManager = AuthManager()
+        guard let mnemonic = authManager.mnemonic else {
+            logger.error("Cannot get mnemonic")
+            throw BackupError.cannotGetMnemonic
+        }
+
+        logger.info("Setting connection to XPCBackupService...")
+        
+        let xpcBackupService = try await getXPCBackupServiceProtocol(onConnectionIssue: {
+            self.logger.error("❌ XPCBackupService connection interrupted")
+        })
+        
+        logger.info("✅ Connection to XPCBackupService stablished")
+        let configLoader = ConfigLoader()
+        let networkAuth = configLoader.getNetworkAuth()
+        let authToken = configLoader.getLegacyAuthToken()
+        let newAuthToken = configLoader.getAuthToken()
+
+        guard let authToken = authToken, let newAuthToken = newAuthToken else {
+            logger.error("Cannot create auth token")
+            throw BackupError.cannotCreateAuthToken
         }
         
-        service?.stopBackup()
+        guard let URLAsString = downloadAt.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
+            throw BackupError.invalidDownloadURL
+        }
+
+        guard let networkAuthUnwrapped = networkAuth else {
+            throw BackupError.missingNetworkAuth
+        }
+        
+        backupDownloadProgressTimer?.cancel()
+        xpcBackupService.downloadDeviceBackup(
+            downloadAt: URLAsString,
+            mnemonic: mnemonic,
+            networkAuth: networkAuthUnwrapped,
+            authToken: authToken,
+            newAuthToken: newAuthToken,
+            deviceId:device.id,
+            bucketId: deviceBucketId,
+            with: {result, error in
+                if error == nil {
+                    DispatchQueue.main.async {
+                        self.backupDownloadStatus = .Done
+                    }
+                    
+                    self.completeBackupDownload()
+                } else {
+                    self.backupDownloadStatus = .Failed
+                }
+                self.logger.info(["Received backup download response", result, error])
+            }
+        )
+        
+        backupDownloadProgressTimer?.cancel()
+        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
+            })
+
+    }
+
+    func stopBackupUpload() throws {
+        logger.debug("Going to stop backup upload")
+        DispatchQueue.main.async {
+            self.backupUploadStatus = .Idle
+        }
+        
+        xpcBackupService?.stopBackupUpload()
+    }
+    
+    func stopBackupDownload() throws {
+        logger.debug("Going to stop backup download")
+        DispatchQueue.main.async {
+            self.backupDownloadStatus = .Idle
+        }
+        
+        xpcBackupService?.stopBackupDownload()
+    }
+    
+    private func getXPCBackupServiceProtocol(onConnectionIssue: @escaping () -> Void) async throws -> XPCBackupServiceProtocol {
+        if let service = self.xpcBackupService {
+            return service
+        }
+        return try await withCheckedThrowingContinuation{continuation in
+            let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
+            connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
+            connectionToService.interruptionHandler = {
+                appLogger.error("Connection with XPCBackupsService interrupted")
+                onConnectionIssue()
+            }
+            connectionToService.invalidationHandler = {
+                appLogger.error("Connection with XPCBackupsService interrupted")
+                onConnectionIssue()
+            }
+            connectionToService.resume()
+
+            
+            guard let service = connectionToService.remoteObjectProxyWithErrorHandler({ error in
+                continuation.resume(throwing: error)
+            }) as? XPCBackupServiceProtocol else {
+                return continuation.resume(throwing: BackupError.cannotInitializeXPCService)
+            }
+            
+            self.xpcBackupService = service
+            
+            continuation.resume(returning: service)
+        }
+        
     }
              
-    func checkBackupProgress() {
+    private func checkBackupUploadProgress() {
         self.logger.info("Getting progress")
-        service?.getBackupStatus{backupStatusUpdate, error in
+        self.xpcBackupService?.getBackupUploadStatus{backupStatusUpdate, error in
+            
             guard let backupStatus = backupStatusUpdate else {
                 return
             }
+            
+            self.logger.info(["Backup status update received", backupStatus.totalSyncs, backupStatus.status])
             
             if(backupStatus.totalSyncs == 0) {
                 return
@@ -468,15 +580,50 @@ class BackupsService: ObservableObject {
             
             DispatchQueue.main.async {
                 
-                self.backupStatus = backupStatusUpdate?.status ?? .Idle
-                self.currentBackupProgress = backupStatusUpdate?.progress ?? 0
-                self.logger.info(["Backup is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.currentBackupProgress * 100)% synced"])
+                self.backupUploadStatus = backupStatus.status
+                self.backupUploadProgress = backupStatus.progress
+                self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.backupUploadProgress * 100)% synced"])
             }
             
-            if(backupStatusUpdate?.status == .Done || backupStatusUpdate?.status == .Failed) {
-                self.backupProgressTimer?.cancel()
+            if(backupStatus.status == .Done || backupStatus.status == .Failed) {
+                
+                self.backupUploadProgressTimer?.cancel()
             }
         }
+    }
+    
+    private func checkBackupDownloadProgress(xpcBackupService: XPCBackupServiceProtocol) {
+        self.logger.info("Getting download backup progress")
+        xpcBackupService.getBackupDownloadStatus{backupStatusUpdate, error in
+
+            guard let backupDownloadStatus = backupStatusUpdate else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                if self.backupDownloadStatus != .Done {
+                    self.backupDownloadStatus = backupDownloadStatus.status
+                }
+                self.backupDownloadedItems = backupDownloadStatus.completedSyncs
+                self.logger.info("Backup download is in \(backupDownloadStatus.status) status, \(backupDownloadStatus.completedSyncs) items downloaded")
+            }
+            
+            if(backupDownloadStatus.status == .Done || backupDownloadStatus.status == .Failed) {
+                self.backupDownloadProgressTimer?.cancel()
+            }
+        }
+    }
+    
+    private func completeBackupDownload() {
+        self.backupDownloadProgressTimer?.cancel()
+        Task {
+            guard let deviceDownloading = self.deviceDownloading else {
+                return
+            }
+            let activityEntry = ActivityEntry(filename: "Backup — “\(deviceDownloading.plainName ?? String(deviceDownloading.id))”", kind: .backupDownload, status: .finished)
+            self.activityManager.saveActivityEntry(entry: activityEntry)
+        }
+        
     }
 
 }

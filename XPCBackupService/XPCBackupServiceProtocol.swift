@@ -9,11 +9,24 @@ import Foundation
 
 @objc protocol XPCBackupServiceProtocol {
     
-    func startBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void)
-
-    func stopBackup()
+    func uploadDeviceBackup(backupAt backupURLs: [String], mnemonic: String, networkAuth: String?, authToken: String, newAuthToken: String, deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void)
     
-    func getBackupStatus(with reply: @escaping (_ result: BackupProgressUpdate?, _ error: String?) -> Void)
+    func downloadDeviceBackup(
+        downloadAt downloadAtURL: String,
+        mnemonic: String,
+        networkAuth: String,
+        authToken: String,
+        newAuthToken: String,
+        deviceId: Int,
+        bucketId: String,
+        with reply: @escaping (_ result: String?, _ error: String?) -> Void
+    )
+
+    func stopBackupUpload()
+    func stopBackupDownload()
+    
+    func getBackupUploadStatus(with reply: @escaping (_ result: BackupProgressUpdate?, _ error: String?) -> Void)
+    func getBackupDownloadStatus(with reply: @escaping (_ result: BackupProgressUpdate?, _ error: String?) -> Void)
 
 }
 

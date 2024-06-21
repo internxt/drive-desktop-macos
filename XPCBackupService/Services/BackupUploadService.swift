@@ -25,6 +25,10 @@ enum BackupUploadError: Error {
     case BackupStoppedManually
 }
 
+enum BackupDownloadError: Error {
+    case missingDeviceUuid
+}
+
 class BackupUploadService: ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "App")
     private let cryptoUtils = CryptoUtils()

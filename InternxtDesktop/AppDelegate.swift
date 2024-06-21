@@ -371,6 +371,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 .environmentObject(self.usageManager)
                 .environmentObject(self.activityManager)
                 .environmentObject(self.settingsManager)
+                .environmentObject(self.backupsService)
         )
     }
     
