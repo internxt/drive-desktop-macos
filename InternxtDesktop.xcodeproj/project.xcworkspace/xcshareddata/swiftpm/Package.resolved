@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/debug-network-requests",
-        "revision" : "589a7d4ab95bad841479eb7aa3dd089c7d23b044"
+        "branch" : "feature/v1-downloads-support",
+        "revision" : "383fe2a456e3bb89f1b252b22cf423b7ac6ae49f"
       }
     },
     {

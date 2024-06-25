@@ -34,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // Managers
     var windowsManager: WindowsManager! = nil
-    var domainManager = DomainManager()
+    var domainManager = FileProviderDomainManager()
     let authManager = AuthManager()
     let usageManager = UsageManager()
     let activityManager = ActivityManager()
@@ -372,6 +372,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 .environmentObject(self.activityManager)
                 .environmentObject(self.settingsManager)
                 .environmentObject(self.backupsService)
+                .environmentObject(self.domainManager)
         )
     }
     
