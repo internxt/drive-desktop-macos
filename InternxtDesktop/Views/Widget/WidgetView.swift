@@ -51,7 +51,7 @@ struct WidgetView: View {
                     return
             }
             Task {
-                try? await self.domainManager.initFileProviderForUser(user: user)
+                try? await self.domainManager.retryFileProviderInit(user: user)
             }
             return
         }

@@ -31,6 +31,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let signalEnumeratorIntervalTimer: AnyCancellable
     let refreshTokensIntervalTimer: AnyCancellable
     let activityManager: ActivityManager
+    let realtime: RealtimeService?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     required init(domain: NSFileProviderDomain) {
         
@@ -51,6 +52,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         guard let user = authManager.user else {
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
+        
+        
         
         self.signalEnumeratorIntervalTimer = Timer.publish(every: 15, on:.main, in: .common)
             .autoconnect()
@@ -109,6 +112,24 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         logger.info("Created extension with domain \(domain.displayName)")
+        let config = authManager.config
+        if let authToken = config.getAuthToken() {
+            self.realtime = RealtimeService.init(
+                token: authToken,
+                onConnect: {
+                    syncExtensionLogger.info("REALTIME CONNECTED")
+                },
+                onDisconnect: {
+                    syncExtensionLogger.info("REALTIME DISCONNECTED")
+                },
+                onEvent: {
+                    syncExtensionLogger.info("RECEIVED REALTIME EVENT, signaling enumerator")
+                    Task {try? await manager.signalEnumerator(for: .workingSet)}
+                }
+            )
+        } else {
+            self.realtime = nil
+        }
         super.init()
         
         do {
@@ -119,25 +140,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             error.reportToSentry()
         }
         
-        Task {
-            do {
-                try await authManager.refreshTokens()
-                logger.info("Tokens refreshed successfully")
-            } catch {
-                error.reportToSentry()
-                logger.error(["Failed to refresh tokens from sync extension", error])
-            }
-            
-        }
-        
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
                 logger.error("Failed to signal enumerator")
             } else {
                 logger.info("✅ Initially signalled enumerator to ask for changes")
             }
-            
-            
         })
     }
     
@@ -274,15 +282,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 
                 completionHandler(item, fields, shouldFetch, error)
                 
-               
-                do {
-                    try FileManager.default.removeItem(at: fileCopy)
-                    try FileManager.default.removeItem(at: encryptedFileDestination)
-                    try FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
-                    try FileManager.default.removeItem(at: thumbnailFileDestination)
-                } catch {
-                    error.reportToSentry()
-                }
+                try? FileManager.default.removeItem(at: fileCopy)
+                try? FileManager.default.removeItem(at: encryptedFileDestination)
+                try? FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
+                try? FileManager.default.removeItem(at: thumbnailFileDestination)
                 
             }
             

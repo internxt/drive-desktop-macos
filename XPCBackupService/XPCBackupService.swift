@@ -69,8 +69,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             var totalNodesCount = 0
 
-            
-          
             for backupURL in backupURLs {
                 do {
                     let startGeneratingTreeAt = Date()
@@ -111,9 +109,15 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
             }
             
+            
+            
+            
             self.uploadOperationQueue.addBarrierBlock {
                 logger.info("Sync nodes operations completed")
-                self.backupUploadStatus = .Done
+                // If the backup failed, don't set the status to Done
+                if self.backupUploadStatus != .Failed {
+                    self.backupUploadStatus = .Done
+                }
                 
                 self.trees = []
                 self.uploadOperationQueue.cancelAllOperations()
@@ -122,10 +126,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             logger.info("Backups scheduled in OperationQueue")
             
-            // If the backup failed, don't set the status to Done
-            if self.backupUploadStatus != .Failed {
-                self.backupUploadStatus = .Done
-            }
+           
             
             logger.info(["Backup sync status: \(backupUploadProgress.completedUnitCount) of \(backupUploadProgress.totalUnitCount) nodes synced"])
 

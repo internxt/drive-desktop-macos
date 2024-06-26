@@ -46,6 +46,11 @@ class FileProviderDomainManager: ObservableObject {
         }
     }
     
+    public func retryFileProviderInit(user: DriveUser) async throws {
+        try await NSFileProviderManager.removeAllDomains()
+        try await self.initFileProviderForUser(user: user)
+    }
+    
     
     public func exitDomain() async {
         self.logger.info("🧹 Cleaning up FileProvider domain")

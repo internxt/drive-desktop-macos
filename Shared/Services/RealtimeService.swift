@@ -29,7 +29,7 @@ class RealtimeService: ObservableObject {
         self.onDisconnect = onDisconnect
         self.manager = SocketManager(
             socketURL: URL(string: ConfigLoader().get().NOTIFICATIONS_URL)!,
-            config: [ .forceNew(true)]
+            config: [.forceNew(true)]
         )
         self.socket = self.manager.defaultSocket
         self.connect()
@@ -37,6 +37,7 @@ class RealtimeService: ObservableObject {
     
     private func connect() {
         socket.on(clientEvent: .connect) {data, ack in
+            
             self.isConnected = true;
             self.onConnect()
         }

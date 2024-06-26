@@ -61,6 +61,7 @@ class ActivityManager: ObservableObject {
             return
         }
         let entries = realm.objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
+
         
         var newEntries: [ActivityEntry] = []
         for i in 0..<activityActionsLimit {
