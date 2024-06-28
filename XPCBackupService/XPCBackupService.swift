@@ -19,13 +19,11 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private var downloadOperationQueue = OperationQueue()
     private var backupUploadStatus: BackupStatus = .Idle
     private var backupDownloadStatus: BackupStatus = .Idle
-    
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
     @objc func uploadDeviceBackup(
         backupAt backupURLs: [String],
         mnemonic: String,
         networkAuth: String?,
-        authToken: String,
-        newAuthToken: String,
         deviceId: Int,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
@@ -41,6 +39,18 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             guard let networkAuth = networkAuth else {
                 logger.error("Cannot get network auth")
                 reply(nil, "Cannot get network auth")
+                return
+            }
+            
+            guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+                return
+            }
+            
+            guard let authToken = sharedDefaults.string(forKey: "LegacyAuthToken") else{
+                return
+            }
+            
+            guard let newAuthToken = sharedDefaults.string(forKey: "AuthToken") else{
                 return
             }
 
@@ -137,8 +147,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         downloadAt downloadAtURL: String,
         mnemonic: String,
         networkAuth: String,
-        authToken: String,
-        newAuthToken: String,
         deviceId: Int,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
@@ -147,6 +155,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         let config = ConfigLoader().get()
+        
+        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+            return
+        }
+        
+        guard let newAuthToken = sharedDefaults.string(forKey: "AuthToken") else{
+            return
+        }
         let backupAPI = BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
         let driveNewAPI = DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
         let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
