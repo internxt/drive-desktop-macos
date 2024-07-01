@@ -194,22 +194,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
     }
     
-    private func refreshTokens() {
-        Task{
-            self.logger.info("Refreshing tokens")
-            do {
-                try await authManager.refreshTokens()
-                self.logger.info("Tokens refreshed correctly")
-            } catch{
-                AuthError.UnableToRefreshToken.reportToSentry()
-                guard let apiClientError = error as? APIClientError else {
-                    return
-                }
-                
-                let tokenIsExpired = apiClientError.statusCode == 401
-                if(tokenIsExpired) {
-                    try authManager.signOut()
-                }
+    private func refreshTokens() async {
+        self.logger.info("Refreshing tokens...")
+        do {
+            try await authManager.refreshTokens()
+            self.logger.info("Tokens refreshed correctly")
+        } catch{
+            AuthError.UnableToRefreshToken.reportToSentry()
+            guard let apiClientError = error as? APIClientError else {
+                return
+            }
+            
+            let tokenIsExpired = apiClientError.statusCode == 401
+            if(tokenIsExpired) {
+                try? authManager.signOut()
             }
         }
     }
@@ -460,10 +458,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func checkRefreshToken(){
         do {
             if try authManager.needRefreshToken(){
-                self.refreshTokens()
-                self.logger.info("✅ Token refresher started")
-            }else {
-                self.logger.info("✅ Token dont need refresh ")
+                Task {await self.refreshTokens()}
             }
         }
         catch {
