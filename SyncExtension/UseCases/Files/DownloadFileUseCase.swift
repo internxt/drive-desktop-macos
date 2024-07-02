@@ -138,7 +138,8 @@ struct DownloadFileUseCase {
                     progressHandler: { completedProgress in
                         let maxProgress = 0.99
                         progressHandler(completedProgress: completedProgress * maxProgress)
-                    }
+                    },
+                    debug: true
                 )
                 
                 

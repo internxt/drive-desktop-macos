@@ -16,6 +16,7 @@ struct WidgetView: View {
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var backupsService: BackupsService
+    @EnvironmentObject var domainManager: FileProviderDomainManager
 
     @State private var showBackupBanner = false
     var isEmpty: Bool = true
@@ -43,12 +44,32 @@ struct WidgetView: View {
         
         return false
     }
+    
+    private func openFileProvider() {
+        if domainManager.domainStatus == .FailedToInitialize {
+            guard let user = authManager.user else {
+                    return
+            }
+            Task {
+                try? await self.domainManager.retryFileProviderInit(user: user)
+            }
+            return
+        }
+        
+        if domainManager.domainStatus == .Ready {
+            return self.openFileProviderRoot()
+        }
+    }
     var body: some View {
         AppSettingsManagerView {
             VStack(alignment: .leading, spacing: 0) {
                 if authManager.user != nil {
                     
-                    WidgetHeaderView(user: authManager.user!, openFileProviderRoot: openFileProviderRoot, openSendFeedback: self.openSendFeedback)
+                    WidgetHeaderView(
+                        user: authManager.user!,
+                        openFileProviderRoot: self.openFileProvider,
+                        openSendFeedback: self.openSendFeedback
+                    )
                         .zIndex(100)
                         .environmentObject(self.globalUIManager)
                         .environmentObject(self.usageManager)

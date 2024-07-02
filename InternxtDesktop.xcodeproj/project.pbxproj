@@ -169,7 +169,7 @@
 		E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C32AB2FEF500A58414 /* ActivityManager.swift */; };
 		E17C84C72AB2FEF500A58414 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C32AB2FEF500A58414 /* ActivityManager.swift */; };
 		E17C84CA2AB31E0400A58414 /* OnboardingFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C92AB31E0400A58414 /* OnboardingFinishView.swift */; };
-		E18300A22AA161ED00AD023C /* DomainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18300A12AA161ED00AD023C /* DomainManager.swift */; };
+		E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */; };
 		E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */; };
 		E18300A72AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E18300A52AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf */; };
 		E18300A82AA21E1B00AD023C /* InstrumentSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E18300A62AA21E1B00AD023C /* InstrumentSans-Regular.ttf */; };
@@ -417,7 +417,7 @@
 		E17C84BD2AB2880B00A58414 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		E17C84C32AB2FEF500A58414 /* ActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityManager.swift; sourceTree = "<group>"; };
 		E17C84C92AB31E0400A58414 /* OnboardingFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFinishView.swift; sourceTree = "<group>"; };
-		E18300A12AA161ED00AD023C /* DomainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainManager.swift; sourceTree = "<group>"; };
+		E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderDomainManager.swift; sourceTree = "<group>"; };
 		E18300A32AA1FC7700AD023C /* SettingsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMenuView.swift; sourceTree = "<group>"; };
 		E18300A52AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		E18300A62AA21E1B00AD023C /* InstrumentSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "InstrumentSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -969,7 +969,7 @@
 			children = (
 				E17AA0222A8A70C100C7EE6E /* Auth */,
 				E16310562A8E66F70072989E /* URLDictionary.swift */,
-				E18300A12AA161ED00AD023C /* DomainManager.swift */,
+				E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */,
 				E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */,
 				E1ADD0432AA7367800D95694 /* UsageManager.swift */,
 				E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */,
@@ -1359,7 +1359,7 @@
 				E1A0AC772AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
 				31DEAEC22B7514F400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				E17C84CA2AB31E0400A58414 /* OnboardingFinishView.swift in Sources */,
-				E18300A22AA161ED00AD023C /* DomainManager.swift in Sources */,
+				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
@@ -1770,7 +1770,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 55;
+				CURRENT_PROJECT_VERSION = 60;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1906,7 +1906,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 55;
+				CURRENT_PROJECT_VERSION = 60;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1974,7 +1974,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 55;
+				CURRENT_PROJECT_VERSION = 60;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2225,7 +2225,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/debug-network-requests";
+				branch = "feature/v1-downloads-support";
 				kind = branch;
 			};
 		};
