@@ -28,6 +28,7 @@ platform :mac do
     )
 
     run_tests(
+      scheme: "InternxtDesktop",
       clean: false
     )
   end
