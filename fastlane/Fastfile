@@ -29,7 +29,9 @@ platform :mac do
 
     run_tests(
       scheme: "InternxtDesktop",
-      clean: false
+      clean: false,
+      slack_message: "Results for Internxt Desktop MacOS tests",
+      slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
   end
   desc "Build Beta DMG"
