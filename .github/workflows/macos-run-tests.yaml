@@ -1,10 +1,10 @@
 name: Test Internxt Desktop MacOS App
 
 on:
-  push:
+  pull_request:
     branches:
-      - main
-      - xcode-caching-ci
+    - main
+    - 'release/**'
 
 # This envs are available for all the steps
 env:
