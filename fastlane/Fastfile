@@ -11,6 +11,27 @@ default_platform(:mac)
 
 
 platform :mac do
+
+  desc "Run tests"
+  lane :test do
+    setup_ci()
+
+    # Prepare certificates using Match
+    match(
+      type: "developer_id", 
+      readonly: true,
+      app_identifier: [
+        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop.sync",
+        "com.internxt.XPCBackupService"
+      ],
+    )
+
+    run_tests(
+      scheme: "MyTests",
+      clean: false
+    )
+  end
   desc "Build Beta DMG"
   lane :beta_ci do
 
