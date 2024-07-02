@@ -357,6 +357,7 @@
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
+		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
@@ -581,6 +582,7 @@
 		31DEAEAF2B75139400E76D53 /* XPCBackupService */ = {
 			isa = PBXGroup;
 			children = (
+				AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */,
 				3120B56D2B84F6B100F524F1 /* Extensions */,
 				E15F8C0E2B76291B00C60EFA /* Services */,
 				E15F8C0D2B76290B00C60EFA /* Entities */,
@@ -1553,7 +1555,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
+				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupServiceDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;

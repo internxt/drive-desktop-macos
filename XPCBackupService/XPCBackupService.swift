@@ -19,13 +19,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private var downloadOperationQueue = OperationQueue()
     private var backupUploadStatus: BackupStatus = .Idle
     private var backupDownloadStatus: BackupStatus = .Idle
-    
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
+    private let AUTH_TOKEN_KEY = "AuthToken"
+    private let LEGACY_TOKEN_KEY = "LegacyAuthToken"
+    private let MNEMONIC_TOKEN_KEY = "Mnemonic"
     @objc func uploadDeviceBackup(
         backupAt backupURLs: [String],
-        mnemonic: String,
         networkAuth: String?,
-        authToken: String,
-        newAuthToken: String,
         deviceId: Int,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
@@ -41,6 +41,30 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             guard let networkAuth = networkAuth else {
                 logger.error("Cannot get network auth")
                 reply(nil, "Cannot get network auth")
+                return
+            }
+            
+            guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+                logger.error("Cannot get sharedDefaults")
+                reply(nil, "Cannot get sharedDefaults")
+                return
+            }
+            
+            guard let authToken = sharedDefaults.string(forKey: LEGACY_TOKEN_KEY) else{
+                logger.error("Cannot get LegacyAuthToken")
+                reply(nil, "Cannot get LegacyAuthToken")
+                return
+            }
+            
+            guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+                logger.error("Cannot get AuthToken")
+                reply(nil, "Cannot get AuthToken")
+                return
+            }
+            
+            guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else{
+                logger.error("Cannot get mnemonic")
+                reply(nil, "Cannot get mnemonic")
                 return
             }
 
@@ -135,10 +159,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     
     @objc func downloadDeviceBackup(
         downloadAt downloadAtURL: String,
-        mnemonic: String,
         networkAuth: String,
-        authToken: String,
-        newAuthToken: String,
         deviceId: Int,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
@@ -147,6 +168,25 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         let config = ConfigLoader().get()
+        
+        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+            logger.error("Cannot get sharedDefaults")
+            reply(nil, "Cannot get sharedDefaults")
+            return
+        }
+        
+        
+        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+            logger.error("Cannot get AuthToken")
+            reply(nil, "Cannot get AuthToken")
+            return
+        }
+        
+        guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else{
+            logger.error("Cannot get mnemonic")
+            reply(nil, "Cannot get mnemonic")
+            return
+        }
         let backupAPI = BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
         let driveNewAPI = DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
         let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())

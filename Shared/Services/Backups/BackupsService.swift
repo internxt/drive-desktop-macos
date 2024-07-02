@@ -393,12 +393,6 @@ class BackupsService: ObservableObject {
             throw BackupError.bucketIdIsNil
         }
 
-        let authManager = AuthManager()
-        guard let mnemonic = authManager.mnemonic else {
-            logger.error("Cannot get mnemonic")
-            throw BackupError.cannotGetMnemonic
-        }
-
         logger.info("Setting connection to XPCBackupService...")
         //Connection to xpc service
         let xpcBackupService = try await getXPCBackupServiceProtocol(onConnectionIssue: {
@@ -408,18 +402,12 @@ class BackupsService: ObservableObject {
         logger.info("✅ Connection to XPCBackupService stablished")
         let configLoader = ConfigLoader()
         let networkAuth = configLoader.getNetworkAuth()
-        let authToken = configLoader.getLegacyAuthToken()
-        let newAuthToken = configLoader.getAuthToken()
-
-        guard let authToken = authToken, let newAuthToken = newAuthToken else {
-            logger.error("Cannot create auth token")
-            throw BackupError.cannotCreateAuthToken
-        }
+    
 
         let urlsStrings = foldersToBackup.map { folderToBackup in folderToBackup.url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? "" }
 
 
-        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings, mnemonic: mnemonic, networkAuth: networkAuth, authToken: authToken, newAuthToken: newAuthToken, deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
             if let error = error {
                 self.propagateError(errorMessage: error)
             } else {
@@ -451,11 +439,6 @@ class BackupsService: ObservableObject {
             throw BackupError.bucketIdIsNil
         }
 
-        let authManager = AuthManager()
-        guard let mnemonic = authManager.mnemonic else {
-            logger.error("Cannot get mnemonic")
-            throw BackupError.cannotGetMnemonic
-        }
 
         logger.info("Setting connection to XPCBackupService...")
         
@@ -466,13 +449,6 @@ class BackupsService: ObservableObject {
         logger.info("✅ Connection to XPCBackupService stablished")
         let configLoader = ConfigLoader()
         let networkAuth = configLoader.getNetworkAuth()
-        let authToken = configLoader.getLegacyAuthToken()
-        let newAuthToken = configLoader.getAuthToken()
-
-        guard let authToken = authToken, let newAuthToken = newAuthToken else {
-            logger.error("Cannot create auth token")
-            throw BackupError.cannotCreateAuthToken
-        }
         
         guard let URLAsString = downloadAt.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
             throw BackupError.invalidDownloadURL
@@ -485,10 +461,7 @@ class BackupsService: ObservableObject {
         backupDownloadProgressTimer?.cancel()
         xpcBackupService.downloadDeviceBackup(
             downloadAt: URLAsString,
-            mnemonic: mnemonic,
             networkAuth: networkAuthUnwrapped,
-            authToken: authToken,
-            newAuthToken: newAuthToken,
             deviceId:device.id,
             bucketId: deviceBucketId,
             with: {result, error in
