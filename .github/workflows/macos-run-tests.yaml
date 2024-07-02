@@ -1,0 +1,42 @@
+name: Test Internxt Desktop MacOS App
+
+on:
+  workflow_dispatch:
+
+# This envs are available for all the steps
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  SLACK_WEBHOOK_MAC_TEAM: ${{secrets.SLACK_WEBHOOK_MAC_TEAM}}
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Prepare Xcode cache
+        uses: irgaly/xcode-cache@v1
+        with:
+          key: xcode-cache-deriveddata-${{ github.workflow }}-${{ github.sha }}
+          restore-keys: xcode-cache-deriveddata-${{ github.workflow }}-
+  
+      - name: Add env.json
+        id: create-env-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "env.local.json"
+          json: ${{ secrets.JSON_ENV }}
+          dir: 'InternxtDesktop/'
+      
+      - name: Run Fastlane tests
+        run: fastlane test --verbose
+        env:
+          MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
+
+      - name: Archive logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Internxt Desktop Build Logs
+          path: /Users/runner/Library/Logs/
