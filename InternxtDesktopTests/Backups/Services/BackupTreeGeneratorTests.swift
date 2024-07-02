@@ -52,9 +52,9 @@ final class BackupTreeGeneratorTests: XCTestCase {
     
     
     func testNodeSync() async throws {
-        let fileTest1 = try createFileInTmpDir("test1.txt")
-        let folderA = try createDirectoryInTmpDir("folderA")
-        let fileTest2 = try createFileInTmpDir("folderA/test3.txt")
+        _ = try createFileInTmpDir("test1.txt")
+        _ = try createDirectoryInTmpDir("folderA")
+        _ = try createFileInTmpDir("folderA/test3.txt")
         let backupTree = try await sut.generateTree()
         try await backupTree.syncNode()
         
@@ -63,9 +63,9 @@ final class BackupTreeGeneratorTests: XCTestCase {
     
     
     func testNodeSyncOperationQueue() async throws {
-        let fileTest1 = try createFileInTmpDir("test1.txt")
-        let folderA = try createDirectoryInTmpDir("folderA")
-        let fileTest2 = try createFileInTmpDir("folderA/test3.txt")
+        _ = try createFileInTmpDir("test1.txt")
+        _ = try createDirectoryInTmpDir("folderA")
+        _ = try createFileInTmpDir("folderA/test3.txt")
         let backupTree = try await sut.generateTree()
         XCTAssertNoThrow(try backupTree.syncBelowNodes(withOperationQueue: uploadOperationQueue))
     }

@@ -11,6 +11,29 @@ default_platform(:mac)
 
 
 platform :mac do
+
+  desc "Run tests"
+  lane :test do
+    setup_ci()
+
+    # Prepare certificates using Match
+    match(
+      type: "developer_id", 
+      readonly: true,
+      app_identifier: [
+        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop.sync",
+        "com.internxt.XPCBackupService"
+      ],
+    )
+
+    run_tests(
+      scheme: "InternxtDesktop",
+      clean: false,
+      slack_message: "Results for Internxt Desktop MacOS tests",
+      slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
+    )
+  end
   desc "Build Beta DMG"
   lane :beta_ci do
 

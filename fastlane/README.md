@@ -15,6 +15,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Mac
 
+### mac test
+
+```sh
+[bundle exec] fastlane mac test
+```
+
+Run tests
+
 ### mac beta_ci
 
 ```sh
