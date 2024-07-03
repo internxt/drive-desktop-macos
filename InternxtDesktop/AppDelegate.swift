@@ -137,8 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         for type: PKPushType
     ){
         let deviceToken = credentials.token
-        // call api
-        // get token from user defaults
+
         guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
             logger.error("Cannot get sharedDefaults")
             return
@@ -150,8 +149,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Task {
-            _ = try! await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
-
+            do {
+                _ = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+            }catch{
+                logger.error("Cannot sync token")
+            }
         }
     }
     
