@@ -31,7 +31,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
+    private let AUTH_TOKEN_KEY = "AuthToken"
     
     // Managers
     var windowsManager: WindowsManager! = nil
@@ -49,6 +52,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
+    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+
     
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -130,9 +135,24 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         _ registry: PKPushRegistry,
         didUpdate credentials: PKPushCredentials,
         for type: PKPushType
-    ) {
+    ){
         let deviceToken = credentials.token
-        // Send the device token to your server here.
+        // call api
+        // get token from user defaults
+        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+            logger.error("Cannot get sharedDefaults")
+            return
+        }
+        
+        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+            logger.error("Cannot get AuthToken")
+            return
+        }
+        let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Task {
+            _ = try! await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+
+        }
     }
     
     func application(_ application: NSApplication, open urls: [URL]) {

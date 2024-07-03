@@ -20,6 +20,7 @@ enum CreateItemError: Error {
 
 let logger = syncExtensionLogger
 class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction , PKPushRegistryDelegate{
+ 
     let fileProviderItemActions = FileProviderItemActionsManager()
     let config = ConfigLoader()
     let manager: NSFileProviderManager
@@ -35,7 +36,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
+    private let AUTH_TOKEN_KEY = "AuthToken"
     
     required init(domain: NSFileProviderDomain) {
         
@@ -511,11 +513,24 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         _ registry: PKPushRegistry,
         didUpdate credentials: PKPushCredentials,
         for type: PKPushType
-    ) {
+    ){
         let deviceToken = credentials.token
         // call api
         // get token from user defaults
+        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+            logger.error("Cannot get sharedDefaults")
+            return
+        }
+        
+        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+            logger.error("Cannot get AuthToken")
+            return
+        }
+        let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Task {
+            _ = try! await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
 
+        }
     }
 
             
