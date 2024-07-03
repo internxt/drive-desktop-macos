@@ -148,7 +148,6 @@ class BackupsService: ObservableObject {
         var foldersToBackup: [FolderToBackup] = []
         for folderToBackupRealmObject in folderToBackupRealmObjects {
             let folderToBackup = FolderToBackup(folderToBackupRealmObject: folderToBackupRealmObject)
-            self.logger.info(["Missing folder to backup", folderToBackup.folderIsMissing()])
             if folderToBackupMissing == false {
                 folderToBackupMissing = folderToBackup.folderIsMissing()
             }

@@ -64,8 +64,9 @@ struct BackupDownloadService {
         backupDownloadProgress.totalUnitCount += Int64(backupFiles.result.count)
         for backupFile in backupFiles.result {
             let backupFileName = try backupFile.plainName ?? self.decryptName(name: backupFile.name, bucketId: backupFile.bucket)
+            logger.info("Filename to download \(backupFileName)")
             let fileURL = self.getURLForItem(baseURL: downloadAtPath, itemName: backupFileName, itemType: backupFile.type)
-            try await self.downloadFile(
+            self.downloadFile(
                 fileId: backupFile.fileId,
                 bucketId: backupBucket,
                 downloadAt: fileURL
@@ -74,7 +75,7 @@ struct BackupDownloadService {
         
     }
     
-    private func downloadFile(fileId: String, bucketId: String, downloadAt: URL) async throws {
+    private func downloadFile(fileId: String, bucketId: String, downloadAt: URL) {
         let downloadFileOperation = BackupDownloadItemOperation(
             networkFacade: self.networkFacade,
             bucketId: bucketId,
@@ -94,6 +95,7 @@ struct BackupDownloadService {
     
     private func getURLForItem(baseURL: URL, itemName: String, itemType: String? = nil) -> URL {
         let type: String = (itemType != nil) ? ".\(itemType!)" : ""
+        
         return baseURL.appendingPathComponent("\(itemName)\(type)")
     }
     

@@ -43,6 +43,7 @@ struct LogService {
         systemDestination.showLineNumber = true
         systemDestination.showDate = true
         
+        
         log.add(destination: systemDestination)
 
         guard let logsDirectoryUnwrapped = logsDirectory else {
