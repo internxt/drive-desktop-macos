@@ -10,7 +10,7 @@ import InternxtSwiftCore
 import Combine
 import Foundation
 import AppKit
-
+import PushKit
 
 enum CreateItemError: Error {
     case NoParentIdFound
@@ -19,7 +19,7 @@ enum CreateItemError: Error {
 
 
 let logger = syncExtensionLogger
-class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
+class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction , PKPushRegistryDelegate{
     let fileProviderItemActions = FileProviderItemActionsManager()
     let config = ConfigLoader()
     let manager: NSFileProviderManager
@@ -33,6 +33,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let activityManager: ActivityManager
     let realtime: RealtimeService?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private let DEVICE_TYPE = "macos"
+    var pushRegistry: PKPushRegistry!
+    
+    
     required init(domain: NSFileProviderDomain) {
         
         
@@ -147,6 +151,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 logger.info("✅ Initially signalled enumerator to ask for changes")
             }
         })
+        
+        pushRegistry = PKPushRegistry(queue: nil)
+        pushRegistry.delegate = self
+        pushRegistry.desiredPushTypes = [.fileProvider]
+
     }
     
 
@@ -497,5 +506,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         return Progress()
     }
+    
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didUpdate credentials: PKPushCredentials,
+        for type: PKPushType
+    ) {
+        let deviceToken = credentials.token
+        // call api
+        // get token from user defaults
+
+    }
+
             
 }
