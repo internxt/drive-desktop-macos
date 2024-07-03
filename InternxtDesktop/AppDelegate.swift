@@ -15,6 +15,7 @@ import Combine
 import ServiceManagement
 import Sparkle
 import RealmSwift
+import PushKit
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillShow(_ notification: Notification) {
@@ -26,11 +27,11 @@ extension AppDelegate: NSPopoverDelegate {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-    
+    var pushRegistry: PKPushRegistry!
     
     // Managers
     var windowsManager: WindowsManager! = nil
@@ -119,7 +120,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         logger.info("App did start successfully")
+        pushRegistry = PKPushRegistry(queue: nil)
+        pushRegistry.delegate = self
+        pushRegistry.desiredPushTypes = [.fileProvider]
         
+    }
+    
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didUpdate credentials: PKPushCredentials,
+        for type: PKPushType
+    ) {
+        let deviceToken = credentials.token
+        // Send the device token to your server here.
     }
     
     func application(_ application: NSApplication, open urls: [URL]) {
