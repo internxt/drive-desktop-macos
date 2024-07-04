@@ -52,22 +52,16 @@ platform :mac do
       UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
     end 
     
-
-    identifiers_to_configure = [
-      "internxt.InternxtDesktop", 
-      "internxt.InternxtDesktop.sync",
-      "com.internxt.XPCBackupService"
-    ]
-    for identifier in identifiers_to_configure do
-      sigh(
-        app_identifier: identifier,
-        platform: "macos",
-        team_id: "JR4S3SY396",
-        developer_id: true,
-      )
-    end
     # Prepare certificates using Match
-    
+    match(
+      type: "developer_id", 
+      readonly: true,
+      app_identifier: [
+        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop.sync",
+        "com.internxt.XPCBackupService"
+      ],
+    )
 
     
     app_path = "build/Internxt Drive.app"
