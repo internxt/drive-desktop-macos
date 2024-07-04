@@ -11,6 +11,24 @@ default_platform(:mac)
 
 
 platform :mac do
+
+  desc "Configure provisioning profiles"
+  lane :setup_dev_provisioning_profiles do
+    identifiers_to_configure = [
+      "internxt.InternxtDesktop", 
+      "internxt.InternxtDesktop.sync",
+      "com.internxt.XPCBackupService"
+    ]
+    for identifier in identifiers_to_configure do
+      sigh(
+        app_identifier: identifier,
+        platform: "macos",
+        team_id: "JR4S3SY396",
+        developer_id: true,
+      )
+    end
+  end
+
   desc "Build Beta DMG"
   lane :beta_ci do
 

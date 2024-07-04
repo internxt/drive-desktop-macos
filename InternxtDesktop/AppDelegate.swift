@@ -46,13 +46,13 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let backupsService = BackupsService()
     let settingsManager = SettingsTabManager()
     var scheduledManager: ScheduledBackupManager!
+    var realtime: RealtimeService?
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
-    var signalEnumeratorTimer: AnyCancellable?
-    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private let driveAPI: DriveAPI = APIFactory.Drive
 
     
     var isPreview: Bool {
@@ -62,6 +62,17 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     override init() {
         super.init()
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+        if let authToken = config.getAuthToken() {
+            self.realtime = RealtimeService.init(
+                token: authToken,
+                onConnect: {},
+                onDisconnect: {},
+                onEvent: {
+                    Task {try? await self.domainManager.manager?.signalEnumerator(for: .workingSet)}
+                }
+            )
+        }
+        
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -131,26 +142,29 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
     }
     
+    
+    
     func pushRegistry(
         _ registry: PKPushRegistry,
         didUpdate credentials: PKPushCredentials,
         for type: PKPushType
     ){
+        logger.info("📍 Got Device token for push notifications from AppDelegate")
         let deviceToken = credentials.token
 
-        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
-            logger.error("Cannot get sharedDefaults")
-            return
-        }
         
-        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+        
+        guard let newAuthToken = config.getAuthToken() else{
             logger.error("Cannot get AuthToken")
             return
         }
         let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        
         Task {
             do {
-                _ = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+                let result = try await driveAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+                logger.info(["📍 Push device token registered", result])
+
             }catch{
                 logger.error("Cannot sync token")
             }
@@ -245,14 +259,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
     }
     
-    private func startSignallingFileProvider(domainManager: NSFileProviderManager) {
-        self.signalEnumeratorTimer = Timer.publish(every: 15, on:.main, in: .common)
-            .autoconnect()
-            .sink(
-                receiveValue: {_ in
-                    self.signalFileProvider(domainManager)
-                })
-    }
+   
     
     private func signalFileProvider(_ domainManager: NSFileProviderManager) {
         Task {
@@ -288,11 +295,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     throw AuthError.noUserFound
                 }
                 try await domainManager.initFileProviderForUser(user:user)
-                guard let manager = domainManager.manager else {
-                    throw FileProviderError.CannotGetFileProviderManager
-                }
                 
-                self.startSignallingFileProvider(domainManager: manager)
+                
                 self.logger.info("Login success")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
@@ -455,7 +459,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     private func cleanUpTimers() {
-        self.signalEnumeratorTimer?.cancel()
         self.refreshTokensTimer?.cancel()
     }
     
