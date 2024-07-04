@@ -5,7 +5,7 @@ require 'json'
 ENV["GITHUB_REPOSITORY"] = "drive-desktop-macos"
 ENV["GITHUB_OWNER"] = "internxt"
 ENV["REPOSITORY_PROD_BRANCH"] = "main"
-
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
 
 default_platform(:mac)
 
