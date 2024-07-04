@@ -75,7 +75,14 @@ platform :mac do
       output_directory: 'build',
       export_method: "developer-id",
       scheme: "InternxtDesktop",
-      configuration: "Beta"
+      configuration: "Beta",
+      export_options: {
+        provisioningProfiles: {
+          "internxt.InternxtDesktop" => "internxt.InternxtDesktop Direct",
+          "internxt.InternxtDesktop.sync" => "internxt.InternxtDesktop.sync Direct",
+          "com.internxt.XPCBackupService" => "com.internxt.XPCBackupService Direct"
+        }
+      }
     )
 
     # Notarize the app

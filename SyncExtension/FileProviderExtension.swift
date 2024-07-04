@@ -107,8 +107,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 onConnect: {},
                 onDisconnect: {},
                 onEvent: {
-                    //syncExtensionLogger.info("Received realtime event, signaling enumerator")
-                    //Task {try? await manager.signalEnumerator(for: .workingSet)}
+                    Task {try? await manager.signalEnumerator(for: .workingSet)}
                 }
             )
         } else {
