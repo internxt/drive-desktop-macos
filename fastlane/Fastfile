@@ -67,15 +67,7 @@ platform :mac do
       )
     end
     # Prepare certificates using Match
-    =begin match(
-      type: "developer_id", 
-      readonly: true,
-      app_identifier: [
-        "internxt.InternxtDesktop", 
-        "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
-      ],
-    ) =end
+    
 
     
     app_path = "build/Internxt Drive.app"
