@@ -53,8 +53,21 @@ platform :mac do
     end 
     
 
+    identifiers_to_configure = [
+      "internxt.InternxtDesktop", 
+      "internxt.InternxtDesktop.sync",
+      "com.internxt.XPCBackupService"
+    ]
+    for identifier in identifiers_to_configure do
+      sigh(
+        app_identifier: identifier,
+        platform: "macos",
+        team_id: "JR4S3SY396",
+        developer_id: true,
+      )
+    end
     # Prepare certificates using Match
-    match(
+    =begin match(
       type: "developer_id", 
       readonly: true,
       app_identifier: [
@@ -62,7 +75,7 @@ platform :mac do
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ],
-    )
+    ) =end
 
     
     app_path = "build/Internxt Drive.app"
