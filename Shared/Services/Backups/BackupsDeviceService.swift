@@ -26,7 +26,7 @@ struct BackupsDeviceService {
             return Device(from: deviceAsFolder)
         }
         
-        logger.info(["Devices as folder found:", devices.count])
+        logger.info("Found \(devices.count) devices as folder")
 
         currentDevice = devices.first(where: { device in
             device.isCurrentDevice

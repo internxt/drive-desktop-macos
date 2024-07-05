@@ -10,6 +10,8 @@ import InternxtSwiftCore
 
 let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupService")
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
+    
+    
     private var backupUploadService: BackupUploadService? = nil
     private var trees: [BackupTreeNode] = []
     
@@ -91,7 +93,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupUploadService.canDoBackup = true
 
             
-            var totalNodesCount = 0
+            var totalNodesCount = backupURLs.count
 
             for backupURL in backupURLs {
                 do {
@@ -133,9 +135,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
             }
             
-            
-            
-            
             self.uploadOperationQueue.addBarrierBlock {
                 logger.info("Sync nodes operations completed")
                 // If the backup failed, don't set the status to Done
@@ -144,7 +143,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
                 
                 self.trees = []
-                self.uploadOperationQueue.cancelAllOperations()
                 reply("synced all nodes for all trees", nil)
             }
 
@@ -194,14 +192,22 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, debug: true)
         self.downloadOperationQueue.maxConcurrentOperationCount = 10
         
-        let backupDownloadService = BackupDownloadService(downloadOperationQueue: downloadOperationQueue, backupAPI: backupAPI, driveNewAPI: driveNewAPI, networkFacade: networkFacade, encryptedContentURL: FileManager.default.temporaryDirectory, decrypt: Decrypt(), backupBucket: bucketId, backupDownloadProgress: backupDownloadProgress)
+        let backupDownloadService = BackupDownloadService(
+            downloadOperationQueue: downloadOperationQueue,
+            backupAPI: backupAPI,
+            driveNewAPI: driveNewAPI,
+            networkFacade: networkFacade,
+            encryptedContentURL: FileManager.default.temporaryDirectory,
+            decrypt: Decrypt(),
+            backupBucket: bucketId,
+            backupDownloadProgress: backupDownloadProgress
+        )
         Task {
             do {
                 try await backupDownloadService.downloadDeviceBackup(deviceId: deviceId, downloadAt: downloadAtURL)
                 self.downloadOperationQueue.addBarrierBlock {
                     logger.info("Download operations completed")
                     self.backupDownloadStatus = .Done
-                    self.downloadOperationQueue.cancelAllOperations()
                     reply(nil, nil)
                 }
                 

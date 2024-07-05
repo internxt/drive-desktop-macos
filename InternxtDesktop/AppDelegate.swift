@@ -156,8 +156,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func initializeBackups() async -> Void {
-        
-        
         self.logger.info("🔨 Initializing backups...")
         await backupsService.addCurrentDevice()
         self.logger.info("✅ Backups device registered")
@@ -271,7 +269,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         Task {
-            self.logger.info("Initializing backups...")
             await self.initializeBackups()
         }
         
