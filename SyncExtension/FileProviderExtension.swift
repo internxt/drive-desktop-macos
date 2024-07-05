@@ -503,7 +503,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             do {
                 _ = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
             }catch{
-                logger.error("Cannot sync token")
+                logger.error(["Cannot sync token", error])
             }
         }
     }

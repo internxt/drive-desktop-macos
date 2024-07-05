@@ -52,7 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
-    private let driveAPI: DriveAPI = APIFactory.Drive
+    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
 
     
     var isPreview: Bool {
@@ -162,11 +162,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
         Task {
             do {
-                let result = try await driveAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+                let result = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
                 logger.info(["📍 Push device token registered", result])
 
             }catch{
-                logger.error("Cannot sync token")
+                logger.error(["Cannot sync token", error])
             }
         }
     }
