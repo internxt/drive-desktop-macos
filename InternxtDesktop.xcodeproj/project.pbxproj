@@ -394,7 +394,7 @@
 		E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderUseCase.swift; sourceTree = "<group>"; };
 		E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileUseCase.swift; sourceTree = "<group>"; };
 		E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeGenerator.swift; sourceTree = "<group>"; };
-		E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XPCBackupServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InternxtDesktopTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeGeneratorTests.swift; sourceTree = "<group>"; };
 		E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNode.swift; sourceTree = "<group>"; };
@@ -929,7 +929,7 @@
 				E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */,
 				E1FB2D812A76C48600473AE1 /* SyncExtension.appex */,
 				31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */,
-				E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */,
+				E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1054,9 +1054,9 @@
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
 			productType = "com.apple.product-type.xpc-service";
 		};
-		E15F8C242B762B0400C60EFA /* InternxtDesktopTests */ = {
+		E15F8C242B762B0400C60EFA /* XPCBackupServiceTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "InternxtDesktopTests" */;
+			buildConfigurationList = E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "XPCBackupServiceTests" */;
 			buildPhases = (
 				E15F8C212B762B0400C60EFA /* Sources */,
 				E15F8C222B762B0400C60EFA /* Frameworks */,
@@ -1067,7 +1067,7 @@
 			dependencies = (
 				E15F8C2A2B762B0400C60EFA /* PBXTargetDependency */,
 			);
-			name = InternxtDesktopTests;
+			name = XPCBackupServiceTests;
 			packageProductDependencies = (
 				AAC188DF2C222E1A007E321A /* RealmSwift */,
 				AAC188E12C222E1A007E321A /* ObjcExceptionBridging */,
@@ -1076,7 +1076,7 @@
 				AAC188E72C222EB3007E321A /* Sentry */,
 			);
 			productName = InternxtDesktopTests;
-			productReference = E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */;
+			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		E1FB2D232A76BF0200473AE1 /* InternxtDesktop */ = {
@@ -1192,7 +1192,7 @@
 				E1FB2D232A76BF0200473AE1 /* InternxtDesktop */,
 				E1FB2D802A76C48600473AE1 /* SyncExtension */,
 				31DEAEAD2B75139400E76D53 /* XPCBackupService */,
-				E15F8C242B762B0400C60EFA /* InternxtDesktopTests */,
+				E15F8C242B762B0400C60EFA /* XPCBackupServiceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2162,7 +2162,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "InternxtDesktopTests" */ = {
+		E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "XPCBackupServiceTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E15F8C2C2B762B0400C60EFA /* Debug */,
