@@ -763,12 +763,12 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		E15F8C262B762B0400C60EFA /* InternxtDesktopTests */ = {
+		E15F8C262B762B0400C60EFA /* XPCBackupServiceTests */ = {
 			isa = PBXGroup;
 			children = (
 				E15F8C312B762B3700C60EFA /* Backups */,
 			);
-			path = InternxtDesktopTests;
+			path = XPCBackupServiceTests;
 			sourceTree = "<group>";
 		};
 		E15F8C312B762B3700C60EFA /* Backups */ = {
@@ -916,7 +916,7 @@
 				E1FB2D262A76BF0200473AE1 /* InternxtDesktop */,
 				E1FB2D832A76C48600473AE1 /* SyncExtension */,
 				31DEAEAF2B75139400E76D53 /* XPCBackupService */,
-				E15F8C262B762B0400C60EFA /* InternxtDesktopTests */,
+				E15F8C262B762B0400C60EFA /* XPCBackupServiceTests */,
 				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 				E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */,
