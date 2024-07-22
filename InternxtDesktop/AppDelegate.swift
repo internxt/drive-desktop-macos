@@ -450,6 +450,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
+        Task { await usageManager.updateUsage() }
     }
     
     private func checkRefreshToken(){
