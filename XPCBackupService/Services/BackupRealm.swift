@@ -15,7 +15,8 @@ protocol BackupRealmProtocol {
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws
 }
 
-struct BackupRealm : BackupRealmProtocol {
+struct BackupRealm : GenericRepositoryProtocol {
+    typealias T = SyncedNode
     static var shared = BackupRealm()
     private var realm: Realm?
     private init() {}
@@ -74,6 +75,15 @@ struct BackupRealm : BackupRealmProtocol {
             }
         } catch {
             throw BackupUploadError.CannotEditNodeToRealm
+        }
+    }
+    
+    func find(url: URL, deviceId: Int) -> SyncedNode? {
+        do {
+            let realm = try getRealm()
+            return realm?.objects(SyncedNode.self).first { $0.url == url.absoluteString && $0.deviceId == deviceId }
+        } catch {
+            return nil
         }
     }
 
