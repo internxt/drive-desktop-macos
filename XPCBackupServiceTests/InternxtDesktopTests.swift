@@ -2,7 +2,7 @@
 //  InternxtDesktopTests.swift
 //  InternxtDesktopTests
 //
-//  Created by Patricio Tovar on 19/7/24.
+//  Created by Robert Garcia on 9/2/24.
 //
 
 import XCTest

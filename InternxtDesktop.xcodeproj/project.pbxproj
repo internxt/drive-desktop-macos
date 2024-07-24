@@ -62,6 +62,8 @@
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
+		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
+		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
 		AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AA2C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
@@ -356,6 +358,10 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
+		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
@@ -394,7 +400,7 @@
 		E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderUseCase.swift; sourceTree = "<group>"; };
 		E1581DDF2A96835F0051DD46 /* DownloadFileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileUseCase.swift; sourceTree = "<group>"; };
 		E15F8C0F2B76292F00C60EFA /* BackupTreeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeGenerator.swift; sourceTree = "<group>"; };
-		E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XPCBackupServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InternxtDesktopTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeGeneratorTests.swift; sourceTree = "<group>"; };
 		E15F8C3A2B762D4200C60EFA /* BackupTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNode.swift; sourceTree = "<group>"; };
@@ -508,6 +514,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA08890A2C4AF27C00D5CC40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0889162C4AF29F00D5CC40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E15F8C222B762B0400C60EFA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -594,6 +614,22 @@
 				31DEAEB72B75139400E76D53 /* XPCBackupService.entitlements */,
 			);
 			path = XPCBackupService;
+			sourceTree = "<group>";
+		};
+		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */,
+			);
+			path = SyncExtensionTests;
+			sourceTree = "<group>";
+		};
+		AA08891A2C4AF29F00D5CC40 /* InternxtDesktopTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */,
+			);
+			path = InternxtDesktopTests;
 			sourceTree = "<group>";
 		};
 		AAC188ED2C223183007E321A /* Mocks */ = {
@@ -763,12 +799,12 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		E15F8C262B762B0400C60EFA /* InternxtDesktopTests */ = {
+		E15F8C262B762B0400C60EFA /* XPCBackupServiceTests */ = {
 			isa = PBXGroup;
 			children = (
 				E15F8C312B762B3700C60EFA /* Backups */,
 			);
-			path = InternxtDesktopTests;
+			path = XPCBackupServiceTests;
 			sourceTree = "<group>";
 		};
 		E15F8C312B762B3700C60EFA /* Backups */ = {
@@ -916,7 +952,9 @@
 				E1FB2D262A76BF0200473AE1 /* InternxtDesktop */,
 				E1FB2D832A76C48600473AE1 /* SyncExtension */,
 				31DEAEAF2B75139400E76D53 /* XPCBackupService */,
-				E15F8C262B762B0400C60EFA /* InternxtDesktopTests */,
+				E15F8C262B762B0400C60EFA /* XPCBackupServiceTests */,
+				AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */,
+				AA08891A2C4AF29F00D5CC40 /* InternxtDesktopTests */,
 				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 				E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */,
@@ -929,7 +967,9 @@
 				E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */,
 				E1FB2D812A76C48600473AE1 /* SyncExtension.appex */,
 				31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */,
-				E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */,
+				E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */,
+				AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */,
+				AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1054,9 +1094,43 @@
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
 			productType = "com.apple.product-type.xpc-service";
 		};
-		E15F8C242B762B0400C60EFA /* InternxtDesktopTests */ = {
+		AA08890C2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "InternxtDesktopTests" */;
+			buildConfigurationList = AA0889142C4AF27C00D5CC40 /* Build configuration list for PBXNativeTarget "SyncExtensionTests" */;
+			buildPhases = (
+				AA0889092C4AF27C00D5CC40 /* Sources */,
+				AA08890A2C4AF27C00D5CC40 /* Frameworks */,
+				AA08890B2C4AF27C00D5CC40 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SyncExtensionTests;
+			productName = SyncExtensionTests;
+			productReference = AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AA0889182C4AF29F00D5CC40 /* InternxtDesktopTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA08891D2C4AF29F00D5CC40 /* Build configuration list for PBXNativeTarget "InternxtDesktopTests" */;
+			buildPhases = (
+				AA0889152C4AF29F00D5CC40 /* Sources */,
+				AA0889162C4AF29F00D5CC40 /* Frameworks */,
+				AA0889172C4AF29F00D5CC40 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = InternxtDesktopTests;
+			productName = InternxtDesktopTests;
+			productReference = AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E15F8C242B762B0400C60EFA /* XPCBackupServiceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "XPCBackupServiceTests" */;
 			buildPhases = (
 				E15F8C212B762B0400C60EFA /* Sources */,
 				E15F8C222B762B0400C60EFA /* Frameworks */,
@@ -1067,7 +1141,7 @@
 			dependencies = (
 				E15F8C2A2B762B0400C60EFA /* PBXTargetDependency */,
 			);
-			name = InternxtDesktopTests;
+			name = XPCBackupServiceTests;
 			packageProductDependencies = (
 				AAC188DF2C222E1A007E321A /* RealmSwift */,
 				AAC188E12C222E1A007E321A /* ObjcExceptionBridging */,
@@ -1076,7 +1150,7 @@
 				AAC188E72C222EB3007E321A /* Sentry */,
 			);
 			productName = InternxtDesktopTests;
-			productReference = E15F8C252B762B0400C60EFA /* InternxtDesktopTests.xctest */;
+			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		E1FB2D232A76BF0200473AE1 /* InternxtDesktop */ = {
@@ -1146,11 +1220,17 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					31DEAEAD2B75139400E76D53 = {
 						CreatedOnToolsVersion = 15.2;
+					};
+					AA08890C2C4AF27C00D5CC40 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					AA0889182C4AF29F00D5CC40 = {
+						CreatedOnToolsVersion = 15.4;
 					};
 					E15F8C242B762B0400C60EFA = {
 						CreatedOnToolsVersion = 15.2;
@@ -1192,7 +1272,9 @@
 				E1FB2D232A76BF0200473AE1 /* InternxtDesktop */,
 				E1FB2D802A76C48600473AE1 /* SyncExtension */,
 				31DEAEAD2B75139400E76D53 /* XPCBackupService */,
-				E15F8C242B762B0400C60EFA /* InternxtDesktopTests */,
+				E15F8C242B762B0400C60EFA /* XPCBackupServiceTests */,
+				AA08890C2C4AF27C00D5CC40 /* SyncExtensionTests */,
+				AA0889182C4AF29F00D5CC40 /* InternxtDesktopTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1203,6 +1285,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				3120B5782B85296400F524F1 /* env.local.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA08890B2C4AF27C00D5CC40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0889172C4AF29F00D5CC40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1311,6 +1407,22 @@
 				E15F8C3B2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 				AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */,
 				AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0889092C4AF27C00D5CC40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0889152C4AF29F00D5CC40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1646,6 +1758,146 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+			};
+			name = Beta;
+		};
+		AA0889112C4AF27C00D5CC40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Internxt.SyncExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0889122C4AF27C00D5CC40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Internxt.SyncExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA0889132C4AF27C00D5CC40 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Internxt.SyncExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Beta;
+		};
+		AA08891E2C4AF29F00D5CC40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Internxt.InternxtDesktopTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA08891F2C4AF29F00D5CC40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Internxt.InternxtDesktopTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA0889202C4AF29F00D5CC40 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Internxt.InternxtDesktopTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Beta;
 		};
@@ -2162,7 +2414,27 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "InternxtDesktopTests" */ = {
+		AA0889142C4AF27C00D5CC40 /* Build configuration list for PBXNativeTarget "SyncExtensionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0889112C4AF27C00D5CC40 /* Debug */,
+				AA0889122C4AF27C00D5CC40 /* Release */,
+				AA0889132C4AF27C00D5CC40 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA08891D2C4AF29F00D5CC40 /* Build configuration list for PBXNativeTarget "InternxtDesktopTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA08891E2C4AF29F00D5CC40 /* Debug */,
+				AA08891F2C4AF29F00D5CC40 /* Release */,
+				AA0889202C4AF29F00D5CC40 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "XPCBackupServiceTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E15F8C2C2B762B0400C60EFA /* Debug */,
