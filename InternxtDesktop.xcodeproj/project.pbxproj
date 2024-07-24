@@ -86,6 +86,8 @@
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A42C23EA1800CD971B /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
+		AAFFBE292C50AC4F00C76528 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
+		AAFFBE2C2C50B23D00C76528 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
 		E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */; };
 		E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */; };
@@ -402,6 +404,7 @@
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
+		AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericRepository.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
 		E106D4612AB9FD6300E3BF7A /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
@@ -687,6 +690,14 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		AAFFBE272C50AC2B00C76528 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		E109717A2A81133C00ABED41 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -874,6 +885,7 @@
 		E163105D2A8F8A570072989E /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AAFFBE272C50AC2B00C76528 /* Repository */,
 				E140C3312AC3798B00A88B9F /* Services */,
 				E140C3282AC3769C00A88B9F /* Models */,
 				E1581DC82A95220B0051DD46 /* Errors */,
@@ -1456,6 +1468,7 @@
 				31DEAEB52B75139400E76D53 /* main.swift in Sources */,
 				3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */,
 				3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */,
+				AAFFBE2C2C50B23D00C76528 /* GenericRepository.swift in Sources */,
 				E13DBC692BCD4E5B00F6B43E /* BackupsService.swift in Sources */,
 				AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */,
 				E1EEB5922C23025900370D77 /* ActivityManager.swift in Sources */,
@@ -1555,6 +1568,7 @@
 				E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				316D24722B4D88FA007DE91A /* BackupStatusView.swift in Sources */,
 				31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */,
+				AAFFBE292C50AC4F00C76528 /* GenericRepository.swift in Sources */,
 				310452692B4B05AE00984716 /* BackupConfigView.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */,
