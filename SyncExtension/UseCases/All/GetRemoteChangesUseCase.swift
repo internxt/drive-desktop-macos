@@ -14,7 +14,7 @@ struct FilesAndFoldersAnchor {
     public let filesAnchorDate: Date
     public let foldersAnchorDate: Date
 }
-struct GetRemoteChangesUseCase {
+class GetRemoteChangesUseCase {
     let logger = syncExtensionLogger
     private let driveAPI: DriveAPI = APIFactory.Drive
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
@@ -22,8 +22,10 @@ struct GetRemoteChangesUseCase {
     private let anchor: NSFileProviderSyncAnchor
     private let user: DriveUser
     private let enumeratedChangesLimit: Int = 50
-    
-    
+    private var updatedFileProviderItems: [FileProviderItem] = []
+    private var deletedItemsIdentifiers: [NSFileProviderItemIdentifier] = []
+    private var newFilesLastUpdatedAt: Date = Date()
+    private var newFoldersLastUpdatedAt: Date = Date()
     init(observer: NSFileProviderChangeObserver, anchor: NSFileProviderSyncAnchor, user: DriveUser) {
         self.observer = observer
         self.anchor = anchor
@@ -51,119 +53,17 @@ struct GetRemoteChangesUseCase {
     func run() {
         // Since we need to store the updatedAt for files and folders separated, both dates are stored in the anchor, so we split them
         let lastUpdatedAt = getFilesAndFoldersLastUpdate(anchor)
-       
         
-
-       
         Task {
             do {
-                var hasMoreFiles = false
-                var hasMoreFolders = false
-                var newFilesLastUpdatedAt: Date = lastUpdatedAt.filesAnchorDate
-                var newFoldersLastUpdatedAt: Date = lastUpdatedAt.foldersAnchorDate
-                var deletedItemsIdentifiers: [NSFileProviderItemIdentifier] = []
-                var updatedItems: [FileProviderItem] = []
+                newFilesLastUpdatedAt = lastUpdatedAt.filesAnchorDate
+                newFoldersLastUpdatedAt = lastUpdatedAt.foldersAnchorDate
                 
-                let updatedFiles = try await APIFactory.DriveNew.getUpdatedFiles(
-                    updatedAt: lastUpdatedAt.filesAnchorDate,
-                    status: "ALL",
-                    limit: self.enumeratedChangesLimit,
-                    offset:0,
-                    debug:false
-                )
+                try await self.obtainFileChanges(lastUpdatedAt: newFilesLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: observer.suggestedBatchSize)
+                try await self.obtainFolderChanges(lastUpdatedAt: newFoldersLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: observer.suggestedBatchSize)
+                            
                 
-                hasMoreFiles = updatedFiles.count == self.enumeratedChangesLimit
-                updatedFiles.forEach{ (file) in
-                    
-                    if file.status == "REMOVED" || file.status == "TRASHED" {
-                        deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
-                    }
-                    
-                    if file.status == "EXISTS" {
-                        guard let createdAt = Time.dateFromISOString(file.createdAt) else {
-                            self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
-                            return
-                        }
-                        
-                        guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
-                            self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
-                            return
-                        }
-                        
-                        if updatedAt > lastUpdatedAt.filesAnchorDate {
-                            newFilesLastUpdatedAt = updatedAt
-                        }
-                        
-                        let parentIsRoot = file.folderId == user.root_folder_id
-
-                        let item = FileProviderItem(
-                            identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
-                            filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
-                            parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: file.folderId.toString()),
-                            createdAt: createdAt,
-                            updatedAt: updatedAt,
-                            itemExtension: file.type,
-                            itemType: .file,
-                            size: Int(file.size) ?? 0
-                        )
-                        
-                        updatedItems.append(item)
-                    }
-                }
-                
-                
-                let updatedFolders = try await APIFactory.DriveNew.getUpdatedFolders(
-                    updatedAt: lastUpdatedAt.foldersAnchorDate,
-                    status: "ALL",
-                    limit: self.enumeratedChangesLimit,
-                    offset:0,
-                    debug:false
-                )
-                
-                
-                
-                hasMoreFolders = updatedFolders.count == self.enumeratedChangesLimit
-                updatedFolders.forEach{ (folder) in
-                    if folder.status == "REMOVED" || folder.status == "TRASHED" {
-                        deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
-                        return
-                    }
-                    
-                    if folder.status == "EXISTS" {
-                        guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
-                            self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
-                            return
-                        }
-                        
-                        guard let updatedAt = Time.dateFromISOString(folder.updatedAt) else {
-                            self.logger.error("Cannot create updatedAt date for item \(folder.id) with value \(folder.updatedAt)")
-                            return
-                        }
-                        
-                        if updatedAt > lastUpdatedAt.filesAnchorDate {
-                            newFoldersLastUpdatedAt = updatedAt
-                        }
-                        
-                        let parentIsRoot = folder.parentId == nil || folder.parentId == user.root_folder_id
-
-                        let item = FileProviderItem(
-                            identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
-                            filename: FileProviderItem.getFilename(name: folder.plainName ?? folder.name , itemExtension: nil),
-                            parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folder.parentId!.toString()),
-                            createdAt: createdAt,
-                            updatedAt: updatedAt,
-                            itemExtension: nil,
-                            itemType: .folder
-                        )
-                        
-                        updatedItems.append(item)
-                    }
-                }
-                
-                
-                
-                
-                observer.didUpdate(updatedItems)
+                observer.didUpdate(updatedFileProviderItems)
                 observer.didDeleteItems(withIdentifiers: deletedItemsIdentifiers)
                 
                 // Build the new anchor
@@ -176,7 +76,8 @@ struct GetRemoteChangesUseCase {
                 
                 observer.finishEnumeratingChanges(
                     upTo: NSFileProviderSyncAnchor(rawValue: joinedAnchor!),
-                    moreComing: hasMoreFiles || hasMoreFolders
+                    
+                    moreComing: true
                 )
                 
                 self.logger.info("✅ Changes enumerated correctly from the server")
@@ -186,6 +87,117 @@ struct GetRemoteChangesUseCase {
                 self.logger.error("❌ Failed to enumerate remote changes")
             }
             
+        }
+    }
+    
+    private func obtainFileChanges(lastUpdatedAt: Date, limit: Int, recommendedBatchSize: Int?) async throws -> Void {
+        let updatedFiles = try await APIFactory.DriveNew.getUpdatedFiles(
+            updatedAt: lastUpdatedAt,
+            status: "ALL",
+            limit: limit,
+            offset:0,
+            bucketId: user.bucket,
+            debug: true
+        )
+        
+        let hasMoreFiles = updatedFiles.count == limit
+        
+        updatedFiles.forEach{ (file) in
+            
+            if file.status == "REMOVED" || file.status == "TRASHED" {
+                deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
+            }
+            
+            if file.status == "EXISTS" {
+                guard let createdAt = Time.dateFromISOString(file.createdAt) else {
+                    self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
+                    return
+                }
+                
+                guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
+                    self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
+                    return
+                }
+                
+                if updatedAt > newFilesLastUpdatedAt {
+                    newFilesLastUpdatedAt = updatedAt
+                }
+                
+                let parentIsRoot = file.folderId == user.root_folder_id
+
+                let item = FileProviderItem(
+                    identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
+                    filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
+                    parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: file.folderId.toString()),
+                    createdAt: createdAt,
+                    updatedAt: updatedAt,
+                    itemExtension: file.type,
+                    itemType: .file,
+                    size: Int(file.size) ?? 0
+                )
+                
+                updatedFileProviderItems.append(item)
+            }
+        }
+        
+        if hasMoreFiles {
+            self.logger.info("There are more files, requesting them...")
+            _ = try await self.obtainFileChanges(lastUpdatedAt: newFilesLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: recommendedBatchSize)
+        }
+    }
+    
+    
+    private func obtainFolderChanges(lastUpdatedAt: Date, limit: Int,recommendedBatchSize: Int?) async throws -> Void {
+        let updatedFolders = try await APIFactory.DriveNew.getUpdatedFolders(
+            updatedAt: lastUpdatedAt,
+            status: "ALL",
+            limit: self.enumeratedChangesLimit,
+            offset:0,
+            debug:false
+        )
+        
+        let hasMoreFolders = updatedFolders.count == limit
+
+        updatedFolders.forEach{ (folder) in
+            if folder.status == "REMOVED" || folder.status == "TRASHED" {
+                deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
+                return
+            }
+            
+            if folder.status == "EXISTS" {
+                guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
+                    self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
+                    return
+                }
+                
+                guard let updatedAt = Time.dateFromISOString(folder.updatedAt) else {
+                    self.logger.error("Cannot create updatedAt date for item \(folder.id) with value \(folder.updatedAt)")
+                    return
+                }
+                
+                if updatedAt > lastUpdatedAt {
+                    newFoldersLastUpdatedAt = updatedAt
+                }
+                
+                let parentIsRoot = folder.parentId == nil || folder.parentId == user.root_folder_id
+
+                let item = FileProviderItem(
+                    identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
+                    filename: FileProviderItem.getFilename(name: folder.plainName ?? folder.name , itemExtension: nil),
+                    parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folder.parentId!.toString()),
+                    createdAt: createdAt,
+                    updatedAt: updatedAt,
+                    itemExtension: nil,
+                    itemType: .folder
+                )
+                
+                updatedFileProviderItems.append(item)
+            }
+        }
+        
+        if hasMoreFolders {
+            self.logger.info("There are more folders, requesting them...")
+            _ = try await self.obtainFolderChanges(lastUpdatedAt: newFilesLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: recommendedBatchSize)
         }
     }
 }
