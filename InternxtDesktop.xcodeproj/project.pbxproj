@@ -72,6 +72,8 @@
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
+		AAC188E02C222E1A007E321A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188DF2C222E1A007E321A /* RealmSwift */; };
 		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
 		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
@@ -1505,6 +1507,7 @@
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
 				E1D24AF72C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
+				AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */,
 				31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */,
 				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
