@@ -15,6 +15,7 @@ import Combine
 import ServiceManagement
 import Sparkle
 import RealmSwift
+import PushKit
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillShow(_ notification: Notification) {
@@ -26,11 +27,14 @@ extension AppDelegate: NSPopoverDelegate {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-    
+    private let DEVICE_TYPE = "macos"
+    var pushRegistry: PKPushRegistry!
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
+    private let AUTH_TOKEN_KEY = "AuthToken"
     
     // Managers
     var windowsManager: WindowsManager! = nil
@@ -42,12 +46,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let backupsService = BackupsService()
     let settingsManager = SettingsTabManager()
     var scheduledManager: ScheduledBackupManager!
+    var realtime: RealtimeService?
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
-    var signalEnumeratorTimer: AnyCancellable?
+    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+
     
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -56,6 +62,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
         super.init()
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+        if let authToken = config.getAuthToken() {
+            self.realtime = RealtimeService.init(
+                token: authToken,
+                onConnect: {},
+                onDisconnect: {},
+                onEvent: {
+                    Task {try? await self.domainManager.manager?.signalEnumerator(for: .workingSet)}
+                }
+            )
+        }
+        
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -119,7 +136,39 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         logger.info("App did start successfully")
+        pushRegistry = PKPushRegistry(queue: nil)
+        pushRegistry.delegate = self
+        pushRegistry.desiredPushTypes = [.fileProvider]
         
+    }
+    
+    
+    
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didUpdate credentials: PKPushCredentials,
+        for type: PKPushType
+    ){
+        logger.info("📍 Got Device token for push notifications from AppDelegate")
+        let deviceToken = credentials.token
+
+        
+        
+        guard let newAuthToken = config.getAuthToken() else{
+            logger.error("Cannot get AuthToken")
+            return
+        }
+        let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        
+        Task {
+            do {
+                let result = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+                logger.info(["📍 Push device token registered", result])
+
+            }catch{
+                logger.error(["Cannot sync token", error])
+            }
+        }
     }
     
     func application(_ application: NSApplication, open urls: [URL]) {
@@ -210,14 +259,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    private func startSignallingFileProvider(domainManager: NSFileProviderManager) {
-        self.signalEnumeratorTimer = Timer.publish(every: 15, on:.main, in: .common)
-            .autoconnect()
-            .sink(
-                receiveValue: {_ in
-                    self.signalFileProvider(domainManager)
-                })
-    }
+   
     
     private func signalFileProvider(_ domainManager: NSFileProviderManager) {
         Task {
@@ -253,11 +295,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     throw AuthError.noUserFound
                 }
                 try await domainManager.initFileProviderForUser(user:user)
-                guard let manager = domainManager.manager else {
-                    throw FileProviderError.CannotGetFileProviderManager
-                }
                 
-                self.startSignallingFileProvider(domainManager: manager)
+                
                 self.logger.info("Login success")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
@@ -420,7 +459,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     private func cleanUpTimers() {
-        self.signalEnumeratorTimer?.cancel()
         self.refreshTokensTimer?.cancel()
     }
     

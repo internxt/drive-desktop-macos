@@ -10,7 +10,7 @@ import InternxtSwiftCore
 import Combine
 import Foundation
 import AppKit
-
+import PushKit
 
 enum CreateItemError: Error {
     case NoParentIdFound
@@ -19,7 +19,8 @@ enum CreateItemError: Error {
 
 
 let logger = syncExtensionLogger
-class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction {
+class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFileProviderCustomAction , PKPushRegistryDelegate{
+ 
     let fileProviderItemActions = FileProviderItemActionsManager()
     let config = ConfigLoader()
     let manager: NSFileProviderManager
@@ -28,11 +29,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
-    let signalEnumeratorIntervalTimer: AnyCancellable
     let refreshTokensIntervalTimer: AnyCancellable
     let activityManager: ActivityManager
     let realtime: RealtimeService?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private let DEVICE_TYPE = "macos"
+    var pushRegistry: PKPushRegistry!
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
+    private let AUTH_TOKEN_KEY = "AuthToken"
+    
     required init(domain: NSFileProviderDomain) {
         
         
@@ -53,22 +58,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
-        
-        
-        self.signalEnumeratorIntervalTimer = Timer.publish(every: 15, on:.main, in: .common)
-            .autoconnect()
-            .sink(
-             receiveValue: {_ in
-                 Task {
-                     do {
-                         try await manager.signalEnumerator(for: .workingSet)
-                     } catch {
-                         error.reportToSentry()
-                         logger.error(["Failed to signal enumerator: ", error])
-                     }
-                 }
-             })
-        
+
         self.refreshTokensIntervalTimer = Timer.publish(every: 15, on:.main, in: .common)
             .autoconnect()
             .sink(
@@ -78,8 +68,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                          if try authManager.needRefreshToken(){
                              try await authManager.refreshTokens()
                              logger.info("Tokens refreshed successfully")
-                         }else {
-                             logger.info("Dont need refresh")
                          }
 
                      } catch {
@@ -116,14 +104,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         if let authToken = config.getAuthToken() {
             self.realtime = RealtimeService.init(
                 token: authToken,
-                onConnect: {
-                    syncExtensionLogger.info("REALTIME CONNECTED")
-                },
-                onDisconnect: {
-                    syncExtensionLogger.info("REALTIME DISCONNECTED")
-                },
+                onConnect: {},
+                onDisconnect: {},
                 onEvent: {
-                    syncExtensionLogger.info("RECEIVED REALTIME EVENT, signaling enumerator")
                     Task {try? await manager.signalEnumerator(for: .workingSet)}
                 }
             )
@@ -147,6 +130,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 logger.info("✅ Initially signalled enumerator to ask for changes")
             }
         })
+        
+        pushRegistry = PKPushRegistry(queue: nil)
+        pushRegistry.delegate = self
+        pushRegistry.desiredPushTypes = [.fileProvider]
+
     }
     
 
@@ -171,7 +159,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     func invalidate() {
         fileProviderItemActions.clean()
         self.refreshTokensIntervalTimer.cancel()
-        self.signalEnumeratorIntervalTimer.cancel()
     }
     
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
@@ -497,5 +484,29 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         return Progress()
     }
+    
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didUpdate credentials: PKPushCredentials,
+        for type: PKPushType
+    ){
+        logger.info("📍 Got Device token for push notifications from SyncExtension")
+        let deviceToken = credentials.token
+        
+        
+        guard let newAuthToken = config.getAuthToken() else{
+            logger.error("Cannot get AuthToken")
+            return
+        }
+        let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Task {
+            do {
+                _ = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
+            }catch{
+                logger.error(["Cannot sync token", error])
+            }
+        }
+    }
+
             
 }

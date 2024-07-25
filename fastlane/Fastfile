@@ -5,12 +5,30 @@ require 'json'
 ENV["GITHUB_REPOSITORY"] = "drive-desktop-macos"
 ENV["GITHUB_OWNER"] = "internxt"
 ENV["REPOSITORY_PROD_BRANCH"] = "main"
-
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
 
 default_platform(:mac)
 
 
 platform :mac do
+
+  desc "Configure provisioning profiles"
+  lane :setup_dev_provisioning_profiles do
+    identifiers_to_configure = [
+      "internxt.InternxtDesktop", 
+      "internxt.InternxtDesktop.sync",
+      "com.internxt.XPCBackupService"
+    ]
+    for identifier in identifiers_to_configure do
+      sigh(
+        app_identifier: identifier,
+        platform: "macos",
+        team_id: "JR4S3SY396",
+        developer_id: true,
+      )
+    end
+  end
+
   desc "Build Beta DMG"
   lane :beta_ci do
 
@@ -34,7 +52,6 @@ platform :mac do
       UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
     end 
     
-
     # Prepare certificates using Match
     match(
       type: "developer_id", 
@@ -58,7 +75,14 @@ platform :mac do
       output_directory: 'build',
       export_method: "developer-id",
       scheme: "InternxtDesktop",
-      configuration: "Beta"
+      configuration: "Beta",
+      export_options: {
+        provisioningProfiles: {
+          "internxt.InternxtDesktop" => "internxt.InternxtDesktop Direct",
+          "internxt.InternxtDesktop.sync" => "internxt.InternxtDesktop.sync Direct",
+          "com.internxt.XPCBackupService" => "com.internxt.XPCBackupService Direct"
+        }
+      }
     )
 
     # Notarize the app

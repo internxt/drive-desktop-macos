@@ -15,6 +15,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Mac
 
+### mac setup_dev_provisioning_profiles
+
+```sh
+[bundle exec] fastlane mac setup_dev_provisioning_profiles
+```
+
+Configure provisioning profiles
+
 ### mac beta_ci
 
 ```sh

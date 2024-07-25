@@ -61,8 +61,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E15F8C242B762B0400C60EFA"
-               BuildableName = "InternxtDesktopTests.xctest"
-               BlueprintName = "InternxtDesktopTests"
+               BuildableName = "XPCBackupServiceTests.xctest"
+               BlueprintName = "XPCBackupServiceTests"
                ReferencedContainer = "container:InternxtDesktop.xcodeproj">
             </BuildableReference>
          </TestableReference>
