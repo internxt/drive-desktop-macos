@@ -451,7 +451,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
-        self.updateStorage()
+       
+        let storageDebouncer = Debouncer(delay: 15.0)
+        storageDebouncer.debounce { [weak self] in
+            self?.updateStorage()
+        }
     }
     
     private func checkRefreshToken(){
