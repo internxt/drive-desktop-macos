@@ -9,11 +9,12 @@ import SwiftUI
 
 struct BackupsTabView: View {
     
-    @Binding var selectedDeviceId: Int?
+    @Binding var selectedDevice: Device?
     @Binding var showFolderSelector: Bool
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @Binding var isEditingSelectedFolders: Bool
+    @Binding var showBackupContentNavigator: Bool
     @StateObject var backupsService: BackupsService
     @StateObject var scheduleManager: ScheduledBackupManager
     private let deviceName = ConfigLoader().getDeviceName()
@@ -110,9 +111,10 @@ struct BackupsTabView: View {
     var BackupsSidebar: some View {
         VStack(alignment: .leading, spacing: 8) {
             
+            
             BackupAvailableDevicesView(
                 backupsService: backupsService,
-                selectedDeviceId: $selectedDeviceId
+                selectedDevice: $selectedDevice
             ).frame(width: 160)
             
             Spacer()
@@ -146,7 +148,10 @@ struct BackupsTabView: View {
                         showDeleteBackupDialog: $showDeleteBackupDialog,
                         showFolderSelector: $showFolderSelector,
                         isEditingSelectedFolders: $isEditingSelectedFolders,
-                        device: Binding($backupsService.selectedDevice)!, backupManager: self.scheduleManager
+                        device: Binding($backupsService.selectedDevice)!, 
+                        showBackupContentNavigator: $showBackupContentNavigator,
+                        backupManager: self.scheduleManager
+                    
                     )
                 }
             }
@@ -169,11 +174,12 @@ struct BackupsTabView: View {
 
 #Preview {
     BackupsTabView(
-        selectedDeviceId: .constant(nil),
+        selectedDevice: .constant(BackupsDeviceService.shared.getDeviceForPreview()),
         showFolderSelector: .constant(false),
         showStopBackupDialog: .constant(false),
         showDeleteBackupDialog: .constant(false),
         isEditingSelectedFolders: .constant(false),
+        showBackupContentNavigator: .constant(false),
         backupsService: BackupsService(), scheduleManager: ScheduledBackupManager(backupsService: BackupsService())
     )
 }

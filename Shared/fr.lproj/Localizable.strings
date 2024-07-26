@@ -111,6 +111,7 @@
 "COMMON_USAGE_%@_OF_%@" = "Utilisation de %@ de %@";
 "COMMON_CLOSE" = "Fermer";
 "COMMON_LANGUAGE" = "Langue";
+"COMMON_DOWNLOAD" = "Télécharger";
 
 // Usage
 "USAGE_LOADING" = "Chargement de l'espace";

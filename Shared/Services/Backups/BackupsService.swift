@@ -600,8 +600,18 @@ class BackupsService: ObservableObject {
 
 }
 
+struct FolderListItem: Identifiable {
+    var id: String
+    var name: String
+    var type: String
+}
+
 class FolderToBackup {
-    let id: String
+    var name: String
+    
+    var type: String
+    
+    var id: String
     let url: URL
     let status: FolderToBackupStatus
     let createdAt: Date
@@ -612,6 +622,8 @@ class FolderToBackup {
         self.url = URL(fileURLWithPath: folderToBackupRealmObject.url.removingPercentEncoding?.replacingOccurrences(of: "file://", with: "") ?? "")
         self.status = folderToBackupRealmObject.status
         self.createdAt = folderToBackupRealmObject.createdAt
+        self.name = self.url.lastPathComponent.removingPercentEncoding ?? "Unknown folder"
+        self.type = (self.name as NSString).pathExtension
     }
     
     init(id: String,url: URL, status: FolderToBackupStatus, createdAt: Date) {
@@ -619,6 +631,8 @@ class FolderToBackup {
         self.url = url
         self.status = status
         self.createdAt = createdAt
+        self.name = self.url.lastPathComponent.removingPercentEncoding ?? "Unknown folder"
+        self.type = (self.name as NSString).pathExtension
     }
     
     

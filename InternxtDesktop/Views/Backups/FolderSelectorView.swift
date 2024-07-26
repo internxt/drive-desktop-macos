@@ -79,6 +79,13 @@ struct FolderSelectorView: View {
             }
         }
     }
+    
+    func getSelectorItems() -> Binding<[FolderListItem]> {
+        let items = $backupsService.foldersToBackup.wrappedValue.map{folder in
+            FolderListItem(id: folder.id, name:folder.name, type: folder.type)
+        }
+        return Binding.constant(items)
+    }
 
     var body: some View {
         VStack(spacing: 12) {
@@ -95,7 +102,27 @@ struct FolderSelectorView: View {
                     .foregroundColor(.Gray50)
             }
 
-            BackupsFolderListView(foldersToBackup: $backupsService.foldersToBackup, selectedId: $folderToBackupId, onMissingFolderURLLocated: handleMissingFolderURLLocated)
+            FolderListView(
+                items: self.getSelectorItems(),
+                selectedId: $folderToBackupId,
+                isLoading: .constant(false),
+                onItemDoubleTap: {item in
+                },
+                empty: {
+                    VStack {
+                        AppText("BACKUP_SETTINGS_ADD_FOLDERS")
+                            .font(.BaseRegular)
+                            .foregroundColor(.Gray50)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .cornerRadius(8.0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.Gray10, lineWidth: 1)
+                    )
+                }
+            )
 
             HStack {
                 HStack(spacing: 8) {
@@ -136,6 +163,7 @@ struct FolderSelectorView: View {
         .cornerRadius(10)
         .shadow(color: .black.opacity(0.1), radius: 1.5, x: 0, y: 1)
         .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+        
     }
 
     private func doBackup() {

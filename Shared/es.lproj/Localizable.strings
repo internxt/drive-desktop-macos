@@ -110,6 +110,7 @@
 "COMMON_USAGE_%@_OF_%@" = "Usado %@ de %@";
 "COMMON_CLOSE" = "Cerrar";
 "COMMON_LANGUAGE" = "Idioma";
+"COMMON_DOWNLOAD" = "Descargar";
 
 // Usage
 "USAGE_LOADING" = "Cargando espacio usado";
