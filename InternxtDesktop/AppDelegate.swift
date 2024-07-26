@@ -48,8 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
-    private var lastUsageUpdateTime: Date?
-    
+    var storageDebouncer = Debouncer(delay: 15.0)
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
@@ -452,7 +451,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         self.scheduledManager.resumeBackupScheduler()
        
-        let storageDebouncer = Debouncer(delay: 15.0)
         storageDebouncer.debounce { [weak self] in
             self?.updateStorage()
         }
@@ -470,16 +468,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     }
     
-    private func updateStorage(){
-        let now = Date()
-        if let lastUpdate = lastUsageUpdateTime {
-            if now.timeIntervalSince(lastUpdate) > 15 {
-                lastUsageUpdateTime = now
-                Task { await usageManager.updateUsage() }
-            }
-        } else {
-            lastUsageUpdateTime = now
-            Task { await usageManager.updateUsage() }
-        }
+    private func updateStorage() {
+        Task { await usageManager.updateUsage() }
     }
 }
