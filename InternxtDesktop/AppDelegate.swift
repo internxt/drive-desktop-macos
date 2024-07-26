@@ -53,7 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
-    var storageDebouncer = Debouncer(delay: 15.0)
+    var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     
     var isPreview: Bool {
@@ -490,8 +490,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         self.scheduledManager.resumeBackupScheduler()
        
-        storageDebouncer.debounce { [weak self] in
-            self?.updateStorage()
+        usageUpdateDebouncer.debounce { [weak self] in
+            self?.updateUsage()
         }
     }
     
@@ -507,7 +507,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
 
     }
     
-    private func updateStorage() {
+    private func updateUsage() {
         Task { await usageManager.updateUsage() }
     }
 }
