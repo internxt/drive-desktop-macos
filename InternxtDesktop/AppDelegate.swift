@@ -54,7 +54,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
     var storageDebouncer = Debouncer(delay: 15.0)
-    private var lastUsageUpdateTime: Date?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     
     var isPreview: Bool {
