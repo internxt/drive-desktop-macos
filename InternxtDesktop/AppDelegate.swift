@@ -48,6 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
+    private var lastUsageUpdateTime: Date?
     
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -450,7 +451,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
-        Task { await usageManager.updateUsage() }
+        self.updateStorage()
     }
     
     private func checkRefreshToken(){
@@ -463,5 +464,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.logger.error("Error check refreshing token \(error)")
         }
 
+    }
+    
+    private func updateStorage(){
+        let now = Date()
+        if let lastUpdate = lastUsageUpdateTime {
+            if now.timeIntervalSince(lastUpdate) > 15 {
+                lastUsageUpdateTime = now
+                Task { await usageManager.updateUsage() }
+            }
+        } else {
+            lastUsageUpdateTime = now
+            Task { await usageManager.updateUsage() }
+        }
     }
 }
