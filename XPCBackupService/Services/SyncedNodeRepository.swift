@@ -11,10 +11,10 @@ import RealmSwift
 
 protocol SyncedNodeRepositoryProtocol: GenericRepositoryProtocol {
     
-    func getRealm() throws -> Realm?
     func addSyncedNode(_ node: SyncedNode) throws
     func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>?
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws
+    func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode?
 }
 
 struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
@@ -101,6 +101,16 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     
     func updateById(id: String) throws {
         // TODO:
+    }
+    
+    func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode? {
+        do {
+            let realm = try getRealm()
+            guard let realm = realm else { return nil }
+            return realm.resolve(reference)
+        } catch {
+            return nil
+        }
     }
     
 }
