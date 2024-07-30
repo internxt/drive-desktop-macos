@@ -8,17 +8,6 @@
 import Foundation
 import RealmSwift
 
-//protocol BackupRealmProtocol {
-//    func getRealm() throws -> Realm?
-//    func addSyncedNode(_ node: SyncedNode) throws
-//    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>?
-//    func editSyncedNodeDate(remoteUuid: String, date: Date) throws
-//}
-
-//protocol BackupRealmProtocol: GenericRepositoryProtocol where T == SyncedNode {
-//    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>?
-//    func getRealm() throws -> Realm?
-//}
 
 protocol SyncedNodeRepositoryProtocol: GenericRepositoryProtocol {
     

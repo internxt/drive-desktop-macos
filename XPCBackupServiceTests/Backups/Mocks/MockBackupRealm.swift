@@ -8,7 +8,9 @@
 import Foundation
 import RealmSwift
 
-class MockBackupRealm: BackupRealmProtocol {
+class MockBackupRealm: SyncedNodeRepositoryProtocol {
+
+    
     func find(url: URL, deviceId: Int) -> SyncedNode? {
         // TODO:
         return nil
@@ -59,5 +61,17 @@ class MockBackupRealm: BackupRealmProtocol {
         try inMemoryRealm.write {
             node.updatedAt = date
         }
+    }
+    
+    func findById(id: String) -> SyncedNode? {
+        return nil
+    }
+    
+    func deleteById(id: String) throws {
+        // TODO:
+    }
+    
+    func updateById(id: String) throws {
+        // TODO:
     }
 }
