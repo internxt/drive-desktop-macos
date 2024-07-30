@@ -105,11 +105,8 @@ class BackupTreeNode {
         guard let syncedNodeThreadRefUnwrapped = syncedNodeThreadRef else {
             return nil
         }
-        guard let realm = try backupRealm.getRealm() else {
-            return nil
-        }
-        
-        let syncedNode = realm.resolve(syncedNodeThreadRefUnwrapped)
+
+        let syncedNode = backupRealm.resolveSyncedNode(reference: syncedNodeThreadRefUnwrapped)
         
         guard let syncedNodeUnwrapped = syncedNode else {
             return nil
@@ -168,7 +165,7 @@ class BackupTreeNode {
         }
         
         let currentSyncedNode = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
-        if let threadRealm = try self.backupRealm.getRealm(), let currentSyncedNodeUnwrapped = currentSyncedNode {
+        if let currentSyncedNodeUnwrapped = currentSyncedNode {
             try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNodeUnwrapped.remoteId, syncedNoteRemoteUuid: currentSyncedNodeUnwrapped.remoteUuid)
             
             logger.info("Node \(self.name) is synced: \(currentSyncedNode != nil)")
