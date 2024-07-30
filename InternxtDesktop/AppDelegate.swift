@@ -52,8 +52,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
+    var signalEnumeratorTimer: AnyCancellable?
+    var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
-
     
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -488,6 +489,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
+       
+        usageUpdateDebouncer.debounce { [weak self] in
+            self?.updateUsage()
+        }
     }
     
     private func checkRefreshToken(){
@@ -500,5 +505,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self.logger.error("Error check refreshing token \(error)")
         }
 
+    }
+    
+    private func updateUsage() {
+        Task { await usageManager.updateUsage() }
     }
 }

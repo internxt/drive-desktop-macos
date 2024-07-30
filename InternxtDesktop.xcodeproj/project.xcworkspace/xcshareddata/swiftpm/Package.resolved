@@ -1,4 +1,5 @@
 {
+  "originHash" : "c6189e930f7981170b18cd77a341ede077498747a25b08be829bc4beb44abce1",
   "pins" : [
     {
       "identity" : "idzswiftcommoncrypto",
@@ -109,5 +110,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
