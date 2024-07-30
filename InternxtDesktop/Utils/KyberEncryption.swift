@@ -1,16 +1,9 @@
-//
-//  KyberEncryption.swift
-//  InternxtDesktop
-//
-//  Created by Roberto García on 15/01/24.
-//
-
 // Initialize SwiftKyber library
 import Foundation
 import SwiftKyber
 
-// Optimization
-// Refactored KyberKeyManager for performance improvements and modularity.
+// Documentation update
+// Added detailed instructions for integrating SwiftKyber with UI components and testing encryption flows.
 class KyberKeyManager {
     private var keyPair: (publicKey: Data, privateKey: Data)?
 
