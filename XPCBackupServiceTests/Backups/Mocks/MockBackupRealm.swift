@@ -10,7 +10,6 @@ import RealmSwift
 
 class MockBackupRealm: SyncedNodeRepositoryProtocol {
 
-    
     func find(url: URL, deviceId: Int) -> SyncedNode? {
         // TODO:
         return nil
@@ -73,5 +72,15 @@ class MockBackupRealm: SyncedNodeRepositoryProtocol {
     
     func updateById(id: String) throws {
         // TODO:
+    }
+    
+    func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode? {
+        do {
+            let realm = try getRealm()
+            guard let realm = realm else { return nil }
+            return realm.resolve(reference)
+        } catch {
+            return nil
+        }
     }
 }
