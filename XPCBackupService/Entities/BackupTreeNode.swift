@@ -30,9 +30,9 @@ class BackupTreeNode {
     var backupTotalPogress: Progress
     var rootBackupFolder: URL
     var syncRetries: UInt64 = 0
-    var backupRealm: any BackupRealmProtocol
+    var backupRealm: SyncedNodeRepository
     
-    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadServiceProtocol, backupRealm: any BackupRealmProtocol, backupTotalProgress: Progress) {
+    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadServiceProtocol, backupRealm: SyncedNodeRepository, backupTotalProgress: Progress) {
         self.id = id
         self.deviceId = deviceId
         self.parentId = parentId
