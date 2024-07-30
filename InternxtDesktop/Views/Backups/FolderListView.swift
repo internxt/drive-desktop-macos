@@ -6,6 +6,14 @@
 //
 
 import SwiftUI
+struct FolderListItem: Identifiable {
+    var id: String
+    var name: String
+    var type: String?
+    var folderIsMissing: Bool?
+}
+
+
 
 struct FolderListView<Empty: View>: View {
     @Environment(\.colorScheme) var colorScheme
@@ -13,25 +21,43 @@ struct FolderListView<Empty: View>: View {
     @Binding var items: [FolderListItem]
     @Binding var selectedId: String?
     @Binding var isLoading: Bool
+    let onItemSingleTap: (FolderListItem) -> Void
     let onItemDoubleTap: (FolderListItem) -> Void
-    @ViewBuilder let empty: () -> Empty
+    var onEndReached: () async -> Void = {}
+    var onMissingFolderURLLocated: (FolderListItem, URL) -> Void = {_,_ in }
+    @ViewBuilder let empty: () -> Empty?
     private let minimumRowsToEnableScroll = 5
-    
+    @State private var isLoadingMoreContent = false
     
     private var axes: Axis.Set {
-        return !isLoading && self.items.count >= minimumRowsToEnableScroll ? .vertical : []
+        return !isLoading ? .vertical : []
+    }
+    
+    private func pendingRowsToDisplayUntilSpaceIsFilled() -> Int {
+        let minimumRows = 10;
+        let pendingRows = minimumRows - self.items.count
+        
+        return pendingRows
     }
     
     
+    private func endReached() {
+        if !isLoadingMoreContent {
+            Task {
+                await onEndReached()
+                self.isLoadingMoreContent = false
+            }
+        }
+    }
     
     var body: some View {
-        if self.items.isEmpty && !self.isLoading {
-            self.empty()
+        if let empty = self.empty(), self.items.isEmpty && !self.isLoading {
+            empty
         } else {
             VStack {
                 ScrollView(axes) {
                     LazyVStack(spacing: 0) {
-                        if self.isLoading {
+                        if self.isLoading, self.items.isEmpty {
                             ForEach(0..<10) { index in
                                 FolderRowSkeleton(index: index)
                             }
@@ -39,6 +65,11 @@ struct FolderListView<Empty: View>: View {
                             ForEach(0..<self.items.count, id: \.self) { index in
                                 FolderRow(item: self.items[index], index: index)
                             }
+                            
+                            HStack {}.onAppear{
+                                endReached()
+                            }
+                            
                         }
                     }
                 }
@@ -54,7 +85,7 @@ struct FolderListView<Empty: View>: View {
     }
     
     // TODO: Move this outside of this view, it breaks the abstraction
-    func locateMissingFolderToBackup(folderToBackupMissing: FolderToBackup) {
+    func locateMissingFolderToBackup(folderListItem: FolderListItem) {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = true
@@ -66,7 +97,7 @@ struct FolderListView<Empty: View>: View {
                 return
             }
             Task {
-            //    onMissingFolderURLLocated(folderToBackupMissing, newURL)
+             onMissingFolderURLLocated (folderListItem, newURL)
             }
         }
         
@@ -84,19 +115,24 @@ struct FolderListView<Empty: View>: View {
     func FolderRow(item: FolderListItem, index: Int) -> some View {
         let isSelected =  selectedId == item.id
 
+        var fullname = item.name
+        let type = item.type ?? "folder"
+        if type != "folder" {
+            fullname = fullname + ".\(type)"
+        }
         return HStack(alignment: .center, spacing: 8) {
             
-            Image(getIconNameForFileExtension(fileExtension: item.type)).resizable()
+            Image(getIconNameForFileExtension(fileExtension: type)).resizable()
                 .scaledToFit()
                 .frame(height: 22)
-            AppText(item.name)
+            AppText(fullname)
                 .font(.LGRegular)
-                .foregroundColor(selectedId == item.id ? .white : .Gray80)
+                .foregroundColor(selectedId == item.id ? .white : .Gray80).lineLimit(1).truncationMode(.middle)
             Spacer()
-            /*
-             // TODO: Move this outside of this view, it breaks the abstraction
+            
+            
              
-             if item.folderIsMissing() {
+             if item.folderIsMissing == true {
                 HStack(spacing: 4) {
                     ZStack {
                         Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
@@ -109,12 +145,12 @@ struct FolderListView<Empty: View>: View {
                     HStack(spacing:8) {
                         AppText("BACKUP_MISSING_FOLDER_ERROR").font(.XSRegular).foregroundColor(.Red)
                         AppButton(title: "BACKUP_LOCATE_FOLDER", onClick: {
-                            locateMissingFolderToBackup(folderToBackupMissing: item)
-                        } , type: .secondary)
+                            locateMissingFolderToBackup(folderListItem: item)
+                        } , type: .secondary, size: .SM)
                     }
                     
                 }
-            }*/
+            }
         }
         
         .padding([.horizontal], 10)
@@ -130,6 +166,7 @@ struct FolderListView<Empty: View>: View {
                 self.onItemDoubleTap(item)
             }, secondCount: 1, secondAction: {
                 self.selectedId = item.id
+                self.onItemSingleTap(item)
             }
         ))
         
@@ -158,16 +195,24 @@ struct FolderListView<Empty: View>: View {
     FolderListView(
         items: .constant([
         FolderListItem(
-            id: "1", name: "FolderA", type: "folder"
+            id: "1",
+            name: "FolderA",
+            type: "folder",
+            folderIsMissing: true
         ),
         FolderListItem(
             id: "2", name: "FolderB", type: "folder"
         ),
         FolderListItem(
-            id: "3", name: "file", type: "jpg"
+            id: "3", 
+            name: "file",
+            type: "jpg"
         )]),
         selectedId: .constant(nil),
         isLoading: .constant(false),
+        onItemSingleTap: {item in
+            
+        },
         onItemDoubleTap: {item in
             
         },

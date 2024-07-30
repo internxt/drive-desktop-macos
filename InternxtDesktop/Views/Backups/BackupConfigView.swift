@@ -134,15 +134,9 @@ struct BackupConfigView: View {
                         }
                     }, type: .primary, isExpanded: true)
                 }
-                if self.isDownloadingBackup() {
-                    AppButton(title: "BACKUP_DOWNLOAD_STOP", onClick: {
-                        stopBackupDownload()
-                    }, type: .secondary, isExpanded: true)
-                } else {
-                    AppButton(title: "BACKUP_DOWNLOAD", onClick: {
-                        downloadBackup()
-                    }, type: .secondary, isExpanded: true)
-                }
+                AppButton(title: "BACKUP_BROWSE_FILES", onClick: {
+                    browseFiles()
+                }, type: .secondary, isExpanded: true)
                 
             } else {
                 if self.isDownloadingBackup() {

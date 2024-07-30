@@ -98,6 +98,8 @@
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Click + to select the folders\nyou want to back up";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "This folder is already selected";
 
+
+
 // Common
 "COMMON_UPGRADE" = "Upgrade";
 "COMMON_LOGOUT" = "Log out";
@@ -111,6 +113,9 @@
 "COMMON_CLOSE" = "Close";
 "COMMON_LANGUAGE" = "Language";
 "COMMON_DOWNLOAD" = "Download";
+"COMMON_FOLDER_EMPTY" = "This folder is empty";
+"COMMON_FOLDER_LOAD_ERROR" = "Something went wrong while loading this folder content";
+
 
 // Usage
 "USAGE_LOADING" = "Loading your usage";

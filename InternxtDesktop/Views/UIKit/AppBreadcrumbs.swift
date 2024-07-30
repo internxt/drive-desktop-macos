@@ -16,7 +16,7 @@ struct AppBreadcrumbs: View {
     let onLevelTap: (AppBreadcrumbLevel) -> Void
     @Binding var levels: [AppBreadcrumbLevel]
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(alignment: .center, spacing: 2) {
             let lastLevel = levels.last
             ForEach(levels, id: \.id) {level in
                 let isLast = lastLevel?.id == level.id
@@ -29,7 +29,7 @@ struct AppBreadcrumbs: View {
                 )
                 if !isLast {getLevelSeparator()}
             }
-        }
+        }.frame(height: 32)
         
     }
     
@@ -54,7 +54,6 @@ struct AppBreadcrumbLevelView: View {
             AppText(level.name).font(.BaseMedium).foregroundColor(isLast ? .Gray80 : .Gray50)
         }
         .padding(.horizontal, 6)
-        .frame(minHeight: 32)
         .background(
             isHovering ? Color.Gray10 : Color.clear
         )

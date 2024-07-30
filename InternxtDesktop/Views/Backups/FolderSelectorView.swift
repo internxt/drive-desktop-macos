@@ -23,11 +23,11 @@ struct FolderSelectorView: View {
         }
     }
     
-    func handleMissingFolderURLLocated(folderToBackup: FolderToBackup, newURL: URL) -> Void {
+    func handleMissingFolderURLLocated(folderListItem: FolderListItem, newURL: URL) -> Void {
 
         Task{
             do {
-                try backupsService.updateFolderToBackupURL(folderToBackup: folderToBackup, newURL: newURL)
+                try backupsService.updateFolderToBackupURL(folderId: folderListItem.id, newURL: newURL)
                 DispatchQueue.main.async {
                     backupsService.loadFoldersToBackup()
                 }
@@ -35,24 +35,8 @@ struct FolderSelectorView: View {
                 appLogger.error(["Failed to update folder to backup URL", error])
             }
         }
-        
-        
-        
     }
     
-    func selectMissingFolder() -> URL? {
-        let panel = NSOpenPanel()
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = true
-        panel.canChooseFiles = false
-        let panelResponse = panel.runModal()
-        
-        if panelResponse == .OK {
-            return panel.url
-        }
-        
-        return nil
-    }
     
     func selectFolder() {
         let panel = NSOpenPanel()
@@ -82,7 +66,7 @@ struct FolderSelectorView: View {
     
     func getSelectorItems() -> Binding<[FolderListItem]> {
         let items = $backupsService.foldersToBackup.wrappedValue.map{folder in
-            FolderListItem(id: folder.id, name:folder.name, type: folder.type)
+            FolderListItem(id: folder.id, name:folder.name, type: nil, folderIsMissing: folder.folderIsMissing())
         }
         return Binding.constant(items)
     }
@@ -106,8 +90,10 @@ struct FolderSelectorView: View {
                 items: self.getSelectorItems(),
                 selectedId: $folderToBackupId,
                 isLoading: .constant(false),
-                onItemDoubleTap: {item in
-                },
+            
+                onItemSingleTap: {item in},
+                onItemDoubleTap: {item in},
+                onMissingFolderURLLocated: handleMissingFolderURLLocated,
                 empty: {
                     VStack {
                         AppText("BACKUP_SETTINGS_ADD_FOLDERS")

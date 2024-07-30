@@ -170,10 +170,10 @@ class BackupsService: ObservableObject {
         
     }
     
-    func updateFolderToBackupURL(folderToBackup: FolderToBackup, newURL: URL) throws {
+    func updateFolderToBackupURL(folderId: String, newURL: URL) throws {
         let realm = getRealm()
         let folderToBackupRealmObject = realm.object(ofType: FolderToBackupRealmObject.self,
-                                                     forPrimaryKey: try ObjectId(string: folderToBackup.id))
+                                                     forPrimaryKey: try ObjectId(string: folderId))
         
         guard let folderToBackupRealmObjectUnwrapped = folderToBackupRealmObject else {
             return
@@ -600,17 +600,11 @@ class BackupsService: ObservableObject {
 
 }
 
-struct FolderListItem: Identifiable {
-    var id: String
-    var name: String
-    var type: String
-}
+
 
 class FolderToBackup {
     var name: String
-    
     var type: String
-    
     var id: String
     let url: URL
     let status: FolderToBackupStatus

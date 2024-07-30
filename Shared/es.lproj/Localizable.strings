@@ -111,6 +111,8 @@
 "COMMON_CLOSE" = "Cerrar";
 "COMMON_LANGUAGE" = "Idioma";
 "COMMON_DOWNLOAD" = "Descargar";
+"COMMON_FOLDER_EMPTY" = "Esta carpeta esta vacía";
+"COMMON_FOLDER_LOAD_ERROR" = "Ha ocurrido un error al cargar el contenido de esta carpeta";
 
 // Usage
 "USAGE_LOADING" = "Cargando espacio usado";

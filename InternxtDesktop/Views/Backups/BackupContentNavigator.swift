@@ -7,13 +7,18 @@
 
 import Foundation
 import SwiftUI
+
+
 struct BackupContentNavigator: View {
     let device: Device
     let onClose: () -> Void
     @State var selectedId: String? = nil
+    @State var currentFolderId: String? = nil
     @StateObject var viewModel = ViewModel()
     
     @Environment(\.colorScheme) var colorScheme
+    
+    @State private var selectedFolderListItem: FolderListItem? = nil
     
     func getBreadcrumbsLevels() -> Binding<[AppBreadcrumbLevel]> {
         let levels: [AppBreadcrumbLevel] = $viewModel.navigationLevels.wrappedValue.map{level in
@@ -27,7 +32,8 @@ struct BackupContentNavigator: View {
     var Breadcrumbs: some View {
         AppBreadcrumbs(
             onLevelTap: {level in
-                
+                self.selectedFolderListItem = nil
+                self.currentFolderId = level.id
                 navigateToFolder(
                     item: FolderListItem(id: level.id, name: level.name, type: "folder")
                 )
@@ -46,6 +52,15 @@ struct BackupContentNavigator: View {
         }
     }
     
+    func handleOnEndOfListReached() async {
+        Task {
+            if let bucketId = device.bucket, let folderIdStr = currentFolderId, let folderId = Int(folderIdStr) {
+                try? await viewModel.loadMoreForFolderId(folderId: folderId, bucketId: bucketId)
+            }
+        }
+        
+    }
+    
     func getFolderListItems() -> Binding<[FolderListItem]> {
         
         let current = $viewModel.currentItems.wrappedValue
@@ -59,19 +74,51 @@ struct BackupContentNavigator: View {
     }
     var body: some View {
         VStack {
-            HStack {
+            
+            HStack(spacing: 0) {
                 Breadcrumbs
                 Spacer()
-            }
+            }.frame(alignment: .leading)
             FolderListView(
                 items: getFolderListItems(),
                 selectedId: $selectedId,
                 isLoading: $viewModel.loadingItems,
-                onItemDoubleTap: {item in
-                    navigateToFolder(item: item)
+            
+                onItemSingleTap: {item in
+                    self.selectedFolderListItem = item
                 },
+                onItemDoubleTap: {item in
+                    self.selectedFolderListItem = nil
+                    if item.type == "folder" {
+                        self.currentFolderId = item.id
+                        navigateToFolder(item: item)
+                    } else {
+                        // Noop, files have no action here
+                    }
+                },
+                onEndReached: handleOnEndOfListReached,
                 empty: {
-                    AppText("123")
+                    
+                    VStack {
+                        if (viewModel.folderError != nil) {
+                            AppText("COMMON_FOLDER_LOAD_ERROR")
+                                .font(.BaseRegular)
+                                .foregroundColor(.Gray50)
+                                .multilineTextAlignment(.center)
+                        } else {
+                            AppText("COMMON_FOLDER_EMPTY")
+                                .font(.BaseRegular)
+                                .foregroundColor(.Gray50)
+                                .multilineTextAlignment(.center)
+                        }
+                        
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .cornerRadius(8.0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.Gray10, lineWidth: 1)
+                    )
                 }
             ).frame(maxHeight: .infinity)
             HStack {
@@ -82,7 +129,8 @@ struct BackupContentNavigator: View {
                     }
                 }, type: .secondary, size: .MD)
                 AppButton(title: "COMMON_DOWNLOAD", onClick: {
-                }, type: .primary, size: .MD)
+                    self.downloadItem()
+                }, type: .primary, size: .MD, isEnabled: viewModel.folderError == nil)
                 
             }
         }.frame(width: 480, height: 380, alignment: .top)
@@ -99,6 +147,14 @@ struct BackupContentNavigator: View {
                     
                 }
             }
+    }
+    
+    private func downloadItem() {
+        let alert = NSAlert()
+        alert.messageText = "Download not implemented yet"
+        alert.informativeText = "You triggered a download, but this feature is not yet implemented"
+        
+        alert.runModal()
     }
     
     
