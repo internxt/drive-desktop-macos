@@ -11,7 +11,7 @@ import InternxtSwiftCore
 final class BackupTreeGeneratorTests: XCTestCase {
     var sut: BackupTreeGenerator!
     var tmpDirectoryURL: URL!
-    var backupRealm: (any BackupRealmProtocol)?
+    var backupRealm: any SyncedNodeRepositoryProtocol = MockBackupRealm()
     var mockBackupUploadService: MockBackupUploadService!
     private var uploadOperationQueue = OperationQueue()
     
@@ -25,7 +25,7 @@ final class BackupTreeGeneratorTests: XCTestCase {
             root: tmpDirectoryURL,
             deviceId: 999,
             backupUploadService: mockBackupUploadService,
-            backupTotalProgress: Progress(), backupRealm: backupRealm!
+            backupTotalProgress: Progress(), backupRealm: backupRealm
         )
     }
     
@@ -108,7 +108,7 @@ final class BackupTreeGeneratorTests: XCTestCase {
             remoteParentId: 10
         )
         
-        try backupRealm?.addSyncedNode(node)
+        try backupRealm.addSyncedNode(node)
         try await backupTree.syncNode()
         XCTAssertEqual(backupTree.syncStatus, .REMOTE_AND_LOCAL )
     }
