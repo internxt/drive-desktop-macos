@@ -90,7 +90,7 @@ struct BackupsDeviceService {
             parentUuid: UUID().uuidString,
             name: "encrypted_name",
             plainName: "Macbook Pro",
-            bucket: nil,
+            bucket: "bucket123",
             encryptVersion: nil,
             deleted: false,
             deletedAt: nil,

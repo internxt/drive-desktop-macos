@@ -170,10 +170,10 @@ class BackupsService: ObservableObject {
         
     }
     
-    func updateFolderToBackupURL(folderToBackup: FolderToBackup, newURL: URL) throws {
+    func updateFolderToBackupURL(folderId: String, newURL: URL) throws {
         let realm = getRealm()
         let folderToBackupRealmObject = realm.object(ofType: FolderToBackupRealmObject.self,
-                                                     forPrimaryKey: try ObjectId(string: folderToBackup.id))
+                                                     forPrimaryKey: try ObjectId(string: folderId))
         
         guard let folderToBackupRealmObjectUnwrapped = folderToBackupRealmObject else {
             return
@@ -600,8 +600,12 @@ class BackupsService: ObservableObject {
 
 }
 
+
+
 class FolderToBackup {
-    let id: String
+    var name: String
+    var type: String
+    var id: String
     let url: URL
     let status: FolderToBackupStatus
     let createdAt: Date
@@ -612,6 +616,8 @@ class FolderToBackup {
         self.url = URL(fileURLWithPath: folderToBackupRealmObject.url.removingPercentEncoding?.replacingOccurrences(of: "file://", with: "") ?? "")
         self.status = folderToBackupRealmObject.status
         self.createdAt = folderToBackupRealmObject.createdAt
+        self.name = self.url.lastPathComponent.removingPercentEncoding ?? "Unknown folder"
+        self.type = (self.name as NSString).pathExtension
     }
     
     init(id: String,url: URL, status: FolderToBackupStatus, createdAt: Date) {
@@ -619,6 +625,8 @@ class FolderToBackup {
         self.url = url
         self.status = status
         self.createdAt = createdAt
+        self.name = self.url.lastPathComponent.removingPercentEncoding ?? "Unknown folder"
+        self.type = (self.name as NSString).pathExtension
     }
     
     
