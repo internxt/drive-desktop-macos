@@ -44,12 +44,9 @@ jobs:
         run: npm install -g create-dmg
       
       - name: Run Fastlane release
-        run: fastlane setup_dev_provisioning_profiles --verbose
+        run: fastlane beta_ci --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
-
-      - name: Show provisioning profiles
-        run: cd ~/Library/MobileDevice/Provisioning\ Profiles && ls
         
       - name: Archive logs
         uses: actions/upload-artifact@v4
