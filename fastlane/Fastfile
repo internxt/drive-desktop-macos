@@ -30,7 +30,7 @@ platform :mac do
   desc "Build Beta DMG"
   lane :beta_ci do
 
-    setup_ci()
+    # setup_ci()
     
     version_number = get_version_number(
       xcodeproj: "InternxtDesktop.xcodeproj",
