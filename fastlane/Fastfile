@@ -53,7 +53,7 @@ platform :mac do
     # Prepare certificates using Match
     match(
       type: "developer_id", 
-      readonly: false,
+      readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop", 
         "internxt.InternxtDesktop.sync",
