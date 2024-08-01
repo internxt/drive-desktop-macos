@@ -2,7 +2,9 @@ name: Build and Sign Internxt Desktop MacOS App - Beta
 
 on:
   workflow_dispatch:
-
+  push:
+    branches:
+      - fix/ci-provisioning-profiles
 # This envs are available for all the steps
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
