@@ -58,7 +58,7 @@ platform :mac do
         "internxt.InternxtDesktop", 
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
-      ],
+      ]
     )
   
     
