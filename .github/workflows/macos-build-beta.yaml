@@ -52,7 +52,8 @@ jobs:
       
       - name: Check code sign identities
         run: security find-identity -v -p codesigning
-
+        if: always()
+        
       - name: Archive logs
         uses: actions/upload-artifact@v4
         if: always()
