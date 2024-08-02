@@ -75,7 +75,7 @@ struct BackupDownloadService {
         
     }
     
-    private func downloadFile(fileId: String, bucketId: String, downloadAt: URL) {
+     func downloadFile(fileId: String, bucketId: String, downloadAt: URL) {
         let downloadFileOperation = BackupDownloadItemOperation(
             networkFacade: self.networkFacade,
             bucketId: bucketId,
