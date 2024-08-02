@@ -38,15 +38,16 @@ class BackupDownloadItemOperation: AsyncOperation {
                 fileId: fileId,
                 encryptedFileDestination: encryptedFileURL,
                 destinationURL: downloadAt,
-                progressHandler: { completedProgress in }
+                progressHandler: { completedProgress in },
+                debug: true
             )
             
             backupDownloadProgress.completedUnitCount += 1
             
-            defer {
-                logger.info("🧹 Cleaning up encrypted file...")
-                try? FileManager.default.removeItem(at: encryptedContentURL)
-            }
+//            defer {
+//                logger.info("🧹 Cleaning up encrypted file...")
+//                try? FileManager.default.removeItem(at: encryptedContentURL)
+//            }
             
             logger.info("✅ File downloaded at \(downloadAt.path)")
         } catch {

@@ -188,7 +188,7 @@ struct BackupConfigView: View {
             }
             Task {
                 do {
-                    try await backupsService.downloadBackup(device: device, downloadAt: url)
+                    try await backupsService.downloadBackup(device: device, downloadAt: url, folderId: 10)
                 } catch {
                     appLogger.error(["Error downloading backup", error])
                 }

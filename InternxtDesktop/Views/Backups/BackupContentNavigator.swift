@@ -19,6 +19,7 @@ struct BackupContentNavigator: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var selectedFolderListItem: FolderListItem? = nil
+    @StateObject var backupsService: BackupsService
     
     func getBreadcrumbsLevels() -> Binding<[AppBreadcrumbLevel]> {
         let levels: [AppBreadcrumbLevel] = $viewModel.navigationLevels.wrappedValue.map{level in
@@ -150,11 +151,42 @@ struct BackupContentNavigator: View {
     }
     
     private func downloadItem() {
-        let alert = NSAlert()
-        alert.messageText = "Download not implemented yet"
-        alert.informativeText = "You triggered a download, but this feature is not yet implemented"
         
-        alert.runModal()
+        
+        if(backupsService.backupDownloadStatus == .InProgress) {
+            let alert = NSAlert()
+            let title = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE", comment: "")
+            let message = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE", comment: "")
+            alert.messageText = title
+            alert.informativeText = message
+            alert.runModal()
+            return
+        }
+        
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        let panelResponse = panel.runModal()
+        if(panelResponse == .OK) {
+            guard let url = panel.url else {
+                return
+            }
+            print(url)
+            print(selectedId ?? "")
+            print(currentFolderId ?? "")
+            guard let selectedId = Int(selectedId ?? "0") else { return }
+            guard let currentFolderId = Int(currentFolderId ?? "0") else { return  }
+            Task {
+                do {
+                    try await backupsService.downloadBackupFile(device: device, downloadAt: url, fileId: "664e0286a04648000881a247")
+//                    try await backupsService.downloadBackup(device: device, downloadAt: url, folderId: selectedId)
+                } catch {
+                    print(error)
+                }
+                
+            }
+        }
     }
     
     
@@ -162,5 +194,5 @@ struct BackupContentNavigator: View {
 
 
 #Preview {
-    BackupContentNavigator(device: BackupsDeviceService.shared.getDeviceForPreview() , onClose: {})
+    BackupContentNavigator(device: BackupsDeviceService.shared.getDeviceForPreview() , onClose: {}, backupsService: BackupsService())
 }
