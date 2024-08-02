@@ -84,7 +84,21 @@ struct BackupDownloadService {
             downloadAt: downloadAt,
             backupDownloadProgress: self.backupDownloadProgress
         )
-        self.downloadOperationQueue.addOperation(downloadFileOperation)
+         
+         let encryptedFileURL = self.encryptedContentURL.appendingPathComponent(UUID().uuidString)
+         Task {
+             let _ = try await self.networkFacade.downloadFile(
+                 bucketId: bucketId,
+                 fileId: fileId,
+                 encryptedFileDestination: encryptedFileURL,
+                 destinationURL: downloadAt,
+                 progressHandler: { completedProgress in },
+                 debug: true
+             )
+             
+         }
+
+     //   self.downloadOperationQueue.addOperation(downloadFileOperation)
     }
     
     private func createFolder(folderURL: URL, creationDate: Date) throws {

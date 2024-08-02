@@ -376,13 +376,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         Task {
             do {
                 try await backupDownloadService.downloadFile(fileId: fileId, bucketId: bucketId, downloadAt: downloadAtURL)
-                self.downloadOperationQueue.addBarrierBlock {
-                    logger.info("Download operations completed")
-                    self.backupDownloadStatus = .Done
-                    reply(nil, nil)
-                }
-                
-                
+//                self.downloadOperationQueue.addBarrierBlock {
+//                    logger.info("Download operations completed")
+//                    self.backupDownloadStatus = .Done
+//                    reply(nil, nil)
+//                }
+                self.backupDownloadStatus = .Done
+                reply(nil,nil)
             } catch {
                 self.backupDownloadStatus = .Failed
                 logger.error(["Failed to download backup", error])
