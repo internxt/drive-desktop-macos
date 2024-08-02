@@ -27,8 +27,6 @@
 		3120B5762B85185C00F524F1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17AA0232A8A70CE00C7EE6E /* AuthManager.swift */; };
 		3120B5772B8518C300F524F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCE2A9629620051DD46 /* Generic.swift */; };
 		3120B5782B85296400F524F1 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
-		314D64342B9767EB00126E4B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64332B9767EB00126E4B /* Realm */; };
-		314D64362B9767FB00126E4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 314D64352B9767FB00126E4B /* RealmSwift */; };
 		315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68C2B3DDE4E004C85D8 /* BackupsTabView.swift */; };
 		315BC68F2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC68E2B3DE84F004C85D8 /* BackupAvailableDevicesView.swift */; };
 		315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315BC6912B3E06A5004C85D8 /* FolderSelectorView.swift */; };
@@ -73,7 +71,6 @@
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
-		AAC188E02C222E1A007E321A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188DF2C222E1A007E321A /* RealmSwift */; };
 		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
 		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
@@ -127,6 +124,7 @@
 		E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */; };
 		E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
 		E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */; };
+		E14A64722C5A54D900B7E8AD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E14A64712C5A54D900B7E8AD /* RealmSwift */; };
 		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
 		E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
 		E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
@@ -196,16 +194,17 @@
 		E19136942AA101DE00CAF0FA /* WidgetIconButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */; };
 		E19136962AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
 		E19136992AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
+		E195325C2C5A556000CB81C3 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E14A64712C5A54D900B7E8AD /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E195325F2C5A557700CB81C3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E195325E2C5A557700CB81C3 /* RealmSwift */; };
+		E19532602C5A557700CB81C3 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E195325E2C5A557700CB81C3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E19532622C5A558000CB81C3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E19532612C5A558000CB81C3 /* RealmSwift */; };
+		E19532632C5A558000CB81C3 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E19532612C5A558000CB81C3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */; };
 		E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */; };
 		E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DD2AA9EA0A00107753 /* Utils.swift */; };
 		E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD04E2AA8D54E00D95694 /* RealtimeService.swift */; };
 		E198D7E12AAA3A2800107753 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = E198D7E02AAA3A2800107753 /* SocketIO */; };
 		E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC4A2AB3590E005E71D6 /* AppCachedAsyncImage.swift */; };
-		E1A0AC4E2AB3A27F005E71D6 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC4D2AB3A27F005E71D6 /* Realm */; };
-		E1A0AC502AB3A27F005E71D6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC4F2AB3A27F005E71D6 /* RealmSwift */; };
-		E1A0AC522AB3A8C8005E71D6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC512AB3A8C8005E71D6 /* RealmSwift */; };
-		E1A0AC542AB3A8D8005E71D6 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC532AB3A8D8005E71D6 /* Realm */; };
 		E1A0AC562AB48B7F005E71D6 /* WindowsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */; };
 		E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC592AB4D7BC005E71D6 /* main.swift */; };
 		E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5B2AB85131005E71D6 /* Windows.swift */; };
@@ -230,6 +229,8 @@
 		E1B1C9272B0394C30003F001 /* UpdateFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */; };
 		E1BE23612AB0A06A00EAB152 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
 		E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4612AB9FD6300E3BF7A /* URL.swift */; };
+		E1C7D59C2C5943E000E4350E /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E1C7D5992C5943E000E4350E /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E1C7D5A02C5943E800E4350E /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E1C7D59D2C5943E800E4350E /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E1CAB6782AFC3F740006EA1E /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CAB6772AFC3F740006EA1E /* AppSelector.swift */; };
 		E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */; };
 		E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
@@ -319,6 +320,41 @@
 				31DEAEBA2B75139400E76D53 /* XPCBackupService.xpc in Embed XPC Services */,
 			);
 			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E195325D2C5A556000CB81C3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E195325C2C5A556000CB81C3 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1C7D59B2C5943E000E4350E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E19532602C5A557700CB81C3 /* RealmSwift in Embed Frameworks */,
+				E1C7D59C2C5943E000E4350E /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1C7D59F2C5943E800E4350E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E19532632C5A558000CB81C3 /* RealmSwift in Embed Frameworks */,
+				E1C7D5A02C5943E800E4350E /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */ = {
@@ -514,10 +550,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA059A352BFE36C500A07D45 /* Rudder in Frameworks */,
-				314D64362B9767FB00126E4B /* RealmSwift in Frameworks */,
-				314D64342B9767EB00126E4B /* Realm in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
+				E19532622C5A558000CB81C3 /* RealmSwift in Frameworks */,
 				E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -542,7 +577,6 @@
 			files = (
 				AAC188E82C222EB3007E321A /* Sentry in Frameworks */,
 				AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */,
-				AAC188E02C222E1A007E321A /* RealmSwift in Frameworks */,
 				AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */,
 				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
 			);
@@ -555,12 +589,11 @@
 				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
-				E1A0AC4E2AB3A27F005E71D6 /* Realm in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
-				E1A0AC502AB3A27F005E71D6 /* RealmSwift in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
+				E14A64722C5A54D900B7E8AD /* RealmSwift in Frameworks */,
 				E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -570,9 +603,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1A0AC6B2AB88A86005E71D6 /* Rudder in Frameworks */,
-				E1A0AC542AB3A8D8005E71D6 /* Realm in Frameworks */,
-				E1A0AC522AB3A8C8005E71D6 /* RealmSwift in Frameworks */,
 				E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */,
+				E195325F2C5A557700CB81C3 /* RealmSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
 				E198D7E12AAA3A2800107753 /* SocketIO in Frameworks */,
@@ -1096,6 +1128,7 @@
 				31DEAEAA2B75139400E76D53 /* Sources */,
 				31DEAEAB2B75139400E76D53 /* Frameworks */,
 				31DEAEAC2B75139400E76D53 /* Resources */,
+				E1C7D59F2C5943E800E4350E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1105,10 +1138,9 @@
 			packageProductDependencies = (
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
-				314D64332B9767EB00126E4B /* Realm */,
-				314D64352B9767FB00126E4B /* RealmSwift */,
 				E1FD8C702BA989B600C257E0 /* XCGLogger */,
 				AA059A342BFE36C500A07D45 /* Rudder */,
+				E19532612C5A558000CB81C3 /* RealmSwift */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1163,7 +1195,6 @@
 			);
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
-				AAC188DF2C222E1A007E321A /* RealmSwift */,
 				AAC188E12C222E1A007E321A /* ObjcExceptionBridging */,
 				AAC188E32C222E1A007E321A /* XCGLogger */,
 				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
@@ -1183,6 +1214,7 @@
 				E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */,
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
 				31DEAEBF2B75139400E76D53 /* Embed XPC Services */,
+				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1196,12 +1228,11 @@
 				E1313D2E2A9501BB00C7ABF0 /* Sentry */,
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E1ADD0512AA8D68D00D95694 /* SocketIO */,
-				E1A0AC4D2AB3A27F005E71D6 /* Realm */,
-				E1A0AC4F2AB3A27F005E71D6 /* RealmSwift */,
 				E1A0AC632AB884F0005E71D6 /* Rudder */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
 				E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */,
 				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
+				E14A64712C5A54D900B7E8AD /* RealmSwift */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1214,6 +1245,7 @@
 				E1FB2D7D2A76C48600473AE1 /* Sources */,
 				E1FB2D7E2A76C48600473AE1 /* Frameworks */,
 				E1FB2D7F2A76C48600473AE1 /* Resources */,
+				E1C7D59B2C5943E000E4350E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1224,10 +1256,9 @@
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 				E198D7E02AAA3A2800107753 /* SocketIO */,
-				E1A0AC512AB3A8C8005E71D6 /* RealmSwift */,
-				E1A0AC532AB3A8D8005E71D6 /* Realm */,
 				E1A0AC6A2AB88A86005E71D6 /* Rudder */,
 				E1FD8C6E2BA989AE00C257E0 /* XCGLogger */,
+				E195325E2C5A557700CB81C3 /* RealmSwift */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -1280,10 +1311,10 @@
 				E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
-				E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
+				E14A646E2C5A54D900B7E8AD /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1691,6 +1722,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupServiceDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -1713,7 +1745,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "com.internxt.XPCBackupService Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1725,6 +1757,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -1746,7 +1779,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "com.internxt.XPCBackupService Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1757,6 +1790,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -1778,7 +1812,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "com.internxt.XPCBackupService Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2079,6 +2113,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -2108,7 +2143,7 @@
 				PRODUCT_NAME = "Internxt Drive";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "internxt.InternxtDesktop Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -2117,6 +2152,7 @@
 		E17AA0292A8A7EDD00C7EE6E /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -2141,7 +2177,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "internxt.InternxtDesktop.sync Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop.sync macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2283,6 +2319,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktopDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -2312,7 +2349,7 @@
 				PRODUCT_NAME = "Internxt Drive";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "internxt.InternxtDesktop Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -2324,6 +2361,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -2352,7 +2390,7 @@
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "internxt.InternxtDesktop Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -2361,6 +2399,7 @@
 		E1FB2D902A76C48600473AE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -2384,7 +2423,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "internxt.InternxtDesktop.sync Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop.sync macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2394,6 +2433,7 @@
 		E1FB2D912A76C48600473AE1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
@@ -2418,7 +2458,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "internxt.InternxtDesktop.sync Direct";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop.sync macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2517,19 +2557,19 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		E14A646E2C5A54D900B7E8AD /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.52.2;
+			};
+		};
 		E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
 				branch = main;
-				kind = branch;
-			};
-		};
-		E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				branch = master;
 				kind = branch;
 			};
 		};
@@ -2557,6 +2597,14 @@
 				kind = branch;
 			};
 		};
+		E1C7D5942C59412600E4350E /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.52.2;
+			};
+		};
 		E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger.git";
@@ -2578,25 +2626,10 @@
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
-		314D64332B9767EB00126E4B /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		314D64352B9767FB00126E4B /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
 		AA059A342BFE36C500A07D45 /* Rudder */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
 			productName = Rudder;
-		};
-		AAC188DF2C222E1A007E321A /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 		AAC188E12C222E1A007E321A /* ObjcExceptionBridging */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2638,35 +2671,30 @@
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
+		E14A64712C5A54D900B7E8AD /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E14A646E2C5A54D900B7E8AD /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		E150884D2A7C55F20089BD57 /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
 			productName = InternxtSwiftCore;
 		};
+		E195325E2C5A557700CB81C3 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E14A646E2C5A54D900B7E8AD /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		E19532612C5A558000CB81C3 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E14A646E2C5A54D900B7E8AD /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		E198D7E02AAA3A2800107753 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
-		};
-		E1A0AC4D2AB3A27F005E71D6 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		E1A0AC4F2AB3A27F005E71D6 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
-		E1A0AC512AB3A8C8005E71D6 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
-		E1A0AC532AB3A8D8005E71D6 /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC4C2AB3A27F005E71D6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
 		};
 		E1A0AC632AB884F0005E71D6 /* Rudder */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2687,6 +2715,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
+		};
+		E1C7D5992C5943E000E4350E /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1C7D5942C59412600E4350E /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		E1C7D59D2C5943E800E4350E /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1C7D5942C59412600E4350E /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */ = {
 			isa = XCSwiftPackageProductDependency;

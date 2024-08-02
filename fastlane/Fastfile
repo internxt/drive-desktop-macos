@@ -14,19 +14,17 @@ platform :mac do
 
   desc "Configure provisioning profiles"
   lane :setup_dev_provisioning_profiles do
-    identifiers_to_configure = [
-      "internxt.InternxtDesktop", 
-      "internxt.InternxtDesktop.sync",
-      "com.internxt.XPCBackupService"
-    ]
-    for identifier in identifiers_to_configure do
-      sigh(
-        app_identifier: identifier,
-        platform: "macos",
-        team_id: "JR4S3SY396",
-        developer_id: true,
-      )
-    end
+    match(
+      type: "developer_id", 
+      readonly: true,
+      app_identifier: [
+        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop.sync",
+        "com.internxt.XPCBackupService"
+      ],
+    )
+
+    UI.important("Match setup finished")
   end
 
   desc "Build Beta DMG"
@@ -60,9 +58,10 @@ platform :mac do
         "internxt.InternxtDesktop", 
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
-      ],
+      ]
     )
-
+  
+    
     
     app_path = "build/Internxt Drive.app"
     dmg_original_name = "Internxt #{version_number}.dmg"
@@ -76,13 +75,6 @@ platform :mac do
       export_method: "developer-id",
       scheme: "InternxtDesktop",
       configuration: "Beta",
-      export_options: {
-        provisioningProfiles: {
-          "internxt.InternxtDesktop" => "internxt.InternxtDesktop Direct",
-          "internxt.InternxtDesktop.sync" => "internxt.InternxtDesktop.sync Direct",
-          "com.internxt.XPCBackupService" => "com.internxt.XPCBackupService Direct"
-        }
-      }
     )
 
     # Notarize the app
