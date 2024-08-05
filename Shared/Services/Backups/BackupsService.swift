@@ -424,7 +424,7 @@ class BackupsService: ObservableObject {
             })
     }
     
-    func downloadBackup(device: Device, downloadAt: URL, folderId: Int) async throws {
+    func downloadBackup(device: Device, downloadAt: URL) async throws {
         self.deviceDownloading = device
         logger.info("Preparint backup for download")
         logger.info("Device to download is \(device.plainName) with ID \(device.id)")
@@ -461,7 +461,69 @@ class BackupsService: ObservableObject {
         xpcBackupService.downloadDeviceBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
-            deviceId:folderId,
+            deviceId:device.id,
+            bucketId: deviceBucketId,
+            with: {result, error in
+                if error == nil {
+                    DispatchQueue.main.async {
+                        self.backupDownloadStatus = .Done
+                    }
+                    
+                    self.completeBackupDownload()
+                } else {
+                    self.backupDownloadStatus = .Failed
+                }
+                self.logger.info(["Received backup download response", result, error])
+            }
+        )
+        
+        backupDownloadProgressTimer?.cancel()
+        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
+            })
+
+    }
+    
+    func downloadFolderBackup(device: Device, downloadAt: URL, folderId: String) async throws {
+        self.deviceDownloading = device
+        logger.info("Preparint  folder backup for download")
+      
+        DispatchQueue.main.sync {
+            self.backupDownloadStatus = .InProgress
+            self.backupDownloadedItems = 0
+        }
+        guard let deviceBucketId = device.bucket else {
+            logger.error("Bucket id is nil")
+            throw BackupError.bucketIdIsNil
+        }
+
+
+        logger.info("Setting connection to XPCBackupService...")
+        
+        let xpcBackupService = try await getXPCBackupServiceProtocol(onConnectionIssue: {
+            self.logger.error("❌ XPCBackupService connection interrupted")
+        })
+        
+        logger.info("✅ Connection to XPCBackupService stablished")
+        let configLoader = ConfigLoader()
+        let networkAuth = configLoader.getNetworkAuth()
+        
+        guard let URLAsString = downloadAt.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
+            throw BackupError.invalidDownloadURL
+        }
+
+        guard let networkAuthUnwrapped = networkAuth else {
+            throw BackupError.missingNetworkAuth
+        }
+        
+        backupDownloadProgressTimer?.cancel()
+        xpcBackupService.downloadFolderBackup(
+            downloadAt: URLAsString,
+            networkAuth: networkAuthUnwrapped,
+            folderId:folderId,
             bucketId: deviceBucketId,
             with: {result, error in
                 if error == nil {
@@ -489,9 +551,8 @@ class BackupsService: ObservableObject {
     
     func downloadBackupFile(device: Device, downloadAt: URL, fileId: String) async throws {
         self.deviceDownloading = device
-        logger.info("Preparint backup for download")
-        logger.info("Device to download is \(device.plainName) with ID \(device.id)")
-        
+        logger.info("Preparint backup file for download")
+    
         DispatchQueue.main.sync {
             self.backupDownloadStatus = .InProgress
             self.backupDownloadedItems = 0

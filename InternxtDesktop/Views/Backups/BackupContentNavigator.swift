@@ -41,7 +41,7 @@ struct BackupContentNavigator: View {
             },
             levels: getBreadcrumbsLevels()
         )
-       
+        
     }
     
     func navigateToFolder(item: FolderListItem) {
@@ -84,7 +84,7 @@ struct BackupContentNavigator: View {
                 items: getFolderListItems(),
                 selectedId: $selectedId,
                 isLoading: $viewModel.loadingItems,
-            
+                
                 onItemSingleTap: {item in
                     self.selectedFolderListItem = item
                 },
@@ -172,23 +172,50 @@ struct BackupContentNavigator: View {
             guard let url = panel.url else {
                 return
             }
-            print(url)
-            print(selectedId ?? "")
-            print(currentFolderId ?? "")
-            guard let selectedId = selectedId else { return }
-            guard let currentFolderId = Int(currentFolderId ?? "0") else { return  }
+            
+            
             Task {
                 do {
-                    try await backupsService.downloadBackupFile(device: device, downloadAt: url, fileId: selectedId)
-//                    try await backupsService.downloadBackup(device: device, downloadAt: url, folderId: selectedId)
+                    // download root folder
+                    if viewModel.navigationLevels.count == 1 && selectedFolderListItem == nil {
+                        try await backupsService.downloadBackup(device: device, downloadAt: url)
+                    } else if let selectedFolderListItem = selectedFolderListItem {
+                        guard let selectedId = selectedId else { return }
+                        
+                        if selectedFolderListItem.type == "folder" {
+                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
+                        } else {
+                            try await backupsService.downloadBackupFile(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
+                        }
+                    } else if let selectedId = selectedId {
+                        try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
+                    }
+                    
                 } catch {
-                    print(error)
+                    error.reportToSentry()
+                    self.showErrorDialog(message: error.localizedDescription)
                 }
                 
             }
+            
+            onClose()
         }
     }
     
+    // try refactor
+    private func getURLForItem(baseURL: URL, itemName: String, itemType: String? = nil) -> URL {
+        let type: String = (itemType != nil) ? ".\(itemType!)" : ""
+        
+        return baseURL.appendingPathComponent("\(itemName)\(type)")
+    }
+    
+    private func showErrorDialog(message: String) {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
     
 }
 
