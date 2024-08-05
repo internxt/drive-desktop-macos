@@ -75,7 +75,7 @@ struct BackupDownloadService {
         
     }
     
-     func downloadFile(fileId: String, bucketId: String, downloadAt: URL) {
+    func downloadFile(fileId: String, bucketId: String, downloadAt: URL) {
         let downloadFileOperation = BackupDownloadItemOperation(
             networkFacade: self.networkFacade,
             bucketId: bucketId,
@@ -84,22 +84,12 @@ struct BackupDownloadService {
             downloadAt: downloadAt,
             backupDownloadProgress: self.backupDownloadProgress
         )
-         
-         let encryptedFileURL = self.encryptedContentURL.appendingPathComponent(UUID().uuidString)
-         Task {
-             let _ = try await self.networkFacade.downloadFile(
-                 bucketId: bucketId,
-                 fileId: fileId,
-                 encryptedFileDestination: encryptedFileURL,
-                 destinationURL: downloadAt,
-                 progressHandler: { completedProgress in },
-                 debug: true
-             )
-             
-         }
-
-     //   self.downloadOperationQueue.addOperation(downloadFileOperation)
+        self.downloadOperationQueue.addOperation(downloadFileOperation)
     }
+    
+
+    
+    
     
     private func createFolder(folderURL: URL, creationDate: Date) throws {
         try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories:true, attributes: [.creationDate: creationDate])

@@ -25,7 +25,7 @@ import Foundation
     func getBackupUploadStatus(with reply: @escaping (_ result: BackupProgressUpdate?, _ error: String?) -> Void)
     func getBackupDownloadStatus(with reply: @escaping (_ result: BackupProgressUpdate?, _ error: String?) -> Void)
     
-    func downloadFileBackup(
+@objc  func downloadFileBackup(
         downloadAt downloadAtURL: String,
         networkAuth: String,
         fileId: String,
@@ -33,13 +33,13 @@ import Foundation
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     )
 
-//    func downloadFolderBackup(
-//        downloadAt downloadAtURL: String,
-//        networkAuth: String,
-//        folderId: Int,
-//        bucketId: String,
-//        with reply: @escaping (_ result: String?, _ error: String?) -> Void
-//    )
+@objc func downloadFolderBackup(
+        downloadAt downloadAtURL: String,
+        networkAuth: String,
+        folderId: String,
+        bucketId: String,
+        with reply: @escaping (_ result: String?, _ error: String?) -> Void
+    )
 }
 
 /*
