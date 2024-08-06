@@ -20,93 +20,100 @@ struct BackupConfigView: View {
     @Binding var showFolderSelector: Bool
     @Binding var isEditingSelectedFolders: Bool
     @Binding var device: Device
-    
+    @Binding var showBackupContentNavigator: Bool
     @State var backupManager: ScheduledBackupManager
     @ObservedObject var appSettings = AppSettings.shared
     @State private var selectedFrequency: BackupFrequencyEnum = AppSettings.shared.selectedBackupFrequency
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            AppText("BACKUP_TITLE")
-                .font(.SMMedium)
-                .foregroundColor(.Gray80)
+        
             
-            BackupStatusView(
-                backupUploadStatus: self.$backupUploadStatus,
-                device: self.$device,
-                progress: $backupsService.backupUploadProgress
-            )
-            
-            BackupActionsView.frame(maxWidth: .infinity)
-            
-            if self.device.isCurrentDevice {
+            ZStack {
+
                 VStack(alignment: .leading, spacing: 8) {
-                    AppText("BACKUP_SELECTED_FOLDERS")
+                    AppText("BACKUP_TITLE")
                         .font(.SMMedium)
                         .foregroundColor(.Gray80)
-                    HStack(spacing: 10) {
-                        if backupsService.thereAreMissingFoldersToBackup {
-                            AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
-                                fixMissingFolders()
-                            }, type: .secondary, size: .MD)
-                            HStack(spacing:4) {
-                                ZStack {
-                                    Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
-                                    Image("warning-circle-fill")
-                                        .renderingMode(.template)
-                                        .resizable()
-                                        .frame(width:16, height: 16)
-                                        .foregroundColor(.Red)
+                    
+                    BackupStatusView(
+                        backupUploadStatus: self.$backupUploadStatus,
+                        device: self.$device,
+                        progress: $backupsService.backupUploadProgress
+                    )
+                    
+                    BackupActionsView.frame(maxWidth: .infinity)
+                    
+                    if self.device.isCurrentDevice {
+                        VStack(alignment: .leading, spacing: 8) {
+                            AppText("BACKUP_SELECTED_FOLDERS")
+                                .font(.SMMedium)
+                                .foregroundColor(.Gray80)
+                            HStack(spacing: 10) {
+                                if backupsService.thereAreMissingFoldersToBackup {
+                                    AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
+                                        fixMissingFolders()
+                                    }, type: .secondary, size: .MD)
+                                    HStack(spacing:4) {
+                                        ZStack {
+                                            Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
+                                            Image("warning-circle-fill")
+                                                .renderingMode(.template)
+                                                .resizable()
+                                                .frame(width:16, height: 16)
+                                                .foregroundColor(.Red)
+                                        }
+                                        
+                                        
+                                        
+                                        Text("BACKUP_MISSING_FOLDERS_ERROR")
+                                            .font(.SMRegular)
+                                            .foregroundColor(.Red)
+                                    }
+                                } else {
+                                    AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
+                                        changeFolders()
+                                    }, type: .secondary, size: .MD)
+                                    
+                                    Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
+                                        .font(.SMRegular)
+                                        .foregroundColor(.Gray60)
                                 }
-                                
-                                
-                                
-                                Text("BACKUP_MISSING_FOLDERS_ERROR")
-                                    .font(.SMRegular)
-                                    .foregroundColor(.Red)
                             }
-                        } else {
-                            AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
-                                changeFolders()
-                            }, type: .secondary, size: .MD)
                             
-                            Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
-                                .font(.SMRegular)
-                                .foregroundColor(.Gray60)
                         }
+                        .padding([.top], 12)
+                    }
+                   
+                    if self.device.isCurrentDevice {
+                        BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, nextBackupTime: $backupManager.nextBackupTime, onClick: { option in
+                            // restart date
+                            self.removeBackupDate()
+                            self.backupManager.startBackupTimer(frequency: option)
+                        })
+                        .padding([.vertical, .trailing], 20)
                     }
                     
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        AppText("BACKUP_UPLOAD_DELETE_BACKUP")
+                            .font(.SMMedium)
+                            .foregroundColor(.Gray80)
+                        
+                        AppText("BACKUP_UPLOAD_DELETE_BACKUP_CONTENT")
+                            .font(.SMRegular)
+                            .foregroundColor(.Gray50)
+                        
+                        AppButton(title: "BACKUP_UPLOAD_DELETE_BACKUP", onClick: {
+                            showDeleteBackupDialog = true
+                        }, type: .secondary)
+                    }
+                    .padding([.top], 12)
                 }
-                .padding([.top], 12)
-            }
-           
-            if self.device.isCurrentDevice {
-                BackupFrequencySelectorView(currentFrequency: $appSettings.selectedBackupFrequency, nextBackupTime: $backupManager.nextBackupTime, onClick: { option in
-                    // restart date
-                    self.removeBackupDate()
-                    self.backupManager.startBackupTimer(frequency: option)
-                })
                 .padding([.vertical, .trailing], 20)
-            }
-            
-            
-            VStack(alignment: .leading, spacing: 8) {
-                AppText("BACKUP_UPLOAD_DELETE_BACKUP")
-                    .font(.SMMedium)
-                    .foregroundColor(.Gray80)
+                .padding([.leading], 16)
                 
-                AppText("BACKUP_UPLOAD_DELETE_BACKUP_CONTENT")
-                    .font(.SMRegular)
-                    .foregroundColor(.Gray50)
-                
-                AppButton(title: "BACKUP_UPLOAD_DELETE_BACKUP", onClick: {
-                    showDeleteBackupDialog = true
-                }, type: .secondary)
             }
-            .padding([.top], 12)
-        }
-        .padding([.vertical, .trailing], 20)
-        .padding([.leading], 16)
+        
     }
     
     func isDownloadingBackup() -> Bool {
@@ -127,15 +134,9 @@ struct BackupConfigView: View {
                         }
                     }, type: .primary, isExpanded: true)
                 }
-                if self.isDownloadingBackup() {
-                    AppButton(title: "BACKUP_DOWNLOAD_STOP", onClick: {
-                        stopBackupDownload()
-                    }, type: .secondary, isExpanded: true)
-                } else {
-                    AppButton(title: "BACKUP_DOWNLOAD", onClick: {
-                        downloadBackup()
-                    }, type: .secondary, isExpanded: true)
-                }
+                AppButton(title: "BACKUP_BROWSE_FILES", onClick: {
+                    browseFiles()
+                }, type: .secondary, isExpanded: true)
                 
             } else {
                 if self.isDownloadingBackup() {
@@ -212,7 +213,7 @@ struct BackupConfigView: View {
     }
     
     func browseFiles() {
-        URLDictionary.BACKUPS_WEB.open()
+        self.showBackupContentNavigator = true
     }
     
     private func doBackup() async {
@@ -250,6 +251,8 @@ struct BackupConfigView: View {
         showDeleteBackupDialog: .constant(false),
         showFolderSelector: .constant(false),
         isEditingSelectedFolders: .constant(true),
-        device: .constant(BackupsDeviceService.shared.getDeviceForPreview()), backupManager: ScheduledBackupManager(backupsService: BackupsService())
+        device: .constant(BackupsDeviceService.shared.getDeviceForPreview()),
+        showBackupContentNavigator: .constant(false),
+        backupManager: ScheduledBackupManager(backupsService: BackupsService())
     )
 }

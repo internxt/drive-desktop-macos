@@ -35,16 +35,23 @@ let fileExtensionsDict: [String:String] = [
     "wav": "audio",
     "mp3": "audio",
     "fig": "figma",
+    "folder": "folder"
 ]
 
 func getFileExtensionIconName(filenameWithExtension: String) -> String {
     let filename = filenameWithExtension as NSString
     
-    let pathExtension = filename.pathExtension
     
-    if let match = fileExtensionsDict[pathExtension] {
+    let pathExtension = filename.pathExtension
+    return getIconNameForFileExtension(fileExtension: pathExtension)
+}
+
+
+func getIconNameForFileExtension(fileExtension: String) -> String {
+    if let match = fileExtensionsDict[fileExtension] {
         return match
     }
     
     return "default"
 }
+

@@ -10,7 +10,7 @@ import SwiftUI
 struct DeleteBackupDialogView: View {
     
     @Environment(\.colorScheme) var colorScheme
-    @Binding var selectedDeviceId: Int?
+    @Binding var selectedDevice: Device?
     @StateObject var backupsService: BackupsService
     var onClose: () -> Void
 
@@ -53,7 +53,10 @@ struct DeleteBackupDialogView: View {
 
     func deleteBackup() throws {
         Task {
-            let _ = try await self.backupsService.deleteBackup(deviceId: self.selectedDeviceId)
+            guard let deviceId = self.selectedDevice?.id else {
+                throw BackupError.cannotGetDeviceId
+            }
+            let _ = try await self.backupsService.deleteBackup(deviceId: deviceId)
             await backupsService.loadAllDevices()
             self.onClose()
         }
@@ -61,5 +64,5 @@ struct DeleteBackupDialogView: View {
 }
 
 #Preview {
-    DeleteBackupDialogView(selectedDeviceId: .constant(nil), backupsService: BackupsService(), onClose: {})
+    DeleteBackupDialogView(selectedDevice: .constant(BackupsDeviceService().getDeviceForPreview()), backupsService: BackupsService(), onClose: {})
 }

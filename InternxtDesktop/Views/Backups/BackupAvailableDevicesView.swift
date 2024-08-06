@@ -11,7 +11,7 @@ import InternxtSwiftCore
 struct BackupAvailableDevicesView: View {
     
     @StateObject var backupsService: BackupsService
-    @Binding var selectedDeviceId: Int?
+    @Binding var selectedDevice: Device?
     private let deviceName = ConfigLoader().getDeviceName()
     
     func isFetchingBackupDevices() -> Bool {
@@ -60,10 +60,10 @@ struct BackupAvailableDevicesView: View {
                             if (device.hasBackups || device.plainName == deviceName) {
                                 BackupDeviceItem(
                                     deviceName: device.plainName ?? "",
-                                    isSelected: self.selectedDeviceId == device.id,
+                                    isSelected: self.selectedDevice?.id == device.id,
                                     isCurrentDevice: device.isCurrentDevice
                                 ) {
-                                    self.selectedDeviceId = device.id
+                                    self.selectedDevice = device
                                     backupsService.selectedDevice = device
                                 }
                             }
@@ -71,8 +71,8 @@ struct BackupAvailableDevicesView: View {
                     }
                     .onAppear {
                         let devices = getBackupDevices()
-                        if(self.selectedDeviceId == nil) {
-                            self.selectedDeviceId = devices.first?.id
+                        if(self.selectedDevice?.id == nil) {
+                            self.selectedDevice = devices.first
                             backupsService.selectedDevice = devices.first
                         }
                     }
@@ -154,5 +154,8 @@ struct BackupDeviceItem: View {
 }
 
 #Preview {
-    BackupAvailableDevicesView(backupsService: BackupsService(), selectedDeviceId: .constant(nil)).frame(width: 160, height: 200).padding(16)
+    BackupAvailableDevicesView(
+        backupsService: BackupsService(),
+        selectedDevice: .constant(nil)
+    ).frame(width: 160, height: 200).padding(16)
 }
