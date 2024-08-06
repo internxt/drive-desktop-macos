@@ -166,30 +166,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
-        let config = ConfigLoader().get()
-        
-        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
-            logger.error("Cannot get sharedDefaults")
-            reply(nil, "Cannot get sharedDefaults")
+        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+       
+        guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            reply(nil, "Setup failed")
             return
         }
         
-        
-        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
-            logger.error("Cannot get AuthToken")
-            reply(nil, "Cannot get AuthToken")
-            return
-        }
-        
-        guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else{
-            logger.error("Cannot get mnemonic")
-            reply(nil, "Cannot get mnemonic")
-            return
-        }
-        let backupAPI = BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let driveNewAPI = DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, debug: true)
+
         self.downloadOperationQueue.maxConcurrentOperationCount = 10
         
         let backupDownloadService = BackupDownloadService(
@@ -233,13 +217,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
 
-        guard let sharedDefaults = setupSharedDefaults(),
-              let newAuthToken = getAuthToken(from: sharedDefaults),
-              let (backupAPI, driveNewAPI, networkFacade) = setupAPIs(authToken: newAuthToken, networkAuth: networkAuth) else {
+        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+       
+        guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
             reply(nil, "Setup failed")
             return
         }
         
+
         self.downloadOperationQueue.maxConcurrentOperationCount = 10
         
         let backupDownloadService = BackupDownloadService(
@@ -321,9 +306,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
      
-        guard let sharedDefaults = setupSharedDefaults(),
-              let newAuthToken = getAuthToken(from: sharedDefaults),
-              let (backupAPI, driveNewAPI, networkFacade) = setupAPIs(authToken: newAuthToken, networkAuth: networkAuth) else {
+        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+       
+        guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
             reply(nil, "Setup failed")
             return
         }
@@ -352,39 +337,4 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         }
     }
     
-    
-    func setupSharedDefaults() -> UserDefaults? {
-        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
-            logger.error("Cannot get sharedDefaults")
-            return nil
-        }
-        return sharedDefaults
-    }
-
-    func getAuthToken(from sharedDefaults: UserDefaults) -> String? {
-        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else {
-            logger.error("Cannot get AuthToken")
-            return nil
-        }
-        return newAuthToken
-    }
-
-    func getMnemonic(from sharedDefaults: UserDefaults) -> String? {
-        guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else {
-            logger.error("Cannot get mnemonic")
-            return nil
-        }
-        return mnemonic
-    }
-    
-    func setupAPIs(authToken: String, networkAuth: String) -> (BackupAPI, DriveAPI, NetworkFacade)? {
-        let config = ConfigLoader().get()
-        let backupAPI = BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: authToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let driveNewAPI = DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: authToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
-        guard let mnemonic = getMnemonic(from: setupSharedDefaults()!) else { return nil }
-        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, debug: true)
-        return (backupAPI, driveNewAPI, networkFacade)
-    }
-
 }

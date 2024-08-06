@@ -71,6 +71,8 @@
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
+		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AAC188E02C222E1A007E321A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188DF2C222E1A007E321A /* RealmSwift */; };
 		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
 		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
@@ -396,6 +398,7 @@
 		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
+		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
@@ -637,6 +640,7 @@
 		31DEAEAF2B75139400E76D53 /* XPCBackupService */ = {
 			isa = PBXGroup;
 			children = (
+				AA642CAC2C62B2510015BBB9 /* Utils */,
 				AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */,
 				3120B56D2B84F6B100F524F1 /* Extensions */,
 				E15F8C0E2B76291B00C60EFA /* Services */,
@@ -665,6 +669,14 @@
 				AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */,
 			);
 			path = InternxtDesktopTests;
+			sourceTree = "<group>";
+		};
+		AA642CAC2C62B2510015BBB9 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		AAC188ED2C223183007E321A /* Mocks */ = {
@@ -1426,6 +1438,7 @@
 				3120B5772B8518C300F524F1 /* Generic.swift in Sources */,
 				319436902B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift in Sources */,
 				3120B5662B84F41300F524F1 /* BackupsDeviceService.swift in Sources */,
+				AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				E1D24AF02C0467710009EC83 /* BackupTreeNodeSyncOperation.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
