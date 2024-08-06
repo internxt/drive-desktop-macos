@@ -531,7 +531,7 @@ class BackupsService: ObservableObject {
                         self.backupDownloadStatus = .Done
                     }
                     
-                    self.completeBackupDownload()
+                  //  self.completeBackupDownload()
                 } else {
                     self.backupDownloadStatus = .Failed
                 }
@@ -593,7 +593,7 @@ class BackupsService: ObservableObject {
                         self.backupDownloadStatus = .Done
                     }
                     
-                    self.completeBackupDownload()
+              //      self.completeBackupDownload()
                 } else {
                     self.backupDownloadStatus = .Failed
                 }
