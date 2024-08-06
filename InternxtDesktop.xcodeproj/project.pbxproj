@@ -229,8 +229,6 @@
 		E1B1C9272B0394C30003F001 /* UpdateFileContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B1C9262B0394C30003F001 /* UpdateFileContentUseCase.swift */; };
 		E1BE23612AB0A06A00EAB152 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */; };
 		E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4612AB9FD6300E3BF7A /* URL.swift */; };
-		E1C7D59C2C5943E000E4350E /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E1C7D5992C5943E000E4350E /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		E1C7D5A02C5943E800E4350E /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E1C7D59D2C5943E800E4350E /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E1CAB6782AFC3F740006EA1E /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CAB6772AFC3F740006EA1E /* AppSelector.swift */; };
 		E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */; };
 		E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
@@ -340,7 +338,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				E19532602C5A557700CB81C3 /* RealmSwift in Embed Frameworks */,
-				E1C7D59C2C5943E000E4350E /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,7 +349,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				E19532632C5A558000CB81C3 /* RealmSwift in Embed Frameworks */,
-				E1C7D5A02C5943E800E4350E /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2597,14 +2593,6 @@
 				kind = branch;
 			};
 		};
-		E1C7D5942C59412600E4350E /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.52.2;
-			};
-		};
 		E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger.git";
@@ -2715,16 +2703,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
-		};
-		E1C7D5992C5943E000E4350E /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1C7D5942C59412600E4350E /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
-		E1C7D59D2C5943E800E4350E /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1C7D5942C59412600E4350E /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 		E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */ = {
 			isa = XCSwiftPackageProductDependency;
