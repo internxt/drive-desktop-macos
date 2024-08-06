@@ -549,7 +549,7 @@ class BackupsService: ObservableObject {
 
     }
     
-    func downloadBackupFile(device: Device, downloadAt: URL, fileId: String) async throws {
+    func downloadFileBackup(device: Device, downloadAt: URL, fileId: String) async throws {
         self.deviceDownloading = device
         logger.info("Preparint backup file for download")
     

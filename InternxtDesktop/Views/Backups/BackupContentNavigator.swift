@@ -177,7 +177,9 @@ struct BackupContentNavigator: View {
             Task {
                 do {
                     // download root folder
-                    if viewModel.navigationLevels.count == 1 && selectedFolderListItem == nil && selectedId == nil{
+                    let currentLevelIsRoot = viewModel.navigationLevels.count == 1
+                    let notSelectedFolderOrFile = selectedFolderListItem == nil && selectedId == nil
+                    if currentLevelIsRoot && notSelectedFolderOrFile {
                         try await backupsService.downloadBackup(device: device, downloadAt: url)
                     } else if let selectedFolderListItem = selectedFolderListItem {
                         guard let selectedId = selectedId else { return }
@@ -185,7 +187,7 @@ struct BackupContentNavigator: View {
                         if selectedFolderListItem.type == "folder" {
                             try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
                         } else {
-                            try await backupsService.downloadBackupFile(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
+                            try await backupsService.downloadFileBackup(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
                         }
                     } else if let selectedId = selectedId {
                         try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
