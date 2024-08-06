@@ -177,7 +177,7 @@ struct BackupContentNavigator: View {
             Task {
                 do {
                     // download root folder
-                    if viewModel.navigationLevels.count == 1 && selectedFolderListItem == nil {
+                    if viewModel.navigationLevels.count == 1 && selectedFolderListItem == nil && selectedId == nil{
                         try await backupsService.downloadBackup(device: device, downloadAt: url)
                     } else if let selectedFolderListItem = selectedFolderListItem {
                         guard let selectedId = selectedId else { return }
