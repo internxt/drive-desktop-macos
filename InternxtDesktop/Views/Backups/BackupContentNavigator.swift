@@ -151,15 +151,7 @@ struct BackupContentNavigator: View {
     }
     
     private func downloadItem() {
-        
-        
-        if(backupsService.backupDownloadStatus == .InProgress) {
-            let title = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE", comment: "")
-            let message = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE", comment: "")
-            showAlert(message: title, informativeText: message)
-            return
-        }
-        
+
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = true
