@@ -595,13 +595,8 @@ class BackupsService: ObservableObject {
                 } else {
                     self.backupDownloadStatus = .Failed
                 }
-                self.logger.info(["Received backup download response", result, error])
             }
         )
-        
-        backupDownloadProgressTimer?.cancel()
-
-
     }
 
     func stopBackupUpload() throws {
