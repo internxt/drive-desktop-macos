@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 import InternxtSwiftCore
 import Combine
-import SwiftUI
+
 enum BackupError: Error {
     case cannotCreateURL
     case cannotAddFolder
