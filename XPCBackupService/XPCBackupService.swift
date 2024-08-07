@@ -301,13 +301,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     }
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
-    
+        
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
-     
+        
         let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
-       
+        
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
             reply(nil, "Setup failed")
             return
@@ -325,15 +325,15 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupDownloadProgress: backupDownloadProgress
         )
         Task {
-       
-                 backupDownloadService.downloadFile(fileId: fileId, bucketId: bucketId, downloadAt: downloadAtURL)
-                self.downloadOperationQueue.addBarrierBlock {
-                    logger.info("Download operations completed")
-                    self.backupDownloadStatus = .Done
-                    reply(nil, nil)
-                }
+            
+            backupDownloadService.downloadFile(fileId: fileId, bucketId: bucketId, downloadAt: downloadAtURL)
+            self.downloadOperationQueue.addBarrierBlock {
+                logger.info("Download operations completed")
                 self.backupDownloadStatus = .Done
-                reply(nil,nil)
+                reply(nil, nil)
+            }
+            self.backupDownloadStatus = .Done
+            reply(nil,nil)
         }
     }
     
