@@ -10,6 +10,14 @@ import RealmSwift
 import InternxtSwiftCore
 import Combine
 
+
+struct ItemBackup: Identifiable{
+    let id = UUID()
+    let itemId: String
+    let device: Device
+}
+
+
 enum BackupError: Error {
     case cannotCreateURL
     case cannotAddFolder
@@ -50,8 +58,7 @@ class BackupsService: ObservableObject {
     @Published var backupDownloadStatus: BackupStatus = .Idle
     @Published var deviceDownloading: Device? = nil
     @Published var devicesFetchingStatus: BackupDevicesFetchingStatus = .LoadingDevices
-    @Published var backupDownloadFileStatus: BackupStatus = .Idle
-    
+    @Published var backupsItemsInprogress: [ItemBackup] = []
     private var backupUploadProgressTimer: AnyCancellable?
     private var backupDownloadProgressTimer: AnyCancellable?
     private func getRealm() -> Realm {
@@ -77,6 +84,7 @@ class BackupsService: ObservableObject {
             self.xpcBackupService = nil
             self.deviceResponse = nil
             self.devicesFetchingStatus = .LoadingDevices
+            self.backupsItemsInprogress = []
         }
         
         try self.stopBackupUpload()
@@ -489,13 +497,11 @@ class BackupsService: ObservableObject {
     }
     
     func downloadFolderBackup(device: Device, downloadAt: URL, folderId: String) async throws {
-        self.deviceDownloading = device
         logger.info("Preparint  folder backup for download")
-      
-//        DispatchQueue.main.sync {
-//       //     self.backupDownloadStatus = .InProgress
-//       //     self.backupDownloadedItems = 0
-//        }
+        let itemBackup = ItemBackup(itemId: folderId, device: device)
+        DispatchQueue.main.sync {
+            self.backupsItemsInprogress.append(itemBackup)
+        }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
             throw BackupError.bucketIdIsNil
@@ -527,19 +533,19 @@ class BackupsService: ObservableObject {
             folderId:folderId,
             bucketId: deviceBucketId,
             with: {result, error in
-//                if error == nil {
-//                    DispatchQueue.main.async {
-//                        self.backupDownloadStatus = .Done
-//                    }
-//
-//                } else {
-//                    self.backupDownloadStatus = .Failed
-//                }
-//                self.logger.info(["Received backup download response", result, error])
+                if error == nil {
+                    DispatchQueue.main.async {
+                        self.removeItem(item: itemBackup)
+                    }
+                    self.logger.info("Backup Folder downloaded✅")
+                } else {
+                    self.removeItem(item: itemBackup)
+                }
+                self.logger.info(["Received backup download response", result, error])
             }
         )
         
-//        backupDownloadProgressTimer?.cancel()
+        backupDownloadProgressTimer?.cancel()
 //        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
 //            .autoconnect()
 //            .sink(
@@ -550,18 +556,17 @@ class BackupsService: ObservableObject {
     }
     
     func downloadFileBackup(device: Device, downloadAt: URL, fileId: String) async throws {
-        self.deviceDownloading = device
         logger.info("Preparint backup file for download")
-    
+        let itemBackup = ItemBackup(itemId: fileId, device: device)
+        
         DispatchQueue.main.sync {
-            self.backupDownloadFileStatus = .InProgress
+            self.backupsItemsInprogress.append(itemBackup)
         }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
             throw BackupError.bucketIdIsNil
         }
-
-
+        
         logger.info("Setting connection to XPCBackupService...")
         
         let xpcBackupService = try await getXPCBackupServiceProtocol(onConnectionIssue: {
@@ -575,12 +580,11 @@ class BackupsService: ObservableObject {
         guard let URLAsString = downloadAt.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
             throw BackupError.invalidDownloadURL
         }
-
+        
         guard let networkAuthUnwrapped = networkAuth else {
             throw BackupError.missingNetworkAuth
         }
         
-        backupDownloadProgressTimer?.cancel()
         xpcBackupService.downloadFileBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
@@ -589,10 +593,14 @@ class BackupsService: ObservableObject {
             with: {result, error in
                 if error == nil {
                     DispatchQueue.main.async {
-                        self.backupDownloadFileStatus = .Done
+                        self.removeItem(item: itemBackup)
+                        
                     }
+                    self.logger.info("Backup file downloaded✅")
+                    
                 } else {
-                    self.backupDownloadFileStatus = .Failed
+                    self.removeItem(item: itemBackup)
+                    self.logger.info("Error to download file \(error ?? "Unknown Error")")
                 }
             }
         )
@@ -707,6 +715,12 @@ class BackupsService: ObservableObject {
             self.activityManager.saveActivityEntry(entry: activityEntry)
         }
         
+    }
+    
+    private func removeItem(item: ItemBackup){
+        if let index = backupsItemsInprogress.firstIndex(where: { $0.id == item.id }) {
+            backupsItemsInprogress.remove(at: index)
+        }
     }
 
 }

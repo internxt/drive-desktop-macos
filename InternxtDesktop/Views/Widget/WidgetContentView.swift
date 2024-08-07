@@ -16,12 +16,16 @@ struct WidgetContentView: View {
         backupsService.backupDownloadStatus == .InProgress
     }
     
- 
+
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading,spacing: 0) {
                 if(backupDownloadInProgress()) {
                     WidgetBackupOperationEntryView(deviceName: backupsService.deviceDownloading?.plainName ?? "Device", status: .inProgress, downloadedItems: $backupsService.backupDownloadedItems)
+                }
+                
+                ForEach(backupsService.backupsItemsInprogress) { item in
+                    WidgetBackupOperationEntryView(deviceName: item.device.plainName ?? "Device", status: .inProgress, downloadedItems: .constant(1))
                 }
                 ForEach(activityEntries) { activityEntry in
                    WidgetSyncEntryView(
