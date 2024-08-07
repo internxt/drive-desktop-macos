@@ -154,12 +154,9 @@ struct BackupContentNavigator: View {
         
         
         if(backupsService.backupDownloadStatus == .InProgress) {
-            let alert = NSAlert()
             let title = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE", comment: "")
             let message = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE", comment: "")
-            alert.messageText = title
-            alert.informativeText = message
-            alert.runModal()
+            showAlert(message: title, informativeText: message)
             return
         }
         
@@ -195,7 +192,7 @@ struct BackupContentNavigator: View {
                     
                 } catch {
                     error.reportToSentry()
-                    self.showErrorDialog(message: error.localizedDescription)
+                    showAlert(message: error.localizedDescription, style: .warning)
                 }
                 
             }
@@ -204,18 +201,19 @@ struct BackupContentNavigator: View {
         }
     }
     
-    // try refactor
     private func getURLForItem(baseURL: URL, itemName: String, itemType: String? = nil) -> URL {
         let type: String = (itemType != nil) ? ".\(itemType!)" : ""
         
         return baseURL.appendingPathComponent("\(itemName)\(type)")
     }
     
-    private func showErrorDialog(message: String) {
+    
+    func showAlert(message: String, informativeText: String? = nil, style: NSAlert.Style = .informational, buttonTitle: String = "OK") {
         let alert = NSAlert()
         alert.messageText = message
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: "OK")
+        alert.informativeText = informativeText ?? ""
+        alert.alertStyle = style
+        alert.addButton(withTitle: buttonTitle)
         alert.runModal()
     }
     
