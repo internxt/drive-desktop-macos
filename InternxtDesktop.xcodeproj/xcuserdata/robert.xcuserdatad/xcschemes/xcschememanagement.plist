@@ -180,7 +180,7 @@
 		<key>InternxtDesktopTests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>6</integer>
 		</dict>
 		<key>Provider.xcscheme_^#shared#^_</key>
 		<dict>
@@ -321,7 +321,7 @@
 		<key>SyncExtensionTests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>5</integer>
 		</dict>
 		<key>SyncManager.xcscheme_^#shared#^_</key>
 		<dict>

@@ -16,6 +16,7 @@ import ServiceManagement
 import Sparkle
 import RealmSwift
 import PushKit
+import UserNotifications
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillShow(_ notification: Notification) {
@@ -63,6 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     override init() {
         super.init()
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+        self.requestNotificationsPermissions()
         if let authToken = config.getAuthToken() {
             self.realtime = RealtimeService.init(
                 token: authToken,
@@ -164,8 +166,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         Task {
             do {
                 let result = try await driveNewAPI.registerPushDeviceToken(currentAuthToken: newAuthToken, deviceToken: deviceTokenString, type: DEVICE_TYPE)
-                logger.info(["📍 Push device token registered", result])
-
+                logger.info(["📍 Push device token \(deviceTokenString) registered", result])
+                
             }catch{
                 logger.error(["Cannot sync token", error])
             }
@@ -509,5 +511,21 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func updateUsage() {
         Task { await usageManager.updateUsage() }
+    }
+    
+    private func requestNotificationsPermissions() {
+        Task {
+            let center = UNUserNotificationCenter.current()
+
+
+            do {
+                try await center.requestAuthorization(options: [.alert, .sound, .badge])
+                logger.info("Got notifications permission")
+            } catch {
+                logger.error(["Failed to get notifications permission:" , error])
+                error.reportToSentry()
+            }
+        }
+        
     }
 }
