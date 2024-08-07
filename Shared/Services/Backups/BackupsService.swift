@@ -50,6 +50,7 @@ class BackupsService: ObservableObject {
     @Published var backupDownloadStatus: BackupStatus = .Idle
     @Published var deviceDownloading: Device? = nil
     @Published var devicesFetchingStatus: BackupDevicesFetchingStatus = .LoadingDevices
+    @Published var backupDownloadFileStatus: BackupStatus = .Idle
     
     private var backupUploadProgressTimer: AnyCancellable?
     private var backupDownloadProgressTimer: AnyCancellable?
@@ -491,10 +492,10 @@ class BackupsService: ObservableObject {
         self.deviceDownloading = device
         logger.info("Preparint  folder backup for download")
       
-        DispatchQueue.main.sync {
-            self.backupDownloadStatus = .InProgress
-            self.backupDownloadedItems = 0
-        }
+//        DispatchQueue.main.sync {
+//       //     self.backupDownloadStatus = .InProgress
+//       //     self.backupDownloadedItems = 0
+//        }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
             throw BackupError.bucketIdIsNil
@@ -526,26 +527,25 @@ class BackupsService: ObservableObject {
             folderId:folderId,
             bucketId: deviceBucketId,
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.backupDownloadStatus = .Done
-                    }
-                    
-                  //  self.completeBackupDownload()
-                } else {
-                    self.backupDownloadStatus = .Failed
-                }
-                self.logger.info(["Received backup download response", result, error])
+//                if error == nil {
+//                    DispatchQueue.main.async {
+//                        self.backupDownloadStatus = .Done
+//                    }
+//
+//                } else {
+//                    self.backupDownloadStatus = .Failed
+//                }
+//                self.logger.info(["Received backup download response", result, error])
             }
         )
         
-        backupDownloadProgressTimer?.cancel()
-        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
-            .autoconnect()
-            .sink(
-             receiveValue: {_ in
-                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
-            })
+//        backupDownloadProgressTimer?.cancel()
+//        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
+//            .autoconnect()
+//            .sink(
+//             receiveValue: {_ in
+//                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
+//            })
 
     }
     
@@ -554,8 +554,7 @@ class BackupsService: ObservableObject {
         logger.info("Preparint backup file for download")
     
         DispatchQueue.main.sync {
-            self.backupDownloadStatus = .InProgress
-            self.backupDownloadedItems = 0
+            self.backupDownloadFileStatus = .InProgress
         }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
@@ -590,10 +589,10 @@ class BackupsService: ObservableObject {
             with: {result, error in
                 if error == nil {
                     DispatchQueue.main.async {
-                        self.backupDownloadStatus = .Done
+                        self.backupDownloadFileStatus = .Done
                     }
                 } else {
-                    self.backupDownloadStatus = .Failed
+                    self.backupDownloadFileStatus = .Failed
                 }
             }
         )
