@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 import InternxtSwiftCore
 import Combine
-
+import SwiftUI
 enum BackupError: Error {
     case cannotCreateURL
     case cannotAddFolder
@@ -592,8 +592,6 @@ class BackupsService: ObservableObject {
                     DispatchQueue.main.async {
                         self.backupDownloadStatus = .Done
                     }
-                    
-              //      self.completeBackupDownload()
                 } else {
                     self.backupDownloadStatus = .Failed
                 }
@@ -602,12 +600,7 @@ class BackupsService: ObservableObject {
         )
         
         backupDownloadProgressTimer?.cancel()
-        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
-            .autoconnect()
-            .sink(
-             receiveValue: {_ in
-                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
-            })
+
 
     }
 
