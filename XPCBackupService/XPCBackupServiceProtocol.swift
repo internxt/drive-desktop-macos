@@ -38,6 +38,7 @@ import Foundation
         networkAuth: String,
         folderId: String,
         bucketId: String,
+        folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     )
 }

@@ -496,7 +496,7 @@ class BackupsService: ObservableObject {
 
     }
     
-    func downloadFolderBackup(device: Device, downloadAt: URL, folderId: String) async throws {
+    func downloadFolderBackup(device: Device, downloadAt: URL, folderId: String, folderName: String? = "") async throws {
         logger.info("Preparint  folder backup for download")
         let itemBackup = ItemBackup(itemId: folderId, device: device)
         DispatchQueue.main.sync {
@@ -531,7 +531,7 @@ class BackupsService: ObservableObject {
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             folderId:folderId,
-            bucketId: deviceBucketId,
+            bucketId: deviceBucketId, folderName: folderName ?? "",
             with: {result, error in
                 if error == nil {
                     DispatchQueue.main.async {

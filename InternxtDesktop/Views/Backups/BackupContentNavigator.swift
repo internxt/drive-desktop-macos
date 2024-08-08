@@ -180,7 +180,7 @@ struct BackupContentNavigator: View {
                         guard let selectedId = selectedId else { return }
                         
                         if selectedFolderListItem.type == "folder" {
-                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
+                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId,folderName: selectedFolderListItem.name)
                         } else {
                             try await backupsService.downloadFileBackup(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
                         }
