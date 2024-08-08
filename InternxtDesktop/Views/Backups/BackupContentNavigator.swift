@@ -169,6 +169,12 @@ struct BackupContentNavigator: View {
                     let currentLevelIsRoot = viewModel.navigationLevels.count == 1
                     let notSelectedFolderOrFile = selectedFolderListItem == nil && selectedId == nil
                     if currentLevelIsRoot && notSelectedFolderOrFile {
+                        if(backupsService.backupDownloadStatus == .InProgress) {
+                            let title = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE", comment: "")
+                            let message = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE", comment: "")
+                            showAlert(message: title, informativeText: message)
+                            return
+                        }
                         try await backupsService.downloadBackup(device: device, downloadAt: url)
                     } else if let selectedFolderListItem = selectedFolderListItem {
                         guard let selectedId = selectedId else { return }
