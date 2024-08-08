@@ -28,7 +28,10 @@ extension AppDelegate: NSPopoverDelegate {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, NetworkStatusCheckerDelegate, UNUserNotificationCenterDelegate {
+    
+    let notificationsCenter = UNUserNotificationCenter.current()
+    let networkStatusChecker = NetworkStatusChecker()
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -55,6 +58,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
+    var networkStatusCheckTimer: Timer? = nil
+    let networkStatusCheckTestURL =  URL(string: "https://link.testfile.org/15MB")!
+    var lastKnownNetworkStatus: NetworkStatus = .unknown
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     
     var isPreview: Bool {
@@ -63,6 +69,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     override init() {
         super.init()
+        self.notificationsCenter.delegate = self
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
         self.requestNotificationsPermissions()
         if let authToken = config.getAuthToken() {
@@ -75,7 +82,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 }
             )
         }
-        
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -515,17 +521,56 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func requestNotificationsPermissions() {
         Task {
-            let center = UNUserNotificationCenter.current()
-
-
             do {
-                try await center.requestAuthorization(options: [.alert, .sound, .badge])
+                try await notificationsCenter.requestAuthorization(options: [.alert, .sound, .badge])
                 logger.info("Got notifications permission")
+                setupNetworkStatusChecker()
             } catch {
                 logger.error(["Failed to get notifications permission:" , error])
                 error.reportToSentry()
             }
         }
         
+    }
+    
+    func callWhileNetworkStatusChange(networkStatus: NetworkStatus) {
+        if self.lastKnownNetworkStatus != networkStatus {
+            self.logger.info("🛜 Network status changed \(self.lastKnownNetworkStatus.rawValue) -> \(networkStatus.rawValue)")
+            self.lastKnownNetworkStatus = networkStatus
+            Task {await self.showNotificationForNetworkStatus()}
+            
+        }
+    }
+    
+    func showNotificationForNetworkStatus() async {
+        self.logger.info("Showing notification for network status")
+        let content = UNMutableNotificationContent()
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.0, repeats: false);
+        let uuid = UUID().uuidString;
+        let request = UNNotificationRequest(identifier: uuid, content: content, trigger: trigger);
+
+        content.title = "Test"
+        content.body = "Test body"
+        
+        do {
+            try await notificationsCenter.add(request)
+            
+            self.logger.info("Notification scheduled")
+            let pending = await notificationsCenter.pendingNotificationRequests()
+            self.logger.info(pending.count)
+        } catch {
+            self.logger.error(["Failed to request a notification for network status", error])
+        }
+    }
+    
+    func setupNetworkStatusChecker() {
+        self.networkStatusChecker.delegate = self
+        self.logger.info("🛜 Setting up network status check test")
+        
+        self.networkStatusChecker.startTest(url:  networkStatusCheckTestURL)
+        
+        self.networkStatusCheckTimer = Timer(timeInterval: 60.0, repeats: true, block: {_ in
+            self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
+        })
     }
 }
