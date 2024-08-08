@@ -10,6 +10,7 @@ import FileProvider
 import RealmSwift
 
 struct WidgetView: View {
+    @EnvironmentObject var networkStatusObservable: NetworkStatusObservable
     @EnvironmentObject var activityManager: ActivityManager
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var globalUIManager: GlobalUIManager
@@ -101,6 +102,10 @@ struct WidgetView: View {
                             WidgetContentView(activityEntries: $activityManager.activityEntries).environmentObject(backupsService)
                         }
                     }.frame(maxWidth: .infinity,maxHeight: .infinity)
+                    if self.networkStatusObservable.networkStatus != NetworkStatus.good {
+                        NetworkStatusMessage(status: self.$networkStatusObservable.networkStatus)
+                    }
+                    
                     WidgetFooterView()
                 } else {
                     Spacer()
@@ -109,7 +114,7 @@ struct WidgetView: View {
                 }
                 
             }
-            .frame(width: 330, height: 400)
+            .frame(width: 330, height: 440)
             .background(Color.Surface)
             .cornerRadius(10)
         }

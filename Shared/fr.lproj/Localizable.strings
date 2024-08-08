@@ -99,6 +99,13 @@
 "BACKUP_MISSING_FOLDER_ERROR" = "Non trouvé";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Ce dossier est déjà sélectionné";
 
+
+// Network status
+"NETWORK_CONNECTION_SLOW_TITLE" = "Connexion faible.";
+"NETWORK_CONNECTION_SLOW_SUBTITLE" = "Votre expérience peut être lente ou interrompue.";
+"NETWORK_CONNECTION_NONE_TITLE" = "Pas de connexion Internet.";
+"NETWORK_CONNECTION_NONE_SUBTITLE" = "Veuillez vérifier votre connexion et réessayer.";
+
 // Common
 "COMMON_UPGRADE" = "Mise à niveau";
 "COMMON_LOGOUT" = "Déconnexion";

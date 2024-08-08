@@ -98,6 +98,12 @@
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Haga clic en + para seleccionar las carpetas\nde las que desea hacer una copia de seguridad.";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Esta carpeta ya se encuentra seleccionada";
 
+// Network status
+"NETWORK_CONNECTION_SLOW_TITLE" = "Conexión débil.";
+"NETWORK_CONNECTION_SLOW_SUBTITLE" = "Tu experiencia puede ser lenta o interrumpida";
+"NETWORK_CONNECTION_NONE_TITLE" = "Sin conexión a internet.";
+"NETWORK_CONNECTION_NONE_SUBTITLE" = "Por favor, revisa tu conexión e inténtalo de nuevo.";
+
 // Common
 "COMMON_UPGRADE" = "Comprar espacio";
 "COMMON_LOGOUT" = "Cerrar sesión";

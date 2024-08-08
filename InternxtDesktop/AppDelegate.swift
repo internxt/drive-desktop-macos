@@ -28,6 +28,11 @@ extension AppDelegate: NSPopoverDelegate {
     }
 }
 
+class NetworkStatusObservable: ObservableObject {
+    @Published var networkStatus: NetworkStatus = .unknown
+}
+
+
 class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, NetworkStatusCheckerDelegate, UNUserNotificationCenterDelegate {
     
     let notificationsCenter = UNUserNotificationCenter.current()
@@ -60,7 +65,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     var networkStatusCheckTimer: Timer? = nil
     let networkStatusCheckTestURL =  URL(string: "https://link.testfile.org/15MB")!
-    var lastKnownNetworkStatus: NetworkStatus = .unknown
+    let networkStatusObservable = NetworkStatusObservable()
+    
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     
     var isPreview: Bool {
@@ -71,6 +77,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
         super.init()
         self.notificationsCenter.delegate = self
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+        self.setupNetworkStatusChecker()
         self.requestNotificationsPermissions()
         if let authToken = config.getAuthToken() {
             self.realtime = RealtimeService.init(
@@ -408,7 +415,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
         self.popover?.delegate = self
         self.popover?.setValue(true, forKeyPath: "shouldHideAnchor")
         self.popover?.contentViewController = NSHostingController(
-            rootView: WidgetView(openFileProviderRoot: openFileProviderRoot, openSendFeedback: openSendFeedbackWindow)
+            rootView: WidgetView(
+                openFileProviderRoot: openFileProviderRoot,
+                openSendFeedback: openSendFeedbackWindow
+            )
                 .environmentObject(self.authManager)
                 .environmentObject(self.globalUIManager)
                 .environmentObject(self.usageManager)
@@ -416,6 +426,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
                 .environmentObject(self.settingsManager)
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
+                .environmentObject(self.networkStatusObservable)
         )
     }
     
@@ -497,7 +508,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
-       
+        self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
         usageUpdateDebouncer.debounce { [weak self] in
             self?.updateUsage()
         }
@@ -524,7 +535,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
             do {
                 try await notificationsCenter.requestAuthorization(options: [.alert, .sound, .badge])
                 logger.info("Got notifications permission")
-                setupNetworkStatusChecker()
             } catch {
                 logger.error(["Failed to get notifications permission:" , error])
                 error.reportToSentry()
@@ -533,35 +543,19 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
         
     }
     
+    
+    
     func callWhileNetworkStatusChange(networkStatus: NetworkStatus) {
-        if self.lastKnownNetworkStatus != networkStatus {
-            self.logger.info("🛜 Network status changed \(self.lastKnownNetworkStatus.rawValue) -> \(networkStatus.rawValue)")
-            self.lastKnownNetworkStatus = networkStatus
-            Task {await self.showNotificationForNetworkStatus()}
-            
+         
+        if self.networkStatusObservable.networkStatus != networkStatus {
+            self.logger.info("🛜 Network status changed \(self.networkStatusObservable.networkStatus.rawValue) -> \(networkStatus.rawValue)")
+            DispatchQueue.main.async {
+                self.networkStatusObservable.networkStatus = networkStatus
+            }
         }
     }
     
-    func showNotificationForNetworkStatus() async {
-        self.logger.info("Showing notification for network status")
-        let content = UNMutableNotificationContent()
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.0, repeats: false);
-        let uuid = UUID().uuidString;
-        let request = UNNotificationRequest(identifier: uuid, content: content, trigger: trigger);
-
-        content.title = "Test"
-        content.body = "Test body"
-        
-        do {
-            try await notificationsCenter.add(request)
-            
-            self.logger.info("Notification scheduled")
-            let pending = await notificationsCenter.pendingNotificationRequests()
-            self.logger.info(pending.count)
-        } catch {
-            self.logger.error(["Failed to request a notification for network status", error])
-        }
-    }
+    
     
     func setupNetworkStatusChecker() {
         self.networkStatusChecker.delegate = self
@@ -569,8 +563,12 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, Net
         
         self.networkStatusChecker.startTest(url:  networkStatusCheckTestURL)
         
-        self.networkStatusCheckTimer = Timer(timeInterval: 60.0, repeats: true, block: {_ in
-            self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
-        })
+        DispatchQueue.main.async {
+            self.networkStatusCheckTimer = Timer.scheduledTimer(timeInterval: 60 * 5, target: self, selector: #selector(self.runNetworkStatusTest), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func runNetworkStatusTest() {
+        self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
     }
 }
