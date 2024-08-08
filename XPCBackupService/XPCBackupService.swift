@@ -213,8 +213,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
-        self.backupDownloadStatus = .InProgress
-        self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
 
         let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
@@ -242,14 +240,12 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 try await backupDownloadService.downloadBackupFolderAtPath(folderId: folderId, downloadAtPath: downloadAtURL)
                 self.downloadOperationQueue.addBarrierBlock {
                     logger.info("Download operations completed")
-                    self.backupDownloadStatus = .Done
                     reply(nil, nil)
                 }
                 
                 
             } catch {
-                self.backupDownloadStatus = .Failed
-                logger.error(["Failed to download backup", error])
+                logger.error(["Failed to download folder backup", error])
                 error.reportToSentry()
                 reply(nil, error.localizedDescription)
             }
@@ -302,8 +298,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
         
-        self.backupDownloadStatus = .InProgress
-        self.backupDownloadProgress = Progress()
+
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         
         let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
@@ -329,10 +324,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupDownloadService.downloadFile(fileId: fileId, bucketId: bucketId, downloadAt: downloadAtURL)
             self.downloadOperationQueue.addBarrierBlock {
                 logger.info("Download operations completed")
-                self.backupDownloadStatus = .Done
                 reply(nil, nil)
             }
-            self.backupDownloadStatus = .Done
             reply(nil,nil)
         }
     }
