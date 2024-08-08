@@ -211,6 +211,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         networkAuth: String,
         folderId: String,
         bucketId: String,
+        folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
@@ -237,7 +238,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         )
         Task {
             do {
-                try await backupDownloadService.downloadBackupFolderAtPath(folderId: folderId, downloadAtPath: downloadAtURL)
+                try await backupDownloadService.downloadFolderBackup(folderId: folderId, downloadAtPath: downloadAtURL, folderName: folderName)
                 self.downloadOperationQueue.addBarrierBlock {
                     logger.info("Download operations completed")
                     reply(nil, nil)
