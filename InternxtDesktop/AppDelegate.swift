@@ -28,7 +28,15 @@ extension AppDelegate: NSPopoverDelegate {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
+class NetworkStatusObservable: ObservableObject {
+    @Published var networkStatus: NetworkStatus = .unknown
+}
+
+
+class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, NetworkStatusCheckerDelegate, UNUserNotificationCenterDelegate {
+    
+    let notificationsCenter = UNUserNotificationCenter.current()
+    let networkStatusChecker = NetworkStatusChecker()
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -55,6 +63,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
+    var networkStatusCheckTimer: Timer? = nil
+    let networkStatusCheckTestURL =  URL(string: "https://link.testfile.org/15MB")!
+    let networkStatusObservable = NetworkStatusObservable()
+    
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     
     var isPreview: Bool {
@@ -63,7 +75,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     override init() {
         super.init()
+        self.notificationsCenter.delegate = self
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+        self.setupNetworkStatusChecker()
         self.requestNotificationsPermissions()
         if let authToken = config.getAuthToken() {
             self.realtime = RealtimeService.init(
@@ -75,7 +89,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 }
             )
         }
-        
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -402,7 +415,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         self.popover?.delegate = self
         self.popover?.setValue(true, forKeyPath: "shouldHideAnchor")
         self.popover?.contentViewController = NSHostingController(
-            rootView: WidgetView(openFileProviderRoot: openFileProviderRoot, openSendFeedback: openSendFeedbackWindow)
+            rootView: WidgetView(
+                openFileProviderRoot: openFileProviderRoot,
+                openSendFeedback: openSendFeedbackWindow
+            )
                 .environmentObject(self.authManager)
                 .environmentObject(self.globalUIManager)
                 .environmentObject(self.usageManager)
@@ -410,6 +426,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 .environmentObject(self.settingsManager)
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
+                .environmentObject(self.networkStatusObservable)
         )
     }
     
@@ -491,7 +508,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             display()
         }
         self.scheduledManager.resumeBackupScheduler()
-       
+        self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
         usageUpdateDebouncer.debounce { [weak self] in
             self?.updateUsage()
         }
@@ -515,11 +532,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func requestNotificationsPermissions() {
         Task {
-            let center = UNUserNotificationCenter.current()
-
-
             do {
-                try await center.requestAuthorization(options: [.alert, .sound, .badge])
+                try await notificationsCenter.requestAuthorization(options: [.alert, .sound, .badge])
                 logger.info("Got notifications permission")
             } catch {
                 logger.error(["Failed to get notifications permission:" , error])
@@ -527,5 +541,34 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             }
         }
         
+    }
+    
+    
+    
+    func callWhileNetworkStatusChange(networkStatus: NetworkStatus) {
+         
+        if self.networkStatusObservable.networkStatus != networkStatus {
+            self.logger.info("🛜 Network status changed \(self.networkStatusObservable.networkStatus.rawValue) -> \(networkStatus.rawValue)")
+            DispatchQueue.main.async {
+                self.networkStatusObservable.networkStatus = networkStatus
+            }
+        }
+    }
+    
+    
+    
+    func setupNetworkStatusChecker() {
+        self.networkStatusChecker.delegate = self
+        self.logger.info("🛜 Setting up network status check test")
+        
+        self.networkStatusChecker.startTest(url:  networkStatusCheckTestURL)
+        
+        DispatchQueue.main.async {
+            self.networkStatusCheckTimer = Timer.scheduledTimer(timeInterval: 60 * 5, target: self, selector: #selector(self.runNetworkStatusTest), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func runNetworkStatusTest() {
+        self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
     }
 }

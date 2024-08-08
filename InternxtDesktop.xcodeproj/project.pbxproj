@@ -198,6 +198,8 @@
 		E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E196395D2C63CA0F009EDAFB /* RealmSwift */; };
 		E19639602C63CA14009EDAFB /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E196395F2C63CA14009EDAFB /* Realm */; };
 		E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E19639612C63CA20009EDAFB /* RealmSwift */; };
+		E19639652C63E14F009EDAFB /* NetworkStatusChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19639642C63E14F009EDAFB /* NetworkStatusChecker.swift */; };
+		E19639672C64D41E009EDAFB /* NetworkStatusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19639662C64D41E009EDAFB /* NetworkStatusMessage.swift */; };
 		E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */; };
 		E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */; };
 		E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DD2AA9EA0A00107753 /* Utils.swift */; };
@@ -478,6 +480,8 @@
 		E19136902AA0FB4C00CAF0FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetIconButtonView.swift; sourceTree = "<group>"; };
 		E19136952AA108D200CAF0FA /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		E19639642C63E14F009EDAFB /* NetworkStatusChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusChecker.swift; sourceTree = "<group>"; };
+		E19639662C64D41E009EDAFB /* NetworkStatusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusMessage.swift; sourceTree = "<group>"; };
 		E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileOrUpdateContentUseCase.swift; sourceTree = "<group>"; };
 		E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCase.swift; sourceTree = "<group>"; };
 		E198D7DD2AA9EA0A00107753 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -941,6 +945,14 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		E19639632C63E124009EDAFB /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				E19639642C63E14F009EDAFB /* NetworkStatusChecker.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		E1A0AC5D2AB85BE2005E71D6 /* SendFeedback */ = {
 			isa = PBXGroup;
 			children = (
@@ -978,6 +990,7 @@
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 				E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */,
+				E19639662C64D41E009EDAFB /* NetworkStatusMessage.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -1053,6 +1066,7 @@
 		E1FB2D522A76C01B00473AE1 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E19639632C63E124009EDAFB /* Network */,
 				E17AA0222A8A70C100C7EE6E /* Auth */,
 				E16310562A8E66F70072989E /* URLDictionary.swift */,
 				E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */,
@@ -1515,10 +1529,12 @@
 				E17DB7072C5288430031B465 /* BackupContentNavigator.swift in Sources */,
 				E1E56C222BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
 				E19136962AA108D200CAF0FA /* View.swift in Sources */,
+				E19639672C64D41E009EDAFB /* NetworkStatusMessage.swift in Sources */,
 				E17C84B02AB225CD00A58414 /* WelcomeSlideView.swift in Sources */,
 				E1A0AC772AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
 				31DEAEC22B7514F400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				E17C84CA2AB31E0400A58414 /* OnboardingFinishView.swift in Sources */,
+				E19639652C63E14F009EDAFB /* NetworkStatusChecker.swift in Sources */,
 				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */,

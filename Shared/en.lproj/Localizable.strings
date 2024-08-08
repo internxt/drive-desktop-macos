@@ -98,7 +98,11 @@
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Click + to select the folders\nyou want to back up";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "This folder is already selected";
 
-
+// NETWORK STATUS
+"NETWORK_CONNECTION_SLOW_TITLE" = "Weak connection.";
+"NETWORK_CONNECTION_SLOW_SUBTITLE" = "Your experience may be slow or interrupted.";
+"NETWORK_CONNECTION_NONE_TITLE" = "No internet connection.";
+"NETWORK_CONNECTION_NONE_SUBTITLE" = "Please check your connection and try again.";
 
 // Common
 "COMMON_UPGRADE" = "Upgrade";
