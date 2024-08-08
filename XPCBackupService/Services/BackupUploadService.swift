@@ -137,7 +137,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
 
-            try BackupRealm.shared.addSyncedNode(
+            try SyncedNodeRepository.shared.addSyncedNode(
                 SyncedNode(
                     remoteId: createdFolder.id,
                     deviceId: node.deviceId,
@@ -167,7 +167,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
-                    try BackupRealm.shared.addSyncedNode(
+                    try SyncedNodeRepository.shared.addSyncedNode(
                         SyncedNode(
                             remoteId: folder.id,
                             deviceId: node.deviceId,
@@ -236,7 +236,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
 
                 // Edit date in synced database
-                try BackupRealm.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date())
+                try SyncedNodeRepository.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date())
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
@@ -267,7 +267,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
 
-                try BackupRealm.shared.addSyncedNode(
+                try SyncedNodeRepository.shared.addSyncedNode(
                     SyncedNode(
                         remoteId: createdFile.id,
                         deviceId: node.deviceId,
@@ -309,7 +309,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
-                    try BackupRealm.shared.addSyncedNode(
+                    try SyncedNodeRepository.shared.addSyncedNode(
                         SyncedNode(
                             remoteId: file.id,
                             deviceId: node.deviceId,

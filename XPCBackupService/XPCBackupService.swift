@@ -32,7 +32,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) -> Void {
-        let backupRealm = BackupRealm.shared
+        let backupRealm = SyncedNodeRepository.shared
         self.uploadOperationQueue.maxConcurrentOperationCount = 10
         logger.info("Going to backup folders: \(backupURLs)")
         self.backupUploadStatus = .InProgress
