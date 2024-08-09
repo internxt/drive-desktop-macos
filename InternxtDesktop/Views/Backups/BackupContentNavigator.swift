@@ -19,6 +19,7 @@ struct BackupContentNavigator: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var selectedFolderListItem: FolderListItem? = nil
+    @StateObject var backupsService: BackupsService
     
     func getBreadcrumbsLevels() -> Binding<[AppBreadcrumbLevel]> {
         let levels: [AppBreadcrumbLevel] = $viewModel.navigationLevels.wrappedValue.map{level in
@@ -33,6 +34,7 @@ struct BackupContentNavigator: View {
         AppBreadcrumbs(
             onLevelTap: {level in
                 self.selectedFolderListItem = nil
+                selectedId = nil
                 self.currentFolderId = level.id
                 navigateToFolder(
                     item: FolderListItem(id: level.id, name: level.name, type: "folder")
@@ -40,7 +42,7 @@ struct BackupContentNavigator: View {
             },
             levels: getBreadcrumbsLevels()
         )
-       
+        
     }
     
     func navigateToFolder(item: FolderListItem) {
@@ -83,7 +85,7 @@ struct BackupContentNavigator: View {
                 items: getFolderListItems(),
                 selectedId: $selectedId,
                 isLoading: $viewModel.loadingItems,
-            
+                
                 onItemSingleTap: {item in
                     self.selectedFolderListItem = item
                 },
@@ -150,17 +152,73 @@ struct BackupContentNavigator: View {
     }
     
     private func downloadItem() {
-        let alert = NSAlert()
-        alert.messageText = "Download not implemented yet"
-        alert.informativeText = "You triggered a download, but this feature is not yet implemented"
-        
-        alert.runModal()
+
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        let panelResponse = panel.runModal()
+        if(panelResponse == .OK) {
+            guard let url = panel.url else {
+                return
+            }
+            
+            
+            Task {
+                do {
+                    // download root folder
+                    let currentLevelIsRoot = viewModel.navigationLevels.count == 1
+                    let notSelectedFolderOrFile = selectedFolderListItem == nil && selectedId == nil
+                    if currentLevelIsRoot && notSelectedFolderOrFile {
+                        if(backupsService.backupDownloadStatus == .InProgress) {
+                            let title = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE", comment: "")
+                            let message = NSLocalizedString("BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE", comment: "")
+                            showAlert(message: title, informativeText: message)
+                            return
+                        }
+                        try await backupsService.downloadBackup(device: device, downloadAt: url)
+                    } else if let selectedFolderListItem = selectedFolderListItem {
+                        guard let selectedId = selectedId else { return }
+                        
+                        if selectedFolderListItem.type == "folder" {
+                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId,folderName: selectedFolderListItem.name)
+                        } else {
+                            try await backupsService.downloadFileBackup(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
+                        }
+                    } else if let selectedId = currentFolderId {
+                        try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
+                    }
+                    
+                } catch {
+                    error.reportToSentry()
+                    showAlert(message: error.localizedDescription, style: .warning)
+                }
+                
+            }
+            
+            onClose()
+        }
     }
     
+    private func getURLForItem(baseURL: URL, itemName: String, itemType: String? = nil) -> URL {
+        let type: String = (itemType != nil) ? ".\(itemType!)" : ""
+        
+        return baseURL.appendingPathComponent("\(itemName)\(type)")
+    }
+    
+    
+    func showAlert(message: String, informativeText: String? = nil, style: NSAlert.Style = .informational, buttonTitle: String = "OK") {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.informativeText = informativeText ?? ""
+        alert.alertStyle = style
+        alert.addButton(withTitle: buttonTitle)
+        alert.runModal()
+    }
     
 }
 
 
 #Preview {
-    BackupContentNavigator(device: BackupsDeviceService.shared.getDeviceForPreview() , onClose: {})
+    BackupContentNavigator(device: BackupsDeviceService.shared.getDeviceForPreview() , onClose: {}, backupsService: BackupsService())
 }

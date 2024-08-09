@@ -166,30 +166,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
-        let config = ConfigLoader().get()
-        
-        guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
-            logger.error("Cannot get sharedDefaults")
-            reply(nil, "Cannot get sharedDefaults")
+        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+       
+        guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            reply(nil, "Setup failed")
             return
         }
         
-        
-        guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
-            logger.error("Cannot get AuthToken")
-            reply(nil, "Cannot get AuthToken")
-            return
-        }
-        
-        guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else{
-            logger.error("Cannot get mnemonic")
-            reply(nil, "Cannot get mnemonic")
-            return
-        }
-        let backupAPI = BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let driveNewAPI = DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
-        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, debug: true)
+
         self.downloadOperationQueue.maxConcurrentOperationCount = 10
         
         let backupDownloadService = BackupDownloadService(
@@ -215,6 +199,54 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             } catch {
                 self.backupDownloadStatus = .Failed
                 logger.error(["Failed to download backup", error])
+                error.reportToSentry()
+                reply(nil, error.localizedDescription)
+            }
+        }
+    }
+    
+    
+    @objc func downloadFolderBackup(
+        downloadAt downloadAtURL: String,
+        networkAuth: String,
+        folderId: String,
+        bucketId: String,
+        folderName: String,
+        with reply: @escaping (_ result: String?, _ error: String?) -> Void
+    ) {
+        let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
+
+        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+       
+        guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            reply(nil, "Setup failed")
+            return
+        }
+        
+
+        self.downloadOperationQueue.maxConcurrentOperationCount = 10
+        
+        let backupDownloadService = BackupDownloadService(
+            downloadOperationQueue: downloadOperationQueue,
+            backupAPI: backupAPI,
+            driveNewAPI: driveNewAPI,
+            networkFacade: networkFacade,
+            encryptedContentURL: FileManager.default.temporaryDirectory,
+            decrypt: Decrypt(),
+            backupBucket: bucketId,
+            backupDownloadProgress: backupDownloadProgress
+        )
+        Task {
+            do {
+                try await backupDownloadService.downloadFolderBackup(folderId: folderId, downloadAtPath: downloadAtURL, folderName: folderName)
+                self.downloadOperationQueue.addBarrierBlock {
+                    logger.info("Download operations completed")
+                    reply(nil, nil)
+                }
+                
+                
+            } catch {
+                logger.error(["Failed to download folder backup", error])
                 error.reportToSentry()
                 reply(nil, error.localizedDescription)
             }
@@ -264,5 +296,39 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
         return count
     }
+    
+    @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
+        
 
+        let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
+        
+        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+        
+        guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            reply(nil, "Setup failed")
+            return
+        }
+        self.downloadOperationQueue.maxConcurrentOperationCount = 10
+        
+        let backupDownloadService = BackupDownloadService(
+            downloadOperationQueue: downloadOperationQueue,
+            backupAPI: backupAPI,
+            driveNewAPI: driveNewAPI,
+            networkFacade: networkFacade,
+            encryptedContentURL: FileManager.default.temporaryDirectory,
+            decrypt: Decrypt(),
+            backupBucket: bucketId,
+            backupDownloadProgress: backupDownloadProgress
+        )
+        Task {
+            
+            backupDownloadService.downloadFile(fileId: fileId, bucketId: bucketId, downloadAt: downloadAtURL)
+            self.downloadOperationQueue.addBarrierBlock {
+                logger.info("Download operations completed")
+                reply(nil, nil)
+            }
+            reply(nil,nil)
+        }
+    }
+    
 }

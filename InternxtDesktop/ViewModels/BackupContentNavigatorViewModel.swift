@@ -106,7 +106,7 @@ extension BackupContentNavigator {
             
             return files.result.map{file in
                 let name = file.plainName ?? self.decryptName(name: file.name, bucketId: bucketId)
-                return BackupContentItem(id: file.id.toString(),name: name, type: file.type ?? "")
+                return BackupContentItem(id: file.fileId,name: name, type: file.type ?? "")
             }
         }
         

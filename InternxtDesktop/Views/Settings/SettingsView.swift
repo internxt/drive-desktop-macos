@@ -70,7 +70,7 @@ struct SettingsView: View {
                         device: device,
                         onClose: {
                             self.showBackupContentNavigator = false
-                        }
+                        }, backupsService: backupsService
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.Gray40.opacity(0.4))
