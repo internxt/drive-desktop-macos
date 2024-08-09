@@ -82,6 +82,7 @@ extension BackupContentNavigator {
                     self.loadingItems = false
                 }
             } catch {
+                appLogger.error(["Failed to load backup folder content", error])
                 DispatchQueue.main.sync {
                     self.folderError = error
                 }
