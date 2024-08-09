@@ -34,6 +34,7 @@ struct BackupContentNavigator: View {
         AppBreadcrumbs(
             onLevelTap: {level in
                 self.selectedFolderListItem = nil
+                selectedId = nil
                 self.currentFolderId = level.id
                 navigateToFolder(
                     item: FolderListItem(id: level.id, name: level.name, type: "folder")
@@ -184,7 +185,7 @@ struct BackupContentNavigator: View {
                         } else {
                             try await backupsService.downloadFileBackup(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
                         }
-                    } else if let selectedId = selectedId {
+                    } else if let selectedId = currentFolderId {
                         try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
                     }
                     
