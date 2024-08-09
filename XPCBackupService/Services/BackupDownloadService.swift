@@ -76,15 +76,23 @@ struct BackupDownloadService {
     }
     
     func downloadFolderBackup(folderId: String, downloadAtPath: URL,folderName: String) async throws {
-        let folderURL = self.getURLForItem(
-            baseURL: downloadAtPath, itemName: folderName
-        )
-        let creationDate = Date()
-        try self.createFolder(folderURL: folderURL, creationDate: creationDate)
-        try await self.downloadBackupFolderAtPath(
-            folderId: folderId,
-            downloadAtPath: folderURL
-        )
+        if folderName.isEmpty {
+            try await self.downloadBackupFolderAtPath(
+                folderId: folderId,
+                downloadAtPath: downloadAtPath
+            )
+        }else{
+            let folderURL = self.getURLForItem(
+                baseURL: downloadAtPath, itemName: folderName
+            )
+            let creationDate = Date()
+            try self.createFolder(folderURL: folderURL, creationDate: creationDate)
+            try await self.downloadBackupFolderAtPath(
+                folderId: folderId,
+                downloadAtPath: folderURL
+            )
+        }
+
     }
     
     func downloadFile(fileId: String, bucketId: String, downloadAt: URL) {
