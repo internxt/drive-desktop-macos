@@ -8,7 +8,7 @@
             <sparkle:version>65</sparkle:version>
             <sparkle:shortVersionString>2.4.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/internxt/drive-desktop-macos/releases/download/v2.4.0.65/Internxt.Drive.2.4.0.65.dmg" length="39956854" type="application/octet-stream" sparkle:edSignature="6IgRM/PFXQTYu5SfS4WqCR65ce1LRJeNCKfOs58Tj5UZCv0ebnJ669NLuGdUfZDGx3GrTEzljG2ocDTEXJoTCw=="/>
+            <enclosure url="https://github.com/internxt/drive-desktop-macos/releases/download/v2.4.0.65/Internxt_Drive_2.4.0.65.dmg" length="39956854" type="application/octet-stream" sparkle:edSignature="6IgRM/PFXQTYu5SfS4WqCR65ce1LRJeNCKfOs58Tj5UZCv0ebnJ669NLuGdUfZDGx3GrTEzljG2ocDTEXJoTCw=="/>
         </item>
     </channel>
 </rss>
