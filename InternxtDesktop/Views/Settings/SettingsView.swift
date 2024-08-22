@@ -21,12 +21,12 @@ struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var scheduleManager: ScheduledBackupManager
     public var updater: SPUUpdater? = nil
-    @State private var selectedDeviceId: Int? = nil
+    @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
     @State private var showStopBackupDialog = false
     @State private var showDeleteBackupDialog = false
     @State private var isEditingSelectedFolders: Bool = false
-
+    @State private var showBackupContentNavigator: Bool = false
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -61,6 +61,21 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Gray40.opacity(0.4))
             }
+            
+            if showBackupContentNavigator {
+                if let device = self.selectedDevice, 
+                    self.showBackupContentNavigator,
+                    let bucketId = device.bucket {
+                    BackupContentNavigator(
+                        device: device,
+                        onClose: {
+                            self.showBackupContentNavigator = false
+                        }, backupsService: backupsService
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.Gray40.opacity(0.4))
+                }
+            }
 
             // stop ongoing backup dialog
             if showStopBackupDialog {
@@ -77,10 +92,13 @@ struct SettingsView: View {
             if showDeleteBackupDialog {
                 VStack {
                     DeleteBackupDialogView(
-                        selectedDeviceId: self.$selectedDeviceId,
+                        selectedDevice: self.$selectedDevice,
                         backupsService: backupsService,
                         onClose: {
-                            showDeleteBackupDialog = false
+                            withAnimation {
+                                showDeleteBackupDialog = false
+                            }
+                            
                         }
                     )
                 }
@@ -113,9 +131,10 @@ struct SettingsView: View {
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
-            BackupsTabView(selectedDeviceId: $selectedDeviceId, showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog,
-                isEditingSelectedFolders: $isEditingSelectedFolders,
-                           backupsService: backupsService, scheduleManager: scheduleManager
+            BackupsTabView(selectedDevice: $selectedDevice, showFolderSelector: $showFolderSelector, showStopBackupDialog: $showStopBackupDialog, showDeleteBackupDialog: $showDeleteBackupDialog,
+                isEditingSelectedFolders: $isEditingSelectedFolders, showBackupContentNavigator:$showBackupContentNavigator,
+                backupsService: backupsService,
+                scheduleManager: scheduleManager
             )
         default:
             EmptyView()
