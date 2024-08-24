@@ -17,11 +17,14 @@ enum LogSubSystem: String {
 
 struct LogService {
     static var shared = LogService()
+    private let GroupName = "JR4S3SY396.group.internxt.desktop"
     
     func getLogsDirectory() -> URL? {
         let fileManager = FileManager.default
-        if let libraryDirectory = fileManager.urls(for: .allLibrariesDirectory, in: .userDomainMask).first {
-            let logsDirectory = libraryDirectory.appendingPathComponent("Logs")
+        if let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: GroupName) {
+            let logsDirectory = groupURL.appendingPathComponent("Logs")
+            try? fileManager.createDirectory(at: logsDirectory, withIntermediateDirectories: true, attributes: nil)
+            
             return logsDirectory
         }
         return nil
@@ -33,7 +36,7 @@ struct LogService {
         let log = XCGLogger(identifier: subsystem.rawValue, includeDefaultDestinations: false)
         
         let systemDestination = AppleSystemLogDestination(identifier: "\(subsystem).\(category).systemDestination")
-
+        
         systemDestination.outputLevel = .debug
         systemDestination.showLogIdentifier = false
         systemDestination.showFunctionName = false
@@ -45,7 +48,7 @@ struct LogService {
         
         
         log.add(destination: systemDestination)
-
+        
         guard let logsDirectoryUnwrapped = logsDirectory else {
             return log
         }
@@ -53,7 +56,7 @@ struct LogService {
         let logFile = logsDirectoryUnwrapped.appendingPathComponent("\(subsystem.rawValue).log")
         
         let fileDestination = FileDestination(writeToFile: logFile, identifier: "\(subsystem.rawValue).\(category).fileDestination", shouldAppend: true)
-
+        
         
         fileDestination.outputLevel = .debug
         fileDestination.showLogIdentifier = false
@@ -64,11 +67,11 @@ struct LogService {
         fileDestination.showDate = true
         
         fileDestination.logQueue = DispatchQueue.global(qos: .background)
-        // Writing logs for the SyncExtension raises a "too many files open" error 
+        // Writing logs for the SyncExtension raises a "too many files open" error
         // at some point, needs investigation
-        if subsystem != .SyncExtension {
-           log.add(destination: fileDestination)
-        }
+        //   if subsystem != .SyncExtension {
+        log.add(destination: fileDestination)
+        //   }
         
         
         return log
@@ -76,12 +79,12 @@ struct LogService {
     
     private func createDirectoryIfNeeded(at url: URL) -> Bool {
         let fileManager = FileManager.default
-            do {
-                try fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-                return true
-            } catch {
-                return false
-            }
+        do {
+            try fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+            return true
+        } catch {
+            return false
+        }
     }
     
     private func createFileIfNeeded(at url: URL) -> Bool {
@@ -92,7 +95,7 @@ struct LogService {
         
         return true
     }
- }
+}
 
 let syncExtensionLogger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "SyncExtension")
 let appLogger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "InternxtDesktopUIApp")
