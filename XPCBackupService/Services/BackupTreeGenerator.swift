@@ -29,8 +29,8 @@ class BackupTreeGenerator: BackupTreeGeneration {
     let backupUploadService: BackupUploadServiceProtocol
     let backupTotalProgress: Progress
     let deviceId: Int
-    let backupRealm: BackupRealmProtocol
-    init(root: URL, deviceId: Int, backupUploadService: BackupUploadServiceProtocol, backupTotalProgress: Progress, backupRealm: BackupRealmProtocol) {
+    let backupRealm: any SyncedNodeRepositoryProtocol
+    init(root: URL, deviceId: Int, backupUploadService: BackupUploadServiceProtocol, backupTotalProgress: Progress, backupRealm: any SyncedNodeRepositoryProtocol) {
 
         self.root = root
         self.backupUploadService = backupUploadService

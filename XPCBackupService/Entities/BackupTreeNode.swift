@@ -30,9 +30,9 @@ class BackupTreeNode {
     var backupTotalPogress: Progress
     var rootBackupFolder: URL
     var syncRetries: UInt64 = 0
-    var backupRealm: BackupRealmProtocol
+    var backupRealm: any SyncedNodeRepositoryProtocol
     
-    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadServiceProtocol, backupRealm: BackupRealmProtocol, backupTotalProgress: Progress) {
+    init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadServiceProtocol, backupRealm: any SyncedNodeRepositoryProtocol, backupTotalProgress: Progress) {
         self.id = id
         self.deviceId = deviceId
         self.parentId = parentId
@@ -105,11 +105,8 @@ class BackupTreeNode {
         guard let syncedNodeThreadRefUnwrapped = syncedNodeThreadRef else {
             return nil
         }
-        guard let realm = try backupRealm.getRealm() else {
-            return nil
-        }
-        
-        let syncedNode = realm.resolve(syncedNodeThreadRefUnwrapped)
+
+        let syncedNode = backupRealm.resolveSyncedNode(reference: syncedNodeThreadRefUnwrapped)
         
         guard let syncedNodeUnwrapped = syncedNode else {
             return nil
@@ -168,7 +165,7 @@ class BackupTreeNode {
         }
         
         let currentSyncedNode = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
-        if let threadRealm = try self.backupRealm.getRealm(), let currentSyncedNodeUnwrapped = currentSyncedNode {
+        if let currentSyncedNodeUnwrapped = currentSyncedNode {
             try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNodeUnwrapped.remoteId, syncedNoteRemoteUuid: currentSyncedNodeUnwrapped.remoteUuid)
             
             logger.info("Node \(self.name) is synced: \(currentSyncedNode != nil)")

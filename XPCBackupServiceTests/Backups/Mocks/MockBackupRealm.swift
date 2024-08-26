@@ -8,7 +8,13 @@
 import Foundation
 import RealmSwift
 
-class MockBackupRealm: BackupRealmProtocol {
+class MockBackupRealm: SyncedNodeRepositoryProtocol {
+
+    func find(url: URL, deviceId: Int) -> SyncedNode? {
+        // TODO:
+        return nil
+    }
+    
     private let inMemoryRealm: Realm
     
     init() {
@@ -22,7 +28,7 @@ class MockBackupRealm: BackupRealmProtocol {
         configuration.inMemoryIdentifier = "MockBackupRealm"
         return try! Realm(configuration: configuration)
     }
-
+    
     func addSyncedNode(_ node: SyncedNode) throws {
         let realm = try getRealm()
         try realm?.write {
@@ -44,15 +50,37 @@ class MockBackupRealm: BackupRealmProtocol {
         catch {
             return nil
         }
-
+        
     }
-
+    
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws {
         guard let node = inMemoryRealm.objects(SyncedNode.self).first(where: { $0.remoteUuid == remoteUuid }) else {
             throw BackupUploadError.CannotFindNodeToRealm
         }
         try inMemoryRealm.write {
             node.updatedAt = date
+        }
+    }
+    
+    func findById(id: String) -> SyncedNode? {
+        return nil
+    }
+    
+    func deleteById(id: String) throws {
+        // TODO:
+    }
+    
+    func updateById(id: String) throws {
+        // TODO:
+    }
+    
+    func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode? {
+        do {
+            let realm = try getRealm()
+            guard let realm = realm else { return nil }
+            return realm.resolve(reference)
+        } catch {
+            return nil
         }
     }
 }

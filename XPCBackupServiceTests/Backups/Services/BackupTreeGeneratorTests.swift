@@ -11,7 +11,7 @@ import InternxtSwiftCore
 final class BackupTreeGeneratorTests: XCTestCase {
     var sut: BackupTreeGenerator!
     var tmpDirectoryURL: URL!
-    var backupRealm: BackupRealmProtocol!
+    var backupRealm: any SyncedNodeRepositoryProtocol = MockBackupRealm()
     var mockBackupUploadService: MockBackupUploadService!
     private var uploadOperationQueue = OperationQueue()
     
