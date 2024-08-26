@@ -8,7 +8,7 @@
 import Foundation
 import Sentry
 import os.log
-let sentryLogger = Logger(subsystem: "com.internxt", category: "Sentry")
+let sentryLogger = LogService.shared.createLogger(subsystem: .Errors, category: "Sentry")
 
 
 struct ErrorUtils {
@@ -24,7 +24,7 @@ struct ErrorUtils {
         }
         
         
-        sentryLogger.info("Sentry is ready using \(dsn) DSN")
+        sentryLogger.info("Sentry is ready")
     }
     
     static func fatal(_ message: String) -> Never {

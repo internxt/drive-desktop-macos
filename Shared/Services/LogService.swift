@@ -13,15 +13,15 @@ enum LogSubSystem: String {
     case SyncExtension = "com.internxt.SyncExtension"
     case InternxtDesktop = "com.internxt.InternxtDesktop"
     case XPCBackups = "com.internxt.XPCBackups"
+    case Errors = "com.internxt.errors"
 }
 
 struct LogService {
     static var shared = LogService()
-    private let GroupName = "JR4S3SY396.group.internxt.desktop"
     
     func getLogsDirectory() -> URL? {
         let fileManager = FileManager.default
-        if let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: GroupName) {
+        if let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: INTERNXT_GROUP_NAME) {
             let logsDirectory = groupURL.appendingPathComponent("Logs")
             try? fileManager.createDirectory(at: logsDirectory, withIntermediateDirectories: true, attributes: nil)
             
@@ -67,13 +67,9 @@ struct LogService {
         fileDestination.showDate = true
         
         fileDestination.logQueue = DispatchQueue.global(qos: .background)
-        // Writing logs for the SyncExtension raises a "too many files open" error
-        // at some point, needs investigation
-        //   if subsystem != .SyncExtension {
+     
         log.add(destination: fileDestination)
-        //   }
-        
-        
+    
         return log
     }
     
