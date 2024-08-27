@@ -37,15 +37,6 @@
       }
     },
     {
-      "identity" : "ripemd160-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MiclausCorp/ripemd160-Swift.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "b7fae4fb357ee0cd7ab7f7efc0ccf66b58d49f32"
-      }
-    },
-    {
       "identity" : "rudder-sdk-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/rudderlabs/rudder-sdk-ios",
@@ -96,7 +87,7 @@
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
         "branch" : "main",
-        "revision" : "80abd120927443b4d6c67f9ee6219842d4345ae5"
+        "revision" : "6d23db5c0b727d047b850bb81c62bb3d17b84939"
       }
     },
     {
