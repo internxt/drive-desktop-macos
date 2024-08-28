@@ -24,7 +24,6 @@ struct SettingsMenuView: View {
             ZStack {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_SEND_FEEDBACK_OPTION", onPress: handleSendFeedback)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
