@@ -21,7 +21,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private var downloadOperationQueue = OperationQueue()
     private var backupUploadStatus: BackupStatus = .Idle
     private var backupDownloadStatus: BackupStatus = .Idle
-    private let GroupName = "JR4S3SY396.group.internxt.desktop"
     private let AUTH_TOKEN_KEY = "AuthToken"
     private let LEGACY_TOKEN_KEY = "LegacyAuthToken"
     private let MNEMONIC_TOKEN_KEY = "Mnemonic"
@@ -46,7 +45,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 return
             }
             
-            guard let sharedDefaults = UserDefaults(suiteName: GroupName) else {
+            guard let sharedDefaults = UserDefaults(suiteName: INTERNXT_GROUP_NAME) else {
                 logger.error("Cannot get sharedDefaults")
                 reply(nil, "Cannot get sharedDefaults")
                 return
@@ -166,7 +165,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
-        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+        let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
        
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
             reply(nil, "Setup failed")
@@ -216,7 +215,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     ) {
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
 
-        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+        let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
        
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
             reply(nil, "Setup failed")
@@ -302,7 +301,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         
-        let configManager = BackupConfigurationManager(groupName: GroupName, clientName: CLIENT_NAME)
+        let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
         
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
             reply(nil, "Setup failed")
