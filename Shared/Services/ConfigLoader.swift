@@ -38,16 +38,19 @@ enum ConfigLoaderError: Error {
     case CannotHideBackupBanner
 }
 
+
+public let INTERNXT_GROUP_NAME = "JR4S3SY396.group.internxt.desktop"
+
 public var loadedConfig: JSONConfig? = nil
 public var loadedLegacyAuthToken: String? = nil
 public var loadedAuthToken: String? = nil
 public struct ConfigLoader {
     static let shared: ConfigLoader = ConfigLoader()
     
-    static let GroupName = "JR4S3SY396.group.internxt.desktop"
+    
     // We hardcode this value, so no other team can sign with our teamID, this corresponds to our Apps Groups
-    static let realmURL: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ConfigLoader.GroupName)!.appendingPathComponent("internxt_desktop.realm")
-    private let SUITE_NAME = ConfigLoader.GroupName
+    static let realmURL: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: INTERNXT_GROUP_NAME)!.appendingPathComponent("internxt_desktop.realm")
+    private let SUITE_NAME = INTERNXT_GROUP_NAME
     public init() {
         
     }

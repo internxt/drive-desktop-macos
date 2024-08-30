@@ -34,7 +34,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    private let GroupName = "JR4S3SY396.group.internxt.desktop"
     private let AUTH_TOKEN_KEY = "AuthToken"
     
     // Managers

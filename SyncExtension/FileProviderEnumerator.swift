@@ -58,12 +58,10 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
         
-        self.logger.info("🔵 Enumerating Changes for \(self.enumeratedItemIdentifier.rawValue)")
         return GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run()
     }
     
     func currentSyncAnchor(completionHandler: @escaping (NSFileProviderSyncAnchor?) -> Void) {
-        self.logger.info("Getting anchor")
         completionHandler(anchor)
     }
 
