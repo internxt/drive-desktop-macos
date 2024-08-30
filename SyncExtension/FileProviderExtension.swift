@@ -35,7 +35,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    private let GroupName = "JR4S3SY396.group.internxt.desktop"
     private let AUTH_TOKEN_KEY = "AuthToken"
     
     required init(domain: NSFileProviderDomain) {
