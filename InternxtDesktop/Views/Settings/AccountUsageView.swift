@@ -17,7 +17,7 @@ struct AccountUsageView: View {
                 HStack(alignment: .center,spacing: 8) {
                     ProgressView().progressViewStyle(.circular).controlSize(.small)
                     AppText("USAGE_LOADING").font(.BaseMedium)
-                       .foregroundColor(.Gray50)
+                        .foregroundColor(.Gray50)
                 }.frame(height: 140)
             } else {
                 HStack(alignment: .center, spacing: 0) {
@@ -39,6 +39,37 @@ struct AccountUsageView: View {
                 HStack(alignment: .center, spacing: 16) {
                     UsageLegendItem(label: "Drive", color: .Primary)
                     UsageLegendItem(label: "Backups", color: .Indigo)
+                }
+                if isStorageAlmostFull(){
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            VStack{
+                                Image(systemName: "exclamationmark.circle.fill")
+                                    .foregroundColor(.red)
+                                    .font(.system(size: 20))
+                                Spacer()
+                                Spacer()
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                AppText("ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_TITLE").font(.BaseSemibold)
+                                    .foregroundColor(.TextRed)
+                                
+                                AppText("ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_MESSAGE").font(.SMRegular)
+                                    .foregroundColor(.TextRed)
+                                    .lineLimit(nil)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                    .padding(12)
+                    .background(Color("TextRed").opacity(0.05))
+                    .cornerRadius(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color("TextRed").opacity(0.50), lineWidth: 1)
+                    )
+                    .padding(.top,20)
                 }
             }
             
@@ -123,15 +154,26 @@ struct AccountUsageView: View {
         return Rectangle()
             .fill(Color("Primary"))
             .frame(maxWidth: CGFloat(getWidth()), maxHeight: .infinity)
-            
-
+        
+        
             .overlay(Rectangle()
                 .frame(width: 2, height: nil, alignment: .trailing).foregroundColor(Color("Surface")), alignment: .trailing)
-
+        
     }
     
     func handleOpenUpgradePlan() {
         URLDictionary.UPGRADE_PLAN.open()
+    }
+    
+    func isStorageAlmostFull() -> Bool {
+        let usedPercentageString = usageManager.getUsedPercentage()
+        
+        guard let percentageNumber = Int(usedPercentageString.trimmingCharacters(in: .punctuationCharacters).trimmingCharacters(in: .whitespaces)) else {
+            
+            return false
+        }
+        
+        return percentageNumber >= 99
     }
     
     

@@ -99,6 +99,11 @@
 "BACKUP_MISSING_FOLDER_ERROR" = "Non trouvé";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Ce dossier est déjà sélectionné";
 
+// Account Settings
+
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_TITLE" = "Your storage is full";
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_MESSAGE" = "You can't upload, sync or backup files. Upgrade now your plan or remove files to save up space.";
+
 // Common
 "COMMON_UPGRADE" = "Mise à niveau";
 "COMMON_LOGOUT" = "Déconnexion";
@@ -170,3 +175,7 @@
 "SHARE_FEEDBACK_SUCCESS_TITLE" = "Merci d'avoir partagé votre commentaire";
 "SHARE_FEEDBACK_SUCCESS_SUBTITLE" = "Nous apprécions vraiment le temps et les efforts pour nous aider à améliorer nos services";
 
+// Alert Full Storage
+"ALERT_STORAGE_TITLE" = "Your storage is full";
+"ALERT_STORAGE_SUBTITLE" = "You can’t upload, sync or backup files";
+"ALERT_STORAGE_BUTTON_TITLE" = "Upgrade now";

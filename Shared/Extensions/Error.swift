@@ -14,3 +14,18 @@ extension Error {
         SentrySDK.capture(error: self)
     }
 }
+
+extension NSAlert {
+    static func showStorageFullAlert() {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("ALERT_STORAGE_TITLE", comment: "")
+        alert.informativeText = NSLocalizedString("ALERT_STORAGE_SUBTITLE", comment: "")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: NSLocalizedString("ALERT_STORAGE_BUTTON_TITLE", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("COMMON_CANCEL", comment: ""))
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            URLDictionary.UPGRADE_PLAN.open()
+        }
+    }
+}
