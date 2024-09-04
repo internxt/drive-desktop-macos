@@ -100,8 +100,8 @@
 
 // Account Settings
 
-"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_TITLE" = "Your storage is full";
-"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_MESSAGE" = "You can't upload, sync or backup files. Upgrade now your plan or remove files to save up space.";
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_TITLE" = "Tu almacenamiento está lleno";
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_MESSAGE" = "No puedes cargar, sincronizar ni hacer copias de seguridad de archivos. Actualiza ahora tu plan o elimina archivos para ahorrar espacio.";
 
 // Common
 "COMMON_UPGRADE" = "Comprar espacio";
@@ -177,6 +177,6 @@
 "SHARE_FEEDBACK_SUCCESS_SUBTITLE" = "Agradecemos mucho tu tiempo y esfuerzo para ayudarnos a mejorar nuestros servicios";
 
 // Alert Full Storage
-"ALERT_STORAGE_TITLE" = "Your storage is full";
-"ALERT_STORAGE_SUBTITLE" = "You can’t upload, sync or backup files";
-"ALERT_STORAGE_BUTTON_TITLE" = "Upgrade now";
+"ALERT_STORAGE_TITLE" = "Tu almacenamiento está lleno";
+"ALERT_STORAGE_SUBTITLE" = "No puedes cargar, sincronizar ni realizar copias de seguridad de archivos";
+"ALERT_STORAGE_BUTTON_TITLE" = "Actualizar ahora";
