@@ -18,6 +18,8 @@ enum AppError: Error {
 enum AuthError: Error {
     case UnableToRefreshToken
     case LegacyAuthTokenNotInConfig
+    case AuthTokenNotInConfig
     case noUserFound
     case InvalidTokenExp
+    case InvalidTokenIat
 }

@@ -42,8 +42,7 @@ enum ConfigLoaderError: Error {
 public let INTERNXT_GROUP_NAME = "JR4S3SY396.group.internxt.desktop"
 
 public var loadedConfig: JSONConfig? = nil
-public var loadedLegacyAuthToken: String? = nil
-public var loadedAuthToken: String? = nil
+
 public struct ConfigLoader {
     static let shared: ConfigLoader = ConfigLoader()
     

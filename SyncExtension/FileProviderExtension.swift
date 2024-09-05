@@ -29,7 +29,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
-    let refreshTokensIntervalTimer: AnyCancellable
     let activityManager: ActivityManager
     let realtime: RealtimeService?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
@@ -56,29 +55,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         guard let user = authManager.user else {
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
-        
-
-        self.refreshTokensIntervalTimer = Timer.publish(every: 15, on:.main, in: .common)
-            .autoconnect()
-            .sink(
-             receiveValue: {_ in
-                 Task {
-                     do {
-                         if try authManager.needRefreshToken(){
-                             try await authManager.refreshTokens()
-                             logger.info("Tokens refreshed successfully")
-                         }
-
-                     } catch {
-                         error.reportToSentry()
-                         logger.error(["Failed to refresh tokens from sync extension", error])
-                     }
-                     
-                 }
-             })
-        
-       
-    
         
         ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
@@ -133,7 +109,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         pushRegistry = PKPushRegistry(queue: nil)
         pushRegistry.delegate = self
         pushRegistry.desiredPushTypes = [.fileProvider]
-
+        self.refreshAuthTokensIfNeeded()
     }
     
 
@@ -157,10 +133,35 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func invalidate() {
         fileProviderItemActions.clean()
-        self.refreshTokensIntervalTimer.cancel()
+    }
+    
+    func refreshAuthTokensIfNeeded() -> Void {
+        Task {
+            do {
+                let refreshTokenCheckResult = try authManager.needRefreshToken()
+                logger.info("Auth token: Created at \(refreshTokenCheckResult.authTokenCreationDate), days until expiration: \(refreshTokenCheckResult.authTokenDaysUntilExpiration)")
+                
+                logger.info("Legacy auth token: Created at \(refreshTokenCheckResult.legacyAuthTokenCreationDate), days until expiration: \(refreshTokenCheckResult.legacyAuthTokenDaysUntilExpiration)")
+                
+                
+                if refreshTokenCheckResult.needsRefresh {
+                    try await authManager.refreshTokens()
+                    logger.info("Auth tokens refreshed successfully")
+                } else {
+                    logger.info("Auth tokens doesn't need a refresh")
+                    
+                }
+            } catch {
+                logger.error(["Cannot refresh tokens, something went wrong", error])
+                error.reportToSentry()
+            }
+            
+        }
+        
     }
     
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
+        refreshAuthTokensIfNeeded()
         // resolve the given identifier to a record in the model
         
         logger.info("Getting item metadata for \(identifier.rawValue)")
@@ -202,7 +203,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
     
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
-        
+        refreshAuthTokensIfNeeded()
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")
         
@@ -231,7 +232,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     
     func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
-        
+        refreshAuthTokensIfNeeded()
         // This is a Microsoft Office tmp file, we don't want to sync this
         if(itemTemplate.filename.hasPrefix("~$")) {
             logger.info("⚠️ Microsoft Office tmp file detected with name: \(itemTemplate.filename)")
@@ -294,7 +295,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func modifyItem(_ item: NSFileProviderItem, baseVersion version: NSFileProviderItemVersion, changedFields: NSFileProviderItemFields, contents newContents: URL?, options: NSFileProviderModifyItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
         
-        
+        refreshAuthTokensIfNeeded()
         if changedFields.contains(.extendedAttributes) {
             logger.info("Checking extended attributes \(item.filename)")
             let filename = item.filename as NSString
@@ -411,7 +412,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func performAction(identifier actionIdentifier: NSFileProviderExtensionActionIdentifier, onItemsWithIdentifiers itemIdentifiers: [NSFileProviderItemIdentifier], completionHandler: @escaping (Error?) -> Void) -> Progress {
-        
+        refreshAuthTokensIfNeeded()
         if actionIdentifier == FileProviderItemActionsManager.RefreshContent {
             logger.info("User requested to refresh content, signalling enumerator...")
             manager.signalEnumerator(for: .workingSet, completionHandler: {error in
@@ -489,6 +490,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         didUpdate credentials: PKPushCredentials,
         for type: PKPushType
     ){
+        refreshAuthTokensIfNeeded()
         logger.info("📍 Got Device token for push notifications from SyncExtension")
         let deviceToken = credentials.token
         

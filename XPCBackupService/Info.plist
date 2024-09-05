@@ -4,6 +4,11 @@
 <dict>
 	<key>JoinExisitingSession</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>RunLoopType</key>
 	<string>NSRunLoop</string>
 	<key>XPCService</key>

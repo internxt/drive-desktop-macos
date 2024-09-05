@@ -498,7 +498,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func checkRefreshToken(){
         do {
-            if try authManager.needRefreshToken(){
+            let refreshTokenCheckResult = try authManager.needRefreshToken()
+            if refreshTokenCheckResult.needsRefresh {
                 Task {await self.refreshTokens()}
             }
         }

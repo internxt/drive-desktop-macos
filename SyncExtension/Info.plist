@@ -10,23 +10,26 @@
 			<string>internxt</string>
 		</dict>
 	</dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSExtension</key>
 	<dict>
-		<key>NSExtensionFileProviderUploadPipelineDepth</key>
-		<string></string>
 		<key>NSExtensionFileProviderActions</key>
 		<array>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
 				<string>TRUEPREDICATE</string>
-				<key>NSExtensionFileProviderActionName</key>
-				<string>CONTEXT_MENU_REFRESH_CONTENT</string>
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.RefreshContent</string>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>CONTEXT_MENU_REFRESH_CONTENT</string>
 			</dict>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
-				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != NO &amp;&amp; $item.itemIdentifier != &quot;NSFileProviderRootContainerItemIdentifier&quot; ).@count &gt; 0</string>
+				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != NO &amp;&amp; $item.itemIdentifier != "NSFileProviderRootContainerItemIdentifier" ).@count &gt; 0</string>
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.AvailableOnlineOnly</string>
 				<key>NSExtensionFileProviderActionName</key>
@@ -34,25 +37,27 @@
 			</dict>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
-				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != YES &amp;&amp; $item.itemIdentifier != &quot;NSFileProviderRootContainerItemIdentifier&quot; ).@count &gt; 0</string>
+				<string>SUBQUERY ( fileproviderItems, $item, $item.userInfo.availableOffline != YES &amp;&amp; $item.itemIdentifier != "NSFileProviderRootContainerItemIdentifier" ).@count &gt; 0</string>
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>internxt.InternxtDesktop.sync.Action.AvailableOffline</string>
 				<key>NSExtensionFileProviderActionName</key>
 				<string>CONTEXT_MENU_AVAILABLE_OFFLINE</string>
 			</dict>
-            <dict>
-            <key>NSExtensionFileProviderActionActivationRule</key>
-            <string>TRUEPREDICATE</string>
-            <key>NSExtensionFileProviderActionName</key>
-            <string>CONTEXT_MENU_OPEN_WEB_BROWSER</string>
-            <key>NSExtensionFileProviderActionIdentifier</key>
-            <string>internxt.InternxtDesktop.sync.Action.OpenWebBrowser</string>
-            </dict>
+			<dict>
+				<key>NSExtensionFileProviderActionActivationRule</key>
+				<string>TRUEPREDICATE</string>
+				<key>NSExtensionFileProviderActionIdentifier</key>
+				<string>internxt.InternxtDesktop.sync.Action.OpenWebBrowser</string>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>CONTEXT_MENU_OPEN_WEB_BROWSER</string>
+			</dict>
 		</array>
 		<key>NSExtensionFileProviderDocumentGroup</key>
 		<string>$(TeamIdentifierPrefix)group.internxt.desktop</string>
 		<key>NSExtensionFileProviderSupportsEnumeration</key>
 		<true/>
+		<key>NSExtensionFileProviderUploadPipelineDepth</key>
+		<string></string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.fileprovider-nonui</string>
 		<key>NSExtensionPrincipalClass</key>

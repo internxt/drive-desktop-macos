@@ -53,7 +53,7 @@ class AppSettings: ObservableObject {
     }
 
     @Published public var selectedLanguage: Languages = .en
-    @Published public var selectedBackupFrequency: BackupFrequencyEnum = .daily
+    @Published public var selectedBackupFrequency: BackupFrequencyEnum = .manually
 
     private var bag = Set<AnyCancellable>()
 

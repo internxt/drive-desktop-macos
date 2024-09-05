@@ -9,13 +9,21 @@ import Foundation
 import InternxtSwiftCore
 import os.log
 
+
+struct NeedsTokenRefreshResult {
+    var needsRefresh: Bool
+    var authTokenCreationDate: Date
+    var legacyAuthTokenCreationDate: Date
+    var authTokenDaysUntilExpiration: Int
+    var legacyAuthTokenDaysUntilExpiration: Int
+}
 class AuthManager: ObservableObject {
     let logger = Logger(subsystem: "com.internxt", category: "AuthManager")
     @Published public var isLoggedIn = false
     @Published public var user: DriveUser? = nil
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
-    private let REFRESH_TOKEN_DEADLINE = 3
+    private let REFRESH_TOKEN_DEADLINE = 5
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
@@ -58,11 +66,15 @@ class AuthManager: ObservableObject {
     }
     
     func refreshTokens() async throws {
-        guard let legacyAuthToken = config.getLegacyAuthToken() else {
-            throw AuthError.LegacyAuthTokenNotInConfig
+        guard let authToken = config.getAuthToken() else {
+            throw AuthError.AuthTokenNotInConfig
         }
-        let refreshUserResponse = try await APIFactory.Drive.refreshUser(currentAuthToken: legacyAuthToken )
-        try config.setLegacyAuthToken(legacyAuthToken: refreshUserResponse.token)
+        
+        let newTokensResponse = try await APIFactory.DriveNew.refreshTokens(currentAuthToken: authToken )
+        
+        
+        try config.setLegacyAuthToken(legacyAuthToken: newTokensResponse.token)
+        try config.setAuthToken(authToken: newTokensResponse.newToken)
     }
     
     func storeAuthDetails(plainMnemonic: String, authToken: String, legacyAuthToken: String) throws {
@@ -149,25 +161,76 @@ class AuthManager: ObservableObject {
         return true
     }
     
-    func needRefreshToken() throws -> Bool {
+    
+    func needRefreshToken() throws -> NeedsTokenRefreshResult {
         guard let legacyAuthToken = config.getLegacyAuthToken() else {
             throw AuthError.LegacyAuthTokenNotInConfig
         }
-
-        let responseDecodeLegacy = try JWTDecoder.decode(jwtToken: legacyAuthToken)
         
-        guard let expTimestamp = responseDecodeLegacy["exp"] as? Int else {
+        guard let authToken = config.getAuthToken() else {
+            throw AuthError.AuthTokenNotInConfig
+        }
+
+        let decodedLegacyAuthToken = try JWTDecoder.decode(jwtToken: legacyAuthToken)
+        let decodedAuthToken = try JWTDecoder.decode(jwtToken: authToken)
+        
+        guard let authTokenExpirationTimestamp = decodedAuthToken["exp"] as? Int else {
             throw AuthError.InvalidTokenExp
         }
         
-        let expDate = Date(timeIntervalSince1970: TimeInterval(expTimestamp))
-        let currentDate = Date()
-
-        guard let daysUntilExpiration = currentDate.daysUntil(expDate) else {
-            return true
+        guard let authTokenCreationTimestamp = decodedAuthToken["iat"] as? Int else {
+            throw AuthError.InvalidTokenIat
+        }
+        
+        
+        guard let legacyAuthTokenExpirationTimestamp = decodedLegacyAuthToken["exp"] as? Int else {
+            throw AuthError.InvalidTokenExp
+        }
+        
+        guard let legacyAuthTokenCreationTimestamp = decodedLegacyAuthToken["iat"] as? Int else {
+            throw AuthError.InvalidTokenIat
+        }
+        
+        let authTokenExpirationDate = Date(timeIntervalSince1970: TimeInterval(authTokenExpirationTimestamp))
+        let authTokenCreationDate = Date(timeIntervalSince1970: TimeInterval(authTokenCreationTimestamp))
+        
+        let legacyAuthTokenExpirationDate = Date(timeIntervalSince1970: TimeInterval(legacyAuthTokenExpirationTimestamp))
+        let legacyAuthTokenCreationDate = Date(timeIntervalSince1970: TimeInterval(legacyAuthTokenCreationTimestamp))
+        
+        
+        
+        let daysUntilAuthTokenExpires = Date().daysUntil(authTokenExpirationDate) ?? 1
+        let daysUntilLegacyAuthTokenExpires = Date().daysUntil(legacyAuthTokenExpirationDate) ?? 1
+        
+        if daysUntilAuthTokenExpires <= REFRESH_TOKEN_DEADLINE {
+            return NeedsTokenRefreshResult(
+                needsRefresh: true,
+                authTokenCreationDate: authTokenCreationDate,
+                legacyAuthTokenCreationDate:legacyAuthTokenCreationDate,
+                authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
+                legacyAuthTokenDaysUntilExpiration: daysUntilLegacyAuthTokenExpires
+            )
+        }
+        
+        if daysUntilLegacyAuthTokenExpires <= REFRESH_TOKEN_DEADLINE {
+            return NeedsTokenRefreshResult(
+                needsRefresh: true,
+                authTokenCreationDate: authTokenCreationDate,
+                legacyAuthTokenCreationDate:legacyAuthTokenCreationDate,
+                authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
+                legacyAuthTokenDaysUntilExpiration: daysUntilLegacyAuthTokenExpires
+            )
         }
 
-        return daysUntilExpiration <= REFRESH_TOKEN_DEADLINE
+        
+        
+        return NeedsTokenRefreshResult(
+            needsRefresh: false,
+            authTokenCreationDate: authTokenCreationDate,
+            legacyAuthTokenCreationDate:legacyAuthTokenCreationDate,
+            authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
+            legacyAuthTokenDaysUntilExpiration: daysUntilLegacyAuthTokenExpires
+        )
     }
 }
 
