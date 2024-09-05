@@ -16,8 +16,6 @@ struct FilesAndFoldersAnchor {
 }
 class GetRemoteChangesUseCase {
     let logger = syncExtensionLogger
-    private let driveAPI: DriveAPI = APIFactory.Drive
-    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let observer: NSFileProviderChangeObserver
     private let anchor: NSFileProviderSyncAnchor
     private let user: DriveUser

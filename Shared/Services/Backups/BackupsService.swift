@@ -384,8 +384,8 @@ class BackupsService: ObservableObject {
         logger.info("Going to backup folders \(self.foldersToBackup)")
         
         if self.foldersToBackup.isEmpty {
-            logger.error("Foldernames are empty")
-            throw BackupError.emptyFolders
+            logger.error("There are no folders selected for backup, cannot start one.")
+            return
         }
 
         DispatchQueue.main.sync {
