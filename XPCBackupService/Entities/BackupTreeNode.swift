@@ -189,11 +189,14 @@ class BackupTreeNode {
                     child.remoteParentId = remoteId
                 }
             case .failure(let error):
-            
             if let startUploadError = error as? StartUploadError {
-                if let apiClientError = startUploadError.apiError,  apiClientError.statusCode == 420 {
+                if let apiError = startUploadError.apiError, apiError.statusCode == 420 {
                     throw BackupError.storageFull
                 }
+            }
+        
+            else if let apiClientError = error as? APIClientError,apiClientError.statusCode == 420 {
+                throw BackupError.storageFull
             }
             
                 if case BackupUploadError.BackupStoppedManually = error {
