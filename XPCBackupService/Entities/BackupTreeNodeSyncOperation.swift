@@ -9,12 +9,18 @@ import Foundation
 
 class BackupTreeNodeSyncOperation: AsyncOperation {
     private let backupTreeNode: BackupTreeNode
-    
-    init(backupTreeNode: BackupTreeNode) {
-        self.backupTreeNode = backupTreeNode
-    }
+    var onError: ((Error) -> Void)?
+
+      init(backupTreeNode: BackupTreeNode) {
+          self.backupTreeNode = backupTreeNode
+      }
     
     override func performAsyncTask() async throws -> Void {
-       try await self.backupTreeNode.syncNode()
+        do {
+            try await self.backupTreeNode.syncNode()
+        } catch {
+            onError?(error)
+            throw error
+        }
     }
 }

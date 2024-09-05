@@ -122,14 +122,29 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             logger.info("Total progress to backup \(totalNodesCount)")
 
             logger.info("⏱️ About to start node sync process for \(trees.count) BackupTrees...")
-            
+            var hasErrorOccurred = false
             for backupTree in trees {
+                if hasErrorOccurred {
+                    break
+                }
                 do {
-                    logger.error("Adding nodes sync operations")
-                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue)
+                    logger.info("Adding nodes sync operations")
+                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue) { error in
+                        
+                        
+                        if let backupUploadError = error as? BackupError, backupUploadError == .storageFull {
+                            logger.error("Storage is full, cannot continue with the backup.")
+                            self.backupUploadStatus = .Failed
+                            self.uploadOperationQueue.cancelAllOperations()
+                            hasErrorOccurred = true
+                            reply(nil, "storageFull")
+                        } else {
+                            logger.error("Error backing up device \(error)")
+                        }
+                       
+                    }
                 } catch {
-                    self.backupUploadStatus = .Failed
-                    logger.error("Error backing up device \(error)")
+                    logger.error("Error setting up sync operations \(error)")
                     reply(nil, error.localizedDescription)
                 }
             }

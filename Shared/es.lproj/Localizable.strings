@@ -98,6 +98,11 @@
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Haga clic en + para seleccionar las carpetas\nde las que desea hacer una copia de seguridad.";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Esta carpeta ya se encuentra seleccionada";
 
+// Account Settings
+
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_TITLE" = "Tu almacenamiento está lleno";
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_MESSAGE" = "No puedes cargar, sincronizar ni hacer copias de seguridad de archivos. Actualiza ahora tu plan o elimina archivos para ahorrar espacio.";
+
 // Common
 "COMMON_UPGRADE" = "Comprar espacio";
 "COMMON_LOGOUT" = "Cerrar sesión";
@@ -170,3 +175,8 @@
 "SHARE_FEEDBACK_ACTION" = "Enviar comentarios";
 "SHARE_FEEDBACK_SUCCESS_TITLE" = "Gracias por compartir tus comentarios";
 "SHARE_FEEDBACK_SUCCESS_SUBTITLE" = "Agradecemos mucho tu tiempo y esfuerzo para ayudarnos a mejorar nuestros servicios";
+
+// Alert Full Storage
+"ALERT_STORAGE_TITLE" = "Tu almacenamiento está lleno";
+"ALERT_STORAGE_SUBTITLE" = "No puedes cargar, sincronizar ni realizar copias de seguridad de archivos";
+"ALERT_STORAGE_BUTTON_TITLE" = "Actualizar ahora";
