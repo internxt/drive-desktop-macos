@@ -40,7 +40,7 @@ struct AccountUsageView: View {
                     UsageLegendItem(label: "Drive", color: .Primary)
                     UsageLegendItem(label: "Backups", color: .Indigo)
                 }
-                if isStorageAlmostFull(){
+                if UsageManager.shared.isStorageAlmostFull(){
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             VStack{
@@ -164,19 +164,7 @@ struct AccountUsageView: View {
     func handleOpenUpgradePlan() {
         URLDictionary.UPGRADE_PLAN.open()
     }
-    
-    func isStorageAlmostFull() -> Bool {
-        let usedPercentageString = usageManager.getUsedPercentage()
         
-        guard let percentageNumber = Int(usedPercentageString.trimmingCharacters(in: .punctuationCharacters).trimmingCharacters(in: .whitespaces)) else {
-            
-            return false
-        }
-        
-        return percentageNumber >= 99
-    }
-    
-    
 }
 
 struct AccountUsageView_Previews: PreviewProvider {
