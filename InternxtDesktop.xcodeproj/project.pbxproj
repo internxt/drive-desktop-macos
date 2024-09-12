@@ -61,6 +61,7 @@
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		47507F312D09ED760074E081 /* KyberEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47507F302D09ED6F0074E081 /* KyberEncryption.swift */; };
 		47507F352D09F0040074E081 /* KyberEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47507F342D09EFFF0074E081 /* KyberEncryptor.swift */; };
+		47507F3B2D09F1730074E081 /* KyberAlgorithmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47507F3A2D09F16C0074E081 /* KyberAlgorithmManager.swift */; };
 		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
@@ -399,6 +400,7 @@
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
 		47507F302D09ED6F0074E081 /* KyberEncryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyberEncryption.swift; sourceTree = "<group>"; };
 		47507F342D09EFFF0074E081 /* KyberEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyberEncryptor.swift; sourceTree = "<group>"; };
+		47507F3A2D09F16C0074E081 /* KyberAlgorithmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyberAlgorithmManager.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -665,6 +667,16 @@
 				31DEAEB72B75139400E76D53 /* XPCBackupService.entitlements */,
 			);
 			path = XPCBackupService;
+			sourceTree = "<group>";
+		};
+		47507F392D09F15F0074E081 /* Kyber */ = {
+			isa = PBXGroup;
+			children = (
+				47507F3A2D09F16C0074E081 /* KyberAlgorithmManager.swift */,
+				47507F342D09EFFF0074E081 /* KyberEncryptor.swift */,
+				47507F302D09ED6F0074E081 /* KyberEncryption.swift */,
+			);
+			path = Kyber;
 			sourceTree = "<group>";
 		};
 		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
@@ -1101,8 +1113,7 @@
 		E1FB2D532A76C02500473AE1 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				47507F342D09EFFF0074E081 /* KyberEncryptor.swift */,
-				47507F302D09ED6F0074E081 /* KyberEncryption.swift */,
+				47507F392D09F15F0074E081 /* Kyber */,
 				E18300AF2AA2395100AD023C /* FileExtension.swift */,
 			);
 			path = Utils;
@@ -1588,6 +1599,7 @@
 				AAFFBE292C50AC4F00C76528 /* GenericRepository.swift in Sources */,
 				310452692B4B05AE00984716 /* BackupConfigView.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
+				47507F3B2D09F1730074E081 /* KyberAlgorithmManager.swift in Sources */,
 				AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
