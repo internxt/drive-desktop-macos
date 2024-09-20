@@ -16,7 +16,7 @@ class UsageManager: ObservableObject {
     @Published var limit: Int64 = 1
     @Published var driveUsage: Int64 = 0
     @Published var backupsUsage: Int64 = 0
-    
+    let storageThresholdPercentage: Int64 = 99
     public func getUsedPercentage() -> String {
         let totalUsed = driveUsage + backupsUsage
         let percentage = (totalUsed * 100) / limit
@@ -96,5 +96,11 @@ class UsageManager: ObservableObject {
             let numberString = numberFormatter.string(from: NSNumber(value: bytesDouble / pow(k, i))) ?? "Unknown"
             let suffix = suffixes[Int(i)]
             return (numberString, suffix)
+    }
+    
+    public func isStorageAlmostFull() -> Bool {
+        let totalUsed = driveUsage + backupsUsage
+        let percentage = (totalUsed * 100) / limit
+        return percentage >= storageThresholdPercentage
     }
 }

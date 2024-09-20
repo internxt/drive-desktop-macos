@@ -98,6 +98,10 @@
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Click + to select the folders\nyou want to back up";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "This folder is already selected";
 
+// Account Settings
+
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_TITLE" = "Your storage is full";
+"ACCOUNT_SETTINGS_BANNER_STORAGE_FULL_MESSAGE" = "You can't upload, sync or backup files. Upgrade now your plan or remove files to save up space.";
 
 
 // Common
@@ -170,3 +174,10 @@
 "SHARE_FEEDBACK_ACTION" = "Send feedback";
 "SHARE_FEEDBACK_SUCCESS_TITLE" = "Thank you for sharing your feedback";
 "SHARE_FEEDBACK_SUCCESS_SUBTITLE" = "We really appreciate your time and effort to help us improve our services.";
+
+// Alert Full Storage
+"ALERT_STORAGE_TITLE" = "Your storage is full";
+"ALERT_STORAGE_SUBTITLE" = "You can’t upload, sync or backup files";
+"ALERT_STORAGE_BUTTON_TITLE" = "Upgrade now";
+
+

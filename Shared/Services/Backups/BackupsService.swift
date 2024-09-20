@@ -9,6 +9,7 @@ import Foundation
 import RealmSwift
 import InternxtSwiftCore
 import Combine
+import AppKit
 
 
 struct ItemBackup: Identifiable{
@@ -35,6 +36,7 @@ enum BackupError: Error {
     case deviceHasNoName
     case invalidDownloadURL
     case missingNetworkAuth
+    case storageFull
 }
 
 enum BackupDevicesFetchingStatus {
@@ -384,8 +386,8 @@ class BackupsService: ObservableObject {
         logger.info("Going to backup folders \(self.foldersToBackup)")
         
         if self.foldersToBackup.isEmpty {
-            logger.error("Foldernames are empty")
-            throw BackupError.emptyFolders
+            logger.error("There are no folders selected for backup, cannot start one.")
+            return
         }
 
         DispatchQueue.main.sync {
@@ -417,7 +419,11 @@ class BackupsService: ObservableObject {
 
         xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
             if let error = error {
-                self.propagateError(errorMessage: error)
+                if error == "storageFull"{
+                    self.showAlert()
+                }else {
+                    self.propagateError(errorMessage: error)
+                }
             } else {
                 self.propagateUploadSuccess()
             }
@@ -720,6 +726,12 @@ class BackupsService: ObservableObject {
     private func removeItem(item: ItemBackup){
         if let index = backupsItemsInprogress.firstIndex(where: { $0.id == item.id }) {
             backupsItemsInprogress.remove(at: index)
+        }
+    }
+    
+    private func showAlert() {
+        DispatchQueue.main.async {
+            NSAlert.showStorageFullAlert()
         }
     }
 

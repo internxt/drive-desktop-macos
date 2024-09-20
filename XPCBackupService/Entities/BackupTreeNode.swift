@@ -7,6 +7,7 @@
 
 import Foundation
 import RealmSwift
+import InternxtSwiftCore
 
 enum BackupTreeNodeError: Error {
     case cannotGetPath
@@ -131,28 +132,25 @@ class BackupTreeNode {
         return syncedNodeUnwrapped
     }
     
-    func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil) throws -> Void {
-
+    func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil, onError: @escaping (Error) -> Void) throws -> Void {
         let operation = BackupTreeNodeSyncOperation(backupTreeNode: self)
-        // If the node is already synced, we just update it, otherwise, move it
-        // to the queue, so it gets synced later
+        
+        operation.onError = { error in
+            onError(error)
+           
+        }
         if(dependingOfOperation != nil) {
             operation.addDependency(dependingOfOperation!)
         }
+        
         withOperationQueue.addOperation(operation)
-    
         
-        
-       
         for child in self.childs {
             if(self.type == .folder) {
-                // If current node is a folder, make below sync operations dependent of the folder sync operation
-                try child.syncBelowNodes(withOperationQueue: withOperationQueue, dependingOfOperation: operation)
+                try child.syncBelowNodes(withOperationQueue: withOperationQueue, dependingOfOperation: operation, onError: onError)
             } else {
-                // If current node is not a folder, below sync operations does not depend on parent node sync operation
-                try child.syncBelowNodes(withOperationQueue: withOperationQueue)
+                try child.syncBelowNodes(withOperationQueue: withOperationQueue, onError: onError)
             }
-            
         }
     }
     
@@ -191,6 +189,16 @@ class BackupTreeNode {
                     child.remoteParentId = remoteId
                 }
             case .failure(let error):
+            if let startUploadError = error as? StartUploadError {
+                if let apiError = startUploadError.apiError, apiError.statusCode == 420 {
+                    throw BackupError.storageFull
+                }
+            }
+        
+            else if let apiClientError = error as? APIClientError,apiClientError.statusCode == 420 {
+                throw BackupError.storageFull
+            }
+            
                 if case BackupUploadError.BackupStoppedManually = error {
                     // Noop, this was stopped
                 } else {

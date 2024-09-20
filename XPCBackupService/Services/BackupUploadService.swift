@@ -289,6 +289,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         } catch {
             self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(self.getErrorDescription(error: error))")
 
+            if let startUploadError = error as? StartUploadError {
+                if let apiClientError = startUploadError.apiError,  apiClientError.statusCode == 420 {
+                    self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): Max space used")
+                }
+            }
 
             
             if encryptedContentURL != nil {
