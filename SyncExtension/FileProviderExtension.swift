@@ -213,7 +213,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 logger.error("Error file \(itemIdentifier.rawValue): \(nsError), code: \(nsError.code)")
                 
                 if nsError.code == NSFileProviderError.cannotSynchronize.rawValue {
-                    logger.error("Error cannotSynchronize at file \(itemIdentifier.rawValue).")
+                    logger.error("❌ Error cannotSynchronize at file \(itemIdentifier.rawValue).")
                  
                     completionHandler(nil, item, nil)
                 } else {
@@ -524,4 +524,3 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
             
 }
-
