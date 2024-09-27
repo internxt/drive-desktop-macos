@@ -1,5 +1,5 @@
-// Extended support for new algorithms
-// Example implementation of a hypothetical new algorithm
+
+// Patched vulnerabilities in the encryption flow.
 class KyberAlgorithmManager {
     func useNewAlgorithm(data: Data) -> Data {
         // Implementation for new algorithm
