@@ -209,7 +209,20 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         func internalCompletionHandler(url: URL?, item: NSFileProviderItem?, error: Error?) -> Void {
             
-            completionHandler(url, item, error)
+            if let nsError = error as NSError?, nsError.domain == NSFileProviderErrorDomain {
+                logger.error("Error file \(itemIdentifier.rawValue): \(nsError), code: \(nsError.code)")
+                
+                if nsError.code == NSFileProviderError.cannotSynchronize.rawValue {
+                    logger.error("❌ Error cannotSynchronize at file \(itemIdentifier.rawValue).")
+                 
+                    completionHandler(nil, item, nil)
+                } else {
+                    logger.error("Error at file \(itemIdentifier.rawValue): \(error?.localizedDescription ?? "Unknow Error")")
+                    completionHandler(nil, item, error)
+                }
+            } else {
+                completionHandler(url, item, nil)
+            }
             do {
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
             } catch {
