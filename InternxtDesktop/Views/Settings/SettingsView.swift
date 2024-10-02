@@ -106,7 +106,7 @@ struct SettingsView: View {
                 .background(Color.Gray40.opacity(0.4))
             }
         }
-        .frame(width: 600)
+        .frame(width: 630)
         .onChange(of: scheduleManager.backupError) { error in
             if !error.isEmpty {
                 showErrorDialog(message: error)
