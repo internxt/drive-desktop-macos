@@ -46,9 +46,10 @@ struct BackupFrequencySelectorView: View {
 
             if self.currentFrequency == .manually {
                 AppText("BACKUP_UPLOAD_FREQUENCY_MANUALLY_TOOLTIP")
+                    .frame(width: 375,alignment: .leading)
                     .font(.XSRegular)
                     .foregroundColor(.Gray50)
-                    .fixedSize(horizontal: true, vertical: true)
+                 
             }
         }
     }
