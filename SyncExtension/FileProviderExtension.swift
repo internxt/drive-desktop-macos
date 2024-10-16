@@ -405,11 +405,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             return Progress()
         }
         
-        if lastUsedDateHasChanged {
-            logger.info("File last use date has changed, let it pass")
-            completionHandler(item, [], false, nil)
-            return Progress()
-        }
+//        if lastUsedDateHasChanged {
+//            logger.info("File last use date has changed, let it pass")
+//            completionHandler(item, [], false, nil)
+//            return Progress()
+//        }
                 
         logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
         return Progress()
