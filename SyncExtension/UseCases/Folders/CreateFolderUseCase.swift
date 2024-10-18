@@ -48,7 +48,7 @@ struct CreateFolderUseCase {
                 self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to create folder: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

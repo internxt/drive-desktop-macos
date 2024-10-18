@@ -170,20 +170,12 @@ struct DownloadFileUseCase {
                     trackError(driveFile: driveFileUnwrapped, processIdentifier: driveFileUnwrapped.uuid, error: error)
                 }
                 error.reportToSentry()
-                self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(self.getErrorDescription(error: error))")
+                self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
             }
         }
         
         return progress
-    }
-    
-    private func getErrorDescription(error: Error) -> String {
-        if let apiClientError = error as? APIClientError {
-            let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
-            return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
-        }
-        return error.localizedDescription
     }
 }
