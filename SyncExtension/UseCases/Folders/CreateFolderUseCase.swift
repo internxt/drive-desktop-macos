@@ -12,6 +12,7 @@ import InternxtSwiftCore
 struct CreateFolderUseCase {
     let logger = syncExtensionLogger
     let driveAPI = APIFactory.Drive
+    let driveNewAPI = APIFactory.DriveNew
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
@@ -27,17 +28,21 @@ struct CreateFolderUseCase {
             let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? user.root_folder_id.toString() : itemTemplate.parentItemIdentifier.rawValue
             
             do {
-                guard let parentFolderIdInt = Int(parentFolderId) else {
-                    throw CreateItemError.NoParentIdFound
-                }
-                
+//                guard let parentFolderIdInt = Int(parentFolderId) else {
+//                    throw CreateItemError.NoParentIdFound
+//                }
+         
                 let filename = itemTemplate.filename as NSString
+                self.logger.info("✅ Parent Folder id to create: \(parentFolderId)")
+                let folderMeta = try await driveNewAPI.getFolderMetaById(id: parentFolderId,debug: true)
                 
-                let createdFolder = try await driveAPI.createFolder(parentFolderId: parentFolderIdInt, folderName: filename.deletingPathExtension, debug: true)
+                guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
+                
+                let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUuid, folderName: filename.deletingPathExtension,debug: true)
 
                 completionHandler(FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
-                    filename: createdFolder.plain_name ?? createdFolder.name,
+                    filename: createdFolder.plainName ?? createdFolder.name,
                     parentId: itemTemplate.parentItemIdentifier,
                     createdAt: Time.dateFromISOString(createdFolder.createdAt) ?? Date(),
                     updatedAt: Time.dateFromISOString(createdFolder.updatedAt) ?? Date(),

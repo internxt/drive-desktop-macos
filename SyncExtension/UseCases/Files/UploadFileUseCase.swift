@@ -13,6 +13,7 @@ enum UploadFileUseCaseError: Error {
     case InvalidParentId
     case CannotOpenInputStream
     case MissingDocumentSize
+    case InvalidParentUUID
 }
 
 
@@ -128,7 +129,8 @@ struct UploadFileUseCase {
         
         Task {
             do {
-                
+                let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
+
                 let startedAt = self.trackStart(processIdentifier: trackId)
                 guard let inputStream = InputStream(url: fileContent) else {
                     throw UploadFileUseCaseError.CannotOpenInputStream
@@ -141,7 +143,10 @@ struct UploadFileUseCase {
                 guard let sizeInt = size?.intValue else {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
-                
+
+                let folderMeta = try await driveNewAPI.getFolderMetaById(id: getParentId(),debug: true)
+                guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
+
                 let filename = (item.filename as NSString)
                 self.logger.info("Starting upload for file \(filename)")
                 self.logger.info("Parent id: \(getParentId())")
@@ -155,6 +160,7 @@ struct UploadFileUseCase {
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
+                    ,debug: true
                 )
                                 
                 self.logger.info("Upload completed with id \(result.id)")
@@ -165,17 +171,17 @@ struct UploadFileUseCase {
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
-                let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
-                
-                let createdFile = try await driveAPI.createFile(createFile: CreateFileData(
+                let createdFile = try await driveNewAPI.createFileNew(createFile: CreateFileData(
                         fileId: result.id,
                         type: filename.pathExtension,
                         bucket: result.bucket,
                         size: result.size,
-                        folderId: parentIdIsRootFolder ? user.root_folder_id : Int(item.parentItemIdentifier.rawValue)!,
+                        folderId: 0,
                         name: encryptedFilename.base64EncodedString(),
-                        plainName: filename.deletingPathExtension
-                    )
+                        plainName: filename.deletingPathExtension, folderUuid: parentUuid
+                        
+                    ),
+                debug: true
                 )
                 
                 
@@ -218,7 +224,7 @@ struct UploadFileUseCase {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
 
-                self.logger.error("❌ Failed to create file: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }
