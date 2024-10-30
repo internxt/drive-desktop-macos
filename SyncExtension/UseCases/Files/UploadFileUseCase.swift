@@ -171,7 +171,7 @@ struct UploadFileUseCase {
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
-                let createdFile = try await driveNewAPI.createFileNew(createFile: CreateFileData(
+                let createdFile = try await driveNewAPI.createFileNew(createFile: CreateFileDataNew(
                         fileId: result.id,
                         type: filename.pathExtension,
                         bucket: result.bucket,
