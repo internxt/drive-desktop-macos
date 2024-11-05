@@ -14,6 +14,7 @@ import PushKit
 
 enum CreateItemError: Error {
     case NoParentIdFound
+    case NoParentUuidFound
 }
 
 
