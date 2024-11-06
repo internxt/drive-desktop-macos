@@ -32,17 +32,15 @@ struct MoveFileUseCase {
             
             do {
                 
-                // Grab the file by the uuid, we need the fileId to update it
-                let file = try await driveNewAPI.getFileMetaByUuid(uuid: item.itemIdentifier.rawValue)
                 
-                let newParentIsRootFolder: Bool = item.parentItemIdentifier == .rootContainer
+                let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.parentItemIdentifier.rawValue)
+
+                guard let parentUuid = folderMeta.uuid  else {
+                    throw UploadFileUseCaseError.InvalidParentUUID
+                }
                 
-                _ = try await driveAPI.moveFile(
-                    fileId: file.fileId,
-                    bucketId: user.bucket,
-                    destinationFolder: newParentIsRootFolder == true ? user.root_folder_id : Int(item.parentItemIdentifier.rawValue)!
-                )
-      
+                let file = try await driveNewAPI.moveFileNew(uuid: item.itemIdentifier.rawValue, destinationFolder: parentUuid)
+                      
                 
                 let newItem = FileProviderItem(
                     identifier: item.itemIdentifier,
@@ -70,3 +68,4 @@ struct MoveFileUseCase {
         return Progress()
     }
 }
+
