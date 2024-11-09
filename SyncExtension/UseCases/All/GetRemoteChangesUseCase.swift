@@ -151,7 +151,7 @@ class GetRemoteChangesUseCase {
             status: "ALL",
             limit: self.enumeratedChangesLimit,
             offset:0,
-            debug:false
+            debug:true
         )
         
         let hasMoreFolders = updatedFolders.count == limit

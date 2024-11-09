@@ -1,45 +1,50 @@
 //
-//  CreateFolderUseCase.swift
+//  CreateFolderWorkspaceUseCase.swift
 //  SyncExtension
 //
-//  Created by Robert Garcia on 8/8/23.
+//  Created by Patricio Tovar on 8/11/24.
 //
 
 import Foundation
 import FileProvider
 import InternxtSwiftCore
 
-struct CreateFolderUseCase {
+struct CreateFolderWorkspaceUseCase {
     let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
-    init(user: DriveUser, itemTemplate: NSFileProviderItem, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    let workspace: [AvailableWorkspace]
+    init(user: DriveUser, itemTemplate: NSFileProviderItem,workspace:[AvailableWorkspace] ,completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
         self.itemTemplate = itemTemplate
         self.user = user
         self.completionHandler = completionHandler
+        self.workspace = workspace
     }
     
     
     func run() -> Progress {
         Task {
-            let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? user.root_folder_id.toString() : itemTemplate.parentItemIdentifier.rawValue
+        
             
             do {
+                guard !workspace.isEmpty else {
+                    self.logger.error("Workspace array is empty, cannot proceed with item access.")
+                    return
+                }
 
+                let workspaceId = workspace[0].workspaceUser.workspaceId
+                let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
+                let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? rootFolderUuid : itemTemplate.parentItemIdentifier.rawValue
          
                 let filename = itemTemplate.filename as NSString
                 self.logger.info("✅ Parent Folder id to create: \(parentFolderId)")
-                let folderMeta = try await driveNewAPI.getFolderMetaById(id: parentFolderId,debug: true)
-                
-                guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
-                
-                let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUuid, folderName: filename.deletingPathExtension,debug: true)
 
+                
+                let createdFolder = try await driveNewAPI.createFolderWorkspace(parentFolderUuid: parentFolderId, folderName: filename.deletingPathExtension, workspaceUuid: workspaceId,debug: true)
                 completionHandler(FileProviderItem(
-                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
+                    identifier: NSFileProviderItemIdentifier(rawValue: createdFolder.uuid),
                     filename: createdFolder.plainName ?? createdFolder.name,
                     parentId: itemTemplate.parentItemIdentifier,
                     createdAt: Time.dateFromISOString(createdFolder.createdAt) ?? Date(),

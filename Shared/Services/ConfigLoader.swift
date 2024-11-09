@@ -36,6 +36,7 @@ enum ConfigLoaderError: Error {
     case CannotRemoveUser
     case CannotSaveOnboardingIsCompleted
     case CannotHideBackupBanner
+    case CannotSaveWorkspaces
 }
 
 
@@ -273,6 +274,42 @@ public struct ConfigLoader {
     public func getDeviceName() -> String? {
         return Host.current().localizedName
     }
+    
+    public func setAvailableWorkspaces(workspaces: [AvailableWorkspace]) throws -> Void {
+        let jsonData = try JSONEncoder().encode(workspaces)
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw ConfigLoaderError.CannotSaveUser
+        }
+        
+        let saved = self.saveToUserDefaults(key: "AvailableWorkspaces", value: jsonString)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveWorkspaces
+        }
+    }
+    
+    public func getWorkspaces() -> [AvailableWorkspace]? {
+        let workspaces = self.getFromUserDefaults(key: "AvailableWorkspaces")
+        guard let workspacesData = workspaces?.data(using: .utf8) else {
+            return nil
+        }
+        do {
+            let jsonData = try JSONDecoder().decode([AvailableWorkspace].self, from: workspacesData)
+            return jsonData
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    public func removeWorkspaces() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "AvailableWorkspaces")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
 }
 
 

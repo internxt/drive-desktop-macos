@@ -21,12 +21,14 @@ class AuthManager: ObservableObject {
     let logger = Logger(subsystem: "com.internxt", category: "AuthManager")
     @Published public var isLoggedIn = false
     @Published public var user: DriveUser? = nil
+    @Published public var availableWorkspaces: [AvailableWorkspace]? = []
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
     private let REFRESH_TOKEN_DEADLINE = 5
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
+        self.availableWorkspaces = config.getWorkspaces()
     }
     
     public var mnemonic: String? {
@@ -59,10 +61,15 @@ class AuthManager: ObservableObject {
             uuid: refreshUserResponse.user.uuid
         )
         try config.setUser(user: refreshUserResponse.user)
-        
+        let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces(debug: true)
+        try config.setAvailableWorkspaces(workspaces: workspaces.availableWorkspaces)
         DispatchQueue.main.async{
             self.user = refreshUserResponse.user
+            self.availableWorkspaces = workspaces.availableWorkspaces
         }
+        
+       
+        
     }
     
     func refreshTokens() async throws {
@@ -92,6 +99,7 @@ class AuthManager: ObservableObject {
         try config.removeAuthToken()
         try config.removeLegacyAuthToken()
         try config.removeMnemonic()
+        try config.removeWorkspaces()
         user = nil
         ErrorUtils.clean()
         isLoggedIn = false

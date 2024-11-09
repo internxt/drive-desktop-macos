@@ -296,8 +296,13 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 guard let user = self.authManager.user else {
                     throw AuthError.noUserFound
                 }
+
                 try await domainManager.initFileProviderForUser(user:user)
-                
+                guard let workspaces = self.authManager.availableWorkspaces else {
+                    return
+                }
+                print(workspaces)
+               try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
                 
                 self.logger.info("Login success")
             } catch {

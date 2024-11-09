@@ -88,6 +88,11 @@
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A42C23EA1800CD971B /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
+		AAF71A642CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */; };
+		AAF71A672CDF114500476000 /* CreateFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */; };
+		AAF71A6A2CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A692CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift */; };
+		AAF71A6C2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A6B2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift */; };
+		AAF71A6E2CDF180100476000 /* UploadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */; };
 		AAFFBE292C50AC4F00C76528 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAFFBE2C2C50B23D00C76528 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
@@ -406,6 +411,11 @@
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
+		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A692CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileOrUpdateContentWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A6B2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFileContentWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericRepository.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
@@ -692,6 +702,24 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		AAF71A652CDF112500476000 /* Workspaces */ = {
+			isa = PBXGroup;
+			children = (
+				AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */,
+			);
+			path = Workspaces;
+			sourceTree = "<group>";
+		};
+		AAF71A682CDF167D00476000 /* Workspaces */ = {
+			isa = PBXGroup;
+			children = (
+				AAF71A692CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift */,
+				AAF71A6B2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift */,
+				AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */,
+			);
+			path = Workspaces;
+			sourceTree = "<group>";
+		};
 		AAFFBE272C50AC2B00C76528 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
@@ -789,12 +817,14 @@
 		E145E17D2A83A28100B07E0B /* Folders */ = {
 			isa = PBXGroup;
 			children = (
+				AAF71A652CDF112500476000 /* Workspaces */,
 				E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */,
 				E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */,
 				E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */,
 				E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */,
 				E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */,
 				E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */,
+				AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */,
 			);
 			path = Folders;
 			sourceTree = "<group>";
@@ -802,6 +832,7 @@
 		E145E17E2A83A28A00B07E0B /* Files */ = {
 			isa = PBXGroup;
 			children = (
+				AAF71A682CDF167D00476000 /* Workspaces */,
 				E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */,
 				E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */,
 				E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */,
@@ -1658,6 +1689,7 @@
 				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
 				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
 				E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
+				AAF71A672CDF114500476000 /* CreateFolderWorkspaceUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
 				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
@@ -1690,17 +1722,21 @@
 				31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				31DEAEC32B7514F500E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
+				AAF71A6C2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
 				316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
+				AAF71A6E2CDF180100476000 /* UploadFileWorkspaceUseCase.swift in Sources */,
 				AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
+				AAF71A6A2CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift in Sources */,
 				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E140C3362AC37E5500A88B9F /* DeleteFileUseCase.swift in Sources */,
 				E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */,
+				AAF71A642CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift in Sources */,
 				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,
 				E1D0D4182AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
 				E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
@@ -2587,7 +2623,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = main;
+				branch = feature/workspaces;
 				kind = branch;
 			};
 		};

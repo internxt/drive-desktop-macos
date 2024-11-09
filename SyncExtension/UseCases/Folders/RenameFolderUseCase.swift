@@ -36,13 +36,24 @@ struct RenameFolderUseCase {
                 itemType: .folder
             )
             do {
-                let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
+                
+                let folderUuid: String
 
-                guard let parentUuid = folderMeta.uuid  else {
-                    throw UploadFileUseCaseError.InvalidParentUUID
+                if UUID(uuidString: item.itemIdentifier.rawValue) != nil {
+                    self.logger.info("es un UUID VALIDO")
+                    folderUuid = item.itemIdentifier.rawValue
+                } else {
+                    self.logger.info("no es un UUID VALIDO")
+                    let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
+                    
+                    guard let parentUuid = folderMeta.uuid else {
+                        throw UploadFileUseCaseError.InvalidParentUUID
+                    }
+                    folderUuid = parentUuid
                 }
 
-                _ = try await driveNewAPI.updateFolderNew(folderUuid: parentUuid, folderName:item.filename, debug: true)
+
+                _ = try await driveNewAPI.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
                 
                 self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) renamed successfully")
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
@@ -58,7 +69,7 @@ struct RenameFolderUseCase {
                     if statusCode == 409 {
                         completionHandler(newItem, [], false, nil)
                     } else {
-                        self.logger.error("❌ Failed to rename folder: \(error.localizedDescription)")
+                        self.logger.error("❌ Failed to rename folder: \(error.getErrorDescription())")
                         completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                     }
                    

@@ -59,12 +59,35 @@ class FileProviderDomainManager: ObservableObject {
         }
         self.manager = nil
         self.managerDomain = nil
+        try? await NSFileProviderManager.removeAllDomains()
     }
     
     
     private func updateStatus(newStatus: FileProviderDomainStatus) {
         DispatchQueue.main.async {
             self.domainStatus = newStatus
+        }
+    }
+    
+    public func initFileProviderForUserWorkspace(user: DriveUser, workspaces: [AvailableWorkspace]) async throws {
+        do {
+            if !workspaces.isEmpty{
+                let identifier = NSFileProviderDomainIdentifier(rawValue: workspaces[0].workspaceUser.workspaceId)
+                let domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Business")
+                
+                try await NSFileProviderManager.add(domain)
+                
+                self.logger.info("📦 FileProvider domain workspace is ready with identifier \(identifier.rawValue)")
+            }
+
+                    
+//            self.manager = NSFileProviderManager(for: domain)
+//            self.managerDomain = domain
+
+        
+            return
+        } catch {
+            throw error
         }
     }
 }

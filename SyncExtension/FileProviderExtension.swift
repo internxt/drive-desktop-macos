@@ -36,7 +36,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
     private let AUTH_TOKEN_KEY = "AuthToken"
-    
+    let domain: NSFileProviderDomain
+    let workspace: [AvailableWorkspace]
     required init(domain: NSFileProviderDomain) {
         
         
@@ -48,7 +49,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot get FileProviderManager for domain")
         }
         
-
+        self.domain = domain
         self.manager = manager
         
         let authManager = AuthManager()
@@ -57,9 +58,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
+        guard let workspace = authManager.availableWorkspaces else {
+            ErrorUtils.fatal("Cannot find availableWorkspaces in auth manager, cannot initialize extension")
+        }
+        
         ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
         self.user = user
+        self.workspace = workspace
         
         guard let mnemonic = authManager.mnemonic else {
             ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")
@@ -159,6 +165,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
         }
         
+    }
+    
+    func isWorkspaceDomain() -> Bool {
+        return   !(domain.identifier.rawValue == user.uuid)
     }
     
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
@@ -261,6 +271,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 
         
         if shouldCreateFolder {
+            if isWorkspaceDomain(){
+                return CreateFolderWorkspaceUseCase(user: user, itemTemplate: itemTemplate, workspace: workspace, completionHandler: completionHandler).run()
+            }
             return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()
         }
         
@@ -290,7 +303,19 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 
             }
             
-           
+            if isWorkspaceDomain(){
+                return UploadFileOrUpdateContentWorkspaceUseCase(
+                    networkFacade: networkFacade,
+                    user: user,
+                    activityManager: activityManager,
+                    item: itemTemplate,
+                    url: fileCopy,
+                    encryptedFileDestination: encryptedFileDestination,
+                    thumbnailFileDestination: thumbnailFileDestination,
+                    encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
+                    completionHandler: completionHandlerInternal, workspace: workspace
+                ).run()
+            }
             return UploadFileOrUpdateContentUseCase(
                 networkFacade: networkFacade,
                 user: user,
@@ -340,7 +365,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         // File and folder cases
         let contentHasChanged = changedFields.contains(.contents) && newContents != nil
         let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
-        let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
+     //   let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
         
         logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
         
@@ -422,7 +447,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func enumerator(for containerItemIdentifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest) throws -> NSFileProviderEnumerator {
-        return FileProviderEnumerator(user:user,enumeratedItemIdentifier: containerItemIdentifier)
+        return FileProviderEnumerator(user:user,enumeratedItemIdentifier: containerItemIdentifier, domain: domain, workspace: workspace)
     }
     
     func performAction(identifier actionIdentifier: NSFileProviderExtensionActionIdentifier, onItemsWithIdentifiers itemIdentifiers: [NSFileProviderItemIdentifier], completionHandler: @escaping (Error?) -> Void) -> Progress {
