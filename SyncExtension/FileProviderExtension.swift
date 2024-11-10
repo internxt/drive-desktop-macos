@@ -202,8 +202,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
             return Progress()
         }
-        
         // We cannot determine given an identifier if this is a folder or a file, so we try both
+        if isWorkspaceDomain(){
+            return GetFileOrFolderMetaWorkspaceUseCase(
+                user: user,
+                identifier: identifier,
+                completionHandler: completionHandler, workspace: workspace
+            ).run()
+        }
         return GetFileOrFolderMetaUseCase(
             user: user,
             identifier: identifier,
@@ -241,6 +247,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 error.reportToSentry()
             }
             
+        }
+        if isWorkspaceDomain(){
+            return DownloadFileWorkspaceUseCase(
+                networkFacade: networkFacade,
+                user: user,
+                activityManager: activityManager,
+                itemIdentifier: itemIdentifier,
+                encryptedFileDestinationURL: encryptedFileDestinationURL,
+                destinationURL: destinationURL,
+                completionHandler: internalCompletionHandler, workspace: workspace
+            ).run()
         }
         return DownloadFileUseCase(
             networkFacade: networkFacade,
@@ -393,6 +410,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if fileHasBeenRenamed  {
+            
+            if isWorkspaceDomain(){
+                return RenameFileWorkspaceUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            }
             
             return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
