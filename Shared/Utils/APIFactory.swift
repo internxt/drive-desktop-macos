@@ -81,6 +81,16 @@ struct APIFactory {
         
         return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
+    
+    static var TrashWorkspace: TrashAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
+
+        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader)
+    }
 
     static var Backup: BackupAPI {
         let configLoader = ConfigLoader()
