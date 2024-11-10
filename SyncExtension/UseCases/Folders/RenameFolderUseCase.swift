@@ -11,7 +11,7 @@ import InternxtSwiftCore
 
 struct RenameFolderUseCase {
     let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
+    let driveAPIWorkspace = APIFactory.DriveWorkspace
     let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields
@@ -40,21 +40,22 @@ struct RenameFolderUseCase {
                 let folderUuid: String
 
                 if UUID(uuidString: item.itemIdentifier.rawValue) != nil {
-                    self.logger.info("es un UUID VALIDO")
+                   
                     folderUuid = item.itemIdentifier.rawValue
+                    
+                    _ = try await driveAPIWorkspace.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
                 } else {
-                    self.logger.info("no es un UUID VALIDO")
+                   
                     let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
                     
                     guard let parentUuid = folderMeta.uuid else {
                         throw UploadFileUseCaseError.InvalidParentUUID
                     }
                     folderUuid = parentUuid
+                    
+                    _ = try await driveNewAPI.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
                 }
 
-
-                _ = try await driveNewAPI.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
-                
                 self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) renamed successfully")
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
             } catch {

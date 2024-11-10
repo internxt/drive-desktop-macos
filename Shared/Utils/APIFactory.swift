@@ -46,6 +46,15 @@ struct APIFactory {
         return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
+    static var DriveWorkspace: DriveAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
+        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader)
+    }
+    
     static var Drive: DriveAPI {
         let configLoader = ConfigLoader()
         

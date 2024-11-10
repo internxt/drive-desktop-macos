@@ -37,6 +37,7 @@ enum ConfigLoaderError: Error {
     case CannotSaveOnboardingIsCompleted
     case CannotHideBackupBanner
     case CannotSaveWorkspaces
+    case CannotSaveWorkspacesCredentials
 }
 
 
@@ -278,7 +279,7 @@ public struct ConfigLoader {
     public func setAvailableWorkspaces(workspaces: [AvailableWorkspace]) throws -> Void {
         let jsonData = try JSONEncoder().encode(workspaces)
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-            throw ConfigLoaderError.CannotSaveUser
+            throw ConfigLoaderError.CannotSaveWorkspaces
         }
         
         let saved = self.saveToUserDefaults(key: "AvailableWorkspaces", value: jsonString)
@@ -304,6 +305,41 @@ public struct ConfigLoader {
     
     public func removeWorkspaces() throws -> Void  {
         let removed = self.removeFromUserDefaults(key: "AvailableWorkspaces")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
+    public func setWorkspaceCredentials(credentials: WorkspaceCredentialsResponse) throws -> Void {
+        let jsonData = try JSONEncoder().encode(credentials)
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw ConfigLoaderError.CannotSaveWorkspacesCredentials
+        }
+        
+        let saved = self.saveToUserDefaults(key: "WorkspaceCredentials", value: jsonString)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveWorkspacesCredentials
+        }
+    }
+    
+    public func getWorkspaceCredentials() -> WorkspaceCredentialsResponse? {
+        let workspaces = self.getFromUserDefaults(key: "WorkspaceCredentials")
+        guard let workspacesData = workspaces?.data(using: .utf8) else {
+            return nil
+        }
+        do {
+            let jsonData = try JSONDecoder().decode(WorkspaceCredentialsResponse.self, from: workspacesData)
+            return jsonData
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    public func removeWorkspaceCredentials() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "WorkspaceCredentials")
         
         if removed == false {
             throw ConfigLoaderError.CannotRemoveKey
