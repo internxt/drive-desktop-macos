@@ -76,6 +76,7 @@
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
+		AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */; };
 		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
 		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
@@ -415,6 +416,7 @@
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -735,6 +737,7 @@
 				AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */,
 				AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */,
 				AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */,
+				AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */,
 			);
 			path = Workspaces;
 			sourceTree = "<group>";
@@ -1759,6 +1762,7 @@
 				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E140C3362AC37E5500A88B9F /* DeleteFileUseCase.swift in Sources */,
+				AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */,
 				E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */,
 				AAF71A642CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift in Sources */,
 				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,

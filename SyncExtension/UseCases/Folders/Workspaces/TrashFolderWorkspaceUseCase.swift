@@ -29,7 +29,7 @@ struct TrashFolderWorkspaceUseCase {
             do {
                
  
-                let trashed: Bool = try await trashAPI.trashFoldersByUuid(itemsToTrash: [FolderToTrashV2(uuid: item.itemIdentifier.rawValue)])
+                let trashed: Bool = try await trashAPI.trashItemsByUuid(itemsToTrash: [ItemToTrashV2(uuid: item.itemIdentifier.rawValue, type: .Folder)])
                 self.logger.info("Trashed item result is: \(trashed)")
                 if trashed == true {
                     let newItem = FileProviderItem(

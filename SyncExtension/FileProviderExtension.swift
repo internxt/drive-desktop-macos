@@ -405,7 +405,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if fileHasBeenTrashed {
-            
+            if isWorkspaceDomain(){
+                return TrashFileWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            }
             return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
