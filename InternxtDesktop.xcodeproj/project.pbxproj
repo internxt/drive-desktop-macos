@@ -88,6 +88,7 @@
 		AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */; };
 		AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */; };
 		AACE1FE42CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */; };
+		AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */; };
 		AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */; };
 		AAE7975C2C875F5000AEFDEF /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
@@ -421,6 +422,7 @@
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
 		AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -727,6 +729,7 @@
 			children = (
 				AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */,
 				AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */,
+				AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */,
 			);
 			path = Workspaces;
 			sourceTree = "<group>";
@@ -1719,6 +1722,7 @@
 				E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
 				AAF71A672CDF114500476000 /* CreateFolderWorkspaceUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
+				AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */,
 				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,

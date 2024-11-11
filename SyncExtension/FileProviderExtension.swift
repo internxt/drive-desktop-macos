@@ -400,6 +400,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if folderHasBeenMoved {
+            if isWorkspaceDomain(){
+                return MoveFolderWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
+            }
             
             return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
