@@ -12,7 +12,6 @@ import InternxtSwiftCore
 
 struct MoveFolderUseCase {
     let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields
@@ -31,17 +30,22 @@ struct MoveFolderUseCase {
             self.logger.info("Moving folder with id \(item.itemIdentifier.rawValue)")
             
             do {
-                
-                
-                let folder = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
-                
                 let newParentIsRootFolder: Bool = item.parentItemIdentifier == .rootContainer
                 
-                _ = try await driveAPI.moveFolder(
-                    folderId: folder.id,
-                    destinationFolder: newParentIsRootFolder == true ? user.root_folder_id : Int(item.parentItemIdentifier.rawValue)!
-                )
-      
+                let folder = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
+                let folderDestination =  try await driveNewAPI.getFolderMetaById(id: newParentIsRootFolder == true ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue)
+                
+                guard let parentUuid = folder.uuid  else {
+                    throw UploadFileUseCaseError.InvalidParentUUID
+                }
+                
+                guard let parentUuidDestination = folderDestination.uuid  else {
+                    throw UploadFileUseCaseError.InvalidParentUUID
+                }
+                
+                
+                _ = try await driveNewAPI.moveFolderNew(uuid: parentUuid, destinationFolder: parentUuidDestination)
+                      
                 let newItem = FileProviderItem(
                     identifier: item.itemIdentifier,
                     filename: item.filename,
