@@ -178,7 +178,7 @@ struct UpdateFileContentUseCase {
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
-                self.logger.error("❌ Failed to update file content: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

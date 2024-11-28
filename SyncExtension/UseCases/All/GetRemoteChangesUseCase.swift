@@ -82,7 +82,7 @@ class GetRemoteChangesUseCase {
             } catch {
                 error.reportToSentry()
                 observer.finishEnumeratingWithError(error)
-                self.logger.error(["❌ Failed to enumerate remote changes", error])
+                self.logger.error(["❌ Failed to enumerate remote changes", error.getErrorDescription()])
             }
             
         }
