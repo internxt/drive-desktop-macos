@@ -61,10 +61,10 @@ struct EnumerateFolderItemsWorkspaceUseCase {
                 var items: Array<NSFileProviderItem> = Array()
                 
                 
-                let folders = try await driveAPI.getFolderFoldersWorkspace(workspaceId: workspaceId, folderId: folderId)
+                let folders = try await driveAPI.getFolderFoldersWorkspace(workspaceId: workspaceId, folderId: folderId,offset: self.getOffset(),limit: limit)
                 
                 
-                let files = try await driveAPI.getFolderFilesWorkspace(workspaceId: workspaceId, folderId: folderId)
+                let files = try await driveAPI.getFolderFilesWorkspace(workspaceId: workspaceId, folderId: folderId,offset: self.getOffset(),limit: limit)
                 
                 
                 
@@ -152,7 +152,7 @@ struct EnumerateFolderItemsWorkspaceUseCase {
                 
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Got error fetching folder content: \(error)")
+                self.logger.error("❌ Got error fetching folder content: \(error.getErrorDescription())")
                 observer.finishEnumeratingWithError(error)
             }
         }
