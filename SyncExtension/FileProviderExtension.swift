@@ -38,6 +38,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let AUTH_TOKEN_KEY = "AuthToken"
     let domain: NSFileProviderDomain
     let workspace: [AvailableWorkspace]
+    let workspaceCredentials: WorkspaceCredentialsResponse?
     required init(domain: NSFileProviderDomain) {
         
         
@@ -62,6 +63,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot find availableWorkspaces in auth manager, cannot initialize extension")
         }
         
+
+        if let workspaceCredentials = authManager.workspaceCredentials {
+            self.workspaceCredentials = workspaceCredentials
+            logger.info("Workspace credentials ready")
+            
+        }else {
+            logger.info("Workspace credentials not configured")
+            self.workspaceCredentials = nil
+        }
         ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
         self.user = user
@@ -223,23 +233,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         refreshAuthTokensIfNeeded()
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")
-        
+
         func internalCompletionHandler(url: URL?, item: NSFileProviderItem?, error: Error?) -> Void {
             
-            if let nsError = error as NSError?, nsError.domain == NSFileProviderErrorDomain {
-                logger.error("Error file \(itemIdentifier.rawValue): \(nsError), code: \(nsError.code)")
-                
-                if nsError.code == NSFileProviderError.cannotSynchronize.rawValue {
-                    logger.error("❌ Error cannotSynchronize at file \(itemIdentifier.rawValue).")
-                 
-                    completionHandler(nil, item, nil)
-                } else {
-                    logger.error("Error at file \(itemIdentifier.rawValue): \(error?.localizedDescription ?? "Unknow Error")")
-                    completionHandler(nil, item, error)
-                }
-            } else {
-                completionHandler(url, item, nil)
-            }
+            completionHandler(url, item, error)
             do {
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
             } catch {
@@ -250,7 +247,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         if isWorkspaceDomain(){
             return DownloadFileWorkspaceUseCase(
-                networkFacade: networkFacade,
+                networkFacade: NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.NetworkWorkspace),
                 user: user,
                 activityManager: activityManager,
                 itemIdentifier: itemIdentifier,
@@ -321,8 +318,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
             
             if isWorkspaceDomain(){
+                guard let credentials = self.workspaceCredentials else {
+                    logger.error("workspace credentials not set")
+                    return Progress()
+                }
                 return UploadFileOrUpdateContentWorkspaceUseCase(
-                    networkFacade: networkFacade,
+                    networkFacade: NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.NetworkWorkspace),
                     user: user,
                     activityManager: activityManager,
                     item: itemTemplate,
@@ -330,7 +331,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     encryptedFileDestination: encryptedFileDestination,
                     thumbnailFileDestination: thumbnailFileDestination,
                     encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
-                    completionHandler: completionHandlerInternal, workspace: workspace
+                    completionHandler: completionHandlerInternal, workspace: workspace, workspaceCredentials: credentials
                 ).run()
             }
             return UploadFileOrUpdateContentUseCase(
@@ -382,7 +383,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         // File and folder cases
         let contentHasChanged = changedFields.contains(.contents) && newContents != nil
         let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
-     //   let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
+        let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
         
         logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
         
@@ -417,7 +418,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         if fileHasBeenRenamed  {
             
             if isWorkspaceDomain(){
-                return RenameFileWorkspaceUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+                guard let credentials = self.workspaceCredentials else {
+                    logger.error("workspace credentials not set")
+                    return Progress()
+                }
+                return RenameFileWorkspaceUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler, workspaceCredentials: credentials).run()
             }
             
             return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
@@ -443,7 +448,22 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     error.reportToSentry()
                 }
             }
-            
+            if isWorkspaceDomain(){
+                guard let credentials = self.workspaceCredentials else {
+                    logger.error("workspace credentials not set")
+                    return Progress()
+                }
+                return UpdateFileContentWorkspaceUseCase(
+                    networkFacade: self.networkFacade,
+                    user: self.user,
+                    item: item,
+                    fileUuid: item.itemIdentifier.rawValue,
+                    url: newContents!,
+                    encryptedFileDestination: encryptedFileDestination,
+                    completionHandler: completionHandlerInternal,
+                    progress: Progress(totalUnitCount: 100), workspaceCredentials: credentials
+                ).run()
+            }
             return UpdateFileContentUseCase(
                 networkFacade: self.networkFacade,
                 user: self.user,
@@ -462,11 +482,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             return Progress()
         }
         
-//        if lastUsedDateHasChanged {
-//            logger.info("File last use date has changed, let it pass")
-//            completionHandler(item, [], false, nil)
-//            return Progress()
-//        }
+        if lastUsedDateHasChanged {
+            logger.info("File last use date has changed, let it pass")
+            completionHandler(item, [], false, nil)
+            return Progress()
+        }
                 
         logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
         return Progress()
