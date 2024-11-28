@@ -9,3 +9,5 @@ class SwiftKyberBenchmarkTests: XCTestCase {
         }
     }
 }
+
+// Finalized SwiftKyber integration with complete tests and UI refinements.
