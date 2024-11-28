@@ -123,6 +123,24 @@ public struct ConfigLoader {
         return userAndPass.data(using: .utf8)?.base64EncodedString()
     }
     
+
+    public func getNetworkAuthWorkspace() -> String? {
+        
+        guard let credentials = getWorkspaceCredentials() else {
+            return nil
+        }
+        var hasher = SHA256()
+        
+        hasher.update(data: credentials.credentials.networkPass.data(using: .utf8)!)
+        
+        let digest = hasher.finalize()
+        var result = [UInt8]()
+        digest.withUnsafeBytes {bytes in
+            result.append(contentsOf: bytes)
+        }
+        let userAndPass = "\(credentials.credentials.networkUser):\(CryptoUtils().bytesToHexString(result))"
+        return userAndPass.data(using: .utf8)?.base64EncodedString()
+    }
     public func getUser() -> DriveUser? {
         let userStr = self.getFromUserDefaults(key: "DriveUser")
         guard let userData = userStr?.data(using: .utf8) else {

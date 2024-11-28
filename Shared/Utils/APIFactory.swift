@@ -37,6 +37,14 @@ struct APIFactory {
         return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
+    static var NetworkWorkspace: NetworkAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let networkAuth = configLoader.getNetworkAuthWorkspace()
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+    
     static var DriveNew: DriveAPI {
         let configLoader = ConfigLoader()
         

@@ -22,6 +22,8 @@ class AuthManager: ObservableObject {
     @Published public var isLoggedIn = false
     @Published public var user: DriveUser? = nil
     @Published public var availableWorkspaces: [AvailableWorkspace]? = []
+    @Published public var workspaceCredentials: WorkspaceCredentialsResponse? = nil
+
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
     private let REFRESH_TOKEN_DEADLINE = 5
@@ -29,6 +31,7 @@ class AuthManager: ObservableObject {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
         self.availableWorkspaces = config.getWorkspaces()
+        self.workspaceCredentials = config.getWorkspaceCredentials()
     }
     
     public var mnemonic: String? {
@@ -65,7 +68,8 @@ class AuthManager: ObservableObject {
         try config.setAvailableWorkspaces(workspaces: workspaces.availableWorkspaces)
         if !workspaces.availableWorkspaces.isEmpty{
             let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId, debug: true)
-            try config.setWorkspaceCredentials(credentials: credentials)
+                try config.setWorkspaceCredentials(credentials: credentials)
+            DispatchQueue.main.async{ self.workspaceCredentials = credentials}
         }
         DispatchQueue.main.async{
             self.user = refreshUserResponse.user
@@ -104,6 +108,7 @@ class AuthManager: ObservableObject {
         try config.removeLegacyAuthToken()
         try config.removeMnemonic()
         try config.removeWorkspaces()
+        try config.removeWorkspaceCredentials()
         user = nil
         ErrorUtils.clean()
         isLoggedIn = false
