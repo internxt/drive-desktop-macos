@@ -8,6 +8,7 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
+import RealmSwift
 
 
 
@@ -179,7 +180,9 @@ struct DownloadFileWorkspaceUseCase {
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
 
                 progressHandler(completedProgress: 1)
-                activityManager.saveActivityEntry(entry: ActivityEntry(filename: filename, kind: .download, status: .finished))
+                let uuidString = fileProviderItem.itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
+                let objectId = try ObjectId(string: String(uuidString))
+                activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename + "- Workspace", kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
                 if let driveFileUnwrapped = driveFile {
