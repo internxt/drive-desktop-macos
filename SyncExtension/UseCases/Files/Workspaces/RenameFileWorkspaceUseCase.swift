@@ -16,12 +16,13 @@ struct RenameFileWorkspaceUseCase {
     let changedFields: NSFileProviderItemFields
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
-    
-    init(user: DriveUser,item: NSFileProviderItem, changedFields:  NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    let workspaceCredentials: WorkspaceCredentialsResponse
+    init(user: DriveUser,item: NSFileProviderItem, changedFields:  NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void, workspaceCredentials: WorkspaceCredentialsResponse) {
         self.user = user
         self.item = item
         self.completionHandler = completionHandler
         self.changedFields = changedFields
+        self.workspaceCredentials = workspaceCredentials
     }
     
     
@@ -35,9 +36,9 @@ struct RenameFileWorkspaceUseCase {
 
                 let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: item.itemIdentifier.rawValue)
                 
-                let updated = try await driveNewAPI.updateFileNew(
+                _ = try await driveNewAPI.updateFileNew(
                     uuid: fileMeta.uuid,
-                    bucketId:  user.bucket,
+                    bucketId:  workspaceCredentials.bucket,
                     newFilename: filename.deletingPathExtension,
                     debug: true
                 )
@@ -49,7 +50,7 @@ struct RenameFileWorkspaceUseCase {
 
                 let renameItem = FileProviderItem(
                     identifier: item.itemIdentifier,
-                    filename: fileMeta.name,
+                    filename: item.filename,
                     parentId: item.parentItemIdentifier,
                     createdAt: createdAt,
                     updatedAt: updatedAt,
