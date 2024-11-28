@@ -29,7 +29,8 @@ struct UploadFileWorkspaceUseCase {
     private let activityManager: ActivityManager
     private let trackId = UUID().uuidString
     private let progress: Progress
-    let workspace: [AvailableWorkspace]
+    private let workspace: [AvailableWorkspace]
+    private let workspaceCredentials: WorkspaceCredentialsResponse
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -41,7 +42,8 @@ struct UploadFileWorkspaceUseCase {
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
         progress: Progress,
-        workspace: [AvailableWorkspace]
+        workspace: [AvailableWorkspace],
+        workspaceCredentials: WorkspaceCredentialsResponse
         
     ) {
         self.item = item
@@ -55,6 +57,7 @@ struct UploadFileWorkspaceUseCase {
         self.user = user
         self.progress = progress
         self.workspace = workspace
+        self.workspaceCredentials = workspaceCredentials
     }
     
    
@@ -154,7 +157,7 @@ struct UploadFileWorkspaceUseCase {
                     input: inputStream,
                     encryptedOutput: encryptedFileDestination,
                     fileSize: sizeInt,
-                    bucketId: "40840686e89117bf40287cd2",
+                    bucketId: workspaceCredentials.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
@@ -170,7 +173,6 @@ struct UploadFileWorkspaceUseCase {
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
   
-                self.logger.info("PARENT ID 2  \(item.parentItemIdentifier.rawValue)")
                 let createdFile = try await driveNewAPI.createFileWorkspace(createFile: CreateFileDataNew(
                     fileId: result.id,
                     type: filename.pathExtension,
@@ -251,7 +253,7 @@ struct UploadFileWorkspaceUseCase {
                 input: inputStream,
                 encryptedOutput: encryptedThumbnailDestination,
                 fileSize: Int(size),
-                bucketId: user.bucket,
+                bucketId: workspaceCredentials.bucket,
                 progressHandler:{progress in
                 }
             )

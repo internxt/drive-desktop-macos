@@ -20,10 +20,11 @@ struct UpdateFileContentWorkspaceUseCase {
     private let fileContent: URL
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
-    private let driveNewAPI = APIFactory.DriveNew
+    private let driveNewAPI = APIFactory.DriveWorkspace
     private let user: DriveUser
     private let progress: Progress
     private let fileUuid: String
+    private let workspaceCredentials: WorkspaceCredentialsResponse
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -32,7 +33,8 @@ struct UpdateFileContentWorkspaceUseCase {
         url: URL,
         encryptedFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
-        progress: Progress
+        progress: Progress,
+        workspaceCredentials: WorkspaceCredentialsResponse
     ) {
         self.item = item
         self.fileContent = url
@@ -42,12 +44,9 @@ struct UpdateFileContentWorkspaceUseCase {
         self.user = user
         self.progress = progress
         self.fileUuid = fileUuid
+        self.workspaceCredentials = workspaceCredentials
     }
-    
-   
-    private func getParentId() -> String {
-        return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
-    }
+
     public func run() -> Progress {
         self.logger.info("Updating file")
         Task {
@@ -74,7 +73,7 @@ struct UpdateFileContentWorkspaceUseCase {
                     input: inputStream,
                     encryptedOutput: encryptedFileDestination,
                     fileSize: sizeInt,
-                    bucketId: user.bucket,
+                    bucketId: workspaceCredentials.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
@@ -110,7 +109,7 @@ struct UpdateFileContentWorkspaceUseCase {
                 
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to update file content: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

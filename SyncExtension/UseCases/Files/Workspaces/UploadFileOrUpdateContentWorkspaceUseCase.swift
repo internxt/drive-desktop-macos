@@ -21,11 +21,11 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
     private let fileContent: URL
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
-    private let driveNewAPI = APIFactory.DriveNew
+    private let driveNewAPI = APIFactory.DriveWorkspace
     private let user: DriveUser
     private let activityManager: ActivityManager
-    let workspace: [AvailableWorkspace]
-
+    private let workspace: [AvailableWorkspace]
+    private let workspaceCredentials: WorkspaceCredentialsResponse
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -36,7 +36,8 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
-        workspace: [AvailableWorkspace]
+        workspace: [AvailableWorkspace],
+        workspaceCredentials: WorkspaceCredentialsResponse
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -48,18 +49,30 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
         self.networkFacade = networkFacade
         self.user = user
         self.workspace = workspace
+        self.workspaceCredentials = workspaceCredentials
     }
     
-    private func fileAlreadyExistsByName() async -> GetFileInFolderByPlainNameResponse? {
+    private func fileAlreadyExistsByName() async -> GetExistenceFileInFolderResponse? {
         do {
-            guard let folderIdInt = Int(getParentId(item: self.item, user: self.user)) else {
+            guard !workspace.isEmpty else {
+                self.logger.error("Workspace array is empty, cannot proceed with item access.")
                 return nil
             }
             
+            var parentFolderUuid = item.parentItemIdentifier.rawValue
+            
+            if item.parentItemIdentifier == .rootContainer {
+                parentFolderUuid =  workspace[0].workspaceUser.rootFolderId
+            }
+
+            
             let filename = (item.filename as NSString)
-            return try await self.driveNewAPI.getFileInFolderByPlainName(folderId: folderIdInt, plainName: filename.deletingPathExtension, type:filename.pathExtension)
+            let existenceFile = ExistenceFile(plainName: filename.deletingPathExtension, type: filename.pathExtension)
+            let result = try await self.driveNewAPI.getExistenceFileInFolderByPlainName(uuid: parentFolderUuid, files: [existenceFile],debug: true)
+            return result.existentFiles.isEmpty ? nil : result.existentFiles.first
             
         } catch {
+            self.logger.error("Error in file already exists \(error.getErrorDescription())")
             return nil
         }
         
@@ -69,7 +82,7 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
         let progress = Progress(totalUnitCount: 100)
         Task {
             self.logger.info("Checking if file already exists...")
-       //     guard let fileByName = await self.fileAlreadyExistsByName() else {
+            guard let fileByName = await self.fileAlreadyExistsByName() else {
                 self.logger.info("File doesn't exists in this folder, uploading")
                 return UploadFileWorkspaceUseCase(
                     networkFacade: self.networkFacade,
@@ -81,24 +94,24 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
                     thumbnailFileDestination: self.thumbnailFileDestination,
                     encryptedThumbnailFileDestination: self.encryptedThumbnailFileDestination,
                     completionHandler: self.completionHandler,
-                    progress: progress, workspace: self.workspace
+                    progress: progress, workspace: self.workspace, workspaceCredentials: workspaceCredentials
                 ).run()
-      //      }
+            }
             
             
-//            self.logger.info("File already exists in this folder, replacing content")
-//            
-//            
-//            return UpdateFileContentUseCase(
-//                networkFacade: self.networkFacade,
-//                user: self.user,
-//                item: self.item,
-//                fileUuid: fileByName.uuid,
-//                url: self.fileContent,
-//                encryptedFileDestination: self.encryptedFileDestination,
-//                completionHandler: self.completionHandler,
-//                progress: progress
-//            ).run()
+            self.logger.info("File already exists in this folder, replacing content")
+            
+            
+            return UpdateFileContentWorkspaceUseCase(
+                networkFacade: self.networkFacade,
+                user: self.user,
+                item: self.item,
+                fileUuid: fileByName.uuid,
+                url: self.fileContent,
+                encryptedFileDestination: self.encryptedFileDestination,
+                completionHandler: self.completionHandler,
+                progress: progress, workspaceCredentials: workspaceCredentials
+            ).run()
             
         }
         
