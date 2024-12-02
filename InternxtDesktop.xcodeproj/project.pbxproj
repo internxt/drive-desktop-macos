@@ -72,6 +72,7 @@
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
@@ -414,6 +415,7 @@
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
+		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -711,6 +713,7 @@
 			isa = PBXGroup;
 			children = (
 				AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */,
+				AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */,
 			);
 			path = Workspaces;
 			sourceTree = "<group>";
@@ -1722,6 +1725,7 @@
 				E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
 				AAF71A672CDF114500476000 /* CreateFolderWorkspaceUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
+				AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */,
 				AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */,
 				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
