@@ -55,20 +55,20 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
         
         
         let suggestedPageSize: Int = observer.suggestedPageSize ?? 50
-     
-        if domain.identifier.rawValue ==  user.uuid {
-            return EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize)
-
-        }else {
-            return EnumerateFolderItemsWorkspaceUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page, workspace: workspace).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize)
-        }
-      
+        let isPersonalDrive = domain.identifier.rawValue ==  user.uuid
+        
+        return isPersonalDrive ? EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize) :
+        EnumerateFolderItemsWorkspaceUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page, workspace: workspace).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize)
+        
     }
     
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
+        let isPersonalDrive = domain.identifier.rawValue ==  user.uuid
         
-        return GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run()
+        return isPersonalDrive ? GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run() :
+        GetRemoteChangesUseCaseWorkspace(observer: observer, anchor: anchor,workspace: workspace).run()
+ 
     }
     
     func currentSyncAnchor(completionHandler: @escaping (NSFileProviderSyncAnchor?) -> Void) {
