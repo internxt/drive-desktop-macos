@@ -12,7 +12,7 @@ import InternxtSwiftCore
 
 
 struct TrashFolderWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     private let trashAPI: TrashAPI = APIFactory.TrashWorkspace
     private let item: NSFileProviderItem
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void

@@ -9,11 +9,8 @@ import Foundation
 import FileProvider
 import InternxtSwiftCore
 
-
-
-
 struct TrashFileWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     private let trashAPI: TrashAPI = APIFactory.TrashWorkspace
     private let driveNewAPI: DriveAPI = APIFactory.DriveWorkspace
     private let item: NSFileProviderItem

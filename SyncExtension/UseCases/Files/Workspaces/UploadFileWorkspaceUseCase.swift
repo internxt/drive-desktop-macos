@@ -11,7 +11,7 @@ import InternxtSwiftCore
 
 
 struct UploadFileWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let trashAPI: TrashAPI = APIFactory.Trash

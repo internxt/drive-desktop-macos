@@ -10,7 +10,7 @@ import InternxtSwiftCore
 import FileProvider
 
 struct UploadFileOrUpdateContentWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()

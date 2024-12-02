@@ -9,10 +9,8 @@ import Foundation
 import FileProvider
 import InternxtSwiftCore
 
-
-
 struct UpdateFileContentWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let item: NSFileProviderItem

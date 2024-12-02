@@ -10,7 +10,7 @@ import FileProvider
 import InternxtSwiftCore
 
 struct RenameFileWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     let driveNewAPI = APIFactory.DriveWorkspace
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields

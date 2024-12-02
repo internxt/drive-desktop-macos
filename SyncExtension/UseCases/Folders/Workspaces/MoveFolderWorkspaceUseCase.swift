@@ -11,7 +11,7 @@ import InternxtSwiftCore
 
 
 struct MoveFolderWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     let driveNewAPI = APIFactory.DriveWorkspace
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields

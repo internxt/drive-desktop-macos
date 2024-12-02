@@ -10,11 +10,8 @@ import FileProvider
 import InternxtSwiftCore
 import RealmSwift
 
-
-
-
 struct DownloadFileWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     private let cryptoUtils = CryptoUtils()
     private let networkFacade: NetworkFacade
     private let completionHandler: (URL?, NSFileProviderItem?, Error?) -> Void

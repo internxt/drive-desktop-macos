@@ -12,7 +12,7 @@ import InternxtSwiftCore
 
 
 struct GetFileOrFolderMetaWorkspaceUseCase {
-    let logger = syncExtensionLogger
+    let logger = syncExtensionWorkspaceLogger
     private let driveNewAPI: DriveAPI = APIFactory.DriveWorkspace
     private let completionHandler: (NSFileProviderItem?, Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier
@@ -132,7 +132,7 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
     
     private func getFileMetaOrNil(maybeFileUuid: String) async -> GetFileMetaByIdResponse? {
         do {
-            let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: maybeFileUuid)
+            let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: maybeFileUuid,debug: true)
             
             if fileMeta.uuid != maybeFileUuid {
                 return nil
@@ -155,7 +155,7 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
     
     private func getFolderMetaOrNil(maybeFolderId: String) async -> GetFolderMetaByIdResponse? {
         do {
-            return try await driveNewAPI.getFolderMetaByUuid(uuid: maybeFolderId)
+            return try await driveNewAPI.getFolderMetaByUuid(uuid: maybeFolderId,debug: true)
         } catch {
             guard let apiError = error as? APIClientError else {
                 // This is not an APIError, report it
