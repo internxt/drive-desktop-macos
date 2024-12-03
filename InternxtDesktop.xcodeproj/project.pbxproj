@@ -2221,7 +2221,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 69;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2239,7 +2239,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.3;
+				MARKETING_VERSION = 2.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2427,7 +2427,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 69;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2445,7 +2445,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.3;
+				MARKETING_VERSION = 2.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2469,7 +2469,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 69;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2487,7 +2487,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.3;
+				MARKETING_VERSION = 2.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
