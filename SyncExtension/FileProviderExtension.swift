@@ -37,8 +37,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     var pushRegistry: PKPushRegistry!
     private let AUTH_TOKEN_KEY = "AuthToken"
     let domain: NSFileProviderDomain
-    let workspace: [AvailableWorkspace]
-    let workspaceCredentials: WorkspaceCredentialsResponse?
+    var workspace: [AvailableWorkspace]
+    var workspaceCredentials: WorkspaceCredentialsResponse?
     required init(domain: NSFileProviderDomain) {
         
         
@@ -59,23 +59,27 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
-        guard let workspace = authManager.availableWorkspaces else {
-            ErrorUtils.fatal("Cannot find availableWorkspaces in auth manager, cannot initialize extension")
-        }
+  
+        self.workspace = []
+        self.workspaceCredentials = nil
         
-
-        if let workspaceCredentials = authManager.workspaceCredentials {
-            self.workspaceCredentials = workspaceCredentials
-            logger.info("Workspace credentials ready")
+        if  !(domain.identifier.rawValue == user.uuid) {
+            logger.info("Ready to set Workspace credentials")
             
-        }else {
-            logger.info("Workspace credentials not configured")
-            self.workspaceCredentials = nil
+            guard let workspace = authManager.availableWorkspaces else {
+                ErrorUtils.fatal("Cannot find availableWorkspaces in auth manager, cannot initialize extension")
+            }
+            self.workspace = workspace
+            if let workspaceCredentials = authManager.workspaceCredentials {
+                self.workspaceCredentials = workspaceCredentials
+                logger.info("Workspace credentials ready")
+            }
         }
+
         ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
         self.user = user
-        self.workspace = workspace
+       
         
         guard let mnemonic = authManager.mnemonic else {
             ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")

@@ -79,11 +79,6 @@ class FileProviderDomainManager: ObservableObject {
                 
                 self.logger.info("📦 FileProvider domain workspace is ready with identifier \(identifier.rawValue)")
             }
-
-                    
-//            self.manager = NSFileProviderManager(for: domain)
-//            self.managerDomain = domain
-
         
             return
         } catch {
