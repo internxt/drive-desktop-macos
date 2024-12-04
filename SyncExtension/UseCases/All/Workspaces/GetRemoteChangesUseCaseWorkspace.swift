@@ -21,6 +21,8 @@ class GetRemoteChangesUseCaseWorkspace {
     private var newFilesLastUpdatedAt: Date = Date()
     private var newFoldersLastUpdatedAt: Date = Date()
     private let workspace: [AvailableWorkspace]
+    private var fileOffset: Int = 0
+    private var folderOffset: Int = 0
     init(observer: NSFileProviderChangeObserver, anchor: NSFileProviderSyncAnchor,workspace: [AvailableWorkspace]) {
         self.observer = observer
         self.anchor = anchor
@@ -99,12 +101,12 @@ class GetRemoteChangesUseCaseWorkspace {
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: limit,
-            offset:0,
+            offset:fileOffset,
             bucketId: workspaceCredentials.bucket,
             workspaceId: workspaceId,
             debug: true
         )
-        
+        fileOffset += limit
         let hasMoreFiles = updatedFiles.count == limit
         
         updatedFiles.forEach{ (file) in
@@ -164,11 +166,11 @@ class GetRemoteChangesUseCaseWorkspace {
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: self.enumeratedChangesLimit,
-            offset:0, 
+            offset:folderOffset, 
             workspaceId: workspaceId,
             debug:true
         )
-        
+        folderOffset += limit
         let hasMoreFolders = updatedFolders.count == limit
 
         updatedFolders.forEach{ (folder) in

@@ -24,6 +24,8 @@ class GetRemoteChangesUseCase {
     private var deletedItemsIdentifiers: [NSFileProviderItemIdentifier] = []
     private var newFilesLastUpdatedAt: Date = Date()
     private var newFoldersLastUpdatedAt: Date = Date()
+    private var fileOffset: Int = 0
+    private var folderOffset: Int = 0
     init(observer: NSFileProviderChangeObserver, anchor: NSFileProviderSyncAnchor, user: DriveUser) {
         self.observer = observer
         self.anchor = anchor
@@ -93,11 +95,11 @@ class GetRemoteChangesUseCase {
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: limit,
-            offset:0,
+            offset:fileOffset,
             bucketId: user.bucket,
             debug: true
         )
-        
+        fileOffset += limit
         let hasMoreFiles = updatedFiles.count == limit
         
         updatedFiles.forEach{ (file) in
@@ -150,10 +152,10 @@ class GetRemoteChangesUseCase {
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: self.enumeratedChangesLimit,
-            offset:0,
+            offset:folderOffset,
             debug:true
         )
-        
+        folderOffset += limit
         let hasMoreFolders = updatedFolders.count == limit
 
         updatedFolders.forEach{ (folder) in
