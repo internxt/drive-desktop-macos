@@ -30,6 +30,9 @@ class BackupTreeGenerator: BackupTreeGeneration {
     let backupTotalProgress: Progress
     let deviceId: Int
     let backupRealm: any SyncedNodeRepositoryProtocol
+    
+    private var nodeIndex: [URL: BackupTreeNode] = [:]
+   
     init(root: URL, deviceId: Int, backupUploadService: BackupUploadServiceProtocol, backupTotalProgress: Progress, backupRealm: any SyncedNodeRepositoryProtocol) {
 
         self.root = root
@@ -51,6 +54,8 @@ class BackupTreeGenerator: BackupTreeGeneration {
             backupRealm: self.backupRealm,
             backupTotalProgress: self.backupTotalProgress
         )
+        
+        nodeIndex[root] = rootNode
     }
     
     
@@ -96,48 +101,42 @@ class BackupTreeGenerator: BackupTreeGeneration {
 
     }
     
+    
     func insertInTree(_ url: URL) throws {
-        
-        // 1. Find a parent for the node
-        guard let parentNode = self.rootNode.findNode(url.deletingLastPathComponent()) else {
-            throw BackupTreeGeneratorError.parentNodeNotFound
-        }
-        
-        // 2. Check if the node already exists in the parent instead of the whole tree, so
-        // we don't traverse the entire tree again
-        let existingNode = parentNode.findNode(url)
-        
-        if(existingNode != nil) {
-            return
-        }
+         //  Check if the node already exists in the parent instead of the whole tree
+         if nodeIndex[url] != nil {
+             return
+         }
 
-        guard let typeID = try url.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier else {
-            throw BackupTreeGeneratorError.cannotGetNodeType
-        }
+         // 1. Find a parent for the node
+         let parentURL = url.deletingLastPathComponent()
+         guard let parentNode = nodeIndex[parentURL] else {
+             throw BackupTreeGeneratorError.parentNodeNotFound
+         }
 
-        guard let type = UTType(typeID) else {
-            throw BackupTreeGeneratorError.cannotGetNodeType
-        }
-        
-        
+         guard let typeID = try url.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier,
+               let type = UTType(typeID) else {
+             throw BackupTreeGeneratorError.cannotGetNodeType
+         }
 
-        // 3. We have a parent, and the node does not exists, create the BackupTreeNode
-        let newNode = BackupTreeNode(
-            id: UUID().uuidString,
-            deviceId: self.deviceId,
-            rootBackupFolder: root,
-            parentId: parentNode.id,
-            name: url.lastPathComponent,
-            type: type,
-            url: url,
-            syncStatus: BackupTreeNodeSyncStatus.LOCAL_ONLY,
-            childs: [],
-            backupUploadService: self.backupUploadService,
-            backupRealm: self.backupRealm,
-            backupTotalProgress: self.backupTotalProgress
-        )
-        
-        
-        parentNode.addChild(newNode: newNode)
-    }
-}
+         // We have a parent, and the node does not exists, create the BackupTreeNode
+         let newNode = BackupTreeNode(
+             id: UUID().uuidString,
+             deviceId: self.deviceId,
+             rootBackupFolder: root,
+             parentId: parentNode.id,
+             name: url.lastPathComponent,
+             type: type,
+             url: url,
+             syncStatus: .LOCAL_ONLY,
+             childs: [],
+             backupUploadService: self.backupUploadService,
+             backupRealm: self.backupRealm,
+             backupTotalProgress: self.backupTotalProgress
+         )
+
+   
+         parentNode.addChild(newNode: newNode)
+         nodeIndex[url] = newNode
+     }
+ }
