@@ -1,8 +1,8 @@
 //
-//  GetRemoteChangesUseCase.swift
+//  GetRemoteChangesUseCaseWorkspace.swift
 //  SyncExtension
 //
-//  Created by Robert Garcia on 7/9/23.
+//  Created by Patricio Tovar on 28/11/24.
 //
 
 import Foundation
@@ -10,26 +10,23 @@ import FileProvider
 import InternxtSwiftCore
 
 
-struct FilesAndFoldersAnchor {
-    public let filesAnchorDate: Date
-    public let foldersAnchorDate: Date
-}
-class GetRemoteChangesUseCase {
-    let logger = syncExtensionLogger
+
+class GetRemoteChangesUseCaseWorkspace {
+    let logger = syncExtensionWorkspaceLogger
     private let observer: NSFileProviderChangeObserver
     private let anchor: NSFileProviderSyncAnchor
-    private let user: DriveUser
     private let enumeratedChangesLimit: Int = 50
     private var updatedFileProviderItems: [FileProviderItem] = []
     private var deletedItemsIdentifiers: [NSFileProviderItemIdentifier] = []
     private var newFilesLastUpdatedAt: Date = Date()
     private var newFoldersLastUpdatedAt: Date = Date()
+    private let workspace: [AvailableWorkspace]
     private var fileOffset: Int = 0
     private var folderOffset: Int = 0
-    init(observer: NSFileProviderChangeObserver, anchor: NSFileProviderSyncAnchor, user: DriveUser) {
+    init(observer: NSFileProviderChangeObserver, anchor: NSFileProviderSyncAnchor,workspace: [AvailableWorkspace]) {
         self.observer = observer
         self.anchor = anchor
-        self.user = user
+        self.workspace = workspace
     }
     
     private func getFilesAndFoldersLastUpdate(_ anchor: NSFileProviderSyncAnchor) -> FilesAndFoldersAnchor {
@@ -91,12 +88,22 @@ class GetRemoteChangesUseCase {
     }
     
     private func obtainFileChanges(lastUpdatedAt: Date, limit: Int, recommendedBatchSize: Int?) async throws -> Void {
-        let updatedFiles = try await APIFactory.DriveNew.getUpdatedFiles(
+        let workspaceId = workspace[0].workspaceUser.workspaceId
+        let authManager = AuthManager()
+        
+        
+        guard let workspaceCredentials = authManager.workspaceCredentials else {
+            logger.error("Workspace credentials not configured")
+            return }
+
+        
+        let updatedFiles = try await APIFactory.DriveWorkspace.getUpdatedFilesWorkspace(
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: limit,
             offset:fileOffset,
-            bucketId: user.bucket,
+            bucketId: workspaceCredentials.bucket,
+            workspaceId: workspaceId,
             debug: true
         )
         fileOffset += limit
@@ -123,12 +130,17 @@ class GetRemoteChangesUseCase {
                     newFilesLastUpdatedAt = updatedAt
                 }
                 
-                let parentIsRoot = file.folderId == user.root_folder_id
-
+                guard let folderUuid = file.folderUuid else {
+                    self.logger.error("Cannot get folder uuid")
+                    return
+                }
+                
+                let parentIsRoot = folderUuid == workspace[0].workspaceUser.rootFolderId
+                
                 let item = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
                     filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
-                    parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: file.folderId.toString()),
+                    parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folderUuid),
                     createdAt: createdAt,
                     updatedAt: updatedAt,
                     itemExtension: file.type,
@@ -148,30 +160,39 @@ class GetRemoteChangesUseCase {
     
     
     private func obtainFolderChanges(lastUpdatedAt: Date, limit: Int,recommendedBatchSize: Int?) async throws -> Void {
-        let updatedFolders = try await APIFactory.DriveNew.getUpdatedFolders(
+        let workspaceId = workspace[0].workspaceUser.workspaceId
+        
+        let updatedFolders = try await APIFactory.DriveWorkspace.getUpdatedFoldersWorkspace(
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: self.enumeratedChangesLimit,
-            offset:folderOffset,
+            offset:folderOffset, 
+            workspaceId: workspaceId,
             debug:true
         )
         folderOffset += limit
         let hasMoreFolders = updatedFolders.count == limit
 
         updatedFolders.forEach{ (folder) in
+            
+            guard let folderUuid = folder.uuid else {
+                self.logger.error("Cannot get folder uuid")
+                return
+            }
+            
             if folder.status == "REMOVED" || folder.status == "TRASHED" {
-                deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
+                deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: folderUuid))
                 return
             }
             
             if folder.status == "EXISTS" {
                 guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
-                    self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
+                    self.logger.error("Cannot create createdAt date for item \(folderUuid) with value \(folder.createdAt)")
                     return
                 }
                 
                 guard let updatedAt = Time.dateFromISOString(folder.updatedAt) else {
-                    self.logger.error("Cannot create updatedAt date for item \(folder.id) with value \(folder.updatedAt)")
+                    self.logger.error("Cannot create updatedAt date for item \(folderUuid) with value \(folder.updatedAt)")
                     return
                 }
                 
@@ -179,12 +200,18 @@ class GetRemoteChangesUseCase {
                     newFoldersLastUpdatedAt = updatedAt
                 }
                 
-                let parentIsRoot = folder.parentId == nil || folder.parentId == user.root_folder_id
-
+             
+                guard let folderParentUuid = folder.parentUuid else {
+                    self.logger.error("Cannot get folder parent uuid")
+                    return
+                }
+                
+                let parentIsRoot = folderParentUuid == workspace[0].workspaceUser.rootFolderId
+                
                 let item = FileProviderItem(
-                    identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
+                    identifier: NSFileProviderItemIdentifier(rawValue: folderUuid),
                     filename: FileProviderItem.getFilename(name: folder.plainName ?? folder.name , itemExtension: nil),
-                    parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folder.parentId!.toString()),
+                    parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folderParentUuid),
                     createdAt: createdAt,
                     updatedAt: updatedAt,
                     itemExtension: nil,

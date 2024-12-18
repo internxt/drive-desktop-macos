@@ -155,7 +155,7 @@ class BackupTreeNode {
     }
     
    
- 
+    @MainActor
     func syncNode() async throws -> Void {
         
         guard let nodeURL = self.url else {

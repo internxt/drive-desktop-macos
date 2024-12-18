@@ -151,7 +151,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
             return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil))
         } catch {
-            self.logger.error("❌ Failed to create folder: \(self.getErrorDescription(error: error))")
+            self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
 
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
@@ -181,7 +181,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: nil))
                 } catch {
-                    self.logger.error("❌ Failed to insert already created folder in database: \(self.getErrorDescription(error: error))")
+                    self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
                 }
             }
@@ -287,7 +287,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
 
         } catch {
-            self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(self.getErrorDescription(error: error))")
+            self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
 
             if let startUploadError = error as? StartUploadError {
                 if let apiClientError = startUploadError.apiError,  apiClientError.statusCode == 420 {
@@ -328,7 +328,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     return .success(BackupTreeNodeSyncResult(id: file.id, uuid: file.uuid))
                 } catch {
-                    self.logger.error("❌ Failed to insert already created folder in database: \(self.getErrorDescription(error: error))")
+                    self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
                 }
             }
@@ -338,12 +338,5 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
     }
 
-    private func getErrorDescription(error: Error) -> String {
-        if let apiClientError = error as? APIClientError {
-            let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
-            return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
-        }
-        return error.localizedDescription
-    }
 
 }

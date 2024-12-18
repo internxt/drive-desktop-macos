@@ -68,11 +68,11 @@ struct DriveFileService {
     public func renameFile(uuid: String, bucketId: String, newName: String) async throws -> DriveFile {
         let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: uuid)
         
-        let updated = try await driveAPI.updateFile(
-            fileId: fileMeta.fileId,
+        let updated = try await driveNewAPI.updateFileNew(
+            uuid: fileMeta.uuid,
             bucketId: bucketId,
             newFilename: newName,
-            debug: false
+            debug: true
         )
         
         let createdAt = Time.dateFromISOString(fileMeta.createdAt) ?? Date()
@@ -80,7 +80,7 @@ struct DriveFileService {
         
         return DriveFile(
             uuid: fileMeta.uuid,
-            plainName: updated.plain_name,
+            plainName: updated.plainName,
             name: fileMeta.name,
             type: fileMeta.type,
             size: Int(fileMeta.size) ?? 0,

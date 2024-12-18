@@ -1,36 +1,30 @@
 //
-//  GetFileOrFolderMetaUseCase.swift
+//  GetFileOrFolderMetaWorkspaceUseCase.swift
 //  SyncExtension
 //
-//  Created by Robert Garcia on 23/8/23.
+//  Created by Patricio Tovar on 10/11/24.
 //
 
 import Foundation
 import FileProvider
 import InternxtSwiftCore
 
-enum GetFileOrFolderMetaUseCaseError: Error {
-    case InvalidItemId
-    case InvalidSize
-    case InvalidCreatedAt
-    case InvalidUpdatedAt
-    case FileOrFolderMetaNotFound
-    case FileOrFolderMetaUuidNotFound
-    case InvalidWorkspace
-}
 
 
-struct GetFileOrFolderMetaUseCase {
-    let logger = syncExtensionLogger
-    private let driveAPI: DriveAPI = APIFactory.Drive
-    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+struct GetFileOrFolderMetaWorkspaceUseCase {
+    let logger = syncExtensionWorkspaceLogger
+    private let driveNewAPI: DriveAPI = APIFactory.DriveWorkspace
     private let completionHandler: (NSFileProviderItem?, Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier
     private let user: DriveUser
-    init(user: DriveUser,identifier: NSFileProviderItemIdentifier, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) {
+    private let workspace: [AvailableWorkspace]
+
+    init(user: DriveUser,identifier: NSFileProviderItemIdentifier, completionHandler: @escaping (NSFileProviderItem?, Error?
+    ) -> Void  , workspace : [AvailableWorkspace]) {
         self.completionHandler = completionHandler
         self.identifier = identifier
         self.user = user
+        self.workspace = workspace
     }
     
     public func run() -> Progress {
@@ -39,8 +33,21 @@ struct GetFileOrFolderMetaUseCase {
             do {
                 var itemFound = false
                 self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a file")
+                guard !workspace.isEmpty else {
+                    self.logger.error("Workspace array is empty, cannot proceed with item access.")
+                    throw GetFileOrFolderMetaUseCaseError.InvalidWorkspace
+                }
+
+                let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
+               
                 if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: self.identifier.rawValue) {
-                    let parentIsRootContainer = fileMeta.folderId == user.root_folder_id
+                    
+                    guard let folderUuid = fileMeta.folderUuid else {
+                        
+                        self.logger.error("Cannot get folderUuid from \(self.identifier.rawValue)")
+                        throw GetFileOrFolderMetaUseCaseError.FileOrFolderMetaUuidNotFound
+                    }
+                    let parentIsRootContainer = folderUuid == rootFolderUuid
                     guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
                         self.logger.error("Cannot create createdAt date for file \(fileMeta.id) with value \(fileMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
@@ -61,7 +68,7 @@ struct GetFileOrFolderMetaUseCase {
                         // TODO: Decrypt the name if needed
                         filename: FileProviderItem.getFilename(name: fileMeta.plainName ?? fileMeta.name, itemExtension: fileMeta.type)
                         ,
-                        parentId: parentIsRootContainer ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(fileMeta.folderId)),
+                        parentId: parentIsRootContainer ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folderUuid),
                         createdAt: createdAt,
                         updatedAt: updatedAt,
                         itemExtension: fileMeta.type,
@@ -89,8 +96,8 @@ struct GetFileOrFolderMetaUseCase {
                     
                     var parentId: NSFileProviderItemIdentifier = .rootContainer
                     
-                    if folderMeta.parentId != nil {
-                        parentId = NSFileProviderItemIdentifier(String(folderMeta.parentId!))
+                    if folderMeta.parentUuid != nil {
+                        parentId = NSFileProviderItemIdentifier(String(folderMeta.parentUuid!))
                     }
                     
                     
@@ -125,7 +132,7 @@ struct GetFileOrFolderMetaUseCase {
     
     private func getFileMetaOrNil(maybeFileUuid: String) async -> GetFileMetaByIdResponse? {
         do {
-            let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: maybeFileUuid)
+            let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: maybeFileUuid,debug: true)
             
             if fileMeta.uuid != maybeFileUuid {
                 return nil
@@ -148,7 +155,7 @@ struct GetFileOrFolderMetaUseCase {
     
     private func getFolderMetaOrNil(maybeFolderId: String) async -> GetFolderMetaByIdResponse? {
         do {
-            return try await driveNewAPI.getFolderMetaById(id: maybeFolderId)
+            return try await driveNewAPI.getFolderMetaByUuid(uuid: maybeFolderId,debug: true)
         } catch {
             guard let apiError = error as? APIClientError else {
                 // This is not an APIError, report it

@@ -1,24 +1,17 @@
 //
-//  CreateFileUseCase.swift
+//  UploadFileWorkspaceUseCase.swift
 //  SyncExtension
 //
-//  Created by Robert Garcia on 10/8/23.
+//  Created by Patricio Tovar on 8/11/24.
 //
 
 import Foundation
 import FileProvider
 import InternxtSwiftCore
 
-enum UploadFileUseCaseError: Error {
-    case InvalidParentId
-    case CannotOpenInputStream
-    case MissingDocumentSize
-    case InvalidParentUUID
-}
 
-
-struct UploadFileUseCase {
-    let logger = syncExtensionLogger
+struct UploadFileWorkspaceUseCase {
+    let logger = syncExtensionWorkspaceLogger
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let trashAPI: TrashAPI = APIFactory.Trash
@@ -36,6 +29,8 @@ struct UploadFileUseCase {
     private let activityManager: ActivityManager
     private let trackId = UUID().uuidString
     private let progress: Progress
+    private let workspace: [AvailableWorkspace]
+    private let workspaceCredentials: WorkspaceCredentialsResponse
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -46,7 +41,10 @@ struct UploadFileUseCase {
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
-        progress: Progress
+        progress: Progress,
+        workspace: [AvailableWorkspace],
+        workspaceCredentials: WorkspaceCredentialsResponse
+        
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -58,6 +56,8 @@ struct UploadFileUseCase {
         self.networkFacade = networkFacade
         self.user = user
         self.progress = progress
+        self.workspace = workspace
+        self.workspaceCredentials = workspaceCredentials
     }
     
    
@@ -122,7 +122,7 @@ struct UploadFileUseCase {
     
     
     private func getParentId() -> String {
-        return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
+        return item.parentItemIdentifier == .rootContainer ? workspace[0].workspaceUser.rootFolderId : item.parentItemIdentifier.rawValue
     }
     public func run() -> Progress {
         self.logger.info("Creating file")
@@ -130,6 +130,9 @@ struct UploadFileUseCase {
         Task {
             do {
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
+                
+                
+                let workspaceId = workspace[0].workspaceUser.workspaceId
 
                 let startedAt = self.trackStart(processIdentifier: trackId)
                 guard let inputStream = InputStream(url: fileContent) else {
@@ -144,8 +147,6 @@ struct UploadFileUseCase {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
 
-                let folderMeta = try await driveNewAPI.getFolderMetaById(id: getParentId(),debug: true)
-                guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
 
                 let filename = (item.filename as NSString)
                 self.logger.info("Starting upload for file \(filename)")
@@ -156,7 +157,7 @@ struct UploadFileUseCase {
                     input: inputStream,
                     encryptedOutput: encryptedFileDestination,
                     fileSize: sizeInt,
-                    bucketId: user.bucket,
+                    bucketId: workspaceCredentials.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
@@ -171,18 +172,17 @@ struct UploadFileUseCase {
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
-                let createdFile = try await driveNewAPI.createFileNew(createFile: CreateFileDataNew(
-                        fileId: result.id,
-                        type: filename.pathExtension,
-                        bucket: result.bucket,
-                        size: result.size,
-                        folderId: 0,
-                        name: encryptedFilename.base64EncodedString(),
-                        plainName: filename.deletingPathExtension, folderUuid: parentUuid
-                        
-                    ),
-                debug: true
-                )
+  
+                let createdFile = try await driveNewAPI.createFileWorkspace(createFile: CreateFileDataNew(
+                    fileId: result.id,
+                    type: filename.pathExtension,
+                    bucket: result.bucket,
+                    size: result.size,
+                    folderId: 0,
+                    name: encryptedFilename.base64EncodedString(),
+                    plainName: filename.deletingPathExtension, folderUuid: getParentId()
+                    
+                ), workspaceUuid: workspaceId)
                 
                 
                 let fileProviderItem = FileProviderItem(
@@ -253,7 +253,7 @@ struct UploadFileUseCase {
                 input: inputStream,
                 encryptedOutput: encryptedThumbnailDestination,
                 fileSize: Int(size),
-                bucketId: user.bucket,
+                bucketId: workspaceCredentials.bucket,
                 progressHandler:{progress in
                 }
             )

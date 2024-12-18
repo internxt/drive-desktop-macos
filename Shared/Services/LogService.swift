@@ -14,6 +14,7 @@ enum LogSubSystem: String {
     case InternxtDesktop = "com.internxt.InternxtDesktop"
     case XPCBackups = "com.internxt.XPCBackups"
     case Errors = "com.internxt.errors"
+    case SyncExtensionWorkspace = "com.internxt.SyncExtension.Workspace"
 }
 
 struct LogService {
@@ -95,3 +96,4 @@ struct LogService {
 
 let syncExtensionLogger = LogService.shared.createLogger(subsystem: .SyncExtension, category: "SyncExtension")
 let appLogger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "InternxtDesktopUIApp")
+let syncExtensionWorkspaceLogger = LogService.shared.createLogger(subsystem: .SyncExtensionWorkspace, category: "SyncExtensionWorkspace")

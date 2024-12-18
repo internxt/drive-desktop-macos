@@ -7,12 +7,21 @@
 
 import Foundation
 import Sentry
+import InternxtSwiftCore
 
 extension Error {
     func reportToSentry() {
         sentryLogger.error("\(String(describing: self))")
         SentrySDK.capture(error: self)
     }
+    
+    func getErrorDescription() -> String {
+         if let apiClientError = self as? APIClientError {
+             let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
+             return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
+         }
+         return self.localizedDescription
+     }
 }
 
 extension NSAlert {

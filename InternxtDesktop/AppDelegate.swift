@@ -296,10 +296,18 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 guard let user = self.authManager.user else {
                     throw AuthError.noUserFound
                 }
+
                 try await domainManager.initFileProviderForUser(user:user)
-                
+
                 
                 self.logger.info("Login success")
+                
+                guard let workspaces = self.authManager.availableWorkspaces else {
+                    return
+                }
+               try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
+                
+                self.logger.info("Workspaces setted correctly")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
                 error.reportToSentry()

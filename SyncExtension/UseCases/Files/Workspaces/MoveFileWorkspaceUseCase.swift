@@ -1,8 +1,8 @@
 //
-//  MoveFileUseCase.swift
+//  MoveFileWorkspaceUseCase.swift
 //  SyncExtension
 //
-//  Created by Robert Garcia on 23/8/23.
+//  Created by Patricio Tovar on 10/11/24.
 //
 
 import Foundation
@@ -10,36 +10,43 @@ import FileProvider
 import InternxtSwiftCore
 
 
-struct MoveFileUseCase {
-    let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
-    let driveNewAPI = APIFactory.DriveNew
+struct MoveFileWorkspaceUseCase {
+    let logger = syncExtensionWorkspaceLogger
+    let driveNewAPI = APIFactory.DriveWorkspace
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
-    init(user: DriveUser,item: NSFileProviderItem, changedFields:  NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    private let workspace: [AvailableWorkspace]
+    init(user: DriveUser,item: NSFileProviderItem, changedFields:  NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
+         workspace: [AvailableWorkspace]    ) {
         self.user = user
         self.item = item
         self.completionHandler = completionHandler
         self.changedFields = changedFields
+        self.workspace = workspace
     }
     
     
     func run() -> Progress {
         Task {
             self.logger.info("Moving file with uuid \(item.itemIdentifier.rawValue)")
-            
+            self.logger.info("Parent Identifier :  \( item.parentItemIdentifier.rawValue)")
             do {
                 
                 
-                let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.parentItemIdentifier.rawValue)
+                guard !workspace.isEmpty else {
+                    self.logger.error("Workspace array is empty, cannot proceed with item access.")
+                    return
+                }
 
-                guard let parentUuid = folderMeta.uuid  else {
-                    throw UploadFileUseCaseError.InvalidParentUUID
+                var parentFolderUuid = item.parentItemIdentifier.rawValue
+                
+                if item.parentItemIdentifier == .rootContainer {
+                    parentFolderUuid =  workspace[0].workspaceUser.rootFolderId
                 }
                 
-                let file = try await driveNewAPI.moveFileNew(uuid: item.itemIdentifier.rawValue, destinationFolder: parentUuid)
+                let file = try await driveNewAPI.moveFileNew(uuid: item.itemIdentifier.rawValue, destinationFolder: parentFolderUuid)
                       
                 
                 let newItem = FileProviderItem(
@@ -59,7 +66,7 @@ struct MoveFileUseCase {
                 self.logger.info("✅ File moved successfully")
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to move file: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to move file: \(error.getErrorDescription())")
                 completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 
             }

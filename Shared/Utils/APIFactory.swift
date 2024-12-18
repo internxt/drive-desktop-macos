@@ -37,6 +37,14 @@ struct APIFactory {
         return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
+    static var NetworkWorkspace: NetworkAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let networkAuth = configLoader.getNetworkAuthWorkspace()
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+    
     static var DriveNew: DriveAPI {
         let configLoader = ConfigLoader()
         
@@ -44,6 +52,15 @@ struct APIFactory {
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
         return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+    
+    static var DriveWorkspace: DriveAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
+        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader)
     }
     
     static var Drive: DriveAPI {
@@ -71,6 +88,16 @@ struct APIFactory {
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
         return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+    
+    static var TrashWorkspace: TrashAPI {
+        let configLoader = ConfigLoader()
+        
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
+
+        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader)
     }
 
     static var Backup: BackupAPI {

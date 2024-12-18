@@ -21,12 +21,17 @@ class AuthManager: ObservableObject {
     let logger = Logger(subsystem: "com.internxt", category: "AuthManager")
     @Published public var isLoggedIn = false
     @Published public var user: DriveUser? = nil
+    @Published public var availableWorkspaces: [AvailableWorkspace]? = []
+    @Published public var workspaceCredentials: WorkspaceCredentialsResponse? = nil
+
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
     private let REFRESH_TOKEN_DEADLINE = 5
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
+        self.availableWorkspaces = config.getWorkspaces()
+        self.workspaceCredentials = config.getWorkspaceCredentials()
     }
     
     public var mnemonic: String? {
@@ -59,10 +64,20 @@ class AuthManager: ObservableObject {
             uuid: refreshUserResponse.user.uuid
         )
         try config.setUser(user: refreshUserResponse.user)
-        
+        let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces(debug: true)
+        try config.setAvailableWorkspaces(workspaces: workspaces.availableWorkspaces)
+        if !workspaces.availableWorkspaces.isEmpty{
+            let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId, debug: true)
+                try config.setWorkspaceCredentials(credentials: credentials)
+            DispatchQueue.main.async{ self.workspaceCredentials = credentials}
+        }
         DispatchQueue.main.async{
             self.user = refreshUserResponse.user
+            self.availableWorkspaces = workspaces.availableWorkspaces
         }
+        
+       
+        
     }
     
     func refreshTokens() async throws {
@@ -92,6 +107,8 @@ class AuthManager: ObservableObject {
         try config.removeAuthToken()
         try config.removeLegacyAuthToken()
         try config.removeMnemonic()
+        try config.removeWorkspaces()
+        try config.removeWorkspaceCredentials()
         user = nil
         ErrorUtils.clean()
         isLoggedIn = false
