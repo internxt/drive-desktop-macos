@@ -100,7 +100,7 @@ struct GeneralTabView: View {
             return "NO_BUILD_NUMBER"
         }
         
-        return "\(version).\(buildNumber)"
+        return "\(version)"//.\(buildNumber)"
     }
     
     func handleOpenLearnMore() {
