@@ -126,6 +126,10 @@ struct FolderSelectorView: View {
                 HStack {
                     AppButton(title: "COMMON_CANCEL", onClick: {
                         withAnimation {
+                            Task {
+                                await backupsService.restoreFolderToBackup()
+                            }
+                         
                             closeWindow()
                         }
                     }, type: .secondary, size: .SM)
@@ -149,6 +153,11 @@ struct FolderSelectorView: View {
         .cornerRadius(10)
         .shadow(color: .black.opacity(0.1), radius: 1.5, x: 0, y: 1)
         .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+        .onAppear{
+            Task{
+                await backupsService.initFolderToBackup()
+            }
+        }
         
     }
 

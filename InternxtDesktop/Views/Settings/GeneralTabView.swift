@@ -96,9 +96,9 @@ struct GeneralTabView: View {
         guard let version = Bundle.main.releaseVersionNumber else {
             return "NO_VERSION"
         }
-        guard let buildNumber = Bundle.main.buildVersionNumber else {
-            return "NO_BUILD_NUMBER"
-        }
+//        guard let buildNumber = Bundle.main.buildVersionNumber else {
+//            return "NO_BUILD_NUMBER"
+//        }
         
         return "\(version)"//.\(buildNumber)"
     }
