@@ -184,7 +184,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             completion()
             return
         }
-
+        self.logger.info("✅ Notification received")
         enumerateAllDomains()
 
 
