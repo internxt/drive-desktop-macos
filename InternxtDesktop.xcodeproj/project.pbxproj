@@ -72,6 +72,7 @@
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
@@ -619,6 +620,7 @@
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
+				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
 				E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */,
 				E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */,
 			);
@@ -1316,6 +1318,7 @@
 				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
 				E19639592C63B46C009EDAFB /* Realm */,
 				E196395B2C63B46C009EDAFB /* RealmSwift */,
+				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1399,6 +1402,7 @@
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
+				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -2643,6 +2647,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/ObjectivePGP.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -2724,6 +2736,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
 			productName = Rudder;
+		};
+		AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
+			productName = ObjectivePGP;
 		};
 		AAC188E12C222E1A007E321A /* ObjcExceptionBridging */ = {
 			isa = XCSwiftPackageProductDependency;
