@@ -250,8 +250,19 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
         }
         if isWorkspaceDomain(){
+            
+            guard let workspaceMnemonic = authManager.workspaceMnemonic else {
+                let error = NSError(domain: NSCocoaErrorDomain,
+                                    code: NSFileReadUnknownError,
+                                    userInfo: [
+                                        NSLocalizedDescriptionKey: "Workspace mnemonic not set"
+                                    ])
+                logger.error("❌ Workspace mnemonic not set")
+                internalCompletionHandler(url: nil, item: nil, error: error)
+                return Progress()
+            }
             return DownloadFileWorkspaceUseCase(
-                networkFacade: NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
                 user: user,
                 activityManager: activityManager,
                 itemIdentifier: itemIdentifier,
@@ -322,12 +333,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
             
             if isWorkspaceDomain(){
-                guard let credentials = self.workspaceCredentials else {
-                    logger.error("workspace credentials not set")
+                guard let credentials = workspaceCredentials,
+                      let workspaceMnemonic = authManager.workspaceMnemonic else {
+                    let error = NSError(
+                        domain: NSCocoaErrorDomain,
+                        code: NSFileWriteUnknownError,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Workspace environment is not properly configured."
+                        ]
+                    )
+                    logger.error("❌ Workspace environment validation failed: credentials or mnemonic missing")
+                    completionHandler(nil, [], false, error)
                     return Progress()
                 }
                 return UploadFileOrUpdateContentWorkspaceUseCase(
-                    networkFacade: NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
                     user: user,
                     activityManager: activityManager,
                     item: itemTemplate,
@@ -453,12 +473,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 }
             }
             if isWorkspaceDomain(){
-                guard let credentials = self.workspaceCredentials else {
-                    logger.error("workspace credentials not set")
+                guard let credentials = workspaceCredentials,
+                      let workspaceMnemonic = authManager.workspaceMnemonic else {
+                    let error = NSError(
+                        domain: NSCocoaErrorDomain,
+                        code: NSFileWriteUnknownError,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Workspace environment is not properly configured."
+                        ]
+                    )
+                    logger.error("❌ Workspace environment validation failed: credentials or mnemonic missing")
+                    completionHandler(nil, [], false, error)
                     return Progress()
                 }
                 return UpdateFileContentWorkspaceUseCase(
-                    networkFacade: self.networkFacade,
+                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
                     user: self.user,
                     item: item,
                     fileUuid: item.itemIdentifier.rawValue,
