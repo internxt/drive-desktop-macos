@@ -38,6 +38,8 @@ enum ConfigLoaderError: Error {
     case CannotHideBackupBanner
     case CannotSaveWorkspaces
     case CannotSaveWorkspacesCredentials
+    case CannotSavePrivateKey
+    case CannotSaveWorkspaceMnemonic
 }
 
 
@@ -364,6 +366,39 @@ public struct ConfigLoader {
         }
     }
     
+    public func setPrivateKey(privateKey: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: "PrivateKey", value: privateKey)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSavePrivateKey
+        }
+    }
+    
+    public func getPrivateKey() -> String? {
+        return self.getFromUserDefaults(key: "PrivateKey")
+    }
+    
+    
+    public func setWorkspaceMnemonic(workspaceMnemonic: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: "WorkspaceMnemonic", value: workspaceMnemonic)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveWorkspaceMnemonic
+        }
+    }
+    
+    public func getWorkspaceMnemonic() -> String? {
+        return self.getFromUserDefaults(key: "WorkspaceMnemonic")
+    }
+    
+    public func removeWorkspaceMnemonicInfo() throws -> Void{
+        let removedKey = self.removeFromUserDefaults(key: "PrivateKey")
+        let removedMnemonic = self.removeFromUserDefaults(key: "WorkspaceMnemonic")
+
+        if removedKey == false || removedMnemonic == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
 }
 
 
