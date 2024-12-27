@@ -36,6 +36,10 @@ enum ConfigLoaderError: Error {
     case CannotRemoveUser
     case CannotSaveOnboardingIsCompleted
     case CannotHideBackupBanner
+    case CannotSaveWorkspaces
+    case CannotSaveWorkspacesCredentials
+    case CannotSavePrivateKey
+    case CannotSaveWorkspaceMnemonic
 }
 
 
@@ -121,6 +125,24 @@ public struct ConfigLoader {
         return userAndPass.data(using: .utf8)?.base64EncodedString()
     }
     
+
+    public func getNetworkAuthWorkspace() -> String? {
+        
+        guard let credentials = getWorkspaceCredentials() else {
+            return nil
+        }
+        var hasher = SHA256()
+        
+        hasher.update(data: credentials.credentials.networkPass.data(using: .utf8)!)
+        
+        let digest = hasher.finalize()
+        var result = [UInt8]()
+        digest.withUnsafeBytes {bytes in
+            result.append(contentsOf: bytes)
+        }
+        let userAndPass = "\(credentials.credentials.networkUser):\(CryptoUtils().bytesToHexString(result))"
+        return userAndPass.data(using: .utf8)?.base64EncodedString()
+    }
     public func getUser() -> DriveUser? {
         let userStr = self.getFromUserDefaults(key: "DriveUser")
         guard let userData = userStr?.data(using: .utf8) else {
@@ -272,6 +294,110 @@ public struct ConfigLoader {
     
     public func getDeviceName() -> String? {
         return Host.current().localizedName
+    }
+    
+    public func setAvailableWorkspaces(workspaces: [AvailableWorkspace]) throws -> Void {
+        let jsonData = try JSONEncoder().encode(workspaces)
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw ConfigLoaderError.CannotSaveWorkspaces
+        }
+        
+        let saved = self.saveToUserDefaults(key: "AvailableWorkspaces", value: jsonString)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveWorkspaces
+        }
+    }
+    
+    public func getWorkspaces() -> [AvailableWorkspace]? {
+        let workspaces = self.getFromUserDefaults(key: "AvailableWorkspaces")
+        guard let workspacesData = workspaces?.data(using: .utf8) else {
+            return nil
+        }
+        do {
+            let jsonData = try JSONDecoder().decode([AvailableWorkspace].self, from: workspacesData)
+            return jsonData
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    public func removeWorkspaces() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "AvailableWorkspaces")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
+    public func setWorkspaceCredentials(credentials: WorkspaceCredentialsResponse) throws -> Void {
+        let jsonData = try JSONEncoder().encode(credentials)
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw ConfigLoaderError.CannotSaveWorkspacesCredentials
+        }
+        
+        let saved = self.saveToUserDefaults(key: "WorkspaceCredentials", value: jsonString)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveWorkspacesCredentials
+        }
+    }
+    
+    public func getWorkspaceCredentials() -> WorkspaceCredentialsResponse? {
+        let workspaces = self.getFromUserDefaults(key: "WorkspaceCredentials")
+        guard let workspacesData = workspaces?.data(using: .utf8) else {
+            return nil
+        }
+        do {
+            let jsonData = try JSONDecoder().decode(WorkspaceCredentialsResponse.self, from: workspacesData)
+            return jsonData
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    public func removeWorkspaceCredentials() throws -> Void  {
+        let removed = self.removeFromUserDefaults(key: "WorkspaceCredentials")
+        
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+    
+    public func setPrivateKey(privateKey: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: "PrivateKey", value: privateKey)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSavePrivateKey
+        }
+    }
+    
+    public func getPrivateKey() -> String? {
+        return self.getFromUserDefaults(key: "PrivateKey")
+    }
+    
+    
+    public func setWorkspaceMnemonic(workspaceMnemonic: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: "WorkspaceMnemonic", value: workspaceMnemonic)
+        
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveWorkspaceMnemonic
+        }
+    }
+    
+    public func getWorkspaceMnemonic() -> String? {
+        return self.getFromUserDefaults(key: "WorkspaceMnemonic")
+    }
+    
+    public func removeWorkspaceMnemonicInfo() throws -> Void{
+        let removedKey = self.removeFromUserDefaults(key: "PrivateKey")
+        let removedMnemonic = self.removeFromUserDefaults(key: "WorkspaceMnemonic")
+
+        if removedKey == false || removedMnemonic == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
     }
 }
 

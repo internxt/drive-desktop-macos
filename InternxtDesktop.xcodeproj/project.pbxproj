@@ -72,7 +72,13 @@
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
+		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
+		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
+		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
+		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
+		AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */; };
 		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
 		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
@@ -83,11 +89,19 @@
 		AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */; };
 		AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */; };
+		AACE1FE42CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */; };
+		AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */; };
+		AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */; };
 		AAE7975C2C875F5000AEFDEF /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A42C23EA1800CD971B /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E106D4632ABAEE4400E3BF7A /* Date.swift */; };
+		AAF71A642CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */; };
+		AAF71A672CDF114500476000 /* CreateFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */; };
+		AAF71A6A2CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A692CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift */; };
+		AAF71A6C2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A6B2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift */; };
+		AAF71A6E2CDF180100476000 /* UploadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */; };
 		AAFFBE292C50AC4F00C76528 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAFFBE2C2C50B23D00C76528 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E106D45B2AB9DB9300E3BF7A /* Sparkle */; };
@@ -402,10 +416,23 @@
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
+		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
+		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
+		AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
+		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A692CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileOrUpdateContentWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A6B2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFileContentWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericRepository.swift; sourceTree = "<group>"; };
 		E106D45D2AB9DD8200E3BF7A /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		E106D45F2AB9FBDC00E3BF7A /* Phosphor-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Phosphor-Light.ttf"; sourceTree = "<group>"; };
@@ -593,6 +620,7 @@
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
+				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
 				E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */,
 				E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */,
 			);
@@ -683,6 +711,15 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		AAAD0D9E2CE12D5B003F27BB /* Workspaces */ = {
+			isa = PBXGroup;
+			children = (
+				AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */,
+				AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */,
+			);
+			path = Workspaces;
+			sourceTree = "<group>";
+		};
 		AAC188ED2C223183007E321A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -690,6 +727,30 @@
 				AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		AAF71A652CDF112500476000 /* Workspaces */ = {
+			isa = PBXGroup;
+			children = (
+				AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */,
+				AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */,
+				AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */,
+			);
+			path = Workspaces;
+			sourceTree = "<group>";
+		};
+		AAF71A682CDF167D00476000 /* Workspaces */ = {
+			isa = PBXGroup;
+			children = (
+				AAF71A692CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift */,
+				AAF71A6B2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift */,
+				AAF71A6D2CDF180100476000 /* UploadFileWorkspaceUseCase.swift */,
+				AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */,
+				AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */,
+				AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */,
+				AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */,
+			);
+			path = Workspaces;
 			sourceTree = "<group>";
 		};
 		AAFFBE272C50AC2B00C76528 /* Repository */ = {
@@ -789,12 +850,14 @@
 		E145E17D2A83A28100B07E0B /* Folders */ = {
 			isa = PBXGroup;
 			children = (
+				AAF71A652CDF112500476000 /* Workspaces */,
 				E109717B2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift */,
 				E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */,
 				E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */,
 				E10971802A827A9500ABED41 /* CreateFolderUseCase.swift */,
 				E145E16E2A82ABEB00B07E0B /* TrashFolderUseCase.swift */,
 				E1581DDD2A9678000051DD46 /* MoveFolderUseCase.swift */,
+				AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */,
 			);
 			path = Folders;
 			sourceTree = "<group>";
@@ -802,6 +865,7 @@
 		E145E17E2A83A28A00B07E0B /* Files */ = {
 			isa = PBXGroup;
 			children = (
+				AAF71A682CDF167D00476000 /* Workspaces */,
 				E145E1702A82C6C000B07E0B /* TrashFileUseCase.swift */,
 				E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */,
 				E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */,
@@ -826,6 +890,7 @@
 		E1581DD82A9654770051DD46 /* All */ = {
 			isa = PBXGroup;
 			children = (
+				AAAD0D9E2CE12D5B003F27BB /* Workspaces */,
 				E1581DD92A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift */,
 				E1CC52092A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift */,
 				E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */,
@@ -1253,6 +1318,7 @@
 				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
 				E19639592C63B46C009EDAFB /* Realm */,
 				E196395B2C63B46C009EDAFB /* RealmSwift */,
+				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1336,6 +1402,7 @@
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
+				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1655,10 +1722,15 @@
 				E109717C2A81135F00ABED41 /* EnumerateFolderItemsUseCase.swift in Sources */,
 				E16D3E8B2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */,
+				AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */,
 				E198D7DF2AAA38A500107753 /* RealtimeService.swift in Sources */,
+				AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */,
 				E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */,
 				E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */,
+				AAF71A672CDF114500476000 /* CreateFolderWorkspaceUseCase.swift in Sources */,
 				E16ECC152A9508B10093D3ED /* ErrorUtils.swift in Sources */,
+				AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */,
+				AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */,
 				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
@@ -1690,17 +1762,25 @@
 				31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				31DEAEC32B7514F500E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
 				E145E1712A82C6C000B07E0B /* TrashFileUseCase.swift in Sources */,
+				AAF71A6C2CDF17EA00476000 /* UpdateFileContentWorkspaceUseCase.swift in Sources */,
+				AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
+				AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */,
 				316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */,
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
+				AAF71A6E2CDF180100476000 /* UploadFileWorkspaceUseCase.swift in Sources */,
 				AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
+				AAF71A6A2CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift in Sources */,
 				E198D7DE2AA9EA0A00107753 /* Utils.swift in Sources */,
 				E1581DD72A9629790051DD46 /* Error.swift in Sources */,
 				E140C3362AC37E5500A88B9F /* DeleteFileUseCase.swift in Sources */,
+				AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */,
 				E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */,
+				AACE1FE42CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift in Sources */,
+				AAF71A642CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift in Sources */,
 				E1581DDC2A9672910051DD46 /* MoveFileUseCase.swift in Sources */,
 				E1D0D4182AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
 				E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
@@ -2106,7 +2186,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2120,7 +2200,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.5.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				"OTHER_CFLAGS[arch=*]" = (
@@ -2145,7 +2225,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2163,7 +2243,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.3;
+				MARKETING_VERSION = 2.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2244,7 +2324,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2264,7 +2344,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.5.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2312,7 +2392,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2326,7 +2406,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.5.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				"OTHER_CFLAGS[arch=*]" = (
@@ -2351,7 +2431,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2369,7 +2449,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.3;
+				MARKETING_VERSION = 2.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2393,7 +2473,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2411,7 +2491,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.4.3;
+				MARKETING_VERSION = 2.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2567,6 +2647,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/ObjectivePGP.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -2587,7 +2675,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = main;
+				branch = feature/workspaces;
 				kind = branch;
 			};
 		};
@@ -2648,6 +2736,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
 			productName = Rudder;
+		};
+		AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
+			productName = ObjectivePGP;
 		};
 		AAC188E12C222E1A007E321A /* ObjcExceptionBridging */ = {
 			isa = XCSwiftPackageProductDependency;

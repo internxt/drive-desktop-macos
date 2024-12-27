@@ -61,6 +61,7 @@ class BackupsService: ObservableObject {
     @Published var deviceDownloading: Device? = nil
     @Published var devicesFetchingStatus: BackupDevicesFetchingStatus = .LoadingDevices
     @Published var backupsItemsInprogress: [ItemBackup] = []
+    private var backupFoldersToBackup: [FolderToBackupRealmObject] = []
     private var backupUploadProgressTimer: AnyCancellable?
     private var backupDownloadProgressTimer: AnyCancellable?
     private func getRealm() -> Realm {
@@ -139,7 +140,29 @@ class BackupsService: ObservableObject {
             throw BackupError.cannotDeleteFolder
         }
     }
+    
+    func restoreFolderToBackup() async {
+        do {
+            let realm = getRealm()
+            try realm.write {
+                realm.delete(realm.objects(FolderToBackupRealmObject.self))
+                
+                backupFoldersToBackup.forEach { realm.add($0) }
+                self.loadFoldersToBackup()
+            }
+        } catch {
+            logger.error("Error to restore folders to backup")
 
+        }
+    }
+    
+    func initFolderToBackup() async {
+        
+        let realm = getRealm()
+        backupFoldersToBackup = realm.objects(FolderToBackupRealmObject.self).map { $0.clone() }
+        
+    }
+    
     @MainActor func getFoldernames() -> [String] {
         let foldernamesToBackup = getRealm().objects(FolderToBackupRealmObject.self).sorted(byKeyPath: "createdAt", ascending: false)
 
@@ -790,6 +813,16 @@ class FolderToBackupRealmObject: Object {
         self.url = url.absoluteString
         self.createdAt = Date()
         self.status = status
+    }
+}
+
+extension FolderToBackupRealmObject {
+    func clone() -> FolderToBackupRealmObject {
+        let clonedObject = FolderToBackupRealmObject()
+        clonedObject.url = self.url
+        clonedObject.status = self.status
+        clonedObject.createdAt = self.createdAt
+        return clonedObject
     }
 }
 

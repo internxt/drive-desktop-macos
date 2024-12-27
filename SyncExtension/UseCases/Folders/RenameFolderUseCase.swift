@@ -11,7 +11,8 @@ import InternxtSwiftCore
 
 struct RenameFolderUseCase {
     let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
+    let driveAPIWorkspace = APIFactory.DriveWorkspace
+    let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
@@ -35,8 +36,26 @@ struct RenameFolderUseCase {
                 itemType: .folder
             )
             do {
-                _ = try await driveAPI.updateFolder(folderId: item.itemIdentifier.rawValue, folderName:item.filename, debug: false)
                 
+                let folderUuid: String
+
+                if UUID(uuidString: item.itemIdentifier.rawValue) != nil {
+                   
+                    folderUuid = item.itemIdentifier.rawValue
+                    
+                    _ = try await driveAPIWorkspace.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
+                } else {
+                   
+                    let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
+                    
+                    guard let parentUuid = folderMeta.uuid else {
+                        throw UploadFileUseCaseError.InvalidParentUUID
+                    }
+                    folderUuid = parentUuid
+                    
+                    _ = try await driveNewAPI.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
+                }
+
                 self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) renamed successfully")
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
             } catch {
@@ -51,7 +70,7 @@ struct RenameFolderUseCase {
                     if statusCode == 409 {
                         completionHandler(newItem, [], false, nil)
                     } else {
-                        self.logger.error("❌ Failed to rename folder: \(error.localizedDescription)")
+                        self.logger.error("❌ Failed to rename folder: \(error.getErrorDescription())")
                         completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                     }
                    

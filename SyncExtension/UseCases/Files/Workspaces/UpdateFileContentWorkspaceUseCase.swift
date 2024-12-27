@@ -1,24 +1,16 @@
 //
-//  UpdateFileContentUseCase.swift
+//  UpdateFileContentWorkspaceUseCase.swift
 //  SyncExtension
 //
-//  Created by Robert Garcia on 14/11/23.
+//  Created by Patricio Tovar on 8/11/24.
 //
-
 
 import Foundation
 import FileProvider
 import InternxtSwiftCore
 
-enum UpdateFileContentUseCaseError: Error {
-    case InvalidParentId
-    case CannotOpenInputStream
-    case MissingDocumentSize
-}
-
-
-struct UpdateFileContentUseCase {
-    let logger = syncExtensionLogger
+struct UpdateFileContentWorkspaceUseCase {
+    let logger = syncExtensionWorkspaceLogger
     private let cryptoUtils = CryptoUtils()
     private let encrypt: Encrypt = Encrypt()
     private let item: NSFileProviderItem
@@ -26,13 +18,11 @@ struct UpdateFileContentUseCase {
     private let fileContent: URL
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
-    private let driveAPI = APIFactory.Drive
-    private let driveNewAPI = APIFactory.DriveNew
-    private let config = ConfigLoader().get()
+    private let driveNewAPI = APIFactory.DriveWorkspace
     private let user: DriveUser
-    private let trackId = UUID().uuidString
     private let progress: Progress
     private let fileUuid: String
+    private let workspaceCredentials: WorkspaceCredentialsResponse
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -41,7 +31,8 @@ struct UpdateFileContentUseCase {
         url: URL,
         encryptedFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
-        progress: Progress
+        progress: Progress,
+        workspaceCredentials: WorkspaceCredentialsResponse
     ) {
         self.item = item
         self.fileContent = url
@@ -51,70 +42,11 @@ struct UpdateFileContentUseCase {
         self.user = user
         self.progress = progress
         self.fileUuid = fileUuid
+        self.workspaceCredentials = workspaceCredentials
     }
-    
-   
-    
-    private func trackStart(processIdentifier: String) -> Date {
-        let filename = (item.filename as NSString)
-        let event = UploadStartedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
-        
-        return Date()
-    }
-    
-    private func trackEnd(processIdentifier: String, startedAt: Date) {
-        let filename = (item.filename as NSString)
-        let event = UploadCompletedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: self.fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
-    
-    private func trackError(processIdentifier: String, error: any Error) {
-        let filename = (item.filename as NSString)
-        let event = UploadErrorEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: self.fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            error: error
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
-    
-    
-    private func getParentId() -> String {
-        return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
-    }
+
     public func run() -> Progress {
         self.logger.info("Updating file")
-        let startedAt = self.trackStart(processIdentifier: trackId)
         Task {
             do {
                
@@ -139,7 +71,7 @@ struct UpdateFileContentUseCase {
                     input: inputStream,
                     encryptedOutput: encryptedFileDestination,
                     fileSize: sizeInt,
-                    bucketId: user.bucket,
+                    bucketId: workspaceCredentials.bucket,
                     progressHandler:{ completedProgress in
                         progress.completedUnitCount = Int64(completedProgress * 100)
                     }
@@ -166,9 +98,7 @@ struct UpdateFileContentUseCase {
                     itemType: .file,
                     size: result.size
                 )
-                
-                self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
-                
+                                
                 completionHandler(fileProviderItem, [], false, nil )
                 
                 self.logger.info("✅ Updated file content correctly with identifier \(fileUuid)")
@@ -176,7 +106,6 @@ struct UpdateFileContentUseCase {
                 
                 
             } catch {
-                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
                 self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
@@ -186,4 +115,5 @@ struct UpdateFileContentUseCase {
         return progress
     }
 }
+
 

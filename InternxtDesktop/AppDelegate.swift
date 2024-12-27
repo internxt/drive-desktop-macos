@@ -173,6 +173,24 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
     }
     
+    func pushRegistry(
+        _ registry: PKPushRegistry,
+        didReceiveIncomingPushWith payload: PKPushPayload,
+        for type: PKPushType,
+        completion: @escaping () -> Void
+    ) {
+        
+        guard type == .fileProvider else {
+            completion()
+            return
+        }
+        self.logger.info("✅ Notification received")
+        enumerateAllDomains()
+
+
+        completion()
+    }
+    
     func application(_ application: NSApplication, open urls: [URL]) {
         if let url = urls.first {
             do {
@@ -296,10 +314,18 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 guard let user = self.authManager.user else {
                     throw AuthError.noUserFound
                 }
+
                 try await domainManager.initFileProviderForUser(user:user)
-                
+
                 
                 self.logger.info("Login success")
+                
+                guard let workspaces = self.authManager.availableWorkspaces else {
+                    return
+                }
+               try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
+                
+                self.logger.info("Workspaces setted correctly")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
                 error.reportToSentry()
@@ -528,4 +554,40 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         
     }
+    
+    func enumerateAllDomains() {
+        Task {
+            do {
+                let domains = try await NSFileProviderManager.domains()
+                
+                guard !domains.isEmpty else {
+                    logger.info("📍 No domains registered")
+                    return
+                }
+                
+                for domain in domains {
+                    await processDomain(domain)
+                }
+            } catch {
+                logger.error("❌ Error getting domains: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func processDomain(_ domain: NSFileProviderDomain) async {
+
+        guard let manager = NSFileProviderManager(for: domain) else {
+            logger.error("⚠️ ⚠️ Could not get manager for domain: \(domain.identifier.rawValue)")
+            return
+        }
+
+        do {
+
+            try await manager.signalEnumerator(for: .workingSet)
+        } catch {
+            logger.error("❌ Error enumerating changes for \(domain.identifier.rawValue): \(error.localizedDescription)")
+        }
+    }
+
 }
+

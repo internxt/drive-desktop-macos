@@ -14,6 +14,7 @@ import PushKit
 
 enum CreateItemError: Error {
     case NoParentIdFound
+    case NoParentUuidFound
 }
 
 
@@ -35,7 +36,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
     private let AUTH_TOKEN_KEY = "AuthToken"
-    
+    let domain: NSFileProviderDomain
+    var workspace: [AvailableWorkspace]
+    var workspaceCredentials: WorkspaceCredentialsResponse?
     required init(domain: NSFileProviderDomain) {
         
         
@@ -47,7 +50,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot get FileProviderManager for domain")
         }
         
-
+        self.domain = domain
         self.manager = manager
         
         let authManager = AuthManager()
@@ -56,9 +59,27 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
+  
+        self.workspace = []
+        self.workspaceCredentials = nil
+        
+        if  !(domain.identifier.rawValue == user.uuid) {
+            logger.info("Ready to set Workspace credentials")
+            
+            guard let workspace = authManager.availableWorkspaces else {
+                ErrorUtils.fatal("Cannot find availableWorkspaces in auth manager, cannot initialize extension")
+            }
+            self.workspace = workspace
+            if let workspaceCredentials = authManager.workspaceCredentials {
+                self.workspaceCredentials = workspaceCredentials
+                logger.info("Workspace credentials ready")
+            }
+        }
+
         ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
         self.user = user
+       
         
         guard let mnemonic = authManager.mnemonic else {
             ErrorUtils.fatal("Cannot find mnemonic in auth manager, cannot initialize extension")
@@ -160,6 +181,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
     }
     
+    func isWorkspaceDomain() -> Bool {
+        return   !(domain.identifier.rawValue == user.uuid)
+    }
+    
     func item(for identifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) -> Progress {
         refreshAuthTokensIfNeeded()
         // resolve the given identifier to a record in the model
@@ -191,8 +216,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
             return Progress()
         }
-        
         // We cannot determine given an identifier if this is a folder or a file, so we try both
+        if isWorkspaceDomain(){
+            return GetFileOrFolderMetaWorkspaceUseCase(
+                user: user,
+                identifier: identifier,
+                completionHandler: completionHandler, workspace: workspace
+            ).run()
+        }
         return GetFileOrFolderMetaUseCase(
             user: user,
             identifier: identifier,
@@ -206,23 +237,10 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         refreshAuthTokensIfNeeded()
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")
-        
+
         func internalCompletionHandler(url: URL?, item: NSFileProviderItem?, error: Error?) -> Void {
             
-            if let nsError = error as NSError?, nsError.domain == NSFileProviderErrorDomain {
-                logger.error("Error file \(itemIdentifier.rawValue): \(nsError), code: \(nsError.code)")
-                
-                if nsError.code == NSFileProviderError.cannotSynchronize.rawValue {
-                    logger.error("❌ Error cannotSynchronize at file \(itemIdentifier.rawValue).")
-                 
-                    completionHandler(nil, item, nil)
-                } else {
-                    logger.error("Error at file \(itemIdentifier.rawValue): \(error?.localizedDescription ?? "Unknow Error")")
-                    completionHandler(nil, item, error)
-                }
-            } else {
-                completionHandler(url, item, nil)
-            }
+            completionHandler(url, item, error)
             do {
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
             } catch {
@@ -230,6 +248,28 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 error.reportToSentry()
             }
             
+        }
+        if isWorkspaceDomain(){
+            
+            guard let workspaceMnemonic = authManager.workspaceMnemonic else {
+                let error = NSError(domain: NSCocoaErrorDomain,
+                                    code: NSFileReadUnknownError,
+                                    userInfo: [
+                                        NSLocalizedDescriptionKey: "Workspace mnemonic not set"
+                                    ])
+                logger.error("❌ Workspace mnemonic not set")
+                internalCompletionHandler(url: nil, item: nil, error: error)
+                return Progress()
+            }
+            return DownloadFileWorkspaceUseCase(
+                networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                user: user,
+                activityManager: activityManager,
+                itemIdentifier: itemIdentifier,
+                encryptedFileDestinationURL: encryptedFileDestinationURL,
+                destinationURL: destinationURL,
+                completionHandler: internalCompletionHandler, workspace: workspace
+            ).run()
         }
         return DownloadFileUseCase(
             networkFacade: networkFacade,
@@ -260,6 +300,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 
         
         if shouldCreateFolder {
+            if isWorkspaceDomain(){
+                return CreateFolderWorkspaceUseCase(user: user, itemTemplate: itemTemplate, workspace: workspace, completionHandler: completionHandler).run()
+            }
             return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()
         }
         
@@ -289,7 +332,32 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 
             }
             
-           
+            if isWorkspaceDomain(){
+                guard let credentials = workspaceCredentials,
+                      let workspaceMnemonic = authManager.workspaceMnemonic else {
+                    let error = NSError(
+                        domain: NSCocoaErrorDomain,
+                        code: NSFileWriteUnknownError,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Workspace environment is not properly configured."
+                        ]
+                    )
+                    logger.error("❌ Workspace environment validation failed: credentials or mnemonic missing")
+                    completionHandler(nil, [], false, error)
+                    return Progress()
+                }
+                return UploadFileOrUpdateContentWorkspaceUseCase(
+                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                    user: user,
+                    activityManager: activityManager,
+                    item: itemTemplate,
+                    url: fileCopy,
+                    encryptedFileDestination: encryptedFileDestination,
+                    thumbnailFileDestination: thumbnailFileDestination,
+                    encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
+                    completionHandler: completionHandlerInternal, workspace: workspace, workspaceCredentials: credentials
+                ).run()
+            }
             return UploadFileOrUpdateContentUseCase(
                 networkFacade: networkFacade,
                 user: user,
@@ -345,7 +413,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         
         if folderHasBeenTrashed {
-            
+            if isWorkspaceDomain(){
+               return TrashFolderWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            }
             return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
@@ -355,22 +425,38 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if folderHasBeenMoved {
+            if isWorkspaceDomain(){
+                return MoveFolderWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
+            }
             
             return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenTrashed {
-            
+            if isWorkspaceDomain(){
+                return TrashFileWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            }
             return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenRenamed  {
+            
+            if isWorkspaceDomain(){
+                guard let credentials = self.workspaceCredentials else {
+                    logger.error("workspace credentials not set")
+                    return Progress()
+                }
+                return RenameFileWorkspaceUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler, workspaceCredentials: credentials).run()
+            }
             
             return RenameFileUseCase(user:user,item: item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenMoved {
             
+            if isWorkspaceDomain(){
+                return MoveFileWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
+            }
             return MoveFileUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
         }
         
@@ -386,7 +472,31 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     error.reportToSentry()
                 }
             }
-            
+            if isWorkspaceDomain(){
+                guard let credentials = workspaceCredentials,
+                      let workspaceMnemonic = authManager.workspaceMnemonic else {
+                    let error = NSError(
+                        domain: NSCocoaErrorDomain,
+                        code: NSFileWriteUnknownError,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Workspace environment is not properly configured."
+                        ]
+                    )
+                    logger.error("❌ Workspace environment validation failed: credentials or mnemonic missing")
+                    completionHandler(nil, [], false, error)
+                    return Progress()
+                }
+                return UpdateFileContentWorkspaceUseCase(
+                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                    user: self.user,
+                    item: item,
+                    fileUuid: item.itemIdentifier.rawValue,
+                    url: newContents!,
+                    encryptedFileDestination: encryptedFileDestination,
+                    completionHandler: completionHandlerInternal,
+                    progress: Progress(totalUnitCount: 100), workspaceCredentials: credentials
+                ).run()
+            }
             return UpdateFileContentUseCase(
                 networkFacade: self.networkFacade,
                 user: self.user,
@@ -405,11 +515,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             return Progress()
         }
         
-//        if lastUsedDateHasChanged {
-//            logger.info("File last use date has changed, let it pass")
-//            completionHandler(item, [], false, nil)
-//            return Progress()
-//        }
+        if lastUsedDateHasChanged {
+            logger.info("File last use date has changed, let it pass")
+            completionHandler(item, [], false, nil)
+            return Progress()
+        }
                 
         logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
         return Progress()
@@ -421,7 +531,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func enumerator(for containerItemIdentifier: NSFileProviderItemIdentifier, request: NSFileProviderRequest) throws -> NSFileProviderEnumerator {
-        return FileProviderEnumerator(user:user,enumeratedItemIdentifier: containerItemIdentifier)
+        return FileProviderEnumerator(user:user,enumeratedItemIdentifier: containerItemIdentifier, domain: domain, workspace: workspace)
     }
     
     func performAction(identifier actionIdentifier: NSFileProviderExtensionActionIdentifier, onItemsWithIdentifiers itemIdentifiers: [NSFileProviderItemIdentifier], completionHandler: @escaping (Error?) -> Void) -> Progress {

@@ -18,9 +18,13 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     private let anchor = NSFileProviderSyncAnchor(initialAnchor.data(using: .utf8)!)
     private let driveAPI =  APIFactory.Drive
     private let user: DriveUser
-    init(user: DriveUser, enumeratedItemIdentifier: NSFileProviderItemIdentifier) {
+    private let domain: NSFileProviderDomain
+    private let workspace: [AvailableWorkspace]
+    init(user: DriveUser, enumeratedItemIdentifier: NSFileProviderItemIdentifier , domain: NSFileProviderDomain, workspace: [AvailableWorkspace]) {
         self.enumeratedItemIdentifier = enumeratedItemIdentifier
         self.user = user
+        self.domain = domain
+        self.workspace = workspace
         super.init()
     }
 
@@ -51,14 +55,20 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
         
         
         let suggestedPageSize: Int = observer.suggestedPageSize ?? 50
+        let isPersonalDrive = domain.identifier.rawValue ==  user.uuid
         
-        return EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize)
+        return isPersonalDrive ? EnumerateFolderItemsUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize) :
+        EnumerateFolderItemsWorkspaceUseCase(user:self.user,enumeratedItemIdentifier: self.enumeratedItemIdentifier, for: observer, from: page, workspace: workspace).run(limit: suggestedPageSize > 50 ? 50 :suggestedPageSize)
+        
     }
     
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
+        let isPersonalDrive = domain.identifier.rawValue ==  user.uuid
         
-        return GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run()
+        return isPersonalDrive ? GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run() :
+        GetRemoteChangesUseCaseWorkspace(observer: observer, anchor: anchor,workspace: workspace).run()
+ 
     }
     
     func currentSyncAnchor(completionHandler: @escaping (NSFileProviderSyncAnchor?) -> Void) {
