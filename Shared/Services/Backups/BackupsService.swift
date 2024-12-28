@@ -368,13 +368,12 @@ class BackupsService: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
             self?.backupUploadStatus = .Failed
-            Analytics.shared.track(event: FailureBackupEvent(foldersToBackup: self?.foldersToBackup.count ?? 0, error: errorMessage))
+           
         }
     }
 
     private func propagateUploadSuccess() {
         logger.info("Device backed up successfully, tracking backup success event")
-        Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: self.foldersToBackup.count))
         DispatchQueue.main.async { [weak self] in
             self?.backupUploadProgress = 1
             self?.currentDeviceHasBackup = true

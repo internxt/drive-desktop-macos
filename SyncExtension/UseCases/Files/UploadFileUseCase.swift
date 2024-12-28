@@ -72,12 +72,7 @@ struct UploadFileUseCase {
             processIdentifier: processIdentifier,
             parentFolderId: Int(getParentId()) ?? -1
         )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
-        
+                
         return Date()
     }
     
@@ -94,31 +89,12 @@ struct UploadFileUseCase {
             elapsedTimeMs: elapsedTime * 1000
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
         return elapsedTime
     }
     
    
     
-    private func trackError(processIdentifier: String, error: any Error) {
-        let filename = (item.filename as NSString)
-        let event = UploadErrorEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            error: error
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
+
     
     
     private func getParentId() -> String {
@@ -221,7 +197,6 @@ struct UploadFileUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 
             } catch {
-                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
 
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")

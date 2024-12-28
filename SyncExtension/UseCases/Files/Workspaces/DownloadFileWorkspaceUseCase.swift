@@ -46,56 +46,9 @@ struct DownloadFileWorkspaceUseCase {
     
     
     
-    private func trackStart(driveFile: DriveFile, processIdentifier: String) -> Date {
-        let event = DownloadStartedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
-        return Date()
-    }
-    
-    private func trackEnd(driveFile: DriveFile, processIdentifier: String, startedAt: Date) {
 
-        let event = DownloadCompletedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
-        
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
-    
-    private func trackError(driveFile: DriveFile,processIdentifier: String, error: any Error) {
-        let event = DownloadErrorEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            error: error
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
+
+
  
     public func run() -> Progress {
         let progress = Progress(totalUnitCount: 100)
@@ -140,10 +93,7 @@ struct DownloadFileWorkspaceUseCase {
                 )
                 
             
-                guard let driveFileUnrawpped = driveFile else {
-                    throw DownloadFileUseCaseError.DriveFileMissing
-                }
-                let trackStartedAt = trackStart(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid)
+       
                 let decryptedFileURL = try await networkFacade.downloadFile(
                     bucketId: file.bucket,
                     fileId: file.fileId,
@@ -171,7 +121,6 @@ struct DownloadFileWorkspaceUseCase {
                     size: Int(file.size)!
                 )
                 
-                trackEnd(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid, startedAt: trackStartedAt)
                 self.logger.info("Fetching file \(fileProviderItem.itemIdentifier.rawValue) inside of \(fileProviderItem.parentItemIdentifier.rawValue)")
                 
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
@@ -182,9 +131,7 @@ struct DownloadFileWorkspaceUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename + "- Workspace", kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
-                if let driveFileUnwrapped = driveFile {
-                    trackError(driveFile: driveFileUnwrapped, processIdentifier: driveFileUnwrapped.uuid, error: error)
-                }
+
                 error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
