@@ -54,7 +54,7 @@ struct DownloadFileUseCase {
         
         Task {
            
-            var driveFile: DriveFile? = nil
+          
             do {
                 
                 func progressHandler(completedProgress: Double) {
@@ -64,23 +64,7 @@ struct DownloadFileUseCase {
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
                 let file = try await driveNewAPI.getFileMetaByUuid(uuid: itemIdentifier.rawValue)
                 
-                driveFile = DriveFile(
-                    uuid: file.uuid,
-                    plainName: file.plainName,
-                    name: file.name,
-                    type: file.type,
-                    size: Int(file.size) ?? 0,
-                    createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
-                    updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
-                    folderId: file.folderId,
-                    status: DriveItemStatus(rawValue: file.status) ?? DriveItemStatus.exists,
-                    fileId: file.fileId
-                )
-                
-            
-                guard let driveFileUnrawpped = driveFile else {
-                    throw DownloadFileUseCaseError.DriveFileMissing
-                }
+
                 let decryptedFileURL = try await networkFacade.downloadFile(
                     bucketId: file.bucket,
                     fileId: file.fileId,

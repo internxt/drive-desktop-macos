@@ -63,31 +63,11 @@ struct UploadFileUseCase {
    
     
     private func trackStart(processIdentifier: String) -> Date {
-        let filename = (item.filename as NSString)
-        let event = UploadStartedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1
-        )
-                
         return Date()
     }
     
     private func trackEnd(processIdentifier: String, startedAt: Date) -> TimeInterval {
         let elapsedTime = Date().timeIntervalSince(startedAt)
-        let filename = (item.filename as NSString)
-        let event = UploadCompletedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            elapsedTimeMs: elapsedTime * 1000
-        )
         
         return elapsedTime
     }
