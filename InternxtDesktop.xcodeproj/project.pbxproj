@@ -59,7 +59,6 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
-		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
 		AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
@@ -228,10 +227,8 @@
 		E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5B2AB85131005E71D6 /* Windows.swift */; };
 		E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5E2AB85BF4005E71D6 /* SendFeedbackView.swift */; };
 		E1A0AC612AB8639C005E71D6 /* AppTextArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC602AB8639C005E71D6 /* AppTextArea.swift */; };
-		E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC632AB884F0005E71D6 /* Rudder */; };
 		E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
 		E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
-		E1A0AC6B2AB88A86005E71D6 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC6A2AB88A86005E71D6 /* Rudder */; };
 		E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		E1A0AC722AB89B1B005E71D6 /* AnyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC712AB89B1B005E71D6 /* AnyTransition.swift */; };
@@ -575,7 +572,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA059A352BFE36C500A07D45 /* Rudder in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
@@ -612,7 +608,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
@@ -630,7 +625,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1A0AC6B2AB88A86005E71D6 /* Rudder in Frameworks */,
 				E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */,
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
@@ -1223,7 +1217,6 @@
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
 				E1FD8C702BA989B600C257E0 /* XCGLogger */,
-				AA059A342BFE36C500A07D45 /* Rudder */,
 				E19639612C63CA20009EDAFB /* RealmSwift */,
 			);
 			productName = XPCBackupService;
@@ -1312,7 +1305,6 @@
 				E1313D2E2A9501BB00C7ABF0 /* Sentry */,
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E1ADD0512AA8D68D00D95694 /* SocketIO */,
-				E1A0AC632AB884F0005E71D6 /* Rudder */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
 				E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */,
 				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
@@ -1342,7 +1334,6 @@
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 				E198D7E02AAA3A2800107753 /* SocketIO */,
-				E1A0AC6A2AB88A86005E71D6 /* Rudder */,
 				E1FD8C6E2BA989AE00C257E0 /* XCGLogger */,
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
 				E196395F2C63CA14009EDAFB /* Realm */,
@@ -1398,7 +1389,6 @@
 				E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
-				E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
@@ -2687,14 +2677,6 @@
 				version = 10.49.2;
 			};
 		};
-		E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rudderlabs/rudder-sdk-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.5;
-			};
-		};
 		E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin";
@@ -2731,11 +2713,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
-		};
-		AA059A342BFE36C500A07D45 /* Rudder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
-			productName = Rudder;
 		};
 		AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2816,16 +2793,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
-		};
-		E1A0AC632AB884F0005E71D6 /* Rudder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
-			productName = Rudder;
-		};
-		E1A0AC6A2AB88A86005E71D6 /* Rudder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
-			productName = Rudder;
 		};
 		E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */ = {
 			isa = XCSwiftPackageProductDependency;
