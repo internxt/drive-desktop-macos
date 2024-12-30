@@ -46,56 +46,7 @@ struct DownloadFileUseCase {
     
     
     
-    private func trackStart(driveFile: DriveFile, processIdentifier: String) -> Date {
-        let event = DownloadStartedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
-        return Date()
-    }
-    
-    private func trackEnd(driveFile: DriveFile, processIdentifier: String, startedAt: Date) {
 
-        let event = DownloadCompletedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
-        
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
-    
-    private func trackError(driveFile: DriveFile,processIdentifier: String, error: any Error) {
-        let event = DownloadErrorEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            error: error
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
  
     public func run() -> Progress {
         let progress = Progress(totalUnitCount: 100)
@@ -103,7 +54,7 @@ struct DownloadFileUseCase {
         
         Task {
            
-            var driveFile: DriveFile? = nil
+          
             do {
                 
                 func progressHandler(completedProgress: Double) {
@@ -113,24 +64,7 @@ struct DownloadFileUseCase {
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
                 let file = try await driveNewAPI.getFileMetaByUuid(uuid: itemIdentifier.rawValue)
                 
-                driveFile = DriveFile(
-                    uuid: file.uuid,
-                    plainName: file.plainName,
-                    name: file.name,
-                    type: file.type,
-                    size: Int(file.size) ?? 0,
-                    createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
-                    updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
-                    folderId: file.folderId,
-                    status: DriveItemStatus(rawValue: file.status) ?? DriveItemStatus.exists,
-                    fileId: file.fileId
-                )
-                
-            
-                guard let driveFileUnrawpped = driveFile else {
-                    throw DownloadFileUseCaseError.DriveFileMissing
-                }
-                let trackStartedAt = trackStart(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid)
+
                 let decryptedFileURL = try await networkFacade.downloadFile(
                     bucketId: file.bucket,
                     fileId: file.fileId,
@@ -157,8 +91,7 @@ struct DownloadFileUseCase {
                     itemType: .file,
                     size: Int(file.size)!
                 )
-                
-                trackEnd(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid, startedAt: trackStartedAt)
+ 
                 self.logger.info("Fetching file \(fileProviderItem.itemIdentifier.rawValue) inside of \(fileProviderItem.parentItemIdentifier.rawValue)")
                 
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
@@ -169,9 +102,7 @@ struct DownloadFileUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename, kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
-                if let driveFileUnwrapped = driveFile {
-                    trackError(driveFile: driveFileUnwrapped, processIdentifier: driveFileUnwrapped.uuid, error: error)
-                }
+
                 error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 

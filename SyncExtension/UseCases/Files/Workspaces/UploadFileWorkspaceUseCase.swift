@@ -64,7 +64,7 @@ struct UploadFileWorkspaceUseCase {
     
     private func trackStart(processIdentifier: String) -> Date {
         let filename = (item.filename as NSString)
-        let event = UploadStartedEvent(
+        _ = UploadStartedEvent(
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
@@ -73,18 +73,13 @@ struct UploadFileWorkspaceUseCase {
             parentFolderId: Int(getParentId()) ?? -1
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
-        
         return Date()
     }
     
     private func trackEnd(processIdentifier: String, startedAt: Date) -> TimeInterval {
         let elapsedTime = Date().timeIntervalSince(startedAt)
         let filename = (item.filename as NSString)
-        let event = UploadCompletedEvent(
+        _ = UploadCompletedEvent(
             fileName: filename.deletingPathExtension,
             fileExtension: filename.pathExtension,
             fileSize: item.documentSize as! Int64,
@@ -94,31 +89,13 @@ struct UploadFileWorkspaceUseCase {
             elapsedTimeMs: elapsedTime * 1000
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
         
         return elapsedTime
     }
     
    
     
-    private func trackError(processIdentifier: String, error: any Error) {
-        let filename = (item.filename as NSString)
-        let event = UploadErrorEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            error: error
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
+
     
     
     private func getParentId() -> String {
@@ -221,7 +198,6 @@ struct UploadFileWorkspaceUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 
             } catch {
-                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
 
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")

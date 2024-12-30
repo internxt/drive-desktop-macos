@@ -55,66 +55,16 @@ struct UpdateFileContentUseCase {
     
    
     
-    private func trackStart(processIdentifier: String) -> Date {
-        let filename = (item.filename as NSString)
-        let event = UploadStartedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
-        
-        return Date()
-    }
+
     
-    private func trackEnd(processIdentifier: String, startedAt: Date) {
-        let filename = (item.filename as NSString)
-        let event = UploadCompletedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: self.fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
+
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
-    
-    private func trackError(processIdentifier: String, error: any Error) {
-        let filename = (item.filename as NSString)
-        let event = UploadErrorEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: self.fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            error: error
-        )
-        
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-    }
-    
     
     private func getParentId() -> String {
         return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
     }
     public func run() -> Progress {
         self.logger.info("Updating file")
-        let startedAt = self.trackStart(processIdentifier: trackId)
         Task {
             do {
                
@@ -167,7 +117,7 @@ struct UpdateFileContentUseCase {
                     size: result.size
                 )
                 
-                self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
+              
                 
                 completionHandler(fileProviderItem, [], false, nil )
                 
@@ -176,7 +126,6 @@ struct UpdateFileContentUseCase {
                 
                 
             } catch {
-                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
                 self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
