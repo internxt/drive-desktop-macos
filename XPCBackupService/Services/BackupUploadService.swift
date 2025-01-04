@@ -280,15 +280,25 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
 
                 if encryptedContentURL != nil {
-                    try FileManager.default.removeItem(at: encryptedContentURL!)
+                    if FileManager.default.fileExists(atPath: encryptedContentURL!.path) {
+                        try FileManager.default.removeItem(at: encryptedContentURL!)
+                    }else {
+                        self.logger.info("ℹ️ℹ️ File does not exist at path: \(encryptedContentURL!.path)")
+                    }
+                    
                 }
 
                 return .success(BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid))
             }
 
         } catch {
-            self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
 
+            if let uploadError = error as? UploadError, case .PartUploadFailed(let partIndex, let innerError) = uploadError {
+                self.logger.error("❌ Part upload failed at index \(partIndex): \(uploadError.localizedDescription)")
+                self.logger.info("ℹ️ Inner error details: \(String(describing: innerError))")
+            } else {
+                self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
+            }
             if let startUploadError = error as? StartUploadError {
                 if let apiClientError = startUploadError.apiError,  apiClientError.statusCode == 420 {
                     self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): Max space used")
@@ -340,3 +350,4 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
 
 }
+
