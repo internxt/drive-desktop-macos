@@ -117,7 +117,6 @@
 		E10B0FDD2A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
-		E12479D92C107C52000DAC11 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
 		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
@@ -227,8 +226,6 @@
 		E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5B2AB85131005E71D6 /* Windows.swift */; };
 		E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5E2AB85BF4005E71D6 /* SendFeedbackView.swift */; };
 		E1A0AC612AB8639C005E71D6 /* AppTextArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC602AB8639C005E71D6 /* AppTextArea.swift */; };
-		E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
-		E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
 		E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		E1A0AC722AB89B1B005E71D6 /* AnyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC712AB89B1B005E71D6 /* AnyTransition.swift */; };
@@ -518,7 +515,6 @@
 		E1A0AC5B2AB85131005E71D6 /* Windows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Windows.swift; sourceTree = "<group>"; };
 		E1A0AC5E2AB85BF4005E71D6 /* SendFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeedbackView.swift; sourceTree = "<group>"; };
 		E1A0AC602AB8639C005E71D6 /* AppTextArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextArea.swift; sourceTree = "<group>"; };
-		E1A0AC652AB88507005E71D6 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfo.swift; sourceTree = "<group>"; };
 		E1A0AC712AB89B1B005E71D6 /* AnyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTransition.swift; sourceTree = "<group>"; };
 		E1A0AC762AB8AAFE005E71D6 /* ThumbnailGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailGenerator.swift; sourceTree = "<group>"; };
@@ -832,7 +828,6 @@
 				E140C3322AC379AA00A88B9F /* DriveFileService.swift */,
 				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
 				E17C84C32AB2FEF500A58414 /* ActivityManager.swift */,
-				E1A0AC652AB88507005E71D6 /* Analytics.swift */,
 				E1A0AC762AB8AAFE005E71D6 /* ThumbnailGenerator.swift */,
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
@@ -1515,7 +1510,6 @@
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
 				E1EEB5872C1C52A900370D77 /* Time.swift in Sources */,
-				E12479D92C107C52000DAC11 /* Analytics.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
@@ -1678,7 +1672,6 @@
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
-				E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
 				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
@@ -1746,7 +1739,6 @@
 				E17C84C12AB2880B00A58414 /* Color.swift in Sources */,
 				318549702B698AAC00D559E1 /* Device.swift in Sources */,
 				E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */,
-				E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1581DE02A96835F0051DD46 /* DownloadFileUseCase.swift in Sources */,
 				E1D24AF52C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */,
