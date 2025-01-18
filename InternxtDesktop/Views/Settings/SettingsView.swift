@@ -138,6 +138,8 @@ struct SettingsView: View {
                 backupsService: backupsService,
                 scheduleManager: scheduleManager
             )
+        case .Antivirus:
+            AntivirusTabView()
         default:
             EmptyView()
         }

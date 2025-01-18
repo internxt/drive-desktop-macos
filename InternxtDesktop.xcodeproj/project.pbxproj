@@ -67,6 +67,7 @@
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
 		AA0B47AC2C24D9EE0036FE1A /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
 		AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2019662C53F8B700901B93 /* Debouncer.swift */; };
+		AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */; };
 		AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */; };
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
@@ -414,6 +415,7 @@
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusTabView.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
@@ -701,6 +703,14 @@
 				AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */,
 			);
 			path = InternxtDesktopTests;
+			sourceTree = "<group>";
+		};
+		AA40B3BB2D3B296E00FC1FC3 /* Antivirus */ = {
+			isa = PBXGroup;
+			children = (
+				AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */,
+			);
+			path = Antivirus;
 			sourceTree = "<group>";
 		};
 		AA642CAC2C62B2510015BBB9 /* Utils */ = {
@@ -1165,6 +1175,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AA40B3BB2D3B296E00FC1FC3 /* Antivirus */,
 				3104526A2B4B1C3A00984716 /* Backups */,
 				E13B83952AFBBCC1009F6684 /* App */,
 				E1A0AC5D2AB85BE2005E71D6 /* SendFeedback */,
@@ -1625,6 +1636,7 @@
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
+				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
 				E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E17C84B22AB22C1400A58414 /* OnboardingSlide2View.swift in Sources */,
