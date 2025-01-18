@@ -22,6 +22,10 @@
 "WIDGET_SETTINGS_SUPPORT_OPTION" = "Assistance";
 "WIDGET_SETTINGS_LOGOUT_OPTION" = "Déconnexion";
 "WIDGET_SETTINGS_QUIT_OPTION" = "Quitter";
+"WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
+
+// Widget new option
+"WIDGET_SETTINGS_NEW_OPTION" = "Nouveau";
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Tout est à jour";
@@ -76,6 +80,7 @@
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
 "SETTINGS_TAB_BACKUPS_TITLE" = "Sauvegarde";
+"SETTINGS_TAB_ANTIVIRUS_TITLE" = "Antivirus";
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
