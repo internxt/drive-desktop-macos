@@ -46,6 +46,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let backupsService = BackupsService()
     let settingsManager = SettingsTabManager()
     var scheduledManager: ScheduledBackupManager!
+    let antivirusManager = AntivirusManager()
     var realtime: RealtimeService?
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
@@ -85,7 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
