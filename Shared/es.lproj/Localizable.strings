@@ -185,3 +185,21 @@
 "ALERT_STORAGE_TITLE" = "Tu almacenamiento está lleno";
 "ALERT_STORAGE_SUBTITLE" = "No puedes cargar, sincronizar ni realizar copias de seguridad de archivos";
 "ALERT_STORAGE_BUTTON_TITLE" = "Actualizar ahora";
+
+// Antivirus
+"ANTIVIRUS_FEATURE_LOCKED" = "Función bloqueada";
+"ANTIVIRUS_UPGRADE_PLAN" = "Por favor, actualice su plan para usar esta función";
+"ANTIVIRUS_SYSTEM_SCAN" = "Escaneo del sistema antivirus";
+"ANTIVIRUS_CUSTOM_SCAN" = "Escaneo personalizado del antivirus";
+"ANTIVIRUS_START_SCAN" = "Iniciar escaneo";
+"ANTIVIRUS_CHOOSE_FILES" = "Elegir";
+"ANTIVIRUS_SCANNING" = "Escaneando...";
+"ANTIVIRUS_SCANNED_FILES" = "Archivos escaneados";
+"ANTIVIRUS_DETECTED_FILES" = "Archivos detectados";
+"ANTIVIRUS_NO_THREATS_FOUND" = "No se encontraron amenazas";
+"ANTIVIRUS_NO_FURTHER_ACTIONS" = "No se necesitan más acciones";
+"ANTIVIRUS_MALWARE_DETECTED" = "Malware detectado";
+"ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Por favor, revise y elimine las amenazas";
+"ANTIVIRUS_REMOVE_MALWARE" = "Eliminar malware";
+"ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Archivos que contienen malware";
+

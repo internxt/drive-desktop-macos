@@ -184,3 +184,21 @@
 "ALERT_STORAGE_TITLE" = "Votre stockage est plein";
 "ALERT_STORAGE_SUBTITLE" = "Vous ne pouvez pas télécharger, synchroniser ou sauvegarder des fichiers";
 "ALERT_STORAGE_BUTTON_TITLE" = "Mettre à jour maintenant";
+
+// Antivirus
+"ANTIVIRUS_FEATURE_LOCKED" = "Fonction verrouillée";
+"ANTIVIRUS_UPGRADE_PLAN" = "Veuillez mettre à niveau votre plan pour utiliser cette fonctionnalité";
+"ANTIVIRUS_SYSTEM_SCAN" = "Analyse du système antivirus";
+"ANTIVIRUS_CUSTOM_SCAN" = "Analyse personnalisée de l'antivirus";
+"ANTIVIRUS_START_SCAN" = "Démarrer l'analyse";
+"ANTIVIRUS_CHOOSE_FILES" = "Choisir";
+"ANTIVIRUS_SCANNING" = "Analyse en cours...";
+"ANTIVIRUS_SCANNED_FILES" = "Fichiers analysés";
+"ANTIVIRUS_DETECTED_FILES" = "Fichiers détectés";
+"ANTIVIRUS_NO_THREATS_FOUND" = "Aucune menace détectée";
+"ANTIVIRUS_NO_FURTHER_ACTIONS" = "Aucune autre action n'est nécessaire";
+"ANTIVIRUS_MALWARE_DETECTED" = "Malware détecté";
+"ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Veuillez examiner et supprimer les menaces";
+"ANTIVIRUS_REMOVE_MALWARE" = "Supprimer le malware";
+"ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Fichiers contenant des malwares";
+

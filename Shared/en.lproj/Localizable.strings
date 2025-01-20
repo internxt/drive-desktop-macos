@@ -185,4 +185,20 @@
 "ALERT_STORAGE_SUBTITLE" = "You can’t upload, sync or backup files";
 "ALERT_STORAGE_BUTTON_TITLE" = "Upgrade now";
 
+// Antivirus
+"ANTIVIRUS_FEATURE_LOCKED" = "Feature locked";
+"ANTIVIRUS_UPGRADE_PLAN" = "Please upgrade your plan to use this feature";
+"ANTIVIRUS_SYSTEM_SCAN" = "Antivirus system scan";
+"ANTIVIRUS_CUSTOM_SCAN" = "Antivirus custom scan"; 
+"ANTIVIRUS_START_SCAN" = "Start scan";
+"ANTIVIRUS_CHOOSE_FILES" = "Choose";
+"ANTIVIRUS_SCANNING" = "Scanning...";
+"ANTIVIRUS_SCANNED_FILES" = "Scanned files";
+"ANTIVIRUS_DETECTED_FILES" = "Detected files";
+"ANTIVIRUS_NO_THREATS_FOUND" = "No threats were found";
+"ANTIVIRUS_NO_FURTHER_ACTIONS" = "No further actions are necessary";
+"ANTIVIRUS_MALWARE_DETECTED" = "Malware detected";
+"ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Please review and remove threats";
+"ANTIVIRUS_REMOVE_MALWARE" = "Remove malware";
+"ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Files containing malware";
 
