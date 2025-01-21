@@ -202,4 +202,11 @@
 "ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Por favor, revise y elimine las amenazas";
 "ANTIVIRUS_REMOVE_MALWARE" = "Eliminar malware";
 "ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Archivos que contienen malware";
+"ANTIVIRUS_MODAL_TITLE_REMOVE" = "Acción requerida";
+"ANTIVIRUS_MODAL_TITLE_CANCEL" = "Advertencia de seguridad";
+"ANTIVIRUS_MODAL_DESCRIPTION_REMOVE" = "Eliminar el malware también eliminará permanentemente la carpeta de tu almacenamiento para proteger tu dispositivo. Esta acción no se puede deshacer.\n\nPor favor, confirma para continuar.";
+"ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "El malware sigue presente y tu dispositivo está en riesgo.\n\n¿Estás seguro de que deseas cancelar?";
+"ANTIVIRUS_MODAL_COMMON_REMOVE" = "Eliminar";
+
+
 

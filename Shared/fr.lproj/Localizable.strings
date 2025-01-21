@@ -201,4 +201,10 @@
 "ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Veuillez examiner et supprimer les menaces";
 "ANTIVIRUS_REMOVE_MALWARE" = "Supprimer le malware";
 "ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Fichiers contenant des malwares";
+"ANTIVIRUS_MODAL_TITLE_REMOVE" = "Action requise";
+"ANTIVIRUS_MODAL_TITLE_CANCEL" = "Avertissement de sécurité";
+"ANTIVIRUS_MODAL_DESCRIPTION_REMOVE" = "La suppression du logiciel malveillant supprimera également définitivement le dossier de votre stockage pour protéger votre appareil. Cette action est irréversible.\n\nVeuillez confirmer pour continuer.";
+"ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "Le logiciel malveillant est toujours présent et votre appareil est en danger.\n\nÊtes-vous sûr de vouloir annuler ?";
+"ANTIVIRUS_MODAL_COMMON_REMOVE" = "Supprimer";
+
 

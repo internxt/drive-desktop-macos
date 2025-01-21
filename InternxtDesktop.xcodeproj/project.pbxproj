@@ -77,6 +77,8 @@
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
+		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
+		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
@@ -421,6 +423,8 @@
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
+		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
+		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -711,6 +715,8 @@
 			isa = PBXGroup;
 			children = (
 				AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */,
+				AAA666672D402F2900C2B9DF /* CustomModalView.swift */,
+				AAA666692D40380800C2B9DF /* FileSelectionView.swift */,
 			);
 			path = Antivirus;
 			sourceTree = "<group>";
@@ -1640,6 +1646,7 @@
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
 				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
+				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
 				E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E17C84B22AB22C1400A58414 /* OnboardingSlide2View.swift in Sources */,
@@ -1715,6 +1722,7 @@
 				E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */,
 				E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				E17DB70A2C539A1F0031B465 /* BackupContentNavigatorViewModel.swift in Sources */,
+				AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */,
 				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
