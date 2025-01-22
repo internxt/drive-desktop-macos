@@ -79,6 +79,19 @@
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
 		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
+		AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666782D40685C00C2B9DF /* clamscan in Resources */ = {isa = PBXBuildFile; fileRef = AAA666772D40685C00C2B9DF /* clamscan */; };
+		AAA6667B2D4068F800C2B9DF /* daily.cvd in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666792D40687800C2B9DF /* daily.cvd */; };
+		AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666772D40685C00C2B9DF /* clamscan */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA6667F2D40692900C2B9DF /* libclammspack.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA666812D40692900C2B9DF /* libjson-c.5.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA666822D40692900C2B9DF /* libssl.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
@@ -342,6 +355,31 @@
 			name = "Embed XPC Services";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAA6667A2D4068E100C2B9DF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ClamAVResources;
+			dstSubfolderSpec = 7;
+			files = (
+				AAA6667B2D4068F800C2B9DF /* daily.cvd in CopyFiles */,
+				AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAA6667D2D4068FE00C2B9DF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ClamAVResources/lib;
+			dstSubfolderSpec = 7;
+			files = (
+				AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */,
+				AAA6667F2D40692900C2B9DF /* libclammspack.0.dylib in CopyFiles */,
+				AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */,
+				AAA666812D40692900C2B9DF /* libjson-c.5.dylib in CopyFiles */,
+				AAA666822D40692900C2B9DF /* libssl.3.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E195325D2C5A556000CB81C3 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -425,6 +463,13 @@
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
+		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
+		AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclamav.12.dylib; sourceTree = "<group>"; };
+		AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libcrypto.3.dylib; sourceTree = "<group>"; };
+		AAA666702D40684500C2B9DF /* libclammspack.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclammspack.0.dylib; sourceTree = "<group>"; };
+		AAA666712D40684500C2B9DF /* libssl.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libssl.3.dylib; sourceTree = "<group>"; };
+		AAA666772D40685C00C2B9DF /* clamscan */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = clamscan; sourceTree = "<group>"; };
+		AAA666792D40687800C2B9DF /* daily.cvd */ = {isa = PBXFileReference; lastKnownFileType = file; path = daily.cvd; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -623,10 +668,15 @@
 				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
+				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
+				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
+				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
+				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
 				E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */,
@@ -727,6 +777,28 @@
 				AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		AAA6666B2D40680700C2B9DF /* ClamAVResources */ = {
+			isa = PBXGroup;
+			children = (
+				AAA666792D40687800C2B9DF /* daily.cvd */,
+				AAA666772D40685C00C2B9DF /* clamscan */,
+				AAA6666C2D40681200C2B9DF /* lib */,
+			);
+			path = ClamAVResources;
+			sourceTree = "<group>";
+		};
+		AAA6666C2D40681200C2B9DF /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */,
+				AAA666702D40684500C2B9DF /* libclammspack.0.dylib */,
+				AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */,
+				AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */,
+				AAA666712D40684500C2B9DF /* libssl.3.dylib */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 		AAAD0D9E2CE12D5B003F27BB /* Workspaces */ = {
@@ -1130,6 +1202,7 @@
 		E1FB2D262A76BF0200473AE1 /* InternxtDesktop */ = {
 			isa = PBXGroup;
 			children = (
+				AAA6666B2D40680700C2B9DF /* ClamAVResources */,
 				E17DB7082C5399CB0031B465 /* ViewModels */,
 				E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */,
 				E1FB2D942A76D01B00473AE1 /* Info.plist */,
@@ -1319,6 +1392,8 @@
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
 				31DEAEBF2B75139400E76D53 /* Embed XPC Services */,
 				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
+				AAA6667A2D4068E100C2B9DF /* CopyFiles */,
+				AAA6667D2D4068FE00C2B9DF /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1479,6 +1554,7 @@
 				E112933F2A77221A003DEADF /* Colors.xcassets in Resources */,
 				E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */,
 				E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */,
+				AAA666782D40685C00C2B9DF /* clamscan in Resources */,
 				E18300A72AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf in Resources */,
 				E18300A82AA21E1B00AD023C /* InstrumentSans-Regular.ttf in Resources */,
 				E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */,
@@ -2266,6 +2342,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "@executable_path/../ClamAVResources/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
@@ -2472,6 +2553,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "@executable_path/../ClamAVResources/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
@@ -2513,6 +2599,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "@executable_path/../ClamAVResources/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.5.2;
