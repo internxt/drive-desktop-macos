@@ -10,162 +10,259 @@ import Foundation
 
 class AntivirusManager: ObservableObject {
     @Published var currentState: ScanState = .locked
-      @Published var scannedFiles: Int = 0
-      @Published var detectedFiles: Int = 0
-      @Published var progress: Double = 0.0
-     @Published var showAntivirus: Bool = false
-      private var scanTimer: Timer?
-      private let totalScanTime: TimeInterval = 15
-      private let updateInterval: TimeInterval = 0.1
-      
-      func startScan() {
-          currentState = .scanning
-          progress = 0
-          scannedFiles = 0
-          detectedFiles = 0
-          
-          scanTimer?.invalidate()
-          
-          let totalSteps = totalScanTime / updateInterval
-          let progressIncrement = 1.0 / totalSteps
-          
-          scanTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { [weak self] timer in
-              guard let self = self else { return }
-              
-              if self.progress < 1.0 {
-                  self.progress += progressIncrement
-                  self.scannedFiles += 50
-                  self.detectedFiles = Int.random(in: 0...1)
-              } else {
-                  timer.invalidate()
-                  self.currentState = .results(noThreats: self.detectedFiles == 0)
-              }
-          }
-      }
-      
+    @Published var scannedFiles: Int = 0
+    @Published var detectedFiles: Int = 0
+    @Published var progress: Double = 0.0
+    @Published var showAntivirus: Bool = false
+    @Published var infectedFiles: [FileItem] = []
+    private var scanTimer: Timer?
+    private let totalScanTime: TimeInterval = 15
+    private let updateInterval: TimeInterval = 0.1
+    
 
     @MainActor
     func fetchAntivirusStatus() async {
-       
+        
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         
-      
+        
         let statusFromService = Bool.random()
         self.showAntivirus = statusFromService
         self.currentState = showAntivirus ? .options : .locked
         
     }
     
-    
-    
     func startScan(path: String) {
+
+        infectedFiles = []
         currentState = .scanning
         progress = 0
         scannedFiles = 0
         detectedFiles = 0
         
-      
         scanPathWithClamAVAndProgress(
             path: path,
-            onProgress: { [weak self] scannedFile in
-                DispatchQueue.main.async {
-                    self?.scannedFiles += 1
-                    self?.progress += 1.0 / Double(self?.scannedFiles ?? 1)
+            onProgress: { [weak self] scannedCount, totalFiles, lineInfo in
+           
+                guard let self = self else { return }
+                
+                let newProgress = Double(scannedCount) / Double(totalFiles) * 100.0
+                
+              
+                if newProgress >= self.progress + 10 {
+                    
+               
+                    DispatchQueue.main.async {
+                        self.scannedFiles = scannedCount
+                        self.progress += 10
+                        print("Progreso: \(self.progress)% - line: \(lineInfo)")
+                    }
                 }
             },
-            onInfected: { [weak self] infectedFile in
+            onInfected: { [weak self] lineInfo in
+                guard let self = self else { return }
+                
+                let parts = lineInfo.components(separatedBy: ": ")
+                if !parts.isEmpty {
+                    let infectedPath = parts[0]
+                    let fileItem = createFileItem(for: infectedPath)
+                    
+                    self.infectedFiles.append(fileItem)
+                }
+                
                 DispatchQueue.main.async {
-                    self?.detectedFiles += 1
+                    
+                    self.detectedFiles += 1
                 }
             },
             onComplete: { [weak self] success in
+                guard let self = self else { return }
                 DispatchQueue.main.async {
                     if success {
-                        self?.currentState = self?.detectedFiles == 0 ? .results(noThreats: true) : .results(noThreats: false)
+                        
+                      
                     } else {
                      
                     }
+                   
+                    self.currentState = .results(noThreats: (self.detectedFiles == 0))
                 }
             }
         )
     }
     
+    func listAllFiles(in directoryPath: String) -> [String] {
+        let fileManager = FileManager.default
+        let baseURL = URL(fileURLWithPath: directoryPath)
+        
+        guard let enumerator = fileManager.enumerator(at: baseURL, includingPropertiesForKeys: nil) else {
+            return []
+        }
+        
+        var files: [String] = []
+        for case let fileURL as URL in enumerator {
+           
+            if (try? fileURL.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true {
+                files.append(fileURL.path)
+            }
+        }
+        return files
+    }
     
     func scanPathWithClamAVAndProgress(
-          path: String,
-          onProgress: @escaping (String) -> Void,
-          onInfected: @escaping (String) -> Void,
-          onComplete: @escaping (Bool) -> Void
-      ) {
-         
-          guard let clamscanURL = Bundle.main.url(
-              forResource: "clamscan",
-              withExtension: nil,
-              subdirectory: "ClamAVResources"
-          ) else {
-              print("No se encontró clamscan en el bundle.")
-              onComplete(false)
-              return
-          }
-
-         
-          guard let mainCvdURL = Bundle.main.url(
-              forResource: "daily",
-              withExtension: "cvd",
-              subdirectory: "ClamAVResources"
-          ) else {
-              print("No se encontró main.cvd en ClamAVResources.")
-              onComplete(false)
-              return
-          }
-
-          let dbDirURL = mainCvdURL.deletingLastPathComponent()
-
+        path: String,
+        onProgress: @escaping (_ scannedCount: Int, _ totalFiles: Int, _ lineInfo: String) -> Void,
+        onInfected: @escaping (_ lineInfo: String) -> Void,
+        onComplete: @escaping (Bool) -> Void
+    ) {
+        guard let clamscanURL = Bundle.main.url(
+            forResource: "clamscan",
+            withExtension: nil,
+            subdirectory: "ClamAVResources"
+        ) else {
+            print("No se encontró clamscan en el bundle.")
+            onComplete(false)
+            return
+        }
         
-          let process = Process()
-          process.executableURL = clamscanURL
-
-          let fileManager = FileManager.default
-          var isDirectory: ObjCBool = false
-          if fileManager.fileExists(atPath: path, isDirectory: &isDirectory), isDirectory.boolValue {
-              process.arguments = ["--database=\(dbDirURL.path)", "-r", path]
-          } else {
-              process.arguments = ["--database=\(dbDirURL.path)", path]
-          }
-
+        guard let mainCvdURL = Bundle.main.url(
+            forResource: "daily",
+            withExtension: "cvd",
+            subdirectory: "ClamAVResources"
+        ) else {
+            print("No se encontró daily.cvd en ClamAVResources.")
+            onComplete(false)
+            return
+        }
         
-          let pipe = Pipe()
-          process.standardOutput = pipe
-          process.standardError = pipe
+        let dbDirURL = mainCvdURL.deletingLastPathComponent()
+        
+        let fileManager = FileManager.default
+        var isDir: ObjCBool = false
+        _ = fileManager.fileExists(atPath: path, isDirectory: &isDir)
+        
+        var allFiles: [String] = []
+        if isDir.boolValue {
+            allFiles = listAllFiles(in: path)
+        } else {
+            allFiles = [path]
+        }
+        
+        let totalFiles = allFiles.count
+        if totalFiles == 0 {
+            print("No hay archivos para escanear.")
+            onComplete(true)
+            return
+        }
+        
+        let process = Process()
+        process.executableURL = clamscanURL
+        
+        var arguments = [
+            "--database=\(dbDirURL.path)",
+            "--no-summary",
+            "-v"
+        ]
+        if isDir.boolValue {
+            arguments.append("-r")
+        }
+        arguments.append(path)
+        process.arguments = arguments
+        
+        
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+        
+        
+        var scannedCount = 0
+        
+        pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+            let data = fileHandle.availableData
+            guard !data.isEmpty else {
+                return
+            }
+            
+            let outputChunk = String(data: data, encoding: .utf8) ?? ""
+            let lines = outputChunk.components(separatedBy: .newlines)
+            
+            for line in lines {
+                guard !line.isEmpty else { continue }
+                
+                if line.contains("FOUND") {
+                   
+                    scannedCount += 1
+                    onInfected(line)
+                    onProgress(scannedCount, totalFiles, line)
+                } else if line.contains(": ") {
+                    scannedCount += 1
+                    onProgress(scannedCount, totalFiles, line)
+                }
+            }
+        }
+        
+        
+        process.terminationHandler = { _ in
+            pipe.fileHandleForReading.readabilityHandler = nil
+            
+            let exitCode = process.terminationStatus
+            
+            DispatchQueue.main.async {
+                
+                onComplete(exitCode == 0)
+            }
+        }
+        
+        do {
+            try process.run()
+        } catch {
+            print("Error al lanzar clamscan: \(error.localizedDescription)")
+            onComplete(false)
+        }
+    }
+    
+    func createFileItem(for filePath: String) -> FileItem {
+        let fileURL = URL(fileURLWithPath: filePath)
+        let fileName = fileURL.lastPathComponent
+        let fileExtension = fileURL.pathExtension.lowercased()
+        let iconName: String
+        switch fileExtension {
+        // Word
+        case "doc", "docx":
+            iconName = "word"
+            
+        // Excel
+        case "xls", "xlsx", "xlsm":
+            iconName = "xls"
+            
+        // PowerPoint
+        case "ppt", "pptx", "pps", "ppsx":
+            iconName = "powerpoint"
+            
+        // Illustrator
+        case "ai":
+            iconName = "illustrator"
+            
+        // png, jpg, jpeg, gif
+        case "png", "jpg", "jpeg", "gif":
+            iconName = "image"
+            
+        default:
+            iconName = "default"
+        }
+        
+        return FileItem(iconName: iconName, fileName: fileName, extensionType: fileExtension, fullPath: filePath)
+    }
+    
+    
+    func removeInfectedFiles(_ files: [FileItem]) throws {
+        let fileManager = FileManager.default
+        
+        for fileItem in files {
+            let fileURL = URL(fileURLWithPath: fileItem.fullPath)
+            try fileManager.removeItem(at: fileURL)
+  
+        }
+    }
 
-          let fileHandle = pipe.fileHandleForReading
-
-          DispatchQueue.global().async {
-              let data = fileHandle.readDataToEndOfFile()
-              if let output = String(data: data, encoding: .utf8) {
-                  output.split(separator: "\n").forEach { line in
-                      let lineString = String(line)
-                      print(lineString)
-                      if lineString.contains("FOUND") {
-                          onInfected(lineString)
-                      } else if lineString.contains(": OK") || lineString.contains(": ") {
-                          let scannedFile = lineString.split(separator: ":")[0]
-                          onProgress(String(scannedFile))
-                      }
-                  }
-              }
-
-              DispatchQueue.main.async {
-                  let status = process.terminationStatus
-                  onComplete(status == 0)
-              }
-          }
-
-          do {
-              try process.run()
-          } catch {
-              print("Error al ejecutar clamscan: \(error.localizedDescription)")
-              onComplete(false)
-          }
-      }
-  }
+}
