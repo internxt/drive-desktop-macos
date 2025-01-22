@@ -178,6 +178,7 @@ platform :mac do
     # Notarize the app
     notarize(
       package: app_path,
+      print_log: true,
       api_key_path: './app_store_key.json'
     )
     final_dmg_path = "./#{dmg_destination_dir}/#{dmg_final_name}"
@@ -193,7 +194,8 @@ platform :mac do
     notarize(
       bundle_id: "internxt.InternxtDesktop",
       package: final_dmg_path,
-      api_key_path: './app_store_key.json'
+      api_key_path: './app_store_key.json',
+      print_log: true
     )
 
     # Create a Github Release
