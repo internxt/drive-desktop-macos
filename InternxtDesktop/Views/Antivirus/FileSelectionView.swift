@@ -13,16 +13,17 @@ struct FileItem: Identifiable {
     let fileName: String
     let extensionType: String
     var isSelected: Bool = false
+    let fullPath: String 
 }
 
 struct FileSelectionView: View {
-    @State private var files = Array(repeating: FileItem(iconName: "doc.fill", fileName: "{file_name}", extensionType: "{extension}"), count: 20)
+    @State var files: [FileItem] 
     @State private var selectAll = false
     @Environment(\.colorScheme) var colorScheme
     @State private var showModal1 = false
     @State private var showModal2 = false
-    let onClose: () -> Void
-    let onConfirm: () -> Void
+    let onClose: ([FileItem]) -> Void
+    let onConfirm: ([FileItem]) -> Void
     
     var body: some View {
         ZStack {
@@ -38,7 +39,7 @@ struct FileSelectionView: View {
                     
                     Spacer()
                     
-                    AppText("Selected 10 files")
+                    AppText("Selected \(files.filter { $0.isSelected }.count) out of \(files.count)")
                         .font(.BaseRegular)
                         .foregroundColor(.Gray50)
                     
@@ -54,10 +55,11 @@ struct FileSelectionView: View {
                     }
                     .onChange(of: selectAll) { value in
                         files = files.map { file in
-                            var updatedFile = file
-                            updatedFile.isSelected = value
-                            return updatedFile
-                        }
+                               var updatedFile = file
+                               updatedFile.isSelected = value
+                               return updatedFile
+                           }
+                        
                     }
                     Spacer()
                 }
@@ -66,25 +68,23 @@ struct FileSelectionView: View {
                 VStack {
                     ScrollView {
                         VStack(spacing: 10) {
-                            ForEach($files) { $file in
+                            ForEach(files.indices, id: \.self) { index in
                                 HStack {
-                                    
-                                    Image(systemName: file.isSelected ? "checkmark.square.fill" : "square")
+                                    Image(systemName: files[index].isSelected ? "checkmark.square.fill" : "square")
                                         .foregroundColor(.blue)
                                         .onTapGesture {
-                                            file.isSelected.toggle()
+                                            files[index].isSelected.toggle()
+                                             selectAll = files.allSatisfy { $0.isSelected }
                                         }
-                                    
-                                    
-                                    Image(systemName: file.iconName)
+
+                                    Image(files[index].iconName)
                                         .resizable()
                                         .frame(width: 16, height: 16)
                                         .foregroundColor(.green)
                                         .padding(.trailing, 10)
-                                    
-                                    
+
                                     VStack(alignment: .leading) {
-                                        AppText("\(file.fileName).\(file.extensionType)")
+                                        AppText("\(files[index].fileName)")
                                             .font(.LGRegular)
                                             .foregroundColor(.Gray80)
                                     }
@@ -113,11 +113,13 @@ struct FileSelectionView: View {
                     Spacer()
                     AppButton(title: "COMMON_CANCEL", onClick: {
                         withAnimation {
-                           onClose()
+                            let selectedFiles = files.filter { $0.isSelected }
+                            onClose(selectedFiles)
                         }
                     }, type: .secondary, size: .MD)
                     AppButton(title: "ANTIVIRUS_MODAL_COMMON_REMOVE", onClick: {
-                       onConfirm()
+                        let selectedFiles = files.filter { $0.isSelected }
+                        onConfirm(selectedFiles)
                         
                     }, type: .primary, size: .MD)
                     
