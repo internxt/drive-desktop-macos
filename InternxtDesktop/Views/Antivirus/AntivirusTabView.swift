@@ -39,12 +39,15 @@ struct AntivirusTabView: View {
             .animation(.easeInOut, value: viewModel.currentState)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .sheet(isPresented: $isModalPresented) {
-                FileSelectionView(onClose: {
+                FileSelectionView(files: viewModel.infectedFiles,onClose: {files in
+                    viewModel.infectedFiles = files
                     isModalPresented = false
                     self.showModalCancel = true
-                }, onConfirm: {
+                }, onConfirm: { files in
+                    viewModel.infectedFiles = files
                     isModalPresented = false
                     self.showModalRemove = true
+                    
                 })
             }
             if showModalRemove {
@@ -59,6 +62,9 @@ struct AntivirusTabView: View {
                     },
                     onConfirm: {
                         // delete files
+                        userConfirmedRemove()
+                        self.showModalRemove = false
+                        
                     }
                 )
             }
@@ -75,6 +81,8 @@ struct AntivirusTabView: View {
                     },
                     onConfirm: {
                       // delete files
+                        userConfirmedRemove()
+                        self.showModalCancel = false
                     }
                 )
             }
@@ -122,14 +130,17 @@ struct AntivirusTabView: View {
         VStack(spacing: 15) {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
-                viewModel.startScan()
+
             }
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
                 selectFileOrFolder { url in
-                    if let url = url {
-                        selectedPath = url.path
-                        print("File: \(url.path)")
+                    guard let url = url else {
+                        print("incorrect url")
+                        return
                     }
+                    selectedPath = url.path
+                    viewModel.startScan(path: url.path)
+                    
                 }
             }
             
@@ -144,7 +155,7 @@ struct AntivirusTabView: View {
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
         openPanel.prompt = "Select"
-        
+        openPanel.level = .modalPanel
         
         openPanel.begin { result in
             if result == .OK {
@@ -162,16 +173,15 @@ struct AntivirusTabView: View {
                 .foregroundColor(.Gray100)
             
             
-            AppText("/Users/joe/Desktop/my_files/virus.dmg")
+            AppText(selectedPath ?? "")
                 .font(.SMRegular)
                 .foregroundColor(.Gray80)
-            
-            
-            ProgressView(value: viewModel.progress)
+            ProgressView(value: viewModel.progress / 100.0)
                 .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
                 .scaleEffect(x: 1, y: 2, anchor: .center)
-            
-            AppText("\(Int(viewModel.progress * 100))%")
+                .animation(.easeInOut, value: viewModel.progress)
+       
+            AppText("\(Int(viewModel.progress))%")
                 .font(.SMMedium)
                 .foregroundColor(.Gray80)
             
@@ -277,6 +287,35 @@ struct AntivirusTabView: View {
                 .foregroundColor(.Gray80)
         }
     }
+    
+    func userConfirmedRemove() {
+        let selectedInfected = viewModel.infectedFiles.filter { $0.isSelected }
+        do {
+            try viewModel.removeInfectedFiles(selectedInfected)
+        } catch let error as NSError {
+            if error.domain == NSCocoaErrorDomain,
+               error.code == CocoaError.fileWriteNoPermission.rawValue {
+                print("No hay permisos para eliminar: \(error.localizedDescription)")
+                showAlert(message: error.localizedDescription, style: .warning)
+            } else {
+                print("Error al eliminar: \(error.localizedDescription)")
+                showAlert(message: error.localizedDescription, style: .warning)
+            }
+        }
+    }
+    
+    func showAlert(message: String, informativeText: String? = nil, style: NSAlert.Style = .informational, buttonTitle: String = "OK") {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.informativeText = informativeText ?? ""
+        alert.alertStyle = style
+        alert.addButton(withTitle: buttonTitle)
+        alert.runModal()
+    }
+    
+
+    
+
 }
 
 struct AntivirusTabView_Previews: PreviewProvider {
