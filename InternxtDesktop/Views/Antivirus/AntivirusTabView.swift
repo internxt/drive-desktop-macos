@@ -15,7 +15,6 @@ enum ScanState: Equatable {
 }
 
 struct AntivirusTabView: View {
-    let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     @StateObject var viewModel: AntivirusManager
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedPath: String? = nil
@@ -131,12 +130,16 @@ struct AntivirusTabView: View {
         VStack(spacing: 15) {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
+                let homeURL = FileManager.default.homeDirectoryForCurrentUser
+                let homePath = NSHomeDirectory()
+                appLogger.info("Home path :\(homePath)")
+                appLogger.info("Home url :\(homeURL.path)")
 
             }
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
                 selectFileOrFolder { url in
                     guard let url = url else {
-                        logger.error("incorrect url")
+                        appLogger.error("incorrect url")
                         return
                     }
                     selectedPath = url.path
@@ -296,10 +299,10 @@ struct AntivirusTabView: View {
         } catch let error as NSError {
             if error.domain == NSCocoaErrorDomain,
                error.code == CocoaError.fileWriteNoPermission.rawValue {
-                logger.error(error.localizedDescription)
+                appLogger.error(error.localizedDescription)
                 showAlert(message: error.localizedDescription, style: .warning)
             } else {
-                logger.error(error.localizedDescription)
+                appLogger.error(error.localizedDescription)
                 showAlert(message: error.localizedDescription, style: .warning)
             }
         }

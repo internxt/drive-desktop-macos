@@ -9,7 +9,6 @@ import Foundation
 
 
 class AntivirusManager: ObservableObject {
-    let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     @Published var currentState: ScanState = .locked
     @Published var scannedFiles: Int = 0
     @Published var detectedFiles: Int = 0
@@ -120,7 +119,7 @@ class AntivirusManager: ObservableObject {
             withExtension: nil,
             subdirectory: "ClamAVResources"
         ) else {
-            logger.error("clamscan not found")
+            appLogger.error("clamscan not found")
             onComplete(false)
             return
         }
@@ -130,7 +129,7 @@ class AntivirusManager: ObservableObject {
             withExtension: "cvd",
             subdirectory: "ClamAVResources"
         ) else {
-            logger.error(".cvd not found")
+            appLogger.error(".cvd not found")
             onComplete(false)
             return
         }
@@ -150,7 +149,7 @@ class AntivirusManager: ObservableObject {
         
         let totalFiles = allFiles.count
         if totalFiles == 0 {
-            logger.info("There are no files to scan")
+            appLogger.info("There are no files to scan")
             onComplete(true)
             return
         }
@@ -216,7 +215,7 @@ class AntivirusManager: ObservableObject {
         do {
             try process.run()
         } catch {
-            logger.error(error.localizedDescription)
+            appLogger.error(error.localizedDescription)
             onComplete(false)
         }
     }
@@ -261,7 +260,7 @@ class AntivirusManager: ObservableObject {
         for fileItem in files {
             let fileURL = URL(fileURLWithPath: fileItem.fullPath)
             try fileManager.removeItem(at: fileURL)
-            logger.info("File delete successful : \(fileURL)")
+            appLogger.info("File delete successful : \(fileURL)")
         }
     }
 
