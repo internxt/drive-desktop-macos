@@ -9,6 +9,7 @@ import Foundation
 
 
 class AntivirusManager: ObservableObject {
+    let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     @Published var currentState: ScanState = .locked
     @Published var scannedFiles: Int = 0
     @Published var detectedFiles: Int = 0
@@ -55,7 +56,6 @@ class AntivirusManager: ObservableObject {
                     DispatchQueue.main.async {
                         self.scannedFiles = scannedCount
                         self.progress += 10
-                        print("Progreso: \(self.progress)% - line: \(lineInfo)")
                     }
                 }
             },
@@ -120,7 +120,7 @@ class AntivirusManager: ObservableObject {
             withExtension: nil,
             subdirectory: "ClamAVResources"
         ) else {
-            print("No se encontró clamscan en el bundle.")
+            logger.error("clamscan not found")
             onComplete(false)
             return
         }
@@ -130,7 +130,7 @@ class AntivirusManager: ObservableObject {
             withExtension: "cvd",
             subdirectory: "ClamAVResources"
         ) else {
-            print("No se encontró daily.cvd en ClamAVResources.")
+            logger.error(".cvd not found")
             onComplete(false)
             return
         }
@@ -150,7 +150,7 @@ class AntivirusManager: ObservableObject {
         
         let totalFiles = allFiles.count
         if totalFiles == 0 {
-            print("No hay archivos para escanear.")
+            logger.info("There are no files to scan")
             onComplete(true)
             return
         }
@@ -216,7 +216,7 @@ class AntivirusManager: ObservableObject {
         do {
             try process.run()
         } catch {
-            print("Error al lanzar clamscan: \(error.localizedDescription)")
+            logger.error(error.localizedDescription)
             onComplete(false)
         }
     }
@@ -261,7 +261,7 @@ class AntivirusManager: ObservableObject {
         for fileItem in files {
             let fileURL = URL(fileURLWithPath: fileItem.fullPath)
             try fileManager.removeItem(at: fileURL)
-  
+            logger.info("File delete successful : \(fileURL)")
         }
     }
 

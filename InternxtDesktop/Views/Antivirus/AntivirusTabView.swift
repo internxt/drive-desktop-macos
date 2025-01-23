@@ -15,6 +15,7 @@ enum ScanState: Equatable {
 }
 
 struct AntivirusTabView: View {
+    let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     @StateObject var viewModel: AntivirusManager
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedPath: String? = nil
@@ -135,7 +136,7 @@ struct AntivirusTabView: View {
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
                 selectFileOrFolder { url in
                     guard let url = url else {
-                        print("incorrect url")
+                        logger.error("incorrect url")
                         return
                     }
                     selectedPath = url.path
@@ -295,10 +296,10 @@ struct AntivirusTabView: View {
         } catch let error as NSError {
             if error.domain == NSCocoaErrorDomain,
                error.code == CocoaError.fileWriteNoPermission.rawValue {
-                print("No hay permisos para eliminar: \(error.localizedDescription)")
+                logger.error(error.localizedDescription)
                 showAlert(message: error.localizedDescription, style: .warning)
             } else {
-                print("Error al eliminar: \(error.localizedDescription)")
+                logger.error(error.localizedDescription)
                 showAlert(message: error.localizedDescription, style: .warning)
             }
         }
