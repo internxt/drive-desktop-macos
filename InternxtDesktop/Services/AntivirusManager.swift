@@ -19,7 +19,7 @@ class AntivirusManager: ObservableObject {
     private let totalScanTime: TimeInterval = 15
     private let updateInterval: TimeInterval = 0.1
     
-
+    
     @MainActor
     func fetchAntivirusStatus() async {
         
@@ -33,7 +33,7 @@ class AntivirusManager: ObservableObject {
     }
     
     func startScan(path: String) {
-
+        
         infectedFiles = []
         currentState = .scanning
         progress = 0
@@ -43,15 +43,15 @@ class AntivirusManager: ObservableObject {
         scanPathWithClamAVAndProgress(
             path: path,
             onProgress: { [weak self] scannedCount, totalFiles, lineInfo in
-           
+                
                 guard let self = self else { return }
                 
                 let newProgress = Double(scannedCount) / Double(totalFiles) * 100.0
                 
-              
+                
                 if newProgress >= self.progress + 10 {
                     
-               
+                    
                     DispatchQueue.main.async {
                         self.scannedFiles = scannedCount
                         self.progress += 10
@@ -65,8 +65,10 @@ class AntivirusManager: ObservableObject {
                 if !parts.isEmpty {
                     let infectedPath = parts[0]
                     let fileItem = createFileItem(for: infectedPath)
+                    DispatchQueue.main.async {
+                        self.infectedFiles.append(fileItem)
+                    }
                     
-                    self.infectedFiles.append(fileItem)
                 }
                 
                 DispatchQueue.main.async {
@@ -79,11 +81,11 @@ class AntivirusManager: ObservableObject {
                 DispatchQueue.main.async {
                     if success {
                         
-                      
+                        
                     } else {
-                     
+                        
                     }
-                   
+                    
                     self.currentState = .results(noThreats: (self.detectedFiles == 0))
                 }
             }
@@ -100,7 +102,7 @@ class AntivirusManager: ObservableObject {
         
         var files: [String] = []
         for case let fileURL as URL in enumerator {
-           
+            
             if (try? fileURL.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true {
                 files.append(fileURL.path)
             }
@@ -189,7 +191,7 @@ class AntivirusManager: ObservableObject {
                 guard !line.isEmpty else { continue }
                 
                 if line.contains("FOUND") {
-                   
+                    
                     scannedCount += 1
                     onInfected(line)
                     onProgress(scannedCount, totalFiles, line)
@@ -226,23 +228,23 @@ class AntivirusManager: ObservableObject {
         let fileExtension = fileURL.pathExtension.lowercased()
         let iconName: String
         switch fileExtension {
-        // Word
+            // Word
         case "doc", "docx":
             iconName = "word"
             
-        // Excel
+            // Excel
         case "xls", "xlsx", "xlsm":
             iconName = "xls"
             
-        // PowerPoint
+            // PowerPoint
         case "ppt", "pptx", "pps", "ppsx":
             iconName = "powerpoint"
             
-        // Illustrator
+            // Illustrator
         case "ai":
             iconName = "illustrator"
             
-        // png, jpg, jpeg, gif
+            // png, jpg, jpeg, gif
         case "png", "jpg", "jpeg", "gif":
             iconName = "image"
             
