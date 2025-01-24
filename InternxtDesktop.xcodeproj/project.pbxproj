@@ -2789,7 +2789,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/improve-backup";
+				branch = feature/workspaces;
 				kind = branch;
 			};
 		};
