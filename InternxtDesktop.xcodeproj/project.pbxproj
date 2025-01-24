@@ -2339,8 +2339,9 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@executable_path/../ClamAVResources/lib",
+					"@loader_path/../Frameworks",
 				);
-				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "@executable_path/../ClamAVResources/lib";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
@@ -2595,8 +2596,8 @@
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"$(inherited)",
 					"@executable_path/../ClamAVResources/lib",
 				);
 				LIBRARY_SEARCH_PATHS = (
