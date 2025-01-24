@@ -84,7 +84,6 @@
 		AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
-		AAA666782D40685C00C2B9DF /* clamscan in Resources */ = {isa = PBXBuildFile; fileRef = AAA666772D40685C00C2B9DF /* clamscan */; };
 		AAA6667B2D4068F800C2B9DF /* daily.cvd in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666792D40687800C2B9DF /* daily.cvd */; };
 		AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666772D40685C00C2B9DF /* clamscan */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -1554,7 +1553,6 @@
 				E112933F2A77221A003DEADF /* Colors.xcassets in Resources */,
 				E1FB2D2C2A76BF0300473AE1 /* Assets.xcassets in Resources */,
 				E106D4602AB9FBDC00E3BF7A /* Phosphor-Light.ttf in Resources */,
-				AAA666782D40685C00C2B9DF /* clamscan in Resources */,
 				E18300A72AA21E1B00AD023C /* InstrumentSans-SemiBold.ttf in Resources */,
 				E18300A82AA21E1B00AD023C /* InstrumentSans-Regular.ttf in Resources */,
 				E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */,
@@ -2599,8 +2597,8 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@executable_path/../ClamAVResources/lib",
 				);
-				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "@executable_path/../ClamAVResources/lib";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
