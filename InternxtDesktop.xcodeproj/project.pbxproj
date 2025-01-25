@@ -67,6 +67,9 @@
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
 		AA0B47AC2C24D9EE0036FE1A /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
 		AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2019662C53F8B700901B93 /* Debouncer.swift */; };
+		AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497C2D44839C00924536 /* freshclam */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AA3B49812D44887600924536 /* libfreshclam.3.0.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */; };
 		AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */; };
 		AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */; };
@@ -360,6 +363,7 @@
 			dstPath = ClamAVResources;
 			dstSubfolderSpec = 7;
 			files = (
+				AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */,
 				AAA6667B2D4068F800C2B9DF /* daily.cvd in CopyFiles */,
 				AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */,
 			);
@@ -371,6 +375,7 @@
 			dstPath = ClamAVResources/lib;
 			dstSubfolderSpec = 7;
 			files = (
+				AA3B49812D44887600924536 /* libfreshclam.3.0.2.dylib in CopyFiles */,
 				AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */,
 				AAA6667F2D40692900C2B9DF /* libclammspack.0.dylib in CopyFiles */,
 				AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */,
@@ -455,6 +460,8 @@
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		AA3B497C2D44839C00924536 /* freshclam */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = freshclam; sourceTree = "<group>"; };
+		AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfreshclam.3.0.2.dylib; sourceTree = "<group>"; };
 		AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusTabView.swift; sourceTree = "<group>"; };
 		AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusManager.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
@@ -670,6 +677,7 @@
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
+				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
 				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
@@ -781,6 +789,7 @@
 		AAA6666B2D40680700C2B9DF /* ClamAVResources */ = {
 			isa = PBXGroup;
 			children = (
+				AA3B497C2D44839C00924536 /* freshclam */,
 				AAA666792D40687800C2B9DF /* daily.cvd */,
 				AAA666772D40685C00C2B9DF /* clamscan */,
 				AAA6666C2D40681200C2B9DF /* lib */,
@@ -791,6 +800,7 @@
 		AAA6666C2D40681200C2B9DF /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */,
 				AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */,
 				AAA666702D40684500C2B9DF /* libclammspack.0.dylib */,
 				AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */,

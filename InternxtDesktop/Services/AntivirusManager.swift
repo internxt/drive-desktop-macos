@@ -44,6 +44,8 @@ class AntivirusManager: ObservableObject {
             }
         }
         
+        testDownload()
+        
     }
     
     func startScan(path: String) {
@@ -147,7 +149,7 @@ class AntivirusManager: ObservableObject {
             let lines = outputChunk.components(separatedBy: .newlines)
             for line in lines {
                 guard !line.isEmpty else { continue }
-                
+                print(line)
                 if line.contains("FOUND") {
                     scannedCount += 1
                     onInfected(line)
@@ -165,7 +167,19 @@ class AntivirusManager: ObservableObject {
             let exitCode = process.terminationStatus
             
             DispatchQueue.main.async {
-                onComplete(exitCode == 0)
+                switch exitCode {
+                case 0:
+                    onComplete(true)
+                case 1:
+                    appLogger.warning("Scan completed, infections found.")
+                    onComplete(true)
+                case 2:
+                    appLogger.error("Error during scan.")
+                    onComplete(false)
+                default:
+                    appLogger.error("Unknown exit code: \(exitCode)")
+                    onComplete(false) 
+                }
             }
         }
         
@@ -219,4 +233,87 @@ class AntivirusManager: ObservableObject {
             appLogger.info("File delete successful : \(fileURL)")
         }
     }
+    
+    func generateFreshclamConfig(at path: String, databaseDir: String) throws {
+        let config = """
+        # freshclam.conf generado dinámicamente
+        DatabaseDirectory \(databaseDir)
+        Checks 24
+        """
+        try config.write(toFile: path, atomically: true, encoding: .utf8)
+    }
+    
+    func updateClamAVDatabase(usingFreshclam freshclamURL: URL, configPath: String, databaseDir: String, onComplete: @escaping (Bool) -> Void) {
+        let process = Process()
+        process.executableURL = freshclamURL
+        process.arguments = ["--config-file=\(configPath)"]
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+
+        pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+            let output = String(data: fileHandle.availableData, encoding: .utf8) ?? ""
+            print(output) // Logs de freshclam
+        }
+
+        process.terminationHandler = { _ in
+            let exitCode = process.terminationStatus
+            DispatchQueue.main.async {
+                if exitCode == 0 {
+                    print("Bases de datos actualizadas correctamente en \(databaseDir).")
+                    onComplete(true)
+                } else {
+                    print("Error al actualizar las bases de datos con freshclam. Código de salida: \(exitCode)")
+                    onComplete(false)
+                }
+            }
+        }
+
+        do {
+            try process.run()
+        } catch {
+            print("Error al ejecutar freshclam: \(error.localizedDescription)")
+            onComplete(false)
+        }
+    }
+
+    func testDownload(){
+        let fileManager = FileManager.default
+        let appSupportDir = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let clamAVDir = appSupportDir.appendingPathComponent("ClamAV")
+        let databaseDir = clamAVDir.appendingPathComponent("database")
+        let freshclamConfigPath = clamAVDir.appendingPathComponent("freshclam.conf")
+
+        // Crear el directorio si no existe
+        try? fileManager.createDirectory(at: databaseDir, withIntermediateDirectories: true)
+
+        // Generar el archivo freshclam.conf
+        do {
+            try """
+            # freshclam.conf generado dinámicamente
+            DatabaseDirectory \(databaseDir.path)
+            Checks 24
+            """.write(toFile: freshclamConfigPath.path, atomically: true, encoding: .utf8)
+        } catch {
+            print("Error al generar freshclam.conf: \(error.localizedDescription)")
+            return
+        }
+
+        // Ejecutar freshclam
+        guard let freshclamURL = Bundle.main.url(forResource: "freshclam", withExtension: nil, subdirectory: "ClamAVResources") else {
+            print("freshclam no encontrado")
+            return
+        }
+
+        updateClamAVDatabase(usingFreshclam: freshclamURL, configPath: freshclamConfigPath.path, databaseDir: databaseDir.path) { success in
+            if success {
+                print("Actualización de bases de datos completada.")
+            } else {
+                print("Error al actualizar las bases de datos.")
+            }
+        }
+
+    }
+
 }
