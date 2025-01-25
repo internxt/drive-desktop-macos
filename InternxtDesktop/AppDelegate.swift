@@ -325,7 +325,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     return
                 }
                try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
-                
+                await antivirusManager.fetchAntivirusStatus()
                 self.logger.info("Workspaces setted correctly")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
