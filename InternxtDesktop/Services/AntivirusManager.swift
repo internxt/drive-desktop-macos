@@ -103,17 +103,16 @@ class AntivirusManager: ObservableObject {
             return
         }
         
-        guard let mainCvdURL = Bundle.main.url(
-            forResource: "daily",
-            withExtension: "cvd",
-            subdirectory: "ClamAVResources"
-        ) else {
-            appLogger.error(".cvd not found")
+        
+        let databaseDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("ClamAV/database")
+        
+        guard FileManager.default.fileExists(atPath: databaseDir.path) else {
+            appLogger.error("DB Directory not found: \(databaseDir.path)")
             onComplete(false)
             return
         }
         
-        let dbDirURL = mainCvdURL.deletingLastPathComponent()
         
         let fileManager = FileManager.default
         var isDir: ObjCBool = false
@@ -123,7 +122,7 @@ class AntivirusManager: ObservableObject {
         process.executableURL = clamscanURL
         
         var arguments = [
-            "--database=\(dbDirURL.path)",
+            "--database=\(databaseDir.path)",
             "--no-summary",
             "-v"
         ]
@@ -178,7 +177,7 @@ class AntivirusManager: ObservableObject {
                     onComplete(false)
                 default:
                     appLogger.error("Unknown exit code: \(exitCode)")
-                    onComplete(false) 
+                    onComplete(false)
                 }
             }
         }
@@ -234,86 +233,142 @@ class AntivirusManager: ObservableObject {
         }
     }
     
-    func generateFreshclamConfig(at path: String, databaseDir: String) throws {
-        let config = """
-        # freshclam.conf generado dinámicamente
-        DatabaseDirectory \(databaseDir)
-        Checks 24
-        """
-        try config.write(toFile: path, atomically: true, encoding: .utf8)
-    }
-    
     func updateClamAVDatabase(usingFreshclam freshclamURL: URL, configPath: String, databaseDir: String, onComplete: @escaping (Bool) -> Void) {
-        let process = Process()
-        process.executableURL = freshclamURL
-        process.arguments = ["--config-file=\(configPath)"]
-
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = pipe
-
-        pipe.fileHandleForReading.readabilityHandler = { fileHandle in
-            let output = String(data: fileHandle.availableData, encoding: .utf8) ?? ""
-            print(output) // Logs de freshclam
-        }
-
-        process.terminationHandler = { _ in
-            let exitCode = process.terminationStatus
-            DispatchQueue.main.async {
-                if exitCode == 0 {
-                    print("Bases de datos actualizadas correctamente en \(databaseDir).")
-                    onComplete(true)
-                } else {
-                    print("Error al actualizar las bases de datos con freshclam. Código de salida: \(exitCode)")
-                    onComplete(false)
+        
+        DispatchQueue.global(qos: .background).async {
+            
+            let process = Process()
+            process.executableURL = freshclamURL
+            process.arguments = ["--config-file=\(configPath)"]
+            
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
+            
+            pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+                let output = String(data: fileHandle.availableData, encoding: .utf8) ?? ""
+                
+                if output.contains("Downloading daily.cvd") || output.contains("Downloading main.cvd") {
+                    print("Update in progress")
+                } else if output.contains("Your ClamAV database is up to date.") {
+                    appLogger.info("Databases are up to date")
                 }
             }
-        }
-
-        do {
-            try process.run()
-        } catch {
-            print("Error al ejecutar freshclam: \(error.localizedDescription)")
-            onComplete(false)
+            
+            process.terminationHandler = { _ in
+                let exitCode = process.terminationStatus
+                DispatchQueue.main.async {
+                    if exitCode == 0 {
+                        appLogger.info("Databases update successfully \(databaseDir).")
+                        onComplete(true)
+                    } else {
+                        appLogger.error("Error updating databases: \(exitCode)")
+                        onComplete(false)
+                    }
+                }
+            }
+            
+            do {
+                try process.run()
+            } catch {
+                appLogger.error("Error executing freshclam: \(error.localizedDescription)")
+                onComplete(false)
+            }
+            
         }
     }
-
-    func testDownload(){
+    
+    
+    
+    func testDownload() {
         let fileManager = FileManager.default
         let appSupportDir = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let clamAVDir = appSupportDir.appendingPathComponent("ClamAV")
         let databaseDir = clamAVDir.appendingPathComponent("database")
         let freshclamConfigPath = clamAVDir.appendingPathComponent("freshclam.conf")
-
-        // Crear el directorio si no existe
+        
         try? fileManager.createDirectory(at: databaseDir, withIntermediateDirectories: true)
-
-        // Generar el archivo freshclam.conf
+        
+        
+        if isDatabaseUpToDate(databaseDir: databaseDir) {
+            appLogger.info("Databases are up to date")
+            return
+        }
+        
+        clearDatabaseDirectory(databaseDir: databaseDir)
+        
+        
+        
+        // Generate freshclam.conf
         do {
             try """
-            # freshclam.conf generado dinámicamente
+            # freshclam.conf
             DatabaseDirectory \(databaseDir.path)
+            DatabaseMirror database.clamav.net
             Checks 24
             """.write(toFile: freshclamConfigPath.path, atomically: true, encoding: .utf8)
+            print(freshclamConfigPath.path)
         } catch {
-            print("Error al generar freshclam.conf: \(error.localizedDescription)")
+            appLogger.error("Error generating freshclam.conf: \(error.localizedDescription)")
             return
         }
-
-        // Ejecutar freshclam
+        
+        
         guard let freshclamURL = Bundle.main.url(forResource: "freshclam", withExtension: nil, subdirectory: "ClamAVResources") else {
-            print("freshclam no encontrado")
+            appLogger.error("freshclam not found")
             return
         }
-
+        
         updateClamAVDatabase(usingFreshclam: freshclamURL, configPath: freshclamConfigPath.path, databaseDir: databaseDir.path) { success in
-            if success {
-                print("Actualización de bases de datos completada.")
-            } else {
-                print("Error al actualizar las bases de datos.")
+            if !success {
+                appLogger.error("Error updating databases")
             }
         }
-
     }
-
+    
+    func isDatabaseUpToDate(databaseDir: URL) -> Bool {
+        let fileManager = FileManager.default
+        let databaseFiles = ["main.cvd", "daily.cvd", "bytecode.cvd"]
+        
+        for fileName in databaseFiles {
+            let filePath = databaseDir.appendingPathComponent(fileName)
+            if !fileManager.fileExists(atPath: filePath.path) {
+                appLogger.info("\(fileName) not found.")
+                return false
+            }
+            
+            
+            if let attributes = try? fileManager.attributesOfItem(atPath: filePath.path),
+               let modificationDate = attributes[.modificationDate] as? Date {
+                let currentDate = Date()
+                let calendar = Calendar.current
+                
+                // check update from file
+                if let difference = calendar.dateComponents([.hour], from: modificationDate, to: currentDate).hour, difference > 24 {
+                    appLogger.info("\(fileName) its not update. last modification: \(modificationDate).")
+                    return false
+                }
+            } else {
+                appLogger.info("Failed to get file attributes\(fileName).")
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    
+    func clearDatabaseDirectory(databaseDir: URL) {
+        let fileManager = FileManager.default
+        do {
+            let files = try fileManager.contentsOfDirectory(atPath: databaseDir.path)
+            for file in files {
+                let filePath = databaseDir.appendingPathComponent(file)
+                try fileManager.removeItem(at: filePath)
+            }
+        } catch {
+            appLogger.error("Error cleaning database directory: \(error.localizedDescription)")
+        }
+    }
+    
 }

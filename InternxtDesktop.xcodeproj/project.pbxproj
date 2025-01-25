@@ -87,7 +87,6 @@
 		AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
-		AAA6667B2D4068F800C2B9DF /* daily.cvd in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666792D40687800C2B9DF /* daily.cvd */; };
 		AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666772D40685C00C2B9DF /* clamscan */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAA6667F2D40692900C2B9DF /* libclammspack.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -364,7 +363,6 @@
 			dstSubfolderSpec = 7;
 			files = (
 				AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */,
-				AAA6667B2D4068F800C2B9DF /* daily.cvd in CopyFiles */,
 				AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -475,7 +473,6 @@
 		AAA666702D40684500C2B9DF /* libclammspack.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclammspack.0.dylib; sourceTree = "<group>"; };
 		AAA666712D40684500C2B9DF /* libssl.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libssl.3.dylib; sourceTree = "<group>"; };
 		AAA666772D40685C00C2B9DF /* clamscan */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = clamscan; sourceTree = "<group>"; };
-		AAA666792D40687800C2B9DF /* daily.cvd */ = {isa = PBXFileReference; lastKnownFileType = file; path = daily.cvd; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -790,7 +787,6 @@
 			isa = PBXGroup;
 			children = (
 				AA3B497C2D44839C00924536 /* freshclam */,
-				AAA666792D40687800C2B9DF /* daily.cvd */,
 				AAA666772D40685C00C2B9DF /* clamscan */,
 				AAA6666C2D40681200C2B9DF /* lib */,
 			);
