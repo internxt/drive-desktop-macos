@@ -89,7 +89,6 @@ struct AntivirusTabView: View {
         }
         .onAppear{
             Task {
-                await viewModel.fetchAntivirusStatus()
             }
             
         }
@@ -130,10 +129,7 @@ struct AntivirusTabView: View {
         VStack(spacing: 15) {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
-                let homeURL = FileManager.default.homeDirectoryForCurrentUser
-                let homePath = NSHomeDirectory()
-                appLogger.info("Home path :\(homePath)")
-                appLogger.info("Home url :\(homeURL.path)")
+              
 
             }
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
@@ -143,6 +139,7 @@ struct AntivirusTabView: View {
                         return
                     }
                     selectedPath = url.path
+                    appLogger.info("Resolved Selected Path: \(URL(fileURLWithPath: url.path).resolvingSymlinksInPath().path)")
                     viewModel.startScan(path: url.path)
                     
                 }
@@ -296,6 +293,7 @@ struct AntivirusTabView: View {
         let selectedInfected = viewModel.infectedFiles.filter { $0.isSelected }
         do {
             try viewModel.removeInfectedFiles(selectedInfected)
+            viewModel.currentState = .options
         } catch let error as NSError {
             if error.domain == NSCocoaErrorDomain,
                error.code == CocoaError.fileWriteNoPermission.rawValue {
