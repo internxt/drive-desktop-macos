@@ -120,8 +120,7 @@ struct FileSelectionView: View {
                     AppButton(title: "ANTIVIRUS_MODAL_COMMON_REMOVE", onClick: {
                         let selectedFiles = files.filter { $0.isSelected }
                         onConfirm(selectedFiles)
-                        
-                    }, type: .primary, size: .MD)
+                    }, type: .primary, size: .MD ,isEnabled: files.contains { $0.isSelected })
                     
                 }
                 .padding(.horizontal, 20)
