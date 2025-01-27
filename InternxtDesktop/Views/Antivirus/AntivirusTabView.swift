@@ -59,9 +59,9 @@ struct AntivirusTabView: View {
                     confirmColor: .red,
                     onCancel: {
                         self.showModalRemove = false
+                        viewModel.currentState = .options
                     },
                     onConfirm: {
-                        // delete files
                         userConfirmedRemove()
                         self.showModalRemove = false
                         
@@ -78,9 +78,9 @@ struct AntivirusTabView: View {
                     confirmColor: .blue,
                     onCancel: {
                         self.showModalCancel = false
+                        viewModel.currentState = .options
                     },
                     onConfirm: {
-                      // delete files
                         userConfirmedRemove()
                         self.showModalCancel = false
                     }
@@ -107,14 +107,14 @@ struct AntivirusTabView: View {
                 .foregroundColor(.Gray80)
             
             AppButton(title: "COMMON_UPGRADE", onClick: {
-                viewModel.currentState = .options
+                URLDictionary.UPGRADE_PLAN.open()
             })
             VStack(spacing: 15) {
                 
                 scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN",isEnabled: false) {
                     
                 }
-                scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES" , isEnabled: false) {
+                scanOptionRow(title: "ANTIVIRUS_CUSTOM_SCAN" , buttonTitle: "ANTIVIRUS_CHOOSE_FILES" , isEnabled: false) {
                     
                 }
             }
@@ -129,17 +129,22 @@ struct AntivirusTabView: View {
         VStack(spacing: 15) {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
-              
-
+                if let url = BookmarkManager.shared.resolveBookmark() {
+                    selectedPath = url.path
+                    viewModel.startScan(path: url.path)
+                    BookmarkManager.shared.stopAccessing(url: url)
+                } else {
+                    showUserDirectory()
+                }
+                
             }
-            scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
+            scanOptionRow(title: "ANTIVIRUS_CUSTOM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
                 selectFileOrFolder { url in
                     guard let url = url else {
                         appLogger.error("incorrect url")
                         return
                     }
                     selectedPath = url.path
-                    appLogger.info("Resolved Selected Path: \(URL(fileURLWithPath: url.path).resolvingSymlinksInPath().path)")
                     viewModel.startScan(path: url.path)
                     
                 }
@@ -221,6 +226,12 @@ struct AntivirusTabView: View {
                     .font(.SMRegular)
                     .foregroundColor(.Gray80)
                     .padding(.bottom,20)
+                
+                
+                AppButton(title: "Scan again",onClick: {
+                    viewModel.currentState = .options
+                },size: .SM)
+                
             } else {
                 Image("antivirusShieldRed")
                     .resizable()
@@ -291,6 +302,11 @@ struct AntivirusTabView: View {
     
     func userConfirmedRemove() {
         let selectedInfected = viewModel.infectedFiles.filter { $0.isSelected }
+        if selectedInfected.count == 0 {
+            self.showAlert(message: "ANTIVIRUS_NO_FILES_SELECTED")
+            self.viewModel.currentState = .options
+            return
+        }
         do {
             try viewModel.removeInfectedFiles(selectedInfected)
             viewModel.currentState = .options
@@ -308,13 +324,64 @@ struct AntivirusTabView: View {
     
     func showAlert(message: String, informativeText: String? = nil, style: NSAlert.Style = .informational, buttonTitle: String = "OK") {
         let alert = NSAlert()
-        alert.messageText = message
+        alert.messageText = NSLocalizedString(message, comment: "")
         alert.informativeText = informativeText ?? ""
         alert.alertStyle = style
         alert.addButton(withTitle: buttonTitle)
         alert.runModal()
     }
     
+
+
+    func selectUserFolder(completion: @escaping (URL?) -> Void) {
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Select Your User Folder"
+        openPanel.prompt = "Select"
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.directoryURL = URL(fileURLWithPath: "/Users/\(NSUserName())")
+        openPanel.level = .modalPanel
+        
+        openPanel.begin { result in
+            if result == .OK {
+                completion(openPanel.url)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
+    func showUserDirectory() {
+        selectUserFolder { url in
+            guard let url = url else {
+                appLogger.info("No folder selected.")
+                return
+            }
+            
+            let userHomeDirectory = "/Users/\(NSUserName())"
+            
+            if url.path == userHomeDirectory {
+                do {
+                    try BookmarkManager.shared.saveBookmark(url: url)
+                    appLogger.info("Bookmark saved.")
+                    selectedPath = url.path
+                    if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
+                        viewModel.startScan(path: resolvedURL.path)
+                    } else {
+                        appLogger.error("cannot get url")
+                    }
+                } catch {
+                    appLogger.error("Error saving bookmark: \(error)")
+                }
+            } else {
+                appLogger.error("Incorrect folder selected: \(url.path)")
+                self.showAlert(message: "You must select your user folder \(NSUserName())")
+                showUserDirectory()
+            }
+        }
+    }
+
 
     
 
