@@ -206,3 +206,5 @@
 "ANTIVIRUS_MODAL_DESCRIPTION_REMOVE" = "Removing the malware will also permanently delete the folder from your storage to protect your device. This action cannot be undone.\n\nPlease confirm to continue.";
 "ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "Malware is still present, and your device is at risk.\n\nAre you sure you want to cancel?";
 "ANTIVIRUS_MODAL_COMMON_REMOVE" = "Remove";
+"ANTIVIRUS_NO_FILES_SELECTED" = "There are no files selected to delete";
+
