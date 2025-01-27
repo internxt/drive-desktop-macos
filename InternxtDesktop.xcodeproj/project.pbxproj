@@ -111,6 +111,7 @@
 		AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */; };
 		AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */; };
 		AAE7975C2C875F5000AEFDEF /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
+		AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEC163F2D485083009B66BE /* BookmarkManager.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
@@ -483,6 +484,7 @@
 		AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAEC163F2D485083009B66BE /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -1255,6 +1257,7 @@
 			isa = PBXGroup;
 			children = (
 				E18300AF2AA2395100AD023C /* FileExtension.swift */,
+				AAEC163F2D485083009B66BE /* BookmarkManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1752,6 +1755,7 @@
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1D24AF42C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
+				AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */,
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,

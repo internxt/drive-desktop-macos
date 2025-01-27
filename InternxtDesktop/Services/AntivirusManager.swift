@@ -7,7 +7,7 @@
 
 import Foundation
 import InternxtSwiftCore
-
+import SwiftUI
 
 class AntivirusManager: ObservableObject {
     @Published var currentState: ScanState = .locked
@@ -22,30 +22,20 @@ class AntivirusManager: ObservableObject {
         do {
             if self.currentState != .scanning {
                 let paymentInfo = try await APIFactory.Payment.getPaymentInfo(debug: true)
-                DispatchQueue.main.async {
-                    self.currentState = paymentInfo.featuresPerService.antivirus ? .options : .locked
-                }
+                self.currentState = paymentInfo.featuresPerService.antivirus ? .options : .locked
             }
         }
         catch {
             
             guard let apiError = error as? APIClientError else {
                 appLogger.info(error.getErrorDescription())
-                DispatchQueue.main.async {
-                    self.currentState = .locked
-                }
                 return
             }
             appLogger.info(error.getErrorDescription())
             if(apiError.statusCode == 404) {
-                DispatchQueue.main.async {
-                    self.currentState = .locked
-                }
+                self.currentState = .locked
             }
         }
-        
-        testDownload()
-        
     }
     
     func startScan(path: String) {
@@ -55,36 +45,59 @@ class AntivirusManager: ObservableObject {
         scannedFiles = 0
         detectedFiles = 0
         
-        scanPathWithClamAVAndProgress(
-            path: path,
-            onProgress: { [weak self] scannedCount, lineInfo in
-                guard let self = self else { return }
-                
+        countFilesInDirectoryAsync(at: path) { [weak self] initialTotalFiles in
+            guard let self = self else { return }
+            
+            
+            if initialTotalFiles == 0 {
                 DispatchQueue.main.async {
-                    self.scannedFiles = scannedCount
-                    self.progress = min(self.progress + 1.0, 100.0)
+                    self.currentState = .results(noThreats: true)
+                    self.showAlert(message: "There are no files to scan")
                 }
-            },
-            onInfected: { [weak self] lineInfo in
-                guard let self = self else { return }
-                
-                let parts = lineInfo.components(separatedBy: ": ")
-                if !parts.isEmpty {
-                    let infectedPath = parts[0]
-                    let fileItem = createFileItem(for: infectedPath)
+                return
+            }
+            
+            var totalFiles = initialTotalFiles
+                        
+            self.scanPathWithClamAVAndProgress(
+                path: path,
+                onProgress: { [weak self] scannedCount, lineInfo in
+                    guard let self = self else { return }
+                    
                     DispatchQueue.main.async {
-                        self.infectedFiles.append(fileItem)
-                        self.detectedFiles += 1
+                        self.scannedFiles = scannedCount
+                        
+                        if scannedCount > totalFiles {
+                            totalFiles = scannedCount
+                        }
+                        let progressPercentage = Double(scannedCount) / Double(totalFiles) * 100.0
+                        if Int(progressPercentage) % 10 == 0 {
+                            self.progress = progressPercentage
+                        }
+                        
+                    }
+                },
+                onInfected: { [weak self] lineInfo in
+                    guard let self = self else { return }
+                    
+                    let parts = lineInfo.components(separatedBy: ": ")
+                    if !parts.isEmpty {
+                        let infectedPath = parts[0]
+                        let fileItem = createFileItem(for: infectedPath)
+                        DispatchQueue.main.async {
+                            self.infectedFiles.append(fileItem)
+                            self.detectedFiles += 1
+                        }
+                    }
+                },
+                onComplete: { [weak self] success in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.currentState = .results(noThreats: (self.detectedFiles == 0))
                     }
                 }
-            },
-            onComplete: { [weak self] success in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.currentState = .results(noThreats: (self.detectedFiles == 0))
-                }
-            }
-        )
+            )
+        }
     }
     
     func scanPathWithClamAVAndProgress(
@@ -93,100 +106,103 @@ class AntivirusManager: ObservableObject {
         onInfected: @escaping (_ lineInfo: String) -> Void,
         onComplete: @escaping (Bool) -> Void
     ) {
-        guard let clamscanURL = Bundle.main.url(
-            forResource: "clamscan",
-            withExtension: nil,
-            subdirectory: "ClamAVResources"
-        ) else {
-            appLogger.error("clamscan not found")
-            onComplete(false)
-            return
-        }
         
-        
-        let databaseDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-            .appendingPathComponent("ClamAV/database")
-        
-        guard FileManager.default.fileExists(atPath: databaseDir.path) else {
-            appLogger.error("DB Directory not found: \(databaseDir.path)")
-            onComplete(false)
-            return
-        }
-        
-        
-        let fileManager = FileManager.default
-        var isDir: ObjCBool = false
-        _ = fileManager.fileExists(atPath: path, isDirectory: &isDir)
-        
-        let process = Process()
-        process.executableURL = clamscanURL
-        
-        var arguments = [
-            "--database=\(databaseDir.path)",
-            "--no-summary",
-            "-v"
-        ]
-        if isDir.boolValue {
-            arguments.append("-r")
-        }
-        arguments.append(path)
-        process.arguments = arguments
-        
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = pipe
-        
-        var scannedCount = 0
-        
-        pipe.fileHandleForReading.readabilityHandler = { fileHandle in
-            let data = fileHandle.availableData
-            guard !data.isEmpty else {
+        DispatchQueue.global(qos: .background).async {
+            guard let clamscanURL = Bundle.main.url(
+                forResource: "clamscan",
+                withExtension: nil,
+                subdirectory: "ClamAVResources"
+            ) else {
+                appLogger.error("clamscan not found")
+                onComplete(false)
                 return
             }
             
-            let outputChunk = String(data: data, encoding: .utf8) ?? ""
-            let lines = outputChunk.components(separatedBy: .newlines)
-            for line in lines {
-                guard !line.isEmpty else { continue }
-                print(line)
-                if line.contains("FOUND") {
-                    scannedCount += 1
-                    onInfected(line)
-                    onProgress(scannedCount, line)
-                } else if line.contains(": ") {
-                    scannedCount += 1
-                    onProgress(scannedCount, line)
+            
+            let databaseDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                .appendingPathComponent("ClamAV/database")
+            
+            guard FileManager.default.fileExists(atPath: databaseDir.path) else {
+                appLogger.error("DB Directory not found: \(databaseDir.path)")
+                onComplete(false)
+                return
+            }
+            
+            
+            let fileManager = FileManager.default
+            var isDir: ObjCBool = false
+            _ = fileManager.fileExists(atPath: path, isDirectory: &isDir)
+            
+            let process = Process()
+            process.executableURL = clamscanURL
+            
+            var arguments = [
+                "--database=\(databaseDir.path)",
+                "--no-summary",
+                "-v"
+            ]
+            if isDir.boolValue {
+                arguments.append("-r")
+            }
+            arguments.append(path)
+            process.arguments = arguments
+            
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
+            
+            var scannedCount = 0
+            
+            pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+                let data = fileHandle.availableData
+                guard !data.isEmpty else {
+                    return
+                }
+                
+                let outputChunk = String(data: data, encoding: .utf8) ?? ""
+                let lines = outputChunk.components(separatedBy: .newlines)
+                for line in lines {
+                    guard !line.isEmpty else { continue }
+                    if line.contains("FOUND") {
+                        scannedCount += 1
+                        onInfected(line)
+                        onProgress(scannedCount, line)
+                    } else if line.contains(": ") {
+                        scannedCount += 1
+                        onProgress(scannedCount, line)
+                    }
                 }
             }
-        }
-        
-        process.terminationHandler = { _ in
-            pipe.fileHandleForReading.readabilityHandler = nil
             
-            let exitCode = process.terminationStatus
-            
-            DispatchQueue.main.async {
-                switch exitCode {
-                case 0:
-                    onComplete(true)
-                case 1:
-                    appLogger.warning("Scan completed, infections found.")
-                    onComplete(true)
-                case 2:
-                    appLogger.error("Error during scan.")
-                    onComplete(false)
-                default:
-                    appLogger.error("Unknown exit code: \(exitCode)")
-                    onComplete(false)
+            process.terminationHandler = { _ in
+                pipe.fileHandleForReading.readabilityHandler = nil
+                
+                let exitCode = process.terminationStatus
+                
+                DispatchQueue.main.async {
+                    switch exitCode {
+                    case 0:
+                        onComplete(true)
+                    case 1:
+                        appLogger.warning("Scan completed, infections found.")
+                        onComplete(true)
+                    case 2:
+                        appLogger.error("Error during scan.")
+                        onComplete(false)
+                    default:
+                        appLogger.error("Unknown exit code: \(exitCode)")
+                        onComplete(false)
+                    }
                 }
             }
-        }
-        
-        do {
-            try process.run()
-        } catch {
-            appLogger.error(error.localizedDescription)
-            onComplete(false)
+            
+            do {
+                try process.run()
+            } catch {
+                appLogger.error(error.localizedDescription)
+                onComplete(false)
+            }
+            
         }
     }
     
@@ -249,7 +265,7 @@ class AntivirusManager: ObservableObject {
                 let output = String(data: fileHandle.availableData, encoding: .utf8) ?? ""
                 
                 if output.contains("Downloading daily.cvd") || output.contains("Downloading main.cvd") {
-                    print("Update in progress")
+                    // download
                 } else if output.contains("Your ClamAV database is up to date.") {
                     appLogger.info("Databases are up to date")
                 }
@@ -280,7 +296,12 @@ class AntivirusManager: ObservableObject {
     
     
     
-    func testDownload() {
+    func downloadDatabases() {
+        
+        if self.currentState == .locked {
+            return
+        }
+        
         let fileManager = FileManager.default
         let appSupportDir = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let clamAVDir = appSupportDir.appendingPathComponent("ClamAV")
@@ -307,7 +328,6 @@ class AntivirusManager: ObservableObject {
             DatabaseMirror database.clamav.net
             Checks 24
             """.write(toFile: freshclamConfigPath.path, atomically: true, encoding: .utf8)
-            print(freshclamConfigPath.path)
         } catch {
             appLogger.error("Error generating freshclam.conf: \(error.localizedDescription)")
             return
@@ -343,9 +363,9 @@ class AntivirusManager: ObservableObject {
                 let currentDate = Date()
                 let calendar = Calendar.current
                 
-                // check update from file
-                if let difference = calendar.dateComponents([.hour], from: modificationDate, to: currentDate).hour, difference > 24 {
-                    appLogger.info("\(fileName) its not update. last modification: \(modificationDate).")
+                // Check update from file
+                if let difference = calendar.dateComponents([.day], from: modificationDate, to: currentDate).day, difference > 5 {
+                    appLogger.info("\(fileName) is not updated. Last modification: \(modificationDate).")
                     return false
                 }
             } else {
@@ -369,6 +389,42 @@ class AntivirusManager: ObservableObject {
         } catch {
             appLogger.error("Error cleaning database directory: \(error.localizedDescription)")
         }
+    }
+    
+    func countFilesInDirectoryAsync(at directoryPath: String, completion: @escaping (Int) -> Void) {
+        DispatchQueue.global(qos: .background).async {
+            let fileManager = FileManager.default
+            let baseURL = URL(fileURLWithPath: directoryPath)
+            
+            guard let enumerator = fileManager.enumerator(at: baseURL, includingPropertiesForKeys: nil,
+                                                          options: [.skipsHiddenFiles]
+            ) else {
+                DispatchQueue.main.async {
+                    completion(0)
+                }
+                return
+            }
+            
+            var fileCount = 0
+            for case let fileURL as URL in enumerator {
+                if !fileURL.hasDirectoryPath {
+                    fileCount += 1
+                }
+            }
+            
+            DispatchQueue.main.async {
+                completion(fileCount)
+            }
+        }
+    }
+    
+    func showAlert(message: String, informativeText: String? = nil, style: NSAlert.Style = .informational, buttonTitle: String = "OK") {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.informativeText = informativeText ?? ""
+        alert.alertStyle = style
+        alert.addButton(withTitle: buttonTitle)
+        alert.runModal()
     }
     
 }
