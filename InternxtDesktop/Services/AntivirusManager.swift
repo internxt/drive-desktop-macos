@@ -94,6 +94,12 @@ class AntivirusManager: ObservableObject {
                     guard let self = self else { return }
                     DispatchQueue.main.async {
                         self.currentState = .results(noThreats: (self.detectedFiles == 0))
+                        if self.detectedFiles == 0 {
+                            if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
+                                 BookmarkManager.shared.stopAccessing(url: resolvedURL)
+                                appLogger.info("Bookmark released")
+                             }
+                        }
                     }
                 }
             )

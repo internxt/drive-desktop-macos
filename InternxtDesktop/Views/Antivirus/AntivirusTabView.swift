@@ -132,7 +132,6 @@ struct AntivirusTabView: View {
                 if let url = BookmarkManager.shared.resolveBookmark() {
                     selectedPath = url.path
                     viewModel.startScan(path: url.path)
-                    BookmarkManager.shared.stopAccessing(url: url)
                 } else {
                     showUserDirectory()
                 }
