@@ -400,11 +400,24 @@ class AntivirusManager: ObservableObject {
     func countFilesInDirectoryAsync(at directoryPath: String, completion: @escaping (Int) -> Void) {
         DispatchQueue.global(qos: .background).async {
             let fileManager = FileManager.default
+            var isDirectory: ObjCBool = false
+
+            if fileManager.fileExists(atPath: directoryPath, isDirectory: &isDirectory) {
+                if !isDirectory.boolValue {
+                    DispatchQueue.main.async {
+                        completion(1)
+                    }
+                    return
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(0)
+                }
+                return
+            }
             let baseURL = URL(fileURLWithPath: directoryPath)
-            
             guard let enumerator = fileManager.enumerator(at: baseURL, includingPropertiesForKeys: nil,
-                                                          options: [.skipsHiddenFiles]
-            ) else {
+                                                          options: [.skipsHiddenFiles]) else {
                 DispatchQueue.main.async {
                     completion(0)
                 }
