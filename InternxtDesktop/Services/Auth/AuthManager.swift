@@ -68,10 +68,10 @@ class AuthManager: ObservableObject {
             uuid: refreshUserResponse.user.uuid
         )
         try config.setUser(user: refreshUserResponse.user)
-        let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces(debug: true)
+        let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces()
         try config.setAvailableWorkspaces(workspaces: workspaces.availableWorkspaces)
         if !workspaces.availableWorkspaces.isEmpty{
-            let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId, debug: true)
+            let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId)
                 try config.setWorkspaceCredentials(credentials: credentials)
             saveWorkspaceMnemonic(key: workspaces.availableWorkspaces[0].workspaceUser.key)
             DispatchQueue.main.async{ self.workspaceCredentials = credentials}

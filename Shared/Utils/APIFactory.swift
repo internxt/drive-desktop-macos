@@ -122,6 +122,15 @@ struct APIFactory {
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
     
+    static var Payment: DriveAPI {
+        let configLoader = ConfigLoader()
+
+        let config = configLoader.get()
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+
+        return DriveAPI(baseUrl: config.NETWORK_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+    
     static func getNewBackupsClient() -> BackupAPI {
         return BackupNew
     }
