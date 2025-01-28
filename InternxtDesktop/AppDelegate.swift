@@ -307,6 +307,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         Task {
             do {
                 self.startTokensRefreshing()
+                await antivirusManager.fetchAntivirusStatus()
                 await usageManager.updateUsage()
                 self.logger.info("✅ Usage updated")
                 try await authManager.initializeCurrentUser()
@@ -325,7 +326,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     return
                 }
                try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
-                await antivirusManager.fetchAntivirusStatus()
+                
                 antivirusManager.downloadDatabases()
                 self.logger.info("Workspaces setted correctly")
             } catch {

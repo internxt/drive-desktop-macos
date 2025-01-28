@@ -20,6 +20,7 @@ class AntivirusManager: ObservableObject {
     @MainActor
     func fetchAntivirusStatus() async {
         do {
+            appLogger.info("Antivirus Information")
             if self.currentState != .scanning {
                 let paymentInfo = try await APIFactory.Payment.getPaymentInfo(debug: true)
                 self.currentState = paymentInfo.featuresPerService.antivirus ? .options : .locked
@@ -303,8 +304,9 @@ class AntivirusManager: ObservableObject {
     
     
     func downloadDatabases() {
-        
+        appLogger.info("Download databases")
         if self.currentState == .locked {
+            appLogger.info("Status is locked")
             return
         }
         
