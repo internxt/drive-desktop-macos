@@ -49,7 +49,7 @@ struct GeneralTabView: View {
             Divider().background(Color.Gray10).padding(.vertical, 24).zIndex(-1)
             HStack {
                 VStack(alignment: .leading) {
-                    AppText("Internxt Drive v\(getVersion())")
+                    AppText("Internxt v\(getVersion())")
                         .font(.SMMedium)
                         .foregroundColor(Color.Gray100)
                     Text("SETTINGS_LAST_UPDATE_CHECK_\(getLastUpdateCheck())")

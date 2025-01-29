@@ -230,7 +230,7 @@ class AntivirusManager: ObservableObject {
                   process.terminate()
                   self.scanProcess = nil
                   DispatchQueue.main.async {
-                      self.currentState = .results(noThreats: false)
+                      self.currentState = .results(noThreats: (self.detectedFiles == 0))
                       appLogger.info("Process cancel by user")
                   }
               }

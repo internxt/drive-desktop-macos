@@ -32,7 +32,7 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
                     .environmentObject(scheduleManager)
                     .environmentObject(antivirusManager)
             }),
-            title: "Internxt Drive",
+            title: "Internxt",
             id: "settings",
             width: 400,
             height: 290,
