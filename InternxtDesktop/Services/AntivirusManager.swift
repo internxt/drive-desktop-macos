@@ -16,6 +16,9 @@ class AntivirusManager: ObservableObject {
     @Published var progress: Double = 0.0
     @Published var showAntivirus: Bool = false
     @Published var infectedFiles: [FileItem] = []
+    @Published var selectedPath: String = ""
+
+    var scanProcess: Process?
     
     @MainActor
     func fetchAntivirusStatus() async {
@@ -75,7 +78,7 @@ class AntivirusManager: ObservableObject {
                         if Int(progressPercentage) % 10 == 0 {
                             self.progress = progressPercentage
                         }
-                        
+                        self.selectedPath = lineInfo
                     }
                 },
                 onInfected: { [weak self] lineInfo in
@@ -86,6 +89,7 @@ class AntivirusManager: ObservableObject {
                         let infectedPath = parts[0]
                         let fileItem = createFileItem(for: infectedPath)
                         DispatchQueue.main.async {
+                            self.selectedPath = infectedPath
                             self.infectedFiles.append(fileItem)
                             self.detectedFiles += 1
                         }
@@ -114,7 +118,9 @@ class AntivirusManager: ObservableObject {
         onComplete: @escaping (Bool) -> Void
     ) {
         
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            
             guard let clamscanURL = Bundle.main.url(
                 forResource: "clamscan",
                 withExtension: nil,
@@ -125,7 +131,6 @@ class AntivirusManager: ObservableObject {
                 return
             }
             
-            
             let databaseDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
                 .appendingPathComponent("ClamAV/database")
             
@@ -134,7 +139,6 @@ class AntivirusManager: ObservableObject {
                 onComplete(false)
                 return
             }
-            
             
             let fileManager = FileManager.default
             var isDir: ObjCBool = false
@@ -181,7 +185,8 @@ class AntivirusManager: ObservableObject {
                 }
             }
             
-            process.terminationHandler = { _ in
+            process.terminationHandler = { [weak self] _ in
+                guard let self = self else { return }
                 pipe.fileHandleForReading.readabilityHandler = nil
                 
                 let exitCode = process.terminationStatus
@@ -200,18 +205,37 @@ class AntivirusManager: ObservableObject {
                         appLogger.error("Unknown exit code: \(exitCode)")
                         onComplete(false)
                     }
+                    
+                    self.scanProcess = nil
                 }
             }
             
             do {
+                self.scanProcess = process
                 try process.run()
             } catch {
                 appLogger.error(error.localizedDescription)
                 onComplete(false)
+                self.scanProcess = nil
             }
             
         }
     }
+
+    
+    func cancelScan() {
+          DispatchQueue.global(qos: .background).async { [weak self] in
+              guard let self = self else { return }
+              if let process = self.scanProcess {
+                  process.terminate()
+                  self.scanProcess = nil
+                  DispatchQueue.main.async {
+                      self.currentState = .results(noThreats: false)
+                      appLogger.info("Process cancel by user")
+                  }
+              }
+          }
+      }
     
     func createFileItem(for filePath: String) -> FileItem {
         let fileURL = URL(fileURLWithPath: filePath)

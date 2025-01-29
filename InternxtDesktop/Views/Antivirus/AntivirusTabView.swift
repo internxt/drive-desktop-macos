@@ -21,6 +21,8 @@ struct AntivirusTabView: View {
     @State private var isModalPresented = false
     @State private var showModalRemove = false
     @State private var showModalCancel = false
+    @State private var showCancelConfirmation = false
+    
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
@@ -87,11 +89,17 @@ struct AntivirusTabView: View {
                 )
             }
         }
-        .onAppear{
-            Task {
-            }
-            
+        .alert(isPresented: $showCancelConfirmation) {
+            Alert(
+                title: Text("Cancel Scan"),
+                message: Text("Are you sure you want to cancel the current scan?"),
+                primaryButton: .destructive(Text("Cancel Scan")) {
+                    viewModel.cancelScan()
+                },
+                secondaryButton: .cancel(Text("Continue Scanning"))
+            )
         }
+
     }
     
     
@@ -130,7 +138,7 @@ struct AntivirusTabView: View {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
                 if let url = BookmarkManager.shared.resolveBookmark() {
-                    selectedPath = url.path
+                    viewModel.selectedPath = url.path
                     viewModel.startScan(path: url.path)
                 } else {
                     showUserDirectory()
@@ -143,7 +151,7 @@ struct AntivirusTabView: View {
                         appLogger.error("incorrect url")
                         return
                     }
-                    selectedPath = url.path
+                    viewModel.selectedPath = url.path
                     viewModel.startScan(path: url.path)
                     
                 }
@@ -178,7 +186,7 @@ struct AntivirusTabView: View {
                 .foregroundColor(.Gray100)
             
             
-            AppText(selectedPath ?? "")
+            AppText(viewModel.selectedPath)
                 .font(.SMRegular)
                 .foregroundColor(.Gray80)
             ProgressView(value: viewModel.progress / 100.0)
@@ -189,6 +197,10 @@ struct AntivirusTabView: View {
             AppText("\(Int(viewModel.progress))%")
                 .font(.SMMedium)
                 .foregroundColor(.Gray80)
+            
+            AppButton(title: "Cancel Scan", onClick: {
+                self.showCancelConfirmation = true
+            })
             
             HStack {
                 scanDetail(title: "ANTIVIRUS_SCANNED_FILES", value: viewModel.scannedFiles)
