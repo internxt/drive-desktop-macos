@@ -138,7 +138,7 @@ struct AntivirusTabView: View {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
                 if let url = BookmarkManager.shared.resolveBookmark() {
-                    viewModel.selectedPath = url.path
+                    self.selectedPath = url.path
                     viewModel.startScan(path: url.path)
                 } else {
                     showUserDirectory()
@@ -151,7 +151,7 @@ struct AntivirusTabView: View {
                         appLogger.error("incorrect url")
                         return
                     }
-                    viewModel.selectedPath = url.path
+                    selectedPath = url.path
                     viewModel.startScan(path: url.path)
                     
                 }
@@ -186,7 +186,7 @@ struct AntivirusTabView: View {
                 .foregroundColor(.Gray100)
             
             
-            AppText(viewModel.selectedPath)
+            AppText(selectedPath ?? "")
                 .font(.SMRegular)
                 .foregroundColor(.Gray80)
             ProgressView(value: viewModel.progress / 100.0)
