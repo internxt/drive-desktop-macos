@@ -613,7 +613,7 @@
 		E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupDownloadEntryView.swift; sourceTree = "<group>"; };
 		E1F616062A8D7DF8008C9E62 /* SignInWithBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithBrowserView.swift; sourceTree = "<group>"; };
 		E1F616082A8D7E6F008C9E62 /* AppButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButton.swift; sourceTree = "<group>"; };
-		E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Internxt Drive.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1FB2D242A76BF0200473AE1 /* Internxt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Internxt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FB2D2B2A76BF0300473AE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E1FB2D2E2A76BF0300473AE1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E1FB2D302A76BF0300473AE1 /* InternxtDesktop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InternxtDesktop.entitlements; sourceTree = "<group>"; };
@@ -1202,7 +1202,7 @@
 		E1FB2D252A76BF0200473AE1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */,
+				E1FB2D242A76BF0200473AE1 /* Internxt.app */,
 				E1FB2D812A76C48600473AE1 /* SyncExtension.appex */,
 				31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */,
 				E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */,
@@ -1430,7 +1430,7 @@
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 			);
 			productName = InternxtDesktop;
-			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
+			productReference = E1FB2D242A76BF0200473AE1 /* Internxt.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E1FB2D802A76C48600473AE1 /* SyncExtension */ = {
@@ -2368,7 +2368,7 @@
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
-				PRODUCT_NAME = "Internxt Drive";
+				PRODUCT_NAME = Internxt;
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
@@ -2579,7 +2579,7 @@
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
-				PRODUCT_NAME = "Internxt Drive";
+				PRODUCT_NAME = Internxt;
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
@@ -2626,7 +2626,7 @@
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
-				PRODUCT_NAME = "Internxt Drive";
+				PRODUCT_NAME = Internxt;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
