@@ -207,4 +207,8 @@
 "ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "Malware is still present, and your device is at risk.\n\nAre you sure you want to cancel?";
 "ANTIVIRUS_MODAL_COMMON_REMOVE" = "Remove";
 "ANTIVIRUS_NO_FILES_SELECTED" = "There are no files selected to delete";
+"ANTIVIRUS_CANCEL_SCAN" = "Cancel Scan";
+"ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "Are you sure you want to cancel the current scan?";
+"ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continue Scanning";
+"ANTIVIRUS_SCAN_AGAIN" = "Scan again";
 

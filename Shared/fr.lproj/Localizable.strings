@@ -207,5 +207,11 @@
 "ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "Le logiciel malveillant est toujours présent et votre appareil est en danger.\n\nÊtes-vous sûr de vouloir annuler ?";
 "ANTIVIRUS_MODAL_COMMON_REMOVE" = "Supprimer";
 "ANTIVIRUS_NO_FILES_SELECTED" = "Aucun fichier n'est sélectionné pour être supprimé";
+"ANTIVIRUS_CANCEL_SCAN" = "Annuler l'analyse";
+"ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "Êtes-vous sûr de vouloir annuler l'analyse en cours ?";
+"ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continuer l'analyse";
+"ANTIVIRUS_SCAN_AGAIN" = "Analyser à nouveau";
+
+
 
 
