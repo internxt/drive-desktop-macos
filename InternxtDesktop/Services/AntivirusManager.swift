@@ -78,6 +78,7 @@ class AntivirusManager: ObservableObject {
                         if Int(progressPercentage) % 10 == 0 {
                             self.progress = progressPercentage
                         }
+                        self.selectedPath = lineInfo
                     }
                 },
                 onInfected: { [weak self] lineInfo in
@@ -90,6 +91,7 @@ class AntivirusManager: ObservableObject {
                         DispatchQueue.main.async {
                             self.infectedFiles.append(fileItem)
                             self.detectedFiles += 1
+                            self.selectedPath = infectedPath
                         }
                     }
                 },

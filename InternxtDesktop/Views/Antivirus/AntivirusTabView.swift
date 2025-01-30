@@ -91,12 +91,12 @@ struct AntivirusTabView: View {
         }
         .alert(isPresented: $showCancelConfirmation) {
             Alert(
-                title: Text("Cancel Scan"),
-                message: Text("Are you sure you want to cancel the current scan?"),
-                primaryButton: .destructive(Text("Cancel Scan")) {
+                title: Text("ANTIVIRUS_CANCEL_SCAN"),
+                message: Text("ANTIVIRUS_CANCEL_SCAN_MESSAGE"),
+                primaryButton: .destructive(Text("ANTIVIRUS_CANCEL_SCAN")) {
                     viewModel.cancelScan()
                 },
-                secondaryButton: .cancel(Text("Continue Scanning"))
+                secondaryButton: .cancel(Text("ANTIVIRUS_CANCEL_SCAN_CONTINUE"))
             )
         }
 
@@ -139,6 +139,7 @@ struct AntivirusTabView: View {
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
                 if let url = BookmarkManager.shared.resolveBookmark() {
                     self.selectedPath = url.path
+                    viewModel.selectedPath = url.path
                     viewModel.startScan(path: url.path)
                 } else {
                     showUserDirectory()
@@ -152,6 +153,7 @@ struct AntivirusTabView: View {
                         return
                     }
                     selectedPath = url.path
+                    viewModel.selectedPath = url.path
                     viewModel.startScan(path: url.path)
                     
                 }
@@ -186,9 +188,14 @@ struct AntivirusTabView: View {
                 .foregroundColor(.Gray100)
             
             
-            AppText(selectedPath ?? "")
-                .font(.SMRegular)
-                .foregroundColor(.Gray80)
+            AppText(viewModel.selectedPath)
+                 .font(.SMRegular)
+                 .foregroundColor(.Gray80)
+                 .lineLimit(2)
+                 .truncationMode(.tail)
+                 .frame(maxWidth: .infinity)
+                 .frame(height: 40)
+            
             ProgressView(value: viewModel.progress / 100.0)
                 .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
                 .scaleEffect(x: 1, y: 2, anchor: .center)
@@ -198,7 +205,7 @@ struct AntivirusTabView: View {
                 .font(.SMMedium)
                 .foregroundColor(.Gray80)
             
-            AppButton(title: "Cancel Scan", onClick: {
+            AppButton(title: "ANTIVIRUS_CANCEL_SCAN", onClick: {
                 self.showCancelConfirmation = true
             })
             
@@ -239,7 +246,7 @@ struct AntivirusTabView: View {
                     .padding(.bottom,20)
                 
                 
-                AppButton(title: "Scan again",onClick: {
+                AppButton(title: "ANTIVIRUS_SCAN_AGAIN",onClick: {
                     viewModel.currentState = .options
                 },size: .SM)
                 
@@ -377,6 +384,7 @@ struct AntivirusTabView: View {
                     try BookmarkManager.shared.saveBookmark(url: url)
                     appLogger.info("Bookmark saved.")
                     selectedPath = url.path
+                    viewModel.selectedPath = url.path
                     if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
                         viewModel.startScan(path: resolvedURL.path)
                     } else {
