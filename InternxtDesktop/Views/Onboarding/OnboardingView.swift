@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     public let finishOrSkipOnboarding: () -> Void
-    public let totalSlides = 5
+    public let totalSlides = 7
     @State var currentSlideIndex = 0
     var body: some View {
         HStack(alignment: .top,spacing: 0){
@@ -69,6 +69,19 @@ struct OnboardingView: View {
                 totalSlides: totalSlides
             )
         case 5:
+            OnboardingSlide6View(
+                goToNextSlide: handleGoToNextSlide,
+                currentSlide: currentSlideIndex + 1,
+                totalSlides: totalSlides
+            )
+
+        case 6:
+            OnboardingSlide7View(
+                goToNextSlide: handleGoToNextSlide,
+                currentSlide: currentSlideIndex + 1,
+                totalSlides: totalSlides
+            )
+        case 7:
             OnboardingFinishView(finishOnboarding: handleFinishOnboarding)
         default:
             EmptyView()
@@ -78,7 +91,7 @@ struct OnboardingView: View {
     @ViewBuilder
     var CurrentSlideImage: some View {
         switch currentSlideIndex{
-        case 0, 1, 4, 5:
+        case 0, 1, 4, 7:
             ZStack(alignment: .top) {
                 Image("FinderIllustration")
             }.offset(x: 80, y: 80)
@@ -94,7 +107,18 @@ struct OnboardingView: View {
                     .scaledToFit().frame(width: 204)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
+        case 5:
+            VStack(alignment: .center) {
+                Image("virusIllustration").resizable()
+                    .scaledToFit().frame(width: 204)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case 6:
+            VStack(alignment: .center) {
+                Image("folderIllustration").resizable()
+                    .scaledToFit().frame(width: 204)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         default:
             EmptyView()
         }

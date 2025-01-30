@@ -165,6 +165,15 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Etiqueta los archivos **disponibles sin conexión** para acceder a ellos en cualquier momento, con o sin internet";
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Etiqueta archivos **sólo en línea** para ahorrar espacio físico en el disco duro";
 
+// Onboarding > Slide 6
+"ONBOARDING_SLIDE_6_TITLE" = "Mantén tu computadora segura contra virus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "La aplicación de escritorio de Internxt ahora también incluye el nuevo Internxt Antivirus, con el cual puedes escanear y eliminar cualquier malware potencial de tu dispositivo.";
+
+// Onboarding > Slide 7
+"ONBOARDING_SLIDE_7_TITLE" = "Respaldar tu dispositivo en la nube";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "Con la función de respaldo mejorada de Internxt, ahora puedes respaldar carpetas de forma segura en la nube para liberar espacio localmente.";
+
+
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "¡Ya está todo listo, disfruta de tu privacidad!";
 "ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive está listo";

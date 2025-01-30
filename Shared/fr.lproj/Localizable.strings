@@ -166,6 +166,15 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Etiqueter les fichiers **disponibles hors ligne** pour y accéder à tout moment, avec ou sans internet";
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Étiqueter les fichiers **uniquement en ligne** pour économiser de l'espace sur le disque dur";
 
+// Onboarding > Slide 6
+"ONBOARDING_SLIDE_6_TITLE" = "Protégez votre ordinateur contre les virus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "L'application de bureau d'Internxt propose désormais le tout nouveau Internxt Antivirus, avec lequel vous pouvez analyser et supprimer tout logiciel malveillant potentiel de votre appareil.";
+
+// Onboarding > Slide 7
+"ONBOARDING_SLIDE_7_TITLE" = "Sauvegardez votre appareil dans le cloud";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "Avec la fonctionnalité de sauvegarde améliorée d'Internxt, vous pouvez désormais sauvegarder en toute sécurité des dossiers dans le cloud afin de libérer de l'espace localement.";
+
+
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "Vous êtes prêt, profitez de votre confidentialité !";
 "ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive est prêt";

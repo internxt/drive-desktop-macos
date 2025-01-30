@@ -166,6 +166,14 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Label files **available offline** to access them anytime, with or without internet";
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Label files **online only** to save physical hard drive space";
 
+// Onboarding > Slide 6
+"ONBOARDING_SLIDE_6_TITLE" = "Keep your computer safe from virus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "Internxt’s Desktop app now also features the brand new Internxt Antivirus, with which you can scan and remove any potential malware from your device.";
+
+// Onboarding > Slide 7
+"ONBOARDING_SLIDE_7_TITLE" = "Backup your device on the cloud";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "With Internxt's upgraded backup feature, you can now safely backup folders on the cloud in order to free up space locally.";
+
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "You're all set, enjoy your privacy!";
 "ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive is ready";

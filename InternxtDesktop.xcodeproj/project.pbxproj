@@ -76,6 +76,8 @@
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
+		AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */; };
+		AA628F2C2D4BFBA800421CB7 /* OnboardingSlide7View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
@@ -464,6 +466,8 @@
 		AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusTabView.swift; sourceTree = "<group>"; };
 		AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusManager.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
+		AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide6View.swift; sourceTree = "<group>"; };
+		AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide7View.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
@@ -1092,6 +1096,8 @@
 				E17C84B72AB2787200A58414 /* OnboardingSlide4View.swift */,
 				E17C84BB2AB2796F00A58414 /* OnboardingSlide5View.swift */,
 				E17C84C92AB31E0400A58414 /* OnboardingFinishView.swift */,
+				AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */,
+				AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -1721,6 +1727,7 @@
 				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */,
+				AA628F2C2D4BFBA800421CB7 /* OnboardingSlide7View.swift in Sources */,
 				AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
@@ -1728,6 +1735,7 @@
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
+				AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */,
 				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
 				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
