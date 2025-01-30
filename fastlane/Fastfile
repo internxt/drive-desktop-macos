@@ -63,9 +63,9 @@ platform :mac do
   
     
     
-    app_path = "build/Internxt Drive.app"
+    app_path = "build/Internxt.app"
     dmg_original_name = "Internxt #{version_number}.dmg"
-    dmg_final_name = "Internxt_Drive_#{version}.dmg"
+    dmg_final_name = "Internxt_#{version}.dmg"
     dmg_destination_dir = "build"
       
     # Build, archive and sign the .app
@@ -161,9 +161,9 @@ platform :mac do
     )
 
     
-    app_path = "build/Internxt Drive.app"
+    app_path = "build/Internxt.app"
     dmg_original_name = "Internxt #{version_number}.dmg"
-    dmg_final_name = "Internxt_Drive_#{version}.dmg"
+    dmg_final_name = "Internxt_#{version}.dmg"
     dmg_destination_dir = "build"
       
     # Build, archive and sign the .app
