@@ -12,6 +12,8 @@ struct SettingsMenuView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
+    @EnvironmentObject var antivirusManager: AntivirusManager
+
     var openSendFeedback: () -> Void
     var isPreview: Bool = false;
     
@@ -25,7 +27,9 @@ struct SettingsMenuView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: handleOpenAntivirus)
+                    if antivirusManager.currentState != .locked {
+                        SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: handleOpenAntivirus)
+                    }
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)

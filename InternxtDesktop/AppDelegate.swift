@@ -438,6 +438,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 .environmentObject(self.settingsManager)
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
+                .environmentObject(self.antivirusManager)
         )
     }
     

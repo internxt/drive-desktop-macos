@@ -37,7 +37,8 @@ struct SettingsView: View {
                         TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
                         TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
                         TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
-                        TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus)
+                        if antivirusManager.currentState != .locked {
+                            TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus) }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
