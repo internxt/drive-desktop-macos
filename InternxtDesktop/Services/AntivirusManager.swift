@@ -19,6 +19,7 @@ class AntivirusManager: ObservableObject {
     @Published var selectedPath: String = ""
 
     var scanProcess: Process?
+    private var isCancelled = false
     
     @MainActor
     func fetchAntivirusStatus() async {
@@ -56,7 +57,6 @@ class AntivirusManager: ObservableObject {
             if initialTotalFiles == 0 {
                 DispatchQueue.main.async {
                     self.currentState = .results(noThreats: true)
-                    self.showAlert(message: "There are no files to scan")
                 }
                 return
             }
@@ -224,6 +224,7 @@ class AntivirusManager: ObservableObject {
     func cancelScan() {
           DispatchQueue.global(qos: .background).async { [weak self] in
               guard let self = self else { return }
+              self.isCancelled = true
               if let process = self.scanProcess {
                   process.terminate()
                   self.scanProcess = nil
@@ -451,6 +452,11 @@ class AntivirusManager: ObservableObject {
     }
         
     func countAllFiles(atPath path: String) -> Int {
+        
+        guard !isCancelled else {
+            return 0
+        }
+        
         guard let dir = opendir(path) else {
             appLogger.info("Error opening directory \(path)")
             return 0
@@ -460,6 +466,8 @@ class AntivirusManager: ObservableObject {
         
         var fileCount = 0
         while let entry = readdir(dir) {
+            if isCancelled { return 0 }
+
             let name = withUnsafePointer(to: &entry.pointee.d_name) {
                 String(cString: UnsafeRawPointer($0).assumingMemoryBound(to: CChar.self))
             }
@@ -492,11 +500,27 @@ class AntivirusManager: ObservableObject {
     }
 
     func countAllFilesAsync(atPath path: String, completion: @escaping (Int) -> Void) {
+        isCancelled = false
         DispatchQueue.global(qos: .userInitiated).async {
+            
+            let fileManager = FileManager.default
+            var isDirectory: ObjCBool = false
+            
+            if fileManager.fileExists(atPath: path, isDirectory: &isDirectory) {
+                if !isDirectory.boolValue {
+                    DispatchQueue.main.async { completion(1) }
+                    return
+                    
+                }
+            } else {
+                DispatchQueue.main.async { completion(0) }
+                return
+            }
+            
             let fileCount = self.countAllFiles(atPath: path)
             
             DispatchQueue.main.async {
-                completion(fileCount)
+                completion(self.isCancelled ? 0 : fileCount)
             }
         }
     }
