@@ -84,8 +84,8 @@
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
-"SETTINGS_START_ON_LAUNCH" = "Démarrer Internxt Drive au démarrage du système";
-"SETTINGS_LEARN_MORE" = "En savoir plus sur Internxt Drive";
+"SETTINGS_START_ON_LAUNCH" = "Démarrer Internxt au démarrage du système";
+"SETTINGS_LEARN_MORE" = "En savoir plus sur Internxt";
 "SETTINGS_OPEN_LOGS" = "Ouvrir des registres";
 "SETTINGS_SPANISH_LANGUAGE" = "Español (Espagnol)";
 "SETTINGS_ENGLISH_LANGUAGE" = "English (Anglais)";

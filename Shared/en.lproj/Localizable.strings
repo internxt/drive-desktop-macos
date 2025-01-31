@@ -85,8 +85,8 @@
 "SETTINGS_DEVICE_NAME" = "Device name";
 "SETTINGS_CHECK_FOR_UPDATES" = "Check for updates";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Last checked %@";
-"SETTINGS_START_ON_LAUNCH" = "Start Internxt Drive on system startup";
-"SETTINGS_LEARN_MORE" = "Learn more about Internxt Drive";
+"SETTINGS_START_ON_LAUNCH" = "Start Internxt on system startup";
+"SETTINGS_LEARN_MORE" = "Learn more about Internxt";
 "SETTINGS_OPEN_LOGS" = "Open Logs";
 "SETTINGS_SPANISH_LANGUAGE" = "Español (Spanish)";
 "SETTINGS_ENGLISH_LANGUAGE" = "English (English)";
