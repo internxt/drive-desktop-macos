@@ -91,7 +91,7 @@ struct OnboardingView: View {
     @ViewBuilder
     var CurrentSlideImage: some View {
         switch currentSlideIndex{
-        case 0, 1, 4, 7:
+        case 0, 1, 7:
             ZStack(alignment: .top) {
                 Image("FinderIllustration")
             }.offset(x: 80, y: 80)
@@ -104,6 +104,13 @@ struct OnboardingView: View {
         case 3:
             VStack(alignment: .center) {
                 Image("AvailableOfflineIllustration").resizable()
+                    .scaledToFit().frame(width: 204)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        
+        case 4:
+            VStack(alignment: .center) {
+                Image("folderNotLoadingIllustration").resizable()
                     .scaledToFit().frame(width: 204)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
