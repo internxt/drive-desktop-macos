@@ -49,7 +49,7 @@ class AntivirusManager: ObservableObject {
         scannedFiles = 0
         detectedFiles = 0
         
-        countFilesInDirectoryAsync(at: path) { [weak self] initialTotalFiles in
+        countAllFilesAsync(atPath: path) { [weak self] initialTotalFiles in
             guard let self = self else { return }
             
             
@@ -75,9 +75,7 @@ class AntivirusManager: ObservableObject {
                             totalFiles = scannedCount
                         }
                         let progressPercentage = Double(scannedCount) / Double(totalFiles) * 100.0
-                        if Int(progressPercentage) % 10 == 0 {
-                            self.progress = progressPercentage
-                        }
+                        self.progress = progressPercentage
                         self.selectedPath = lineInfo
                     }
                 },
@@ -380,8 +378,9 @@ class AntivirusManager: ObservableObject {
     
     func isDatabaseUpToDate(databaseDir: URL) -> Bool {
         let fileManager = FileManager.default
-        let databaseFiles = ["main.cvd", "daily.cvd", "bytecode.cvd"]
-        
+        let databaseFiles = ["main.cvd", "bytecode.cvd"]
+        let dailyFileOptions = ["daily.cvd", "daily.cld"]
+
         for fileName in databaseFiles {
             let filePath = databaseDir.appendingPathComponent(fileName)
             if !fileManager.fileExists(atPath: filePath.path) {
@@ -389,23 +388,51 @@ class AntivirusManager: ObservableObject {
                 return false
             }
             
-            
             if let attributes = try? fileManager.attributesOfItem(atPath: filePath.path),
                let modificationDate = attributes[.modificationDate] as? Date {
                 let currentDate = Date()
                 let calendar = Calendar.current
-                
-                // Check update from file
+
                 if let difference = calendar.dateComponents([.day], from: modificationDate, to: currentDate).day, difference > 5 {
                     appLogger.info("\(fileName) is not updated. Last modification: \(modificationDate).")
                     return false
                 }
             } else {
-                appLogger.info("Failed to get file attributes\(fileName).")
+                appLogger.info("Failed to get file attributes for \(fileName).")
                 return false
             }
         }
         
+        var dailyFileFound = false
+        var dailyFileDate: Date?
+
+        for dailyFileName in dailyFileOptions {
+            let dailyFilePath = databaseDir.appendingPathComponent(dailyFileName)
+            if fileManager.fileExists(atPath: dailyFilePath.path) {
+                dailyFileFound = true
+                
+                if let attributes = try? fileManager.attributesOfItem(atPath: dailyFilePath.path),
+                   let modificationDate = attributes[.modificationDate] as? Date {
+                    dailyFileDate = modificationDate
+                }
+                break
+            }
+        }
+        
+        if !dailyFileFound {
+            appLogger.info("Daily database file not found (tried \(dailyFileOptions.joined(separator: ", "))).")
+            return false
+        }
+
+        if let modificationDate = dailyFileDate {
+            let currentDate = Date()
+            let calendar = Calendar.current
+            if let difference = calendar.dateComponents([.day], from: modificationDate, to: currentDate).day, difference > 5 {
+                appLogger.info("Daily database file is not updated. Last modification: \(modificationDate).")
+                return false
+            }
+        }
+
         return true
     }
     
@@ -422,40 +449,51 @@ class AntivirusManager: ObservableObject {
             appLogger.error("Error cleaning database directory: \(error.localizedDescription)")
         }
     }
-    
-    func countFilesInDirectoryAsync(at directoryPath: String, completion: @escaping (Int) -> Void) {
-        DispatchQueue.global(qos: .background).async {
-            let fileManager = FileManager.default
-            var isDirectory: ObjCBool = false
-
-            if fileManager.fileExists(atPath: directoryPath, isDirectory: &isDirectory) {
-                if !isDirectory.boolValue {
-                    DispatchQueue.main.async {
-                        completion(1)
-                    }
-                    return
-                }
-            } else {
-                DispatchQueue.main.async {
-                    completion(0)
-                }
-                return
-            }
-            let baseURL = URL(fileURLWithPath: directoryPath)
-            guard let enumerator = fileManager.enumerator(at: baseURL, includingPropertiesForKeys: nil,
-                                                          options: [.skipsHiddenFiles]) else {
-                DispatchQueue.main.async {
-                    completion(0)
-                }
-                return
+        
+    func countAllFiles(atPath path: String) -> Int {
+        guard let dir = opendir(path) else {
+            appLogger.info("Error opening directory \(path)")
+            return 0
+        }
+        
+        defer { closedir(dir) }
+        
+        var fileCount = 0
+        while let entry = readdir(dir) {
+            let name = withUnsafePointer(to: &entry.pointee.d_name) {
+                String(cString: UnsafeRawPointer($0).assumingMemoryBound(to: CChar.self))
             }
             
-            var fileCount = 0
-            for case let fileURL as URL in enumerator {
-                if !fileURL.hasDirectoryPath {
-                    fileCount += 1
+            if name == "." || name == ".." { continue }
+            
+            let fullPath = "\(path)/\(name)"
+            var isDirectory = false
+
+            switch Int32(entry.pointee.d_type) {
+            case DT_DIR:
+                isDirectory = true
+            case DT_UNKNOWN:
+                var statInfo = stat()
+                if lstat(fullPath, &statInfo) == 0 {
+                    isDirectory = (statInfo.st_mode & S_IFMT) == S_IFDIR
                 }
+            default:
+                break
             }
+            
+            if isDirectory {
+                fileCount += countAllFiles(atPath: fullPath)
+            } else {
+                fileCount += 1
+            }
+        }
+        
+        return fileCount
+    }
+
+    func countAllFilesAsync(atPath path: String, completion: @escaping (Int) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let fileCount = self.countAllFiles(atPath: path)
             
             DispatchQueue.main.async {
                 completion(fileCount)

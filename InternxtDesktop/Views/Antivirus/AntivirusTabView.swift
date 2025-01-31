@@ -196,7 +196,7 @@ struct AntivirusTabView: View {
                  .frame(maxWidth: .infinity)
                  .frame(height: 40)
             
-            ProgressView(value: viewModel.progress / 100.0)
+            ProgressView(value: min(viewModel.progress, 100) / 100.0)
                 .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
                 .scaleEffect(x: 1, y: 2, anchor: .center)
                 .animation(.easeInOut, value: viewModel.progress)
