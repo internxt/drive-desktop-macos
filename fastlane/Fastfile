@@ -18,7 +18,7 @@ platform :mac do
       type: "developer_id", 
       readonly: true,
       app_identifier: [
-        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ],
@@ -44,18 +44,18 @@ platform :mac do
     tag_name = "v#{version}-beta"
     release_exists = release_already_exists(tag_name: tag_name)
 
-    if release_exists 
+    if release_exists
       UI.user_error!("Release with tag #{tag_name} already exists, delete it or upgrade either version number or builder number")
-    else 
+    else
       UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
-    end 
+    end
     
     # Prepare certificates using Match
     match(
-      type: "developer_id", 
+      type: "developer_id",
       readonly: true,
       app_identifier: [
-        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ]
@@ -63,9 +63,9 @@ platform :mac do
   
     
     
-    app_path = "build/Internxt.app"
+    app_path = "build/Internxt Drive.app"
     dmg_original_name = "Internxt #{version_number}.dmg"
-    dmg_final_name = "Internxt_#{version}.dmg"
+    dmg_final_name = "Internxt_Drive_#{version}.dmg"
     dmg_destination_dir = "build"
       
     # Build, archive and sign the .app
@@ -142,28 +142,28 @@ platform :mac do
     tag_name = "v#{version}"
     release_exists = release_already_exists(tag_name: tag_name)
 
-    if release_exists 
+    if release_exists
       UI.user_error!("Release with tag #{tag_name} already exists, delete it or upgrade either version number or builder number")
-    else 
+    else
       UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
-    end 
+    end
     
 
     # Prepare certificates using Match
     match(
-      type: "developer_id", 
+      type: "developer_id",
       readonly: true,
       app_identifier: [
-        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ],
     )
 
     
-    app_path = "build/Internxt.app"
+    app_path = "build/Internxt Drive.app"
     dmg_original_name = "Internxt #{version_number}.dmg"
-    dmg_final_name = "Internxt_#{version}.dmg"
+    dmg_final_name = "Internxt_Drive_#{version}.dmg"
     dmg_destination_dir = "build"
       
     # Build, archive and sign the .app
@@ -178,7 +178,6 @@ platform :mac do
     # Notarize the app
     notarize(
       package: app_path,
-      print_log: true,
       api_key_path: './app_store_key.json'
     )
     final_dmg_path = "./#{dmg_destination_dir}/#{dmg_final_name}"
@@ -194,8 +193,7 @@ platform :mac do
     notarize(
       bundle_id: "internxt.InternxtDesktop",
       package: final_dmg_path,
-      api_key_path: './app_store_key.json',
-      print_log: true
+      api_key_path: './app_store_key.json'
     )
 
     # Create a Github Release
