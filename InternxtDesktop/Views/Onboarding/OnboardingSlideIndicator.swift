@@ -11,7 +11,7 @@ struct OnboardingSlideIndicator: View {
     public let currentSlide: Int
     public let totalSlides: Int
     var body: some View {
-        Text("PAGE_INDICATOR_\(currentSlide)_OF_\(totalSlides)")
+        Text("PAGE_INDICATOR_\(currentSlide - 1)_OF_\(totalSlides)")
             .font(.BaseRegular)
             .foregroundColor(.Gray50)
     }

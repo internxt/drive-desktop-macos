@@ -12,6 +12,7 @@ enum TabView {
     case General
     case Account
     case Backup
+    case Antivirus
 }
 struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -20,6 +21,7 @@ struct SettingsView: View {
     @EnvironmentObject var backupsService: BackupsService
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var scheduleManager: ScheduledBackupManager
+    @EnvironmentObject var antivirusManager: AntivirusManager
     public var updater: SPUUpdater? = nil
     @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
@@ -35,6 +37,8 @@ struct SettingsView: View {
                         TabItem(iconName: .Gear, label: "SETTINGS_TAB_GENERAL_TITLE", id: .General)
                         TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
                         TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
+                        if antivirusManager.currentState != .locked {
+                            TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus) }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
@@ -54,7 +58,7 @@ struct SettingsView: View {
                         closeWindow: {
                             isEditingSelectedFolders = false
                             showFolderSelector = false
-                        }, 
+                        },
                         isEditingSelectedFolders: $isEditingSelectedFolders
                     )
                 }
@@ -63,7 +67,7 @@ struct SettingsView: View {
             }
             
             if showBackupContentNavigator {
-                if let device = self.selectedDevice, 
+                if let device = self.selectedDevice,
                     self.showBackupContentNavigator,
                     let bucketId = device.bucket {
                     BackupContentNavigator(
@@ -136,6 +140,8 @@ struct SettingsView: View {
                 backupsService: backupsService,
                 scheduleManager: scheduleManager
             )
+        case .Antivirus:
+            AntivirusTabView(viewModel: antivirusManager)
         default:
             EmptyView()
         }

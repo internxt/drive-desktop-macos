@@ -46,6 +46,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let backupsService = BackupsService()
     let settingsManager = SettingsTabManager()
     var scheduledManager: ScheduledBackupManager!
+    let antivirusManager = AntivirusManager()
     var realtime: RealtimeService?
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
@@ -85,7 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -306,6 +307,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         Task {
             do {
                 self.startTokensRefreshing()
+                await antivirusManager.fetchAntivirusStatus()
                 await usageManager.updateUsage()
                 self.logger.info("✅ Usage updated")
                 try await authManager.initializeCurrentUser()
@@ -325,6 +327,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 }
                try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
                 
+                antivirusManager.downloadDatabases()
                 self.logger.info("Workspaces setted correctly")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )
@@ -435,6 +438,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 .environmentObject(self.settingsManager)
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
+                .environmentObject(self.antivirusManager)
         )
     }
     

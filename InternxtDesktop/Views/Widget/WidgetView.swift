@@ -17,7 +17,8 @@ struct WidgetView: View {
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var backupsService: BackupsService
     @EnvironmentObject var domainManager: FileProviderDomainManager
-
+    @EnvironmentObject var antivirusManager: AntivirusManager
+    
     @State private var showBackupBanner = false
     var isEmpty: Bool = true
     var openFileProviderRoot: () -> Void
@@ -74,6 +75,7 @@ struct WidgetView: View {
                         .environmentObject(self.globalUIManager)
                         .environmentObject(self.usageManager)
                         .environmentObject(self.settingsManager)
+                        .environmentObject(self.antivirusManager)
 
                     if shouldDisplayBackupBanner() {
                         WidgetBackupBannerView() {

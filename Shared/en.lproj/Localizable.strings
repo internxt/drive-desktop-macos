@@ -22,6 +22,10 @@
 "WIDGET_SETTINGS_SUPPORT_OPTION" = "Support";
 "WIDGET_SETTINGS_LOGOUT_OPTION" = "Log out";
 "WIDGET_SETTINGS_QUIT_OPTION" = "Quit";
+"WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
+
+// Widget new option
+"WIDGET_SETTINGS_NEW_OPTION" = "New";
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Everything is up to date";
@@ -77,11 +81,12 @@
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Account";
 "SETTINGS_TAB_BACKUPS_TITLE" = "Backups";
+"SETTINGS_TAB_ANTIVIRUS_TITLE" = "Antivirus";
 "SETTINGS_DEVICE_NAME" = "Device name";
 "SETTINGS_CHECK_FOR_UPDATES" = "Check for updates";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Last checked %@";
-"SETTINGS_START_ON_LAUNCH" = "Start Internxt Drive on system startup";
-"SETTINGS_LEARN_MORE" = "Learn more about Internxt Drive";
+"SETTINGS_START_ON_LAUNCH" = "Start Internxt on system startup";
+"SETTINGS_LEARN_MORE" = "Learn more about Internxt";
 "SETTINGS_OPEN_LOGS" = "Open Logs";
 "SETTINGS_SPANISH_LANGUAGE" = "Español (Spanish)";
 "SETTINGS_ENGLISH_LANGUAGE" = "English (English)";
@@ -161,6 +166,14 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Label files **available offline** to access them anytime, with or without internet";
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Label files **online only** to save physical hard drive space";
 
+// Onboarding > Slide 6
+"ONBOARDING_SLIDE_6_TITLE" = "Keep your computer safe from virus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "Internxt’s Desktop app now also features the brand new Internxt Antivirus, with which you can scan and remove any potential malware from your device.";
+
+// Onboarding > Slide 7
+"ONBOARDING_SLIDE_7_TITLE" = "Backup your device on the cloud";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "With Internxt's upgraded backup feature, you can now safely backup folders on the cloud in order to free up space locally.";
+
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "You're all set, enjoy your privacy!";
 "ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive is ready";
@@ -180,4 +193,30 @@
 "ALERT_STORAGE_SUBTITLE" = "You can’t upload, sync or backup files";
 "ALERT_STORAGE_BUTTON_TITLE" = "Upgrade now";
 
+// Antivirus
+"ANTIVIRUS_FEATURE_LOCKED" = "Feature locked";
+"ANTIVIRUS_UPGRADE_PLAN" = "Please upgrade your plan to use this feature";
+"ANTIVIRUS_SYSTEM_SCAN" = "Antivirus system scan";
+"ANTIVIRUS_CUSTOM_SCAN" = "Antivirus custom scan"; 
+"ANTIVIRUS_START_SCAN" = "Start scan";
+"ANTIVIRUS_CHOOSE_FILES" = "Choose";
+"ANTIVIRUS_SCANNING" = "Scanning...";
+"ANTIVIRUS_SCANNED_FILES" = "Scanned files";
+"ANTIVIRUS_DETECTED_FILES" = "Detected files";
+"ANTIVIRUS_NO_THREATS_FOUND" = "No threats were found";
+"ANTIVIRUS_NO_FURTHER_ACTIONS" = "No further actions are necessary";
+"ANTIVIRUS_MALWARE_DETECTED" = "Malware detected";
+"ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Please review and remove threats";
+"ANTIVIRUS_REMOVE_MALWARE" = "Remove malware";
+"ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Files containing malware";
+"ANTIVIRUS_MODAL_TITLE_REMOVE" = "Action required";
+"ANTIVIRUS_MODAL_TITLE_CANCEL" = "Security warning";
+"ANTIVIRUS_MODAL_DESCRIPTION_REMOVE" = "Removing the malware will also permanently delete the folder from your storage to protect your device. This action cannot be undone.\n\nPlease confirm to continue.";
+"ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "Malware is still present, and your device is at risk.\n\nAre you sure you want to cancel?";
+"ANTIVIRUS_MODAL_COMMON_REMOVE" = "Remove";
+"ANTIVIRUS_NO_FILES_SELECTED" = "There are no files selected to delete";
+"ANTIVIRUS_CANCEL_SCAN" = "Cancel Scan";
+"ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "Are you sure you want to cancel the current scan?";
+"ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continue Scanning";
+"ANTIVIRUS_SCAN_AGAIN" = "Scan again";
 

@@ -22,6 +22,10 @@
 "WIDGET_SETTINGS_SUPPORT_OPTION" = "Assistance";
 "WIDGET_SETTINGS_LOGOUT_OPTION" = "Déconnexion";
 "WIDGET_SETTINGS_QUIT_OPTION" = "Quitter";
+"WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
+
+// Widget new option
+"WIDGET_SETTINGS_NEW_OPTION" = "Nouveau";
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Tout est à jour";
@@ -76,11 +80,12 @@
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
 "SETTINGS_TAB_BACKUPS_TITLE" = "Sauvegarde";
+"SETTINGS_TAB_ANTIVIRUS_TITLE" = "Antivirus";
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
-"SETTINGS_START_ON_LAUNCH" = "Démarrer Internxt Drive au démarrage du système";
-"SETTINGS_LEARN_MORE" = "En savoir plus sur Internxt Drive";
+"SETTINGS_START_ON_LAUNCH" = "Démarrer Internxt au démarrage du système";
+"SETTINGS_LEARN_MORE" = "En savoir plus sur Internxt";
 "SETTINGS_OPEN_LOGS" = "Ouvrir des registres";
 "SETTINGS_SPANISH_LANGUAGE" = "Español (Espagnol)";
 "SETTINGS_ENGLISH_LANGUAGE" = "English (Anglais)";
@@ -161,6 +166,15 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Etiqueter les fichiers **disponibles hors ligne** pour y accéder à tout moment, avec ou sans internet";
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Étiqueter les fichiers **uniquement en ligne** pour économiser de l'espace sur le disque dur";
 
+// Onboarding > Slide 6
+"ONBOARDING_SLIDE_6_TITLE" = "Protégez votre ordinateur contre les virus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "L'application de bureau d'Internxt propose désormais le tout nouveau Internxt Antivirus, avec lequel vous pouvez analyser et supprimer tout logiciel malveillant potentiel de votre appareil.";
+
+// Onboarding > Slide 7
+"ONBOARDING_SLIDE_7_TITLE" = "Sauvegardez votre appareil dans le cloud";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "Avec la fonctionnalité de sauvegarde améliorée d'Internxt, vous pouvez désormais sauvegarder en toute sécurité des dossiers dans le cloud afin de libérer de l'espace localement.";
+
+
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "Vous êtes prêt, profitez de votre confidentialité !";
 "ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive est prêt";
@@ -179,3 +193,34 @@
 "ALERT_STORAGE_TITLE" = "Votre stockage est plein";
 "ALERT_STORAGE_SUBTITLE" = "Vous ne pouvez pas télécharger, synchroniser ou sauvegarder des fichiers";
 "ALERT_STORAGE_BUTTON_TITLE" = "Mettre à jour maintenant";
+
+// Antivirus
+"ANTIVIRUS_FEATURE_LOCKED" = "Fonction verrouillée";
+"ANTIVIRUS_UPGRADE_PLAN" = "Veuillez mettre à niveau votre plan pour utiliser cette fonctionnalité";
+"ANTIVIRUS_SYSTEM_SCAN" = "Analyse du système antivirus";
+"ANTIVIRUS_CUSTOM_SCAN" = "Analyse personnalisée de l'antivirus";
+"ANTIVIRUS_START_SCAN" = "Démarrer l'analyse";
+"ANTIVIRUS_CHOOSE_FILES" = "Choisir";
+"ANTIVIRUS_SCANNING" = "Analyse en cours...";
+"ANTIVIRUS_SCANNED_FILES" = "Fichiers analysés";
+"ANTIVIRUS_DETECTED_FILES" = "Fichiers détectés";
+"ANTIVIRUS_NO_THREATS_FOUND" = "Aucune menace détectée";
+"ANTIVIRUS_NO_FURTHER_ACTIONS" = "Aucune autre action n'est nécessaire";
+"ANTIVIRUS_MALWARE_DETECTED" = "Malware détecté";
+"ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Veuillez examiner et supprimer les menaces";
+"ANTIVIRUS_REMOVE_MALWARE" = "Supprimer le malware";
+"ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Fichiers contenant des malwares";
+"ANTIVIRUS_MODAL_TITLE_REMOVE" = "Action requise";
+"ANTIVIRUS_MODAL_TITLE_CANCEL" = "Avertissement de sécurité";
+"ANTIVIRUS_MODAL_DESCRIPTION_REMOVE" = "La suppression du logiciel malveillant supprimera également définitivement le dossier de votre stockage pour protéger votre appareil. Cette action est irréversible.\n\nVeuillez confirmer pour continuer.";
+"ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "Le logiciel malveillant est toujours présent et votre appareil est en danger.\n\nÊtes-vous sûr de vouloir annuler ?";
+"ANTIVIRUS_MODAL_COMMON_REMOVE" = "Supprimer";
+"ANTIVIRUS_NO_FILES_SELECTED" = "Aucun fichier n'est sélectionné pour être supprimé";
+"ANTIVIRUS_CANCEL_SCAN" = "Annuler l'analyse";
+"ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "Êtes-vous sûr de vouloir annuler l'analyse en cours ?";
+"ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continuer l'analyse";
+"ANTIVIRUS_SCAN_AGAIN" = "Analyser à nouveau";
+
+
+
+

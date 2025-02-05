@@ -22,6 +22,10 @@
 "WIDGET_SETTINGS_SUPPORT_OPTION" = "Soporte";
 "WIDGET_SETTINGS_LOGOUT_OPTION" = "Cerrar sesión";
 "WIDGET_SETTINGS_QUIT_OPTION" = "Salir";
+"WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
+
+// Widget new option
+"WIDGET_SETTINGS_NEW_OPTION" = "Nuevo";
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Todo está actualizado";
@@ -78,11 +82,12 @@
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Cuenta";
 "SETTINGS_TAB_BACKUPS_TITLE" = "Respaldo";
+"SETTINGS_TAB_ANTIVIRUS_TITLE" = "Antivirus";
 "SETTINGS_DEVICE_NAME" = "Nombre del dispositivo";
 "SETTINGS_CHECK_FOR_UPDATES" = "Buscar actualizaciones";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Última comprobación %@";
-"SETTINGS_START_ON_LAUNCH" = "Iniciar Internxt Drive al arrancar el sistema";
-"SETTINGS_LEARN_MORE" = "Más información sobre Internxt Drive";
+"SETTINGS_START_ON_LAUNCH" = "Iniciar Internxt al arrancar el sistema";
+"SETTINGS_LEARN_MORE" = "Más información sobre Internxt";
 "SETTINGS_OPEN_LOGS" = "Abrir Logs";
 "SETTINGS_SPANISH_LANGUAGE" = "Español (Español)";
 "SETTINGS_ENGLISH_LANGUAGE" = "English (Inglés)";
@@ -160,6 +165,15 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_1" = "Etiqueta los archivos **disponibles sin conexión** para acceder a ellos en cualquier momento, con o sin internet";
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Etiqueta archivos **sólo en línea** para ahorrar espacio físico en el disco duro";
 
+// Onboarding > Slide 6
+"ONBOARDING_SLIDE_6_TITLE" = "Mantén tu computadora segura contra virus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "La aplicación de escritorio de Internxt ahora también incluye el nuevo Internxt Antivirus, con el cual puedes escanear y eliminar cualquier malware potencial de tu dispositivo.";
+
+// Onboarding > Slide 7
+"ONBOARDING_SLIDE_7_TITLE" = "Respaldar tu dispositivo en la nube";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "Con la función de respaldo mejorada de Internxt, ahora puedes respaldar carpetas de forma segura en la nube para liberar espacio localmente.";
+
+
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "¡Ya está todo listo, disfruta de tu privacidad!";
 "ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive está listo";
@@ -180,3 +194,34 @@
 "ALERT_STORAGE_TITLE" = "Tu almacenamiento está lleno";
 "ALERT_STORAGE_SUBTITLE" = "No puedes cargar, sincronizar ni realizar copias de seguridad de archivos";
 "ALERT_STORAGE_BUTTON_TITLE" = "Actualizar ahora";
+
+// Antivirus
+"ANTIVIRUS_FEATURE_LOCKED" = "Función bloqueada";
+"ANTIVIRUS_UPGRADE_PLAN" = "Por favor, actualice su plan para usar esta función";
+"ANTIVIRUS_SYSTEM_SCAN" = "Escaneo del sistema antivirus";
+"ANTIVIRUS_CUSTOM_SCAN" = "Escaneo personalizado del antivirus";
+"ANTIVIRUS_START_SCAN" = "Iniciar escaneo";
+"ANTIVIRUS_CHOOSE_FILES" = "Elegir";
+"ANTIVIRUS_SCANNING" = "Escaneando...";
+"ANTIVIRUS_SCANNED_FILES" = "Archivos escaneados";
+"ANTIVIRUS_DETECTED_FILES" = "Archivos detectados";
+"ANTIVIRUS_NO_THREATS_FOUND" = "No se encontraron amenazas";
+"ANTIVIRUS_NO_FURTHER_ACTIONS" = "No se necesitan más acciones";
+"ANTIVIRUS_MALWARE_DETECTED" = "Malware detectado";
+"ANTIVIRUS_REVIEW_REMOVE_THREATS" = "Por favor, revise y elimine las amenazas";
+"ANTIVIRUS_REMOVE_MALWARE" = "Eliminar malware";
+"ANTIVIRUS_FILES_CONTAINING_MALWARE" = "Archivos que contienen malware";
+"ANTIVIRUS_MODAL_TITLE_REMOVE" = "Acción requerida";
+"ANTIVIRUS_MODAL_TITLE_CANCEL" = "Advertencia de seguridad";
+"ANTIVIRUS_MODAL_DESCRIPTION_REMOVE" = "Eliminar el malware también eliminará permanentemente la carpeta de tu almacenamiento para proteger tu dispositivo. Esta acción no se puede deshacer.\n\nPor favor, confirma para continuar.";
+"ANTIVIRUS_MODAL_DESCRIPTION_CANCEL" = "El malware sigue presente y tu dispositivo está en riesgo.\n\n¿Estás seguro de que deseas cancelar?";
+"ANTIVIRUS_MODAL_COMMON_REMOVE" = "Eliminar";
+"ANTIVIRUS_NO_FILES_SELECTED" = "No hay archivos seleccionados para eliminar";
+"ANTIVIRUS_CANCEL_SCAN" = "Cancelar escaneo";
+"ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "¿Estás seguro de que quieres cancelar el escaneo actual?";
+"ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continuar escaneando";
+"ANTIVIRUS_SCAN_AGAIN" = "Escanear de nuevo";
+
+
+
+

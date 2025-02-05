@@ -18,7 +18,7 @@ platform :mac do
       type: "developer_id", 
       readonly: true,
       app_identifier: [
-        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ],
@@ -44,18 +44,18 @@ platform :mac do
     tag_name = "v#{version}-beta"
     release_exists = release_already_exists(tag_name: tag_name)
 
-    if release_exists 
+    if release_exists
       UI.user_error!("Release with tag #{tag_name} already exists, delete it or upgrade either version number or builder number")
-    else 
+    else
       UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
-    end 
+    end
     
     # Prepare certificates using Match
     match(
-      type: "developer_id", 
+      type: "developer_id",
       readonly: true,
       app_identifier: [
-        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ]
@@ -142,19 +142,19 @@ platform :mac do
     tag_name = "v#{version}"
     release_exists = release_already_exists(tag_name: tag_name)
 
-    if release_exists 
+    if release_exists
       UI.user_error!("Release with tag #{tag_name} already exists, delete it or upgrade either version number or builder number")
-    else 
+    else
       UI.important("Release with tag #{tag_name} doesn't exists, building app and creating release")
-    end 
+    end
     
 
     # Prepare certificates using Match
     match(
-      type: "developer_id", 
+      type: "developer_id",
       readonly: true,
       app_identifier: [
-        "internxt.InternxtDesktop", 
+        "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
       ],

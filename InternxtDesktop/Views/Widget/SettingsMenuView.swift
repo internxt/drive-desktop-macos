@@ -12,6 +12,8 @@ struct SettingsMenuView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
+    @EnvironmentObject var antivirusManager: AntivirusManager
+
     var openSendFeedback: () -> Void
     var isPreview: Bool = false;
     
@@ -25,6 +27,9 @@ struct SettingsMenuView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
+                    if antivirusManager.currentState != .locked {
+                        SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: handleOpenAntivirus)
+                    }
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)
@@ -61,6 +66,12 @@ struct SettingsMenuView: View {
         NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
     }
     
+    func handleOpenAntivirus() -> Void {
+        settingsManager.focusedTab = .Antivirus
+        Task { await usageManager.updateUsage() }
+        NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
+    }
+    
     func handleLogout() -> Void {
         do {
             try authManager.signOut()
@@ -90,12 +101,13 @@ struct SettingsMenuOption: View {
     public var label: String
     public var onPress: () -> Void
     @State private var isHovering: Bool = false
+    public var showNew: Bool = false
     
-    init(label: String, onPress: @escaping () -> Void) {
+    init(label: String, showNew: Bool = false, onPress: @escaping () -> Void) {
         self.label = label
+        self.showNew = showNew
         self.onPress = onPress
     }
-    
     
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
@@ -103,6 +115,25 @@ struct SettingsMenuOption: View {
                 .font(.SMRegular)
                 .padding(.horizontal, 12)
                 .frame(height: 32)
+            
+            Spacer()
+            
+            if showNew {
+                AppText("WIDGET_SETTINGS_NEW_OPTION")
+                    .font(.XXSMedium)
+                    .foregroundColor(.blue)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.blue.opacity(0.1))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 1)
+                    )
+                    .padding(.trailing, 4)
+            }
         }
         .contentShape(Rectangle())
         .frame(maxWidth: .infinity, alignment: .leading)

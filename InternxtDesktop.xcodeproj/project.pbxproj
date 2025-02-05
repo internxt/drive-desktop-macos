@@ -67,14 +67,34 @@
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
 		AA0B47AC2C24D9EE0036FE1A /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
 		AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2019662C53F8B700901B93 /* Debouncer.swift */; };
+		AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497C2D44839C00924536 /* freshclam */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AA3B49812D44887600924536 /* libfreshclam.3.0.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */; };
+		AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */; };
 		AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */; };
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
+		AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */; };
+		AA628F2C2D4BFBA800421CB7 /* OnboardingSlide7View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
+		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
+		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
+		AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666772D40685C00C2B9DF /* clamscan */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA6667F2D40692900C2B9DF /* libclammspack.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666702D40684500C2B9DF /* libclammspack.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA666812D40692900C2B9DF /* libjson-c.5.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA666822D40692900C2B9DF /* libssl.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
@@ -93,6 +113,7 @@
 		AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */; };
 		AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */; };
 		AAE7975C2C875F5000AEFDEF /* URLDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16310562A8E66F70072989E /* URLDictionary.swift */; };
+		AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEC163F2D485083009B66BE /* BookmarkManager.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
@@ -338,6 +359,32 @@
 			name = "Embed XPC Services";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAA6667A2D4068E100C2B9DF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ClamAVResources;
+			dstSubfolderSpec = 7;
+			files = (
+				AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */,
+				AAA6667C2D4068F800C2B9DF /* clamscan in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAA6667D2D4068FE00C2B9DF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ClamAVResources/lib;
+			dstSubfolderSpec = 7;
+			files = (
+				AA3B49812D44887600924536 /* libfreshclam.3.0.2.dylib in CopyFiles */,
+				AAA6667E2D40692900C2B9DF /* libclamav.12.dylib in CopyFiles */,
+				AAA6667F2D40692900C2B9DF /* libclammspack.0.dylib in CopyFiles */,
+				AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */,
+				AAA666812D40692900C2B9DF /* libjson-c.5.dylib in CopyFiles */,
+				AAA666822D40692900C2B9DF /* libssl.3.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E195325D2C5A556000CB81C3 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,9 +461,23 @@
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		AA3B497C2D44839C00924536 /* freshclam */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = freshclam; sourceTree = "<group>"; };
+		AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfreshclam.3.0.2.dylib; sourceTree = "<group>"; };
+		AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusTabView.swift; sourceTree = "<group>"; };
+		AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusManager.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
+		AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide6View.swift; sourceTree = "<group>"; };
+		AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide7View.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
+		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
+		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
+		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
+		AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclamav.12.dylib; sourceTree = "<group>"; };
+		AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libcrypto.3.dylib; sourceTree = "<group>"; };
+		AAA666702D40684500C2B9DF /* libclammspack.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclammspack.0.dylib; sourceTree = "<group>"; };
+		AAA666712D40684500C2B9DF /* libssl.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libssl.3.dylib; sourceTree = "<group>"; };
+		AAA666772D40685C00C2B9DF /* clamscan */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = clamscan; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -427,6 +488,7 @@
 		AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAEC163F2D485083009B66BE /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -615,10 +677,16 @@
 				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
+				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
+				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
+				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
+				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
+				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
 				E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */,
@@ -703,12 +771,45 @@
 			path = InternxtDesktopTests;
 			sourceTree = "<group>";
 		};
+		AA40B3BB2D3B296E00FC1FC3 /* Antivirus */ = {
+			isa = PBXGroup;
+			children = (
+				AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */,
+				AAA666672D402F2900C2B9DF /* CustomModalView.swift */,
+				AAA666692D40380800C2B9DF /* FileSelectionView.swift */,
+			);
+			path = Antivirus;
+			sourceTree = "<group>";
+		};
 		AA642CAC2C62B2510015BBB9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		AAA6666B2D40680700C2B9DF /* ClamAVResources */ = {
+			isa = PBXGroup;
+			children = (
+				AA3B497C2D44839C00924536 /* freshclam */,
+				AAA666772D40685C00C2B9DF /* clamscan */,
+				AAA6666C2D40681200C2B9DF /* lib */,
+			);
+			path = ClamAVResources;
+			sourceTree = "<group>";
+		};
+		AAA6666C2D40681200C2B9DF /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */,
+				AAA6666E2D40684500C2B9DF /* libclamav.12.dylib */,
+				AAA666702D40684500C2B9DF /* libclammspack.0.dylib */,
+				AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */,
+				AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */,
+				AAA666712D40684500C2B9DF /* libssl.3.dylib */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 		AAAD0D9E2CE12D5B003F27BB /* Workspaces */ = {
@@ -995,6 +1096,8 @@
 				E17C84B72AB2787200A58414 /* OnboardingSlide4View.swift */,
 				E17C84BB2AB2796F00A58414 /* OnboardingSlide5View.swift */,
 				E17C84C92AB31E0400A58414 /* OnboardingFinishView.swift */,
+				AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */,
+				AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -1112,6 +1215,7 @@
 		E1FB2D262A76BF0200473AE1 /* InternxtDesktop */ = {
 			isa = PBXGroup;
 			children = (
+				AAA6666B2D40680700C2B9DF /* ClamAVResources */,
 				E17DB7082C5399CB0031B465 /* ViewModels */,
 				E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */,
 				E1FB2D942A76D01B00473AE1 /* Info.plist */,
@@ -1150,6 +1254,7 @@
 				E1ADD0432AA7367800D95694 /* UsageManager.swift */,
 				E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */,
 				317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */,
+				AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1158,6 +1263,7 @@
 			isa = PBXGroup;
 			children = (
 				E18300AF2AA2395100AD023C /* FileExtension.swift */,
+				AAEC163F2D485083009B66BE /* BookmarkManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1165,6 +1271,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AA40B3BB2D3B296E00FC1FC3 /* Antivirus */,
 				3104526A2B4B1C3A00984716 /* Backups */,
 				E13B83952AFBBCC1009F6684 /* App */,
 				E1A0AC5D2AB85BE2005E71D6 /* SendFeedback */,
@@ -1299,6 +1406,8 @@
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
 				31DEAEBF2B75139400E76D53 /* Embed XPC Services */,
 				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
+				AAA6667A2D4068E100C2B9DF /* CopyFiles */,
+				AAA6667D2D4068FE00C2B9DF /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1618,6 +1727,7 @@
 				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */,
+				AA628F2C2D4BFBA800421CB7 /* OnboardingSlide7View.swift in Sources */,
 				AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
@@ -1625,6 +1735,9 @@
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
+				AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */,
+				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
+				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
 				E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E17C84B22AB22C1400A58414 /* OnboardingSlide2View.swift in Sources */,
@@ -1650,6 +1763,7 @@
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1D24AF42C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
+				AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */,
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
@@ -1695,10 +1809,12 @@
 				E1880BA02AA63215001FC171 /* StartOnLaunchView.swift in Sources */,
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
 				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
+				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				E1A0AC5A2AB4D7BC005E71D6 /* main.swift in Sources */,
 				E17C84C42AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				E17DB70A2C539A1F0031B465 /* BackupContentNavigatorViewModel.swift in Sources */,
+				AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */,
 				31ED949D2B7151E200EF699F /* DecryptUtils.swift in Sources */,
 				E1581DD42A9629790051DD46 /* Error.swift in Sources */,
 				31EBEF732B32006F0017590F /* WidgetBackupBannerView.swift in Sources */,
@@ -1834,7 +1950,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -1847,7 +1963,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1869,7 +1985,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1881,7 +1997,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1902,7 +2018,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1914,7 +2030,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2225,7 +2341,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2241,9 +2357,15 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@executable_path/../ClamAVResources/lib",
+					"@loader_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2263,7 +2385,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2278,7 +2400,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2431,7 +2553,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2448,8 +2570,13 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "@executable_path/../ClamAVResources/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2473,7 +2600,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2487,11 +2614,16 @@
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"$(inherited)",
+					"@executable_path/../ClamAVResources/lib",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2510,7 +2642,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2525,7 +2657,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2544,7 +2676,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2559,7 +2691,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2675,7 +2807,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/improve-backup";
+				branch = feature/workspaces;
 				kind = branch;
 			};
 		};
