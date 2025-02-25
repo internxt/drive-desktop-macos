@@ -35,9 +35,9 @@ struct CreateFolderUseCase {
                 let folderMeta = try await driveNewAPI.getFolderMetaById(id: parentFolderId,debug: true)
                 
                 guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
-                
-                let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUuid, folderName: filename.deletingPathExtension,debug: true)
 
+                let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUuid, folderName: itemTemplate.filename,debug: true)
+                
                 completionHandler(FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
                     filename: createdFolder.plainName ?? createdFolder.name,
