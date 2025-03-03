@@ -310,6 +310,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 await antivirusManager.fetchAntivirusStatus()
                 await usageManager.updateUsage()
                 self.logger.info("✅ Usage updated")
+                antivirusManager.downloadDatabases()
                 try await authManager.initializeCurrentUser()
                 self.logger.info("✅ Current user initialized")
                 
@@ -327,7 +328,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 }
                try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
                 
-                antivirusManager.downloadDatabases()
                 self.logger.info("Workspaces setted correctly")
             } catch {
                 self.logger.error("Failed to start the app: \(error)" )

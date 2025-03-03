@@ -27,9 +27,8 @@ struct SettingsMenuView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
-                    if antivirusManager.currentState != .locked {
-                        SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: handleOpenAntivirus)
-                    }
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: handleOpenAntivirus)
+
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)
