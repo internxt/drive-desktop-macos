@@ -309,6 +309,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 self.startTokensRefreshing()
                 await antivirusManager.fetchAntivirusStatus()
                 await usageManager.updateUsage()
+                await backupsService.fetchBackupStatus()
                 self.logger.info("✅ Usage updated")
                 antivirusManager.downloadDatabases()
                 try await authManager.initializeCurrentUser()

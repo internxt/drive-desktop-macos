@@ -53,60 +53,67 @@ struct BackupsTabView: View {
         return backupsService.selectedDevice != nil || backupsService.devicesFetchingStatus == .Ready
     }
     var body: some View {
-        Group {
-            if(backupsService.devicesFetchingStatus == .LoadingDevices && backupsService.selectedDevice == nil) {
-             HStack(alignment: .center, spacing: 8) {
-             Spacer()
-             ProgressView()
-             .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-             .scaleEffect(0.6, anchor: .center)
-             AppText("BACKUP_FETCHING_DEVICES")
-             .font(.SMMedium)
-             .multilineTextAlignment(.center)
-             
-             Spacer()
-             }.frame(maxWidth: .infinity, maxHeight: .infinity)
-             }
-            
-            if(backupsService.devicesFetchingStatus == .Failed) {
-                VStack(alignment: .center, spacing: 20) {
-                    Spacer()
-                    AppText("BACKUP_ERROR_FETCHING_DEVICES")
-                        .font(.SMMedium)
-                        .multilineTextAlignment(.center)
-                    
-                    AppButton(title: "BACKUP_TRY_AGAIN") {
-                        Task {
-                            await backupsService.addCurrentDevice()
-                            await backupsService.loadAllDevices()
+        if backupsService.currentBackupState == .locked {
+            lockedBackupView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top,20)
+        } else {
+            Group {
+                if(backupsService.devicesFetchingStatus == .LoadingDevices && backupsService.selectedDevice == nil) {
+                    HStack(alignment: .center, spacing: 8) {
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            .scaleEffect(0.6, anchor: .center)
+                        AppText("BACKUP_FETCHING_DEVICES")
+                            .font(.SMMedium)
+                            .multilineTextAlignment(.center)
+                        
+                        Spacer()
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                
+                if(backupsService.devicesFetchingStatus == .Failed) {
+                    VStack(alignment: .center, spacing: 20) {
+                        Spacer()
+                        AppText("BACKUP_ERROR_FETCHING_DEVICES")
+                            .font(.SMMedium)
+                            .multilineTextAlignment(.center)
+                        
+                        AppButton(title: "BACKUP_TRY_AGAIN") {
+                            Task {
+                                await backupsService.addCurrentDevice()
+                                await backupsService.loadAllDevices()
+                            }
                         }
-                    }
-                    Spacer()
-                }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if(shouldDisplayBackupsSidebar()){
-                HStack(spacing: 0) {
-                    BackupsSidebar
-                        .padding([.leading, .vertical], 20)
-                        .padding([.trailing], 16)
-                        .frame(alignment: .topLeading)
-                    
-                    Divider()
-                        .background(Color.Gray10)
-                        .padding([.vertical], 20)
-                    
-                    BackupTab
-                    
-                }.frame(maxWidth: .infinity, minHeight: 360, maxHeight: .infinity)
-            }
-            
-            
-        }.onAppear{
-            Task {
-                await backupsService.addCurrentDevice()
-                await backupsService.loadAllDevices()
+                        Spacer()
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if(shouldDisplayBackupsSidebar()){
+                    HStack(spacing: 0) {
+                        BackupsSidebar
+                            .padding([.leading, .vertical], 20)
+                            .padding([.trailing], 16)
+                            .frame(alignment: .topLeading)
+                        
+                        Divider()
+                            .background(Color.Gray10)
+                            .padding([.vertical], 20)
+                        
+                        BackupTab
+                        
+                    }.frame(maxWidth: .infinity, minHeight: 360, maxHeight: .infinity)
+                }
+                
+                
+            }.onAppear{
+                Task {
+                    await backupsService.addCurrentDevice()
+                    await backupsService.loadAllDevices()
+                }
             }
         }
     }
+
     
     var BackupsSidebar: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -148,10 +155,10 @@ struct BackupsTabView: View {
                         showDeleteBackupDialog: $showDeleteBackupDialog,
                         showFolderSelector: $showFolderSelector,
                         isEditingSelectedFolders: $isEditingSelectedFolders,
-                        device: Binding($backupsService.selectedDevice)!, 
+                        device: Binding($backupsService.selectedDevice)!,
                         showBackupContentNavigator: $showBackupContentNavigator,
                         backupManager: self.scheduleManager
-                    
+                        
                     )
                 }
             }
@@ -169,6 +176,27 @@ struct BackupsTabView: View {
             
             
         }
+    }
+    
+    
+    var lockedBackupView: some View {
+        VStack(spacing: 15) {
+            AppText("FEATURE_LOCKED")
+                .font(.BaseMedium)
+                .foregroundColor(.Gray100)
+            
+            
+            AppText("GENERAL_UPGRADE_PLAN")
+                .font(.SMRegular)
+                .foregroundColor(.Gray80)
+            
+            AppButton(title: "COMMON_UPGRADE", onClick: {
+                URLDictionary.UPGRADE_PLAN.open()
+            })
+            
+            Spacer()
+        }
+        
     }
 }
 

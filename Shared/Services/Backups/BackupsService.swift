@@ -44,6 +44,11 @@ enum BackupDevicesFetchingStatus {
     case Ready
     case Failed
 }
+
+enum BackupState: Equatable {
+    case locked
+    case active
+}
 class BackupsService: ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     var currentDevice: Device? = nil
@@ -64,6 +69,8 @@ class BackupsService: ObservableObject {
     private var backupFoldersToBackup: [FolderToBackupRealmObject] = []
     private var backupUploadProgressTimer: AnyCancellable?
     private var backupDownloadProgressTimer: AnyCancellable?
+    @Published var currentBackupState: BackupState = .active
+
     private func getRealm() -> Realm {
         do {
             return try Realm(configuration: Realm.Configuration(
@@ -758,6 +765,31 @@ class BackupsService: ObservableObject {
         }
     }
 
+    @MainActor
+    func fetchBackupStatus() async {
+        do {
+            
+            let paymentInfo = try await APIFactory.Payment.getPaymentInfo()
+            guard let backupStatus = paymentInfo.featuresPerService.backups else {
+                appLogger.error("No backup information")
+
+                return
+            }
+            self.currentBackupState  = backupStatus ? .active : .locked
+            
+        }
+        catch {
+            
+            guard let apiError = error as? APIClientError else {
+                appLogger.info(error.getErrorDescription())
+                return
+            }
+            appLogger.info(error.getErrorDescription())
+            if(apiError.statusCode == 404) {
+              //  self.currentBackupState = .locked
+            }
+        }
+    }
 }
 
 
