@@ -24,7 +24,7 @@ struct BackupConfigView: View {
     @State var backupManager: ScheduledBackupManager
     @ObservedObject var appSettings = AppSettings.shared
     @State private var selectedFrequency: BackupFrequencyEnum = AppSettings.shared.selectedBackupFrequency
-    
+    @State private var showModalCancel = false
     var body: some View {
         
             
@@ -52,7 +52,7 @@ struct BackupConfigView: View {
                                 if backupsService.thereAreMissingFoldersToBackup {
                                     AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
                                         fixMissingFolders()
-                                    }, type: .secondary, size: .MD)
+                                    }, type: .secondary, size: .MD  , isEnabled: !shouldDisableOptions())
                                     HStack(spacing:4) {
                                         ZStack {
                                             Color.white.ignoresSafeArea().frame(width:12, height:12).clipShape(RoundedRectangle(cornerRadius: 100))
@@ -72,7 +72,7 @@ struct BackupConfigView: View {
                                 } else {
                                     AppButton(title: "BACKUP_CHANGE_FOLDERS", onClick: {
                                         changeFolders()
-                                    }, type: .secondary, size: .MD)
+                                    }, type: .secondary, size: .MD , isEnabled: !shouldDisableOptions())
                                     
                                     Text("BACKUP_\("\(numOfFolders)")_NUMBER_OF_FOLDERS_SELECTED")
                                         .font(.SMRegular)
@@ -89,7 +89,7 @@ struct BackupConfigView: View {
                             // restart date
                             self.removeBackupDate()
                             self.backupManager.startBackupTimer(frequency: option)
-                        })
+                        }, isDisabled: .constant(shouldDisableOptions()))
                         .padding([.vertical, .trailing], 20)
                     }
                     
@@ -105,19 +105,43 @@ struct BackupConfigView: View {
                         
                         AppButton(title: "BACKUP_UPLOAD_DELETE_BACKUP", onClick: {
                             showDeleteBackupDialog = true
-                        }, type: .secondary)
+                        }, type: .secondary, isEnabled: !shouldDisableOptions())
                     }
                     .padding([.top], 12)
                 }
                 .padding([.vertical, .trailing], 20)
                 .padding([.leading], 16)
                 
+                if showModalCancel {
+                    CustomModalView(
+                        title: "FEATURE_LOCKED",
+                        message: "GENERAL_UPGRADE_PLAN",
+                        cancelTitle: "COMMON_CANCEL",
+                        confirmTitle: "COMMON_UPGRADE",
+                        confirmColor: .blue,
+                        onCancel: {
+                            self.showModalCancel = false
+                        },
+                        onConfirm: {
+                            
+                            URLDictionary.UPGRADE_PLAN.open()
+                            self.showModalCancel = false
+                        }
+                    )
+                }
             }
         
     }
     
     func isDownloadingBackup() -> Bool {
         return self.device.id == backupsService.deviceDownloading?.id && backupsService.backupDownloadStatus == .InProgress
+    }
+    
+    func shouldDisableOptions() -> Bool {
+        guard let device = backupsService.selectedDevice else {
+            return false
+        }
+        return backupsService.currentBackupState == .locked && device.hasBackups
     }
     
     var BackupActionsView: some View {
@@ -129,9 +153,16 @@ struct BackupConfigView: View {
                     }, type: .primary, isExpanded: true)
                 } else {
                     AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                        Task {
-                            await doBackup()
+                        
+                        if backupsService.currentBackupState == .active {
+                            Task {
+                                await doBackup()
+                            }
+                        }else {
+                            self.showModalCancel = true
                         }
+
+                     
                     }, type: .primary, isExpanded: true)
                 }
                 AppButton(title: "BACKUP_BROWSE_FILES", onClick: {

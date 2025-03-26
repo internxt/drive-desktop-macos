@@ -49,11 +49,25 @@ struct BackupsTabView: View {
         }
     }
     
+    func selectedDeviceHasBackups() -> Bool {
+        guard let device = backupsService.selectedDevice else {
+            return false
+        }
+        return device.hasBackups
+    }
+    
+    func shouldDisableOptions() -> Bool {
+        guard let device = backupsService.selectedDevice else {
+            return false
+        }
+        return backupsService.currentBackupState == .locked && device.hasBackups
+    }
+    
     func shouldDisplayBackupsSidebar() -> Bool {
         return backupsService.selectedDevice != nil || backupsService.devicesFetchingStatus == .Ready
     }
     var body: some View {
-        if backupsService.currentBackupState == .locked {
+        if !selectedDeviceHasBackups() && backupsService.currentBackupState == .locked {
             lockedBackupView
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.top,20)

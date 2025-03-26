@@ -185,8 +185,20 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             completion()
             return
         }
-        self.logger.info("✅ Notification received")
-        enumerateAllDomains()
+        
+        let dictionary = payload.dictionaryPayload
+        
+        if let customKeys = dictionary["customKeys"] as? [String: Any],
+           let event = customKeys["event"] as? String {
+            
+            Task {
+                await antivirusManager.fetchAntivirusStatus()
+                await backupsService.fetchBackupStatus()
+            }
+            
+        } else {
+            enumerateAllDomains()
+        }
 
 
         completion()

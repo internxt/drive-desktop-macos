@@ -54,7 +54,7 @@ struct AppSelector: View {
     var placeholder: String = "Select"
     var position: AppSelectorPosition = .bottom
     var onSelectOption: (AppSelectorOption) -> Void
-    
+    var isDisabled: Bool = false
     
     var body: some View {
         return GeometryReader { geometry in
@@ -68,9 +68,13 @@ struct AppSelector: View {
                 RoundedRectangle(cornerRadius: 6)
                     .stroke(Color.Gray10, lineWidth: 1)
             }.frame(minWidth:geometry.size.width, minHeight: getAppSelectorHeight(size) ).fixedSize(horizontal: true, vertical: true).contentShape(Rectangle()).onTapGesture {
-                withAnimation {
-                    self.optionsVisible = !self.optionsVisible
-                }
+                
+                if !isDisabled {
+                          withAnimation {
+                              self.optionsVisible.toggle()
+                          }
+                      }
+
             }
             SelectorOptions(selectorWidth: geometry.size.width).offset(y: getAppSelectorHeight(size)).opacity(optionsVisible ? 1 : 0)
         }.frame(height: getAppSelectorHeight(size)).onTapBackground(enabled: optionsVisible) {
@@ -83,6 +87,7 @@ struct AppSelector: View {
                 selectedOption = match
             }
         }
+        .opacity(isDisabled ? 0.5 : 1.0)
     }
     
     func SelectorOptions(selectorWidth: CGFloat) -> some View {
@@ -132,6 +137,7 @@ struct AppSelectorOptionView: View {
     var option: AppSelectorOption
     var size: AppSelectorSize
     var onSelectOption: () -> Void
+    
     private func isOptionSelected(_ option: AppSelectorOption) -> Bool {
         return option.value == selectedOption?.value
     }

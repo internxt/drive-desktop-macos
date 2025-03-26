@@ -70,6 +70,7 @@ class BackupsService: ObservableObject {
     private var backupUploadProgressTimer: AnyCancellable?
     private var backupDownloadProgressTimer: AnyCancellable?
     @Published var currentBackupState: BackupState = .active
+    private let LAST_BACKUP_TIME_KEY = "INTERNXT_LAST_BACKUP_TIME_KEY"
 
     private func getRealm() -> Realm {
         do {
@@ -776,7 +777,9 @@ class BackupsService: ObservableObject {
                 return
             }
             self.currentBackupState  = backupStatus ? .active : .locked
-            
+            if !backupStatus {
+                removeScheduledBackup()
+            }
         }
         catch {
             
@@ -786,9 +789,15 @@ class BackupsService: ObservableObject {
             }
             appLogger.info(error.getErrorDescription())
             if(apiError.statusCode == 404) {
-              //  self.currentBackupState = .locked
+                removeScheduledBackup()
+               self.currentBackupState = .locked
             }
         }
+    }
+    
+    private func removeScheduledBackup() {
+        UserDefaults.standard.removeObject(forKey: LAST_BACKUP_TIME_KEY)
+
     }
 }
 
