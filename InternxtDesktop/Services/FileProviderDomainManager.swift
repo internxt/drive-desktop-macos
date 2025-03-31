@@ -85,4 +85,15 @@ class FileProviderDomainManager: ObservableObject {
             throw error
         }
     }
+    
+    func removeSpecificDomain(workspaceId: String) async throws {
+        let domains = try await NSFileProviderManager.domains()
+        
+        if let domainToRemove = domains.first(where: { $0.identifier.rawValue == workspaceId }) {
+            try await NSFileProviderManager.remove(domainToRemove)
+            self.logger.info("✅ Domain Deleted: \(workspaceId)")
+        } else {
+            self.logger.info("⚠️ Domain not found: \(workspaceId)")
+        }
+    }
 }

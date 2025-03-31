@@ -180,28 +180,33 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         for type: PKPushType,
         completion: @escaping () -> Void
     ) {
-        
         guard type == .fileProvider else {
             completion()
             return
         }
         
-        let dictionary = payload.dictionaryPayload
-        
-        if let customKeys = dictionary["customKeys"] as? [String: Any],
-           let event = customKeys["event"] as? String {
-            
-            Task {
-                await antivirusManager.fetchAntivirusStatus()
-                await backupsService.fetchBackupStatus()
-            }
-            
-        } else {
+        guard let customKeys = payload.dictionaryPayload["customKeys"] as? [String: Any],
+              let event = customKeys["event"] as? String else {
             enumerateAllDomains()
+            completion()
+            return
         }
-
-
-        completion()
+        
+        Task {
+            switch event {
+            case "WORKSPACE_JOINED":
+                workspaceJoined()
+            case "WORKSPACE_LEFT":
+                await workspaceLeft()
+            default:
+                await withTaskGroup(of: Void.self) { group in
+                    group.addTask { await self.antivirusManager.fetchAntivirusStatus() }
+                    group.addTask { await self.backupsService.fetchBackupStatus() }
+                    group.addTask { await self.usageManager.updateUsage() }
+                }
+            }
+            completion()
+        }
     }
     
     func application(_ application: NSApplication, open urls: [URL]) {
@@ -339,7 +344,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 guard let workspaces = self.authManager.availableWorkspaces else {
                     return
                 }
-               try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
+                try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
                 
                 self.logger.info("Workspaces setted correctly")
             } catch {
@@ -362,6 +367,37 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self.openWidget(delayed: true)
         }
         self.scheduledManager.resumeBackupScheduler()
+        
+    }
+    
+    private func workspaceJoined(){
+        guard let user = self.authManager.user else {
+            return
+        }
+        Task{
+            let workspaces = try await authManager.initializeWorkspace()
+            try await domainManager.initFileProviderForUserWorkspace(user: user, workspaces: workspaces)
+        }
+        
+    }
+    
+    
+    private func workspaceLeft() async{
+        
+        do{
+            guard let workspaces = config.getWorkspaces() else {
+                return
+            }
+            if !workspaces.isEmpty {
+                let workspaceId = workspaces[0].workspaceUser.workspaceId
+                try authManager.removeWorkspaceUserInfo()
+                try await domainManager.removeSpecificDomain(workspaceId: workspaceId)
+            }
+        }
+        catch {
+            self.logger.error("Failed to remove workspace domain: \(error)" )
+        }
+        
         
     }
     
