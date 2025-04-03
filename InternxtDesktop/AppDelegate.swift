@@ -195,10 +195,13 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         Task {
             switch event {
             case "WORKSPACE_JOINED":
+                self.logger.info("Workspace Joined Event Received")
                 workspaceJoined()
             case "WORKSPACE_LEFT":
+                self.logger.info("Workspace LEFT Event Received")
                 await workspaceLeft()
             default:
+                self.logger.info("Update Info Event Received")
                 await withTaskGroup(of: Void.self) { group in
                     group.addTask { await self.antivirusManager.fetchAntivirusStatus() }
                     group.addTask { await self.backupsService.fetchBackupStatus() }
