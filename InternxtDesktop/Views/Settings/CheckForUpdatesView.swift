@@ -30,7 +30,31 @@ struct CheckForUpdatesView: View {
     }
     
     var body: some View {
-        AppButton(title: "SETTINGS_CHECK_FOR_UPDATES", onClick: updater.checkForUpdates, type: .secondary, size: .MD).disabled(!checkForUpdatesViewModel.canCheckForUpdates)
+        AppButton(title: "SETTINGS_CHECK_FOR_UPDATES", onClick: checkForUpdates, type: .secondary, size: .MD).disabled(!checkForUpdatesViewModel.canCheckForUpdates)
+    }
+    
+    func checkForUpdates() {
+        let wasAccessory = (NSApp.activationPolicy() == .accessory)
+
+        if wasAccessory {
+            NSApp.setActivationPolicy(.regular)
+        }
+
+        NSApp.activate(ignoringOtherApps: true)
+
+        updater.checkForUpdates()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            for window in NSApp.windows {
+                if window.title.contains("Update") || window.title.contains("Actualización") {
+                    window.level = .floating
+                    window.makeKeyAndOrderFront(nil)
+                    break
+                }
+            }
+        }
+
+  
     }
 }
 

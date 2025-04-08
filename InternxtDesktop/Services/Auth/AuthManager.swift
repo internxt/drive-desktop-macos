@@ -85,6 +85,26 @@ class AuthManager: ObservableObject {
         
     }
     
+    func initializeWorkspace()  async throws  -> [AvailableWorkspace] {
+        let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces()
+        try config.setAvailableWorkspaces(workspaces: workspaces.availableWorkspaces)
+        if !workspaces.availableWorkspaces.isEmpty{
+            let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId)
+                try config.setWorkspaceCredentials(credentials: credentials)
+            saveWorkspaceMnemonic(key: workspaces.availableWorkspaces[0].workspaceUser.key)
+            DispatchQueue.main.async{ self.workspaceCredentials = credentials
+                self.availableWorkspaces = workspaces.availableWorkspaces
+            }
+        }
+        return workspaces.availableWorkspaces
+    }
+        
+    func removeWorkspaceUserInfo() throws {
+        try config.removeWorkspaces()
+        try config.removeWorkspaceCredentials()
+        try config.removeWorkspaceMnemonicInfo()
+    }
+    
     func refreshTokens() async throws {
         guard let authToken = config.getAuthToken() else {
             throw AuthError.AuthTokenNotInConfig

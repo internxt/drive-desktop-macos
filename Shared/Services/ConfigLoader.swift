@@ -24,6 +24,8 @@ public struct JSONConfig: Codable {
     public let RUDDERSTACK_DATA_PLANE_URL: String
     public let LEGACY_AUTH_TOKEN: String?
     public let AUTH_TOKEN: String?
+    public let GATEWAY_API_URL: String
+    public let HEADER_KEY_GATEWAY: String
 }
 
 enum ConfigLoaderError: Error {

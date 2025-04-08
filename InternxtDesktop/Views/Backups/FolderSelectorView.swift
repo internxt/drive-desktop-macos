@@ -11,7 +11,8 @@ struct FolderSelectorView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @StateObject var backupsService: BackupsService
-    
+    @State private var showModalCancel = false
+
     let closeWindow: () -> Void
     @State private var folderToBackupId: String?
     @Binding var isEditingSelectedFolders: Bool
@@ -72,25 +73,26 @@ struct FolderSelectorView: View {
     }
 
     var body: some View {
+        ZStack {
         VStack(spacing: 12) {
-
+            
             HStack {
                 AppText("BACKUP_SETTINGS_BACKUP_FOLDERS")
                     .font(.LGMedium)
                     .foregroundColor(.Gray100)
-
+                
                 Spacer()
-
+                
                 foldersCountLabel
                     .font(.BaseRegular)
                     .foregroundColor(.Gray50)
             }
-
+            
             FolderListView(
                 items: self.getSelectorItems(),
                 selectedId: $folderToBackupId,
                 isLoading: .constant(false),
-            
+                
                 onItemSingleTap: {item in},
                 onItemDoubleTap: {item in},
                 onMissingFolderURLLocated: handleMissingFolderURLLocated,
@@ -109,27 +111,27 @@ struct FolderSelectorView: View {
                     )
                 }
             )
-
+            
             HStack {
                 HStack(spacing: 8) {
                     AppButton(icon: .Plus, title: "", onClick: selectFolder, type: .secondary, size: .SM)
-
+                    
                     AppButton(icon: .Minus, title: "", onClick: {
                         if let folderToBackupId = folderToBackupId {
                             self.deleteFolder(folderToBackupId: folderToBackupId)
                         }
                     }, type: .secondary, size: .SM, isEnabled: backupsService.foldersToBackup.count != 0)
                 }
-
+                
                 Spacer()
-
+                
                 HStack {
                     AppButton(title: "COMMON_CANCEL", onClick: {
                         withAnimation {
                             Task {
                                 await backupsService.restoreFolderToBackup()
                             }
-                         
+                            
                             closeWindow()
                         }
                     }, type: .secondary, size: .SM)
@@ -139,13 +141,17 @@ struct FolderSelectorView: View {
                         }, type: .primary, size: .SM)
                     } else {
                         AppButton(title: "COMMON_BACKUP_NOW", onClick: {
-                            doBackup()
+                            if backupsService.currentBackupState == .active {
+                                doBackup()
+                            }else {
+                                self.showModalCancel = true
+                            }
                         }, type: .primary, size: .SM, isEnabled: !backupsService.foldersToBackup.isEmpty)
                     }
                     
                 }
             }
-
+            
         }
         .frame(width: 480, height: 380, alignment: .top)
         .padding(20)
@@ -156,6 +162,24 @@ struct FolderSelectorView: View {
         .onAppear{
             Task{
                 await backupsService.initFolderToBackup()
+            }
+        }
+            if showModalCancel {
+                CustomModalView(
+                    title: "FEATURE_LOCKED",
+                    message: "GENERAL_UPGRADE_PLAN",
+                    cancelTitle: "COMMON_CANCEL",
+                    confirmTitle: "COMMON_UPGRADE",
+                    confirmColor: .blue,
+                    onCancel: {
+                        self.showModalCancel = false
+                    },
+                    onConfirm: {
+                        
+                        URLDictionary.UPGRADE_PLAN.open()
+                        self.showModalCancel = false
+                    }
+                )
             }
         }
         

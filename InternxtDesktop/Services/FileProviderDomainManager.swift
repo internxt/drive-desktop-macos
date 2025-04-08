@@ -73,7 +73,7 @@ class FileProviderDomainManager: ObservableObject {
         do {
             if !workspaces.isEmpty{
                 let identifier = NSFileProviderDomainIdentifier(rawValue: workspaces[0].workspaceUser.workspaceId)
-                let domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Business")
+                let domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Drive for Business")
                 
                 try await NSFileProviderManager.add(domain)
                 
@@ -83,6 +83,17 @@ class FileProviderDomainManager: ObservableObject {
             return
         } catch {
             throw error
+        }
+    }
+    
+    func removeSpecificDomain(workspaceId: String) async throws {
+        let domains = try await NSFileProviderManager.domains()
+        
+        if let domainToRemove = domains.first(where: { $0.identifier.rawValue == workspaceId }) {
+            try await NSFileProviderManager.remove(domainToRemove)
+            self.logger.info("✅ Domain Deleted: \(workspaceId)")
+        } else {
+            self.logger.info("⚠️ Domain not found: \(workspaceId)")
         }
     }
 }

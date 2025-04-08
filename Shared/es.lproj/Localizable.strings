@@ -196,8 +196,8 @@
 "ALERT_STORAGE_BUTTON_TITLE" = "Actualizar ahora";
 
 // Antivirus
-"ANTIVIRUS_FEATURE_LOCKED" = "Función bloqueada";
-"ANTIVIRUS_UPGRADE_PLAN" = "Por favor, actualice su plan para usar esta función";
+"FEATURE_LOCKED" = "Función bloqueada";
+"GENERAL_UPGRADE_PLAN" = "Por favor, actualice su plan para usar esta función";
 "ANTIVIRUS_SYSTEM_SCAN" = "Escaneo del sistema antivirus";
 "ANTIVIRUS_CUSTOM_SCAN" = "Escaneo personalizado del antivirus";
 "ANTIVIRUS_START_SCAN" = "Iniciar escaneo";

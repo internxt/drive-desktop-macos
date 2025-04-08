@@ -11,7 +11,7 @@ struct BackupFrequencySelectorView: View {
     @Binding var currentFrequency: BackupFrequencyEnum
     @Binding var nextBackupTime: String
     public let onClick: (BackupFrequencyEnum) -> Void
-    
+    @Binding var isDisabled: Bool
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             AppText("BACKUP_UPLOAD_FREQUENCY")
@@ -28,11 +28,12 @@ struct BackupFrequencySelectorView: View {
                     ],
                     initialValue: currentFrequency.rawValue,
                     position: .top
-                ) { selectedOption in
-                    setFrequency(option: selectedOption)
-                    self.onClick(self.currentFrequency)
-
-                }.frame(width: 140)
+                
+                    ,onSelectOption:  { selectedOption in
+                        setFrequency(option: selectedOption)
+                        self.onClick(self.currentFrequency)
+                        
+                    }, isDisabled : isDisabled).frame(width: 140)
                
                 if self.currentFrequency != .manually {
                     AppText(String(format: NSLocalizedString("BACKUP_NEXT_DATE", comment: ""), nextBackupTime))
@@ -69,5 +70,5 @@ struct BackupFrequencySelectorView: View {
 }
 
 #Preview {
-    BackupFrequencySelectorView(currentFrequency: .constant(.six), nextBackupTime: .constant(""), onClick: {_ in })
+    BackupFrequencySelectorView(currentFrequency: .constant(.six), nextBackupTime: .constant(""), onClick: {_ in }, isDisabled: .constant(true))
 }

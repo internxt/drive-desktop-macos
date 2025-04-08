@@ -195,8 +195,8 @@
 "ALERT_STORAGE_BUTTON_TITLE" = "Mettre à jour maintenant";
 
 // Antivirus
-"ANTIVIRUS_FEATURE_LOCKED" = "Fonction verrouillée";
-"ANTIVIRUS_UPGRADE_PLAN" = "Veuillez mettre à niveau votre plan pour utiliser cette fonctionnalité";
+"FEATURE_LOCKED" = "Fonction verrouillée";
+"GENERALUPGRADE_PLAN" = "Veuillez mettre à niveau votre plan pour utiliser cette fonctionnalité";
 "ANTIVIRUS_SYSTEM_SCAN" = "Analyse du système antivirus";
 "ANTIVIRUS_CUSTOM_SCAN" = "Analyse personnalisée de l'antivirus";
 "ANTIVIRUS_START_SCAN" = "Démarrer l'analyse";

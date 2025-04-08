@@ -194,8 +194,8 @@
 "ALERT_STORAGE_BUTTON_TITLE" = "Upgrade now";
 
 // Antivirus
-"ANTIVIRUS_FEATURE_LOCKED" = "Feature locked";
-"ANTIVIRUS_UPGRADE_PLAN" = "Please upgrade your plan to use this feature";
+"FEATURE_LOCKED" = "Feature locked";
+"GENERAL_UPGRADE_PLAN" = "Please upgrade your plan to use this feature";
 "ANTIVIRUS_SYSTEM_SCAN" = "Antivirus system scan";
 "ANTIVIRUS_CUSTOM_SCAN" = "Antivirus custom scan"; 
 "ANTIVIRUS_START_SCAN" = "Start scan";

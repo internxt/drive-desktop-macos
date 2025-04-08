@@ -105,12 +105,12 @@ struct AntivirusTabView: View {
     
     var lockedView: some View {
         VStack(spacing: 15) {
-            AppText("ANTIVIRUS_FEATURE_LOCKED")
+            AppText("FEATURE_LOCKED")
                 .font(.BaseMedium)
                 .foregroundColor(.Gray100)
             
             
-            AppText("ANTIVIRUS_UPGRADE_PLAN")
+            AppText("GENERAL_UPGRADE_PLAN")
                 .font(.SMRegular)
                 .foregroundColor(.Gray80)
             
