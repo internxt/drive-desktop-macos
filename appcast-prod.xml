@@ -2,13 +2,13 @@
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
         <title>Internxt Drive</title>
-         <item>
-            <title>2.5.3</title>
-            <pubDate>Wed, 26 Feb 2025 11:34:27 -0500</pubDate>
-            <sparkle:version>72</sparkle:version>
-            <sparkle:shortVersionString>2.5.3</sparkle:shortVersionString>
+        <item>
+            <title>2.5.4</title>
+            <pubDate>Tue, 08 Apr 2025 16:32:56 -0500</pubDate>
+            <sparkle:version>73</sparkle:version>
+            <sparkle:shortVersionString>2.5.4</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/internxt/drive-desktop-macos/releases/download/v2.5.3.72/Internxt_Drive_2.5.3.72.dmg" length="57962699" type="application/octet-stream" sparkle:edSignature="i0c+WnnlmrWtcW0EwOf6pIMc+AjRK9QsnsLEQz9FJhS7Au31BjIMxX0Fnlx910TXF9igodPPMDltQDQHR8UhBA=="/>
+            <enclosure url="https://github.com/internxt/drive-desktop-macos/releases/download/v2.5.4.73/Internxt_Drive_2.5.4.73.dmg" length="58038596" type="application/octet-stream" sparkle:edSignature="AFBWr71lzBdxUUpmtH6MEWUqKLrSPcjYut2ElLSFlBQcKx9/wa0vGzzgRVtYx8pkzycZluPeIcH2wkwfsGrHAg=="/>
         </item>
     </channel>
 </rss>
