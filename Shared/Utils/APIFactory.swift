@@ -110,7 +110,7 @@ struct APIFactory {
     }
     
     static func getBackupsClient() -> BackupAPI {
-        return Backup
+        return BackupNew
     }
 
     static var BackupNew: BackupAPI {

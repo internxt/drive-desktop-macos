@@ -304,9 +304,7 @@ class BackupsService: ObservableObject {
             throw BackupError.deviceHasNoName
         }
         logger.info("Updating device \(device.id) date with name: \(deviceName) at \(Date())")
-        let updatedCurrentDevice = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
-        
-    
+        let updatedCurrentDevice = try await BackupsDeviceService.shared.editDevice(deviceUuid: device.uuid, deviceName: deviceName )
         DispatchQueue.main.sync {
             self.currentDevice = updatedCurrentDevice
             self.selectedDevice = self.currentDevice
