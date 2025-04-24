@@ -265,7 +265,7 @@ struct UploadFileWorkspaceUseCase {
             }
             
             
-            let createdThumbnail = try await driveAPI.createThumbnail(createThumbnail: CreateThumbnailData(
+            let createdThumbnail = try await driveNewAPI.createThumbnail(createThumbnail: CreateThumbnailData(
                 bucketFile: uploadFileResult.id,
                 bucketId: uploadFileResult.bucket,
                 fileId: driveItemId,
