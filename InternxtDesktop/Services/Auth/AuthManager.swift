@@ -62,7 +62,11 @@ class AuthManager: ObservableObject {
         guard let legacyAuthToken = config.getLegacyAuthToken() else {
             throw AuthError.LegacyAuthTokenNotInConfig
         }
-        let refreshUserResponse = try await APIFactory.Drive.refreshUser(currentAuthToken: legacyAuthToken)
+        
+        guard let authToken = config.getAuthToken() else {
+            throw AuthError.AuthTokenNotInConfig
+        }
+        let refreshUserResponse = try await APIFactory.DriveNew.refreshUser(currentAuthToken: authToken)
         ErrorUtils.identify(
             email:refreshUserResponse.user.email,
             uuid: refreshUserResponse.user.uuid
