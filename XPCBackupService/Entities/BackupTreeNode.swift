@@ -26,6 +26,7 @@ class BackupTreeNode {
     var remoteId: Int?
     var remoteUuid: String?
     var remoteParentId: Int?
+    var remoteParentUuid: String?
     private(set) var childs: [BackupTreeNode]
     let backupUploadService: BackupUploadServiceProtocol
     var backupTotalPogress: Progress
@@ -178,6 +179,7 @@ class BackupTreeNode {
                 self.remoteUuid = remoteUuid
                 for child in self.childs {
                     child.remoteParentId = remoteId
+                    child.remoteParentUuid = remoteUuid
                 }
             case .failure(let error):
             if let startUploadError = error as? StartUploadError {
@@ -218,6 +220,7 @@ class BackupTreeNode {
         self.remoteUuid = syncedNoteRemoteUuid
         for child in self.childs {
             child.remoteParentId = remoteId
+            child.remoteParentUuid = remoteUuid
         }
     }
 }

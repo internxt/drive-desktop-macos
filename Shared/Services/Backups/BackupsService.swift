@@ -446,7 +446,7 @@ class BackupsService: ObservableObject {
         let urlsStrings = foldersToBackup.map { folderToBackup in folderToBackup.url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? "" }
 
 
-        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, deviceUuid: currentDevice.uuid, bucketId: bucketId, with: { response, error in
             if let error = error {
                 if error == "storageFull"{
                     self.showAlert()
