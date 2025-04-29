@@ -9,7 +9,7 @@ import Foundation
 
 @objc protocol XPCBackupServiceProtocol {
     
-    func uploadDeviceBackup(backupAt backupURLs: [String],networkAuth: String?,deviceId: Int, bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void)
+    func uploadDeviceBackup(backupAt backupURLs: [String],networkAuth: String?,deviceId: Int,deviceUuid: String ,bucketId: String, with reply: @escaping (_ result: String?, _ error: String?) -> Void)
     
     func downloadDeviceBackup(
         downloadAt downloadAtURL: String,

@@ -45,18 +45,20 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private let encryptedContentDirectory: URL
     private let retriesCount = 3
     private let deviceId: Int
+    private let deviceUuid: String
     private let bucketId: String
     private let authToken: String
     private let newAuthToken: String
     @Published var canDoBackup = true
 
-    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, newAuthToken: String) {
+    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, newAuthToken: String, deviceUuid: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
         self.deviceId = deviceId
         self.bucketId = bucketId
         self.authToken = authToken
         self.newAuthToken = newAuthToken
+        self.deviceUuid = deviceUuid
     }
 
     // TODO: get auth token from user defaults from XPC Service.
@@ -110,6 +112,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         }
 
         var remoteParentId: Int? = nil
+        var remoteParentUuid: String? = nil
         let foldername = node.name
         self.logger.info("Going to create folder \(foldername)")
 
@@ -117,21 +120,33 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             guard let parentId = node.remoteParentId else {
                 return .failure(BackupUploadError.MissingParentFolder)
             }
+            
+            guard let parentUuid = node.remoteParentUuid else {
+                return .failure(BackupUploadError.MissingParentFolder)
+            }
 
             remoteParentId = parentId
+            remoteParentUuid = parentUuid
         } else {
             remoteParentId = self.deviceId
+            remoteParentUuid = self.deviceUuid
         }
 
         guard let safeRemoteParentId = remoteParentId else {
+            self.logger.info("Missing Parent Folder id \(foldername) ")
+            return .failure(BackupUploadError.MissingParentFolder)
+        }
+        
+        guard let safeRemoteParentUuid = remoteParentUuid else {
+            self.logger.info("Missing parent folder uuid \(foldername)")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
         self.logger.info("Parent id \(safeRemoteParentId)")
 
         do {
-            let createdFolder = try await backupAPI.createBackupFolder(
-                parentFolderId: safeRemoteParentId,
+            let createdFolder = try await backupNewAPI.createBackupFolder(
+                parentFolderUuid: safeRemoteParentUuid,
                 folderName: foldername
             )
 
@@ -149,7 +164,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             )
 
-            return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: nil))
+            return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: createdFolder.uuid))
         } catch {
             self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
 
@@ -179,7 +194,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
 
-                    return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: nil))
+                    return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: folder.uuid))
                 } catch {
                     self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
@@ -205,6 +220,12 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.logger.info("Starting backing up file \(filename)")
 
         guard let remoteParentId = node.remoteParentId else {
+            self.logger.info("Missing parent folderId \(node.name)")
+            return .failure(BackupUploadError.MissingParentFolder)
+        }
+        
+        guard let remoteParentUuid = node.remoteParentUuid else {
+            self.logger.info("Missing parent folderUuid \(node.name)")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
@@ -252,16 +273,17 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
-
-                let createdFile = try await backupAPI.createBackupFile(
-                    createFileData: CreateFileData(
+           
+                let createdFile = try await backupNewAPI.createBackupFileNew(
+                    createFileData: CreateFileDataNew(
                         fileId: result.id,
                         type: filename.pathExtension,
                         bucket: result.bucket,
                         size: result.size,
                         folderId: remoteParentId,
                         name: encryptedFilename.base64EncodedString(),
-                        plainName: filename.deletingPathExtension
+                        plainName: filename.deletingPathExtension,
+                        folderUuid: remoteParentUuid
                     )
                 )
                 self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
