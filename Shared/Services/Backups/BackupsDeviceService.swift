@@ -69,9 +69,9 @@ struct BackupsDeviceService {
         _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
     }
 
-    public func editDevice(deviceId: Int, deviceName: String) async throws -> Device {
+    public func editDevice(deviceUuid: String, deviceName: String) async throws -> Device {
         let backupAPI = APIFactory.getBackupsClient()
-        let deviceAsFolder = try await backupAPI.editDeviceName(deviceId: deviceId, deviceName: deviceName)
+        let deviceAsFolder = try await backupAPI.editDeviceName(deviceUuid: deviceUuid, deviceName: deviceName)
         return Device(from: deviceAsFolder)
     }
 

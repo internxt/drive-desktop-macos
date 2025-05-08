@@ -26,6 +26,7 @@ class BackupTreeNode {
     var remoteId: Int?
     var remoteUuid: String?
     var remoteParentId: Int?
+    var remoteParentUuid: String?
     private(set) var childs: [BackupTreeNode]
     let backupUploadService: BackupUploadServiceProtocol
     var backupTotalPogress: Progress
@@ -97,39 +98,30 @@ class BackupTreeNode {
     }
 
     private func nodeIsSynced(url: URL, deviceId: Int) throws -> SyncedNode? {
-        let syncedNodeThreadRef = autoreleasepool {
-            let syncedNodeThreadRef = backupRealm.findSyncedNode(url: url, deviceId: deviceId)
-            
-            return syncedNodeThreadRef
-        }
-        
-        guard let syncedNodeThreadRefUnwrapped = syncedNodeThreadRef else {
+        guard let syncedNode = backupRealm.findSyncedNode(url: url, deviceId: deviceId) else {
             return nil
         }
 
-        let syncedNode = backupRealm.resolveSyncedNode(reference: syncedNodeThreadRefUnwrapped)
-        
-        guard let syncedNodeUnwrapped = syncedNode else {
+        let threadSafeRef = ThreadSafeReference(to: syncedNode)
+
+        guard let resolvedNode = backupRealm.resolveSyncedNode(reference: threadSafeRef) else {
             return nil
         }
-        
-    
-        let syncedNodeDate = syncedNodeUnwrapped.updatedAt
-        
+
         guard let fileModificationDate = try self.getFileModificationDate() else {
             return nil
         }
 
-        if (syncedNodeDate < fileModificationDate && self.type != .folder) {
+        let syncedNodeDate = resolvedNode.updatedAt
+
+        if syncedNodeDate < fileModificationDate && self.type != .folder {
             self.syncStatus = .NEEDS_UPDATE
-            self.remoteId = syncedNode?.remoteId
-            self.remoteUuid = syncedNode?.remoteUuid
-            
+            self.remoteId = resolvedNode.remoteId
+            self.remoteUuid = resolvedNode.remoteUuid
             return nil
         }
-        
 
-        return syncedNodeUnwrapped
+        return resolvedNode
     }
     
     func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil, onError: @escaping (Error) -> Void) throws -> Void {
@@ -187,6 +179,7 @@ class BackupTreeNode {
                 self.remoteUuid = remoteUuid
                 for child in self.childs {
                     child.remoteParentId = remoteId
+                    child.remoteParentUuid = remoteUuid
                 }
             case .failure(let error):
             if let startUploadError = error as? StartUploadError {
@@ -227,6 +220,7 @@ class BackupTreeNode {
         self.remoteUuid = syncedNoteRemoteUuid
         for child in self.childs {
             child.remoteParentId = remoteId
+            child.remoteParentUuid = remoteUuid
         }
     }
 }

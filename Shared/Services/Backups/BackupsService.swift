@@ -44,6 +44,11 @@ enum BackupDevicesFetchingStatus {
     case Ready
     case Failed
 }
+
+enum BackupState: Equatable {
+    case locked
+    case active
+}
 class BackupsService: ObservableObject {
     private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     var currentDevice: Device? = nil
@@ -64,6 +69,9 @@ class BackupsService: ObservableObject {
     private var backupFoldersToBackup: [FolderToBackupRealmObject] = []
     private var backupUploadProgressTimer: AnyCancellable?
     private var backupDownloadProgressTimer: AnyCancellable?
+    @Published var currentBackupState: BackupState = .active
+    private let LAST_BACKUP_TIME_KEY = "INTERNXT_LAST_BACKUP_TIME_KEY"
+
     private func getRealm() -> Realm {
         do {
             return try Realm(configuration: Realm.Configuration(
@@ -296,9 +304,7 @@ class BackupsService: ObservableObject {
             throw BackupError.deviceHasNoName
         }
         logger.info("Updating device \(device.id) date with name: \(deviceName) at \(Date())")
-        let updatedCurrentDevice = try await BackupsDeviceService.shared.editDevice(deviceId: device.id, deviceName: deviceName )
-        
-    
+        let updatedCurrentDevice = try await BackupsDeviceService.shared.editDevice(deviceUuid: device.uuid, deviceName: deviceName )
         DispatchQueue.main.sync {
             self.currentDevice = updatedCurrentDevice
             self.selectedDevice = self.currentDevice
@@ -440,7 +446,7 @@ class BackupsService: ObservableObject {
         let urlsStrings = foldersToBackup.map { folderToBackup in folderToBackup.url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? "" }
 
 
-        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, bucketId: bucketId, with: { response, error in
+        xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, deviceUuid: currentDevice.uuid, bucketId: bucketId, with: { response, error in
             if let error = error {
                 if error == "storageFull"{
                     self.showAlert()
@@ -758,6 +764,39 @@ class BackupsService: ObservableObject {
         }
     }
 
+    @MainActor
+    func fetchBackupStatus() async {
+        do {
+            
+            let paymentInfo = try await APIFactory.Payment.getPaymentInfo()
+            guard let backupStatus = paymentInfo.featuresPerService.backups else {
+                appLogger.error("No backup information")
+
+                return
+            }
+            self.currentBackupState  = backupStatus ? .active : .locked
+            if !backupStatus {
+                removeScheduledBackup()
+            }
+        }
+        catch {
+            
+            guard let apiError = error as? APIClientError else {
+                appLogger.info(error.getErrorDescription())
+                return
+            }
+            appLogger.info(error.getErrorDescription())
+            if(apiError.statusCode == 404) {
+                removeScheduledBackup()
+               self.currentBackupState = .locked
+            }
+        }
+    }
+    
+    private func removeScheduledBackup() {
+        UserDefaults.standard.removeObject(forKey: LAST_BACKUP_TIME_KEY)
+
+    }
 }
 
 
