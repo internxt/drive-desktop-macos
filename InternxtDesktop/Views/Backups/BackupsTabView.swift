@@ -165,6 +165,7 @@ struct BackupsTabView: View {
                         numOfFolders: backupsService.foldersToBackup.count,
                         backupsService: self.backupsService,
                         backupUploadStatus: $backupsService.backupUploadStatus,
+                        backupDownloadStatus: $backupsService.backupDownloadStatus,
                         showStopBackupDialog: $showStopBackupDialog,
                         showDeleteBackupDialog: $showDeleteBackupDialog,
                         showFolderSelector: $showFolderSelector,

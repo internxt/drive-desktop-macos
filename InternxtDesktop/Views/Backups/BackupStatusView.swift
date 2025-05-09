@@ -12,6 +12,8 @@ struct BackupStatusView: View {
     @Binding var backupUploadStatus: BackupStatus
     @Binding var device: Device
     @Binding var progress: Double
+    @Binding var backupDownloadStatus: BackupStatus
+    @Binding var progressDownload: Double
 
     private var formattedDate: String {
         guard let lastUpdatedDate = Time.dateFromISOString(self.device.updatedAt) else {
@@ -25,6 +27,10 @@ struct BackupStatusView: View {
         return self.device.isCurrentDevice && self.backupUploadStatus == .InProgress
     }
     
+    private func isDownloading() -> Bool {
+        return backupDownloadStatus == .InProgress
+    }
+    
     private func getBackupProgressPercentage() -> String {
         var progress = Float(progress * 100)
         
@@ -33,6 +39,13 @@ struct BackupStatusView: View {
         }
         return "\(Int(progress))%"
     }
+    private func getBackupProgressPercentage(upload: Bool) -> String {
+        let rawProgress = upload ? progress : progressDownload
+        var percentage = Float(rawProgress * 100)
+        percentage = min(100, max(0, percentage))
+        return "\(Int(percentage))%"
+    }
+    
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
@@ -61,8 +74,22 @@ struct BackupStatusView: View {
                             AppText("BACKUP_BACKING_UP")
                                 .font(.SMMedium)
                                 .foregroundColor(.Primary)
+                          
                         }
-                    } else {
+                    } else if isDownloading() {
+                        HStack(spacing: 4) {
+                            Image(systemName: "arrow.down.circle.fill")
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .foregroundColor(.Primary)
+
+                            AppText("BACKUP_BACKING_DOWNLOAD")
+                                .font(.SMMedium)
+                                .foregroundColor(.Primary)
+                        }
+                    }
+                    
+                    else {
                         Text("BACKUP_LAST_UPLOADED_\(formattedDate )")
                             .font(.SMRegular)
                             .foregroundColor(.Gray50)
@@ -76,14 +103,20 @@ struct BackupStatusView: View {
                         .font(.LGMedium)
                         .foregroundColor(.Primary)
                  
+                } else if isDownloading() {
+                    AppText(getBackupProgressPercentage(upload: false))
+                        .font(.LGMedium)
+                        .foregroundColor(.Primary)
                 }
             }
 
             if deviceIsRunningBackup() {
                 ProgressView(value: progress)
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.Primary))
+            }else if isDownloading() {
+                ProgressView(value: progressDownload)
+                    .progressViewStyle(LinearProgressViewStyle(tint: Color.Primary))
             }
-
         }
         .padding(16)
         .background(colorScheme == .dark ? Color.Gray5 : Color.white)
@@ -118,6 +151,8 @@ struct BackupStatusView: View {
                 hasBackups: true
             )
         ),
-        progress: .constant(34)
+        progress: .constant(34),
+        backupDownloadStatus: .constant(.InProgress),
+        progressDownload: .constant(34)
     )
 }

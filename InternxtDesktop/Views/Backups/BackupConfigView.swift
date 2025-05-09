@@ -15,6 +15,7 @@ struct BackupConfigView: View {
     var numOfFolders: Int
     @StateObject var backupsService: BackupsService
     @Binding var backupUploadStatus: BackupStatus
+    @Binding var backupDownloadStatus: BackupStatus
     @Binding var showStopBackupDialog: Bool
     @Binding var showDeleteBackupDialog: Bool
     @Binding var showFolderSelector: Bool
@@ -38,7 +39,9 @@ struct BackupConfigView: View {
                     BackupStatusView(
                         backupUploadStatus: self.$backupUploadStatus,
                         device: self.$device,
-                        progress: $backupsService.backupUploadProgress
+                        progress: $backupsService.backupUploadProgress,
+                        backupDownloadStatus: self.$backupDownloadStatus,
+                        progressDownload: $backupsService.backupDownloadProgress,
                     )
                     
                     BackupActionsView.frame(maxWidth: .infinity)
@@ -278,6 +281,7 @@ struct BackupConfigView: View {
         numOfFolders: 16,
         backupsService: BackupsService(),
         backupUploadStatus: .constant(.InProgress),
+        backupDownloadStatus: .constant(.InProgress),
         showStopBackupDialog: .constant(false),
         showDeleteBackupDialog: .constant(false),
         showFolderSelector: .constant(false),

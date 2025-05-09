@@ -43,6 +43,7 @@
 "BACKUP_TITLE" = "Backup";
 "BACKUP_LAST_UPLOADED_%@" = "Última actualización %@";
 "BACKUP_BACKING_UP" = "Respaldando...";
+"BACKUP_BACKING_DOWNLOAD" = "Descargando backup ...";
 "BACKUP_STOP_BACKUP" = "Detener copia de seguridad";
 "BACKUP_DOWNLOAD" = "Descargar";
 "BACKUP_DOWNLOAD_STOP" = "Detener descarga";
