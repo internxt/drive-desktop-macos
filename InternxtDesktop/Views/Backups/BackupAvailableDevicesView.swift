@@ -47,13 +47,14 @@ struct BackupAvailableDevicesView: View {
                         AppText("BACKUP_SETTINGS_DEVICES")
                             .foregroundColor(.Gray80)
                             .font(.SMMedium)
-                            
+                        
                         if(isFetchingBackupDevices()) {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                                 .scaleEffect(0.5, anchor: .center)
                         }
                     }.frame( maxWidth:.infinity,maxHeight: 20, alignment: .leading )
+                    ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(getBackupDevices()) { device in
                             
@@ -69,6 +70,7 @@ struct BackupAvailableDevicesView: View {
                             }
                         }
                     }
+                }
                     .onAppear {
                         let devices = getBackupDevices()
                         if(self.selectedDevice?.id == nil) {

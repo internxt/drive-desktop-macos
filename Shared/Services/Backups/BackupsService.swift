@@ -61,6 +61,7 @@ class BackupsService: ObservableObject {
     @Published var selectedDevice: Device? = nil
     @Published var backupUploadProgress: Double = 0.0
     @Published var backupDownloadedItems: Int64 = 0
+    @Published var backupDownloadProgress: Double = 0.0
     @Published var backupUploadStatus: BackupStatus = .Idle
     @Published var backupDownloadStatus: BackupStatus = .Idle
     @Published var deviceDownloading: Device? = nil
@@ -476,6 +477,7 @@ class BackupsService: ObservableObject {
         DispatchQueue.main.sync {
             self.backupDownloadStatus = .InProgress
             self.backupDownloadedItems = 0
+            self.backupDownloadProgress = 0
         }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
@@ -731,6 +733,7 @@ class BackupsService: ObservableObject {
                     self.backupDownloadStatus = backupDownloadStatus.status
                 }
                 self.backupDownloadedItems = backupDownloadStatus.completedSyncs
+                self.backupDownloadProgress = backupDownloadStatus.progress
                 self.logger.info("Backup download is in \(backupDownloadStatus.status) status, \(backupDownloadStatus.completedSyncs) items downloaded")
             }
             
