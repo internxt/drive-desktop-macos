@@ -91,10 +91,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         )
         self.windowsManager.loadInitialWindows()
         if let user = authManager.user {
-            Analytics.shared.identify(
-                userId: user.uuid,
-                email: user.email
-            )
             ErrorUtils.identify(
                 email:user.email,
                 uuid: user.uuid
