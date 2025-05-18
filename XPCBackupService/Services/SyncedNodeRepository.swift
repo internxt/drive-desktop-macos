@@ -12,7 +12,7 @@ import RealmSwift
 protocol SyncedNodeRepositoryProtocol: GenericRepositoryProtocol {
     
     func addSyncedNode(_ node: SyncedNode) throws
-    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>?
+    func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode?
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws
     func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode?
 }
@@ -40,26 +40,24 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     func addSyncedNode(_ node: SyncedNode) throws {
         do {
             let realm = try getRealm()
+            let detachedNode = SyncedNode(value: node)
             try realm?.write {
-                realm?.add(node)
+                realm?.add(detachedNode)
             }
         } catch {
             throw BackupUploadError.CannotAddNodeToRealm
         }
     }
     
-    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>? {
+    
+    func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode? {
         do {
-            let realm = try getRealm()
-            
-            let syncedNode = realm?.objects(SyncedNode.self).first { syncedNode in
-                url.absoluteString == syncedNode.url && deviceId == syncedNode.deviceId
-            }
-            guard let syncedNodeUnwrapped = syncedNode else {
-                return nil
-            }
-            return ThreadSafeReference(to: syncedNodeUnwrapped)
+            let realm = try Realm()
+            return realm.objects(SyncedNode.self)
+                .filter("url == %@ AND deviceId == %@", url.absoluteString, deviceId)
+                .first
         } catch {
+            logger.error("Failed to open Realm: \(error)")
             return nil
         }
     }
@@ -105,10 +103,10 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     
     func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode? {
         do {
-            let realm = try getRealm()
-            guard let realm = realm else { return nil }
+            let realm = try Realm()
             return realm.resolve(reference)
         } catch {
+            logger.error("Failed to resolve thread-safe reference: \(error)")
             return nil
         }
     }

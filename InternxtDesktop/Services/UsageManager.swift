@@ -30,14 +30,14 @@ class UsageManager: ObservableObject {
             DispatchQueue.main.sync {
                 self.loadingUsage = true
             }
-            let limit = try await APIFactory.Drive.getLimit()
+            let limit = try await APIFactory.DriveNew.getLimit()
             
-            let driveUsage = try await APIFactory.Drive.getUsage()
+            let driveUsage = try await APIFactory.DriveNew.getUsage()
             
             DispatchQueue.main.async{
                 self.limit = limit.maxSpaceBytes
                 self.driveUsage = driveUsage.drive
-                self.backupsUsage = driveUsage.backups
+                self.backupsUsage = driveUsage.backups ?? 0
                 self.loadingUsage = false
             }
             

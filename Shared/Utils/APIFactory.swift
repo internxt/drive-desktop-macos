@@ -34,7 +34,7 @@ struct APIFactory {
         
         let config = configLoader.get()
         let networkAuth = configLoader.getNetworkAuth()
-        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var NetworkWorkspace: NetworkAPI {
@@ -42,7 +42,7 @@ struct APIFactory {
         
         let config = configLoader.get()
         let networkAuth = configLoader.getNetworkAuthWorkspace()
-        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth!, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var DriveNew: DriveAPI {
@@ -51,7 +51,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
-        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var DriveWorkspace: DriveAPI {
@@ -60,7 +60,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
-        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader)
+        return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader , gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var Drive: DriveAPI {
@@ -69,7 +69,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
         
-        return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var Photos: PhotosAPI {
@@ -87,7 +87,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         
-        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var TrashWorkspace: TrashAPI {
@@ -97,7 +97,7 @@ struct APIFactory {
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
         let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
 
-        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader)
+        return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader, gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
 
     static var Backup: BackupAPI {
@@ -106,11 +106,11 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
 
-        return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static func getBackupsClient() -> BackupAPI {
-        return Backup
+        return BackupNew
     }
 
     static var BackupNew: BackupAPI {
@@ -119,7 +119,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
 
-        return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static var Payment: DriveAPI {
@@ -128,7 +128,7 @@ struct APIFactory {
         let config = configLoader.get()
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
 
-        return DriveAPI(baseUrl: config.NETWORK_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return DriveAPI(baseUrl: config.GATEWAY_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
     
     static func getNewBackupsClient() -> BackupAPI {

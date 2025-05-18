@@ -29,6 +29,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         backupAt backupURLs: [String],
         networkAuth: String?,
         deviceId: Int,
+        deviceUuid: String,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) -> Void {
@@ -87,7 +88,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 deviceId: deviceId,
                 bucketId: bucketId,
                 authToken: authToken,
-                newAuthToken: newAuthToken
+                newAuthToken: newAuthToken,
+                deviceUuid: deviceUuid
             )
             
             

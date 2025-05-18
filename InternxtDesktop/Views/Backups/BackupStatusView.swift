@@ -31,7 +31,7 @@ struct BackupStatusView: View {
         if(progress > 100.0) {
             progress = 100.0
         }
-        return "\(String(format: "%.2f", progress))%"
+        return "\(Int(progress))%"
     }
     var body: some View {
         VStack(spacing: 10) {

@@ -25,9 +25,15 @@ class AntivirusManager: ObservableObject {
     func fetchAntivirusStatus() async {
         do {
             appLogger.info("Antivirus Information")
-            if self.currentState != .scanning {
-                let paymentInfo = try await APIFactory.Payment.getPaymentInfo(debug: true)
-                self.currentState = paymentInfo.featuresPerService.antivirus ? .options : .locked
+            let paymentInfo = try await APIFactory.Payment.getPaymentInfo(debug: true)
+            let antivirusEnabled = paymentInfo.featuresPerService.antivirus
+
+            if self.currentState == .scanning {
+                if !antivirusEnabled {
+                    cancelScan(isLocked: true)
+                }
+            } else {
+                self.currentState = antivirusEnabled ? .options : .locked
             }
         }
         catch {
@@ -221,7 +227,7 @@ class AntivirusManager: ObservableObject {
     }
 
     
-    func cancelScan() {
+    func cancelScan(isLocked : Bool = false) {
           DispatchQueue.global(qos: .background).async { [weak self] in
               guard let self = self else { return }
               self.isCancelled = true
@@ -229,8 +235,14 @@ class AntivirusManager: ObservableObject {
                   process.terminate()
                   self.scanProcess = nil
                   DispatchQueue.main.async {
-                      self.currentState = .results(noThreats: (self.detectedFiles == 0))
-                      appLogger.info("Process cancel by user")
+                      if isLocked {
+                          appLogger.info("locked process by cancel subs")
+                          self.currentState = .locked
+                      }else {
+                          self.currentState = .results(noThreats: (self.detectedFiles == 0))
+                          appLogger.info("Process cancel by user")
+                      }
+
                   }
               }
           }
