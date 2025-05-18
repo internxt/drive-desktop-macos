@@ -65,13 +65,22 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         super.init()
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
         self.requestNotificationsPermissions()
-        if let authToken = config.getAuthToken() {
+        
+        // Only initialize RealtimeService in main app, not in extension
+        if ProcessInfo.processInfo.processName != "SyncExtension", let authToken = config.getAuthToken() {
             self.realtime = RealtimeService.init(
                 token: authToken,
                 onConnect: {},
                 onDisconnect: {},
-                onEvent: {
-                    Task {try? await self.domainManager.manager?.signalEnumerator(for: .workingSet)}
+                onEvent: { [weak self] in
+                    guard let self = self else { return }
+                    Task {
+                        do {
+                            try await self.domainManager.manager?.signalEnumerator(for: .workingSet)
+                        } catch {
+                            self.logger.error("Failed to signal enumerator: \(error.localizedDescription)")
+                        }
+                    }
                 }
             )
         }
@@ -287,6 +296,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         do {
             try await authManager.refreshTokens()
             self.logger.info("Tokens refreshed correctly")
+            
+            // Update Socket.IO connection with the new token
+            if let newAuthToken = config.getAuthToken(), let realtime = self.realtime {
+                realtime.updateToken(newAuthToken)
+            }
         } catch{
             AuthError.UnableToRefreshToken.reportToSentry()
             guard let apiClientError = error as? APIClientError else {
