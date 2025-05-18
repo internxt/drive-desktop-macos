@@ -37,6 +37,7 @@ enum BackupError: Error {
     case invalidDownloadURL
     case missingNetworkAuth
     case storageFull
+    case missingNetworkConnection
 }
 
 enum BackupDevicesFetchingStatus {
@@ -405,6 +406,11 @@ class BackupsService: ObservableObject {
     }
 
     func startBackup(onProgress: @escaping (Double) -> Void) async throws {
+        guard NetworkConnectivityService.shared.isNetworkAvailable() else {
+            logger.error("The Internet connection appears to be offline.")
+            throw BackupError.missingNetworkConnection
+        }
+        
         logger.info("Backup started")
         logger.info("Going to backup folders \(self.foldersToBackup)")
         
@@ -463,6 +469,11 @@ class BackupsService: ObservableObject {
     }
     
     func downloadBackup(device: Device, downloadAt: URL) async throws {
+        guard NetworkConnectivityService.shared.isNetworkAvailable() else {
+            logger.error("The Internet connection appears to be offline.")
+            throw BackupError.missingNetworkConnection
+        }
+        
         self.deviceDownloading = device
         logger.info("Preparint backup for download")
         logger.info("Device to download is \(device.plainName) with ID \(device.id)")
@@ -526,6 +537,11 @@ class BackupsService: ObservableObject {
     }
     
     func downloadFolderBackup(device: Device, downloadAt: URL, folderId: String, folderName: String? = "") async throws {
+        guard NetworkConnectivityService.shared.isNetworkAvailable() else {
+            logger.error("The Internet connection appears to be offline.")
+            throw BackupError.missingNetworkConnection
+        }
+        
         logger.info("Preparint  folder backup for download")
         let itemBackup = ItemBackup(itemId: folderId, device: device)
         DispatchQueue.main.sync {
@@ -585,6 +601,11 @@ class BackupsService: ObservableObject {
     }
     
     func downloadFileBackup(device: Device, downloadAt: URL, fileId: String) async throws {
+        guard NetworkConnectivityService.shared.isNetworkAvailable() else {
+            logger.error("The Internet connection appears to be offline.")
+            throw BackupError.missingNetworkConnection
+        }
+        
         logger.info("Preparint backup file for download")
         let itemBackup = ItemBackup(itemId: fileId, device: device)
         
