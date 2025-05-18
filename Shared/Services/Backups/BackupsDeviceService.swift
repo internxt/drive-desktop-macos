@@ -66,7 +66,11 @@ struct BackupsDeviceService {
 
     public func addCurrentDevice(deviceName: String) async throws {
         let backupAPI = APIFactory.getBackupsClient()
-        _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
+        do {
+            _ = try await backupAPI.addDeviceAsFolder(deviceName: deviceName)
+        } catch let error as APIClientError where error.statusCode == 500 && error.message.contains("id") {
+            logger.info("Server error when adding device, will proceed normally: \(error.message)")
+        }
     }
 
     public func editDevice(deviceUuid: String, deviceName: String) async throws -> Device {
