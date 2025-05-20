@@ -58,7 +58,6 @@ struct SendFeedbackView: View {
     }
     
     func handleSendFeedback() {
-        Analytics.shared.track(key: .SEND_FEEDBACK, props: ["feedback": feedback])
         feedbackSent = true
     }
     

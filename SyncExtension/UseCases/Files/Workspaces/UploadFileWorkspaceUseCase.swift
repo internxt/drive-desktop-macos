@@ -73,10 +73,7 @@ struct UploadFileWorkspaceUseCase {
             parentFolderId: Int(getParentId()) ?? -1
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
+
         
         return Date()
     }
@@ -94,9 +91,7 @@ struct UploadFileWorkspaceUseCase {
             elapsedTimeMs: elapsedTime * 1000
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+
         
         return elapsedTime
     }
@@ -115,9 +110,7 @@ struct UploadFileWorkspaceUseCase {
             error: error
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+  
     }
     
     
