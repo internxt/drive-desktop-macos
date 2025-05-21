@@ -123,9 +123,19 @@ class GetRemoteChangesUseCase {
                 deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: folderId))
                 continue
             }
+            
+            guard let updatedAt = Time.dateFromISOString(folder.updatedAt) else {
+                self.logger.error("Cannot create updatedAt date for item \(folder.id) with value \(folder.updatedAt)")
+                return
+            }
+            
+            
             if folder.status == "REMOVED" || folder.status == "TRASHED" {
                 deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
                 folderDeletionCache[folderId] = true
+                if updatedAt > lastUpdatedAt {
+                    newFoldersLastUpdatedAt = updatedAt
+                }
                 continue
             }
             
@@ -162,7 +172,7 @@ class GetRemoteChangesUseCase {
         
         if hasMoreFolders {
             self.logger.info("There are more folders, requesting them...")
-            _ = try await self.obtainFolderChanges(lastUpdatedAt: newFilesLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: recommendedBatchSize)
+            _ = try await self.obtainFolderChanges(lastUpdatedAt: newFoldersLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: recommendedBatchSize)
         }
     }
 
@@ -199,6 +209,17 @@ class GetRemoteChangesUseCase {
                 continue
             }
 
+            guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
+                self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
+                return
+            }
+            
+          
+            if updatedAt > newFilesLastUpdatedAt {
+                newFilesLastUpdatedAt = updatedAt
+
+            }
+            
             if file.status == "REMOVED" || file.status == "TRASHED" {
                 deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
                 continue
@@ -208,15 +229,6 @@ class GetRemoteChangesUseCase {
                 guard let createdAt = Time.dateFromISOString(file.createdAt) else {
                     self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
                     return
-                }
-                
-                guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
-                    self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
-                    return
-                }
-                
-                if updatedAt > newFilesLastUpdatedAt {
-                    newFilesLastUpdatedAt = updatedAt
                 }
                 
                 let parentIsRoot = file.folderId == user.root_folder_id
