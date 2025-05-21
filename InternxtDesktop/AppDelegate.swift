@@ -47,7 +47,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let settingsManager = SettingsTabManager()
     var scheduledManager: ScheduledBackupManager!
     let antivirusManager = AntivirusManager()
-    var realtime: RealtimeService?
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
@@ -65,17 +64,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         super.init()
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
         self.requestNotificationsPermissions()
-        if let authToken = config.getAuthToken() {
-            self.realtime = RealtimeService.init(
-                token: authToken,
-                onConnect: {},
-                onDisconnect: {},
-                onEvent: {
-                    Task {try? await self.domainManager.manager?.signalEnumerator(for: .workingSet)}
-                }
-            )
-        }
-        
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {

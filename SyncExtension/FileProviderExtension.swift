@@ -31,7 +31,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let mnemonic: String
     let authManager: AuthManager
     let activityManager: ActivityManager
-    let realtime: RealtimeService?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
@@ -96,19 +95,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         logger.info("Created extension with domain \(domain.displayName)")
-        let config = authManager.config
-        if let authToken = config.getAuthToken() {
-            self.realtime = RealtimeService.init(
-                token: authToken,
-                onConnect: {},
-                onDisconnect: {},
-                onEvent: {
-                    Task {try? await manager.signalEnumerator(for: .workingSet)}
-                }
-            )
-        } else {
-            self.realtime = nil
-        }
+
         super.init()
         
         do {
