@@ -40,7 +40,6 @@ struct GetFileOrFolderMetaUseCase {
 
                 if UUID(uuidString: identifierRaw) != nil {
                     // File
-                    self.logger.info("👽 Is file UUID (\(identifierRaw))")
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a file")
                     if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
                         let parentFolderId = String(fileMeta.folderId)
@@ -85,8 +84,6 @@ struct GetFileOrFolderMetaUseCase {
                     }
                 } else {
                     // Folder
-                    self.logger.info(" ✌🏻Is folder identifier (\(identifierRaw))")
-
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a folder")
                     if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: identifierRaw) {
                         if let parentId = folderMeta.parentId,
