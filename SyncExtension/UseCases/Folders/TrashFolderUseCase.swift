@@ -58,6 +58,7 @@ struct TrashFolderUseCase {
                         itemType: .folder
                     )
                     self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) trashed correctly")
+                    DeletedFolderCache.shared.markFolderAsDeleted(String(id))
                     completionHandler(newItem, changedFields.removing(.parentItemIdentifier), false, nil)
                 } else {
                     throw TrashFolderUseCaseError.RequestNotSuccessful
