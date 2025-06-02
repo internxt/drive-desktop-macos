@@ -44,12 +44,17 @@ struct GetFileOrFolderMetaUseCase {
                     if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
                         let parentFolderId = String(fileMeta.folderId)
                         
-                        if let parentMeta = await self.getFolderMetaOrNil(maybeFolderId: parentFolderId),
-                           parentMeta.deleted == true {
+                        if fileMeta.deleted == true {
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
                         }
 
+                        self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.id)")
+                        if DeletedFolderCache.shared.isFolderDeleted(parentFolderId) {
+                            self.logger.info("❌ Parent was deleted, returning error for item \(fileMeta.plainName ?? "")")
+                            completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                            return
+                        }
                         let parentIsRootContainer = fileMeta.folderId == user.root_folder_id
 
                         guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
@@ -86,13 +91,24 @@ struct GetFileOrFolderMetaUseCase {
                     // Folder
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a folder")
                     if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: identifierRaw) {
-                        if let parentId = folderMeta.parentId,
-                           let parentMeta = await self.getFolderMetaOrNil(maybeFolderId: String(parentId)),
-                           parentMeta.deleted == true {
-                            self.logger.info("Parent folder \(parentId) of item \(identifierRaw) is deleted")
+
+                        
+                        if folderMeta.deleted == true {
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
                         }
+                        if let parentFolderId = folderMeta.parentId  {
+                            
+                            if DeletedFolderCache.shared.isFolderDeleted(String(parentFolderId)) {
+                                self.logger.info("❌ Parent was deleted, returning error for item \(folderMeta.plainName ?? "")")
+                                DeletedFolderCache.shared.markFolderAsDeleted(String(folderMeta.id)) // mark this folder as deleted
+                                completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                                return
+                            }
+                            
+                        }
+
+
 
                         guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
                             self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
