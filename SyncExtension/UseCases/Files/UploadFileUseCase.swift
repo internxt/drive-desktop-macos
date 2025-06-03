@@ -36,6 +36,7 @@ struct UploadFileUseCase {
     private let activityManager: ActivityManager
     private let trackId = UUID().uuidString
     private let progress: Progress
+    private let parentUUID: String
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -46,7 +47,8 @@ struct UploadFileUseCase {
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
-        progress: Progress
+        progress: Progress,
+        parentUuid: String
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -58,62 +60,21 @@ struct UploadFileUseCase {
         self.networkFacade = networkFacade
         self.user = user
         self.progress = progress
+        self.parentUUID = parentUuid
     }
     
    
     
     private func trackStart(processIdentifier: String) -> Date {
-        let filename = (item.filename as NSString)
-        let event = UploadStartedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1
-        )
-        
-  
-        
-        
         return Date()
     }
     
     private func trackEnd(processIdentifier: String, startedAt: Date) -> TimeInterval {
         let elapsedTime = Date().timeIntervalSince(startedAt)
-        let filename = (item.filename as NSString)
-        let event = UploadCompletedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            elapsedTimeMs: elapsedTime * 1000
-        )
-        
-
-        
         return elapsedTime
     }
     
    
-    
-    private func trackError(processIdentifier: String, error: any Error) {
-        let filename = (item.filename as NSString)
-        let event = UploadErrorEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: item.itemIdentifier.rawValue,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            error: error
-        )
-        
-   
-    }
-    
     
     private func getParentId() -> String {
         return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
@@ -137,9 +98,6 @@ struct UploadFileUseCase {
                 guard let sizeInt = size?.intValue else {
                     throw UploadFileUseCaseError.MissingDocumentSize
                 }
-
-                let folderMeta = try await driveNewAPI.getFolderMetaById(id: getParentId(),debug: true)
-                guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
 
                 let filename = (item.filename as NSString)
                 self.logger.info("Starting upload for file \(filename)")
@@ -172,7 +130,8 @@ struct UploadFileUseCase {
                         size: result.size,
                         folderId: 0,
                         name: encryptedFilename.base64EncodedString(),
-                        plainName: filename.deletingPathExtension, folderUuid: parentUuid
+                        plainName: filename.deletingPathExtension,
+                        folderUuid: parentUUID
                         
                     ),
                 debug: true
@@ -215,7 +174,6 @@ struct UploadFileUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
                 
             } catch {
-                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
 
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")

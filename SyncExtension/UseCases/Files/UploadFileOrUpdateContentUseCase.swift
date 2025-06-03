@@ -28,6 +28,7 @@ struct UploadFileOrUpdateContentUseCase {
     private let user: DriveUser
     private let activityManager: ActivityManager
     private let trackId = UUID().uuidString
+    private let parentUUID: String
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -37,7 +38,8 @@ struct UploadFileOrUpdateContentUseCase {
         encryptedFileDestination: URL,
         thumbnailFileDestination:URL,
         encryptedThumbnailFileDestination: URL,
-        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
+        parentUuid: String
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -48,6 +50,7 @@ struct UploadFileOrUpdateContentUseCase {
         self.completionHandler = completionHandler
         self.networkFacade = networkFacade
         self.user = user
+        self.parentUUID = parentUuid
     }
     
     private func fileAlreadyExistsByName() async -> GetFileInFolderByPlainNameResponse? {
@@ -81,7 +84,8 @@ struct UploadFileOrUpdateContentUseCase {
                     thumbnailFileDestination: self.thumbnailFileDestination,
                     encryptedThumbnailFileDestination: self.encryptedThumbnailFileDestination,
                     completionHandler: self.completionHandler,
-                    progress: progress
+                    progress: progress,
+                    parentUuid: parentUUID
                 ).run()
             }
             

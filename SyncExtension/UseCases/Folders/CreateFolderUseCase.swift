@@ -16,10 +16,12 @@ struct CreateFolderUseCase {
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
-    init(user: DriveUser, itemTemplate: NSFileProviderItem, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    let parentUUID: String
+    init(user: DriveUser, itemTemplate: NSFileProviderItem,parentUuid: String ,completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
         self.itemTemplate = itemTemplate
         self.user = user
         self.completionHandler = completionHandler
+        self.parentUUID = parentUuid
     }
     
     
@@ -31,12 +33,9 @@ struct CreateFolderUseCase {
 
          
                 let filename = itemTemplate.filename as NSString
-                self.logger.info("✅ Parent Folder id to create: \(parentFolderId)")
-                let folderMeta = try await driveNewAPI.getFolderMetaById(id: parentFolderId,debug: true)
-                
-                guard let parentUuid = folderMeta.uuid else { throw CreateItemError.NoParentUuidFound }
-
-                let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUuid, folderName: itemTemplate.filename,debug: true)
+                self.logger.info("✅ Parent Folder id to create: \(parentFolderId) itemname: \(filename)")
+             
+                let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUUID, folderName: itemTemplate.filename,debug: true)
                 
                 completionHandler(FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
