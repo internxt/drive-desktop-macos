@@ -158,31 +158,38 @@ class GetRemoteChangesUseCase {
         }
     }
 
-    
     private func obtainFileChanges(lastUpdatedAt: Date, limit: Int, recommendedBatchSize: Int?) async throws -> Void {
         let updatedFiles = try await APIFactory.DriveNew.getUpdatedFiles(
             updatedAt: lastUpdatedAt,
             status: "ALL",
             limit: limit,
-            offset:fileOffset,
+            offset: fileOffset,
             bucketId: user.bucket,
             debug: true
         )
         fileOffset += limit
         let hasMoreFiles = updatedFiles.count == limit
         
-        updatedFiles.forEach{ (file) in
+        var mostRecentUpdatedAt: Date = newFilesLastUpdatedAt
+
+        updatedFiles.forEach { file in
             guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
                 self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
                 return
             }
             
+            if updatedAt > mostRecentUpdatedAt {
+                mostRecentUpdatedAt = updatedAt
+            }
+
             if file.status == "REMOVED" || file.status == "TRASHED" {
                 deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
-                
-                if updatedAt > newFilesLastUpdatedAt {
-                    newFilesLastUpdatedAt = updatedAt
-                }
+                return
+            }
+            
+            if DeletedFolderCache.shared.isFolderDeleted(String(file.folderId)) {
+                self.logger.info("Parent was deleted item:\(file.plainName ?? file.name)")
+                return
             }
 
             if file.status == "EXISTS" {
@@ -190,20 +197,12 @@ class GetRemoteChangesUseCase {
                     self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
                     return
                 }
-                
-                
-                
-                if updatedAt > newFilesLastUpdatedAt {
-                    self.logger.info("Date was updated is \(updatedAt) and newFilesLastUpdatedAt is \(newFilesLastUpdatedAt)")
-                    
-                    newFilesLastUpdatedAt = updatedAt
-                }
-                
+
                 let parentIsRoot = file.folderId == user.root_folder_id
 
                 let item = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
-                    filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
+                    filename: FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type),
                     parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: file.folderId.toString()),
                     createdAt: createdAt,
                     updatedAt: updatedAt,
@@ -219,6 +218,10 @@ class GetRemoteChangesUseCase {
         if hasMoreFiles {
             self.logger.info("There are more files, requesting them...")
             try await self.obtainFileChanges(lastUpdatedAt: newFilesLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: recommendedBatchSize)
+        } else {
+            if mostRecentUpdatedAt > newFilesLastUpdatedAt {
+                newFilesLastUpdatedAt = mostRecentUpdatedAt
+            }
         }
     }
 }
