@@ -127,6 +127,11 @@ class GetRemoteChangesUseCase {
             }
             
             if folder.status == "EXISTS" {
+                
+                if DeletedFolderCache.shared.isFolderDeleted(String(folder.id)) {
+                    DeletedFolderCache.shared.removeFolder(String(folder.id))
+                }
+                
                 guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
                     self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
                     return

@@ -313,11 +313,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             guard let self = self else { return }
 
             do {
-                let parentUuid = try await Self.folderCache.getOrFetch(for: parentId, fetch: {
-                    logger.info("[\(callId)] cache miss para \(parentId), consultando...")
-                    let folderMeta = try await self.driveNewAPI.getFolderMetaById(id: parentId, debug: true)
-                    return folderMeta.uuid!
-                }, callId: callId)
+                var parentUuid: String? = nil
+                
+                if !self.isWorkspaceDomain() {
+                     parentUuid = try await Self.folderCache.getOrFetch(for: parentId, fetch: {
+                        let folderMeta = try await self.driveNewAPI.getFolderMetaById(id: parentId, debug: true)
+                        return folderMeta.uuid!
+                    }, callId: callId)
+                }
+  
 
                 if shouldCreateFolder {
                     let useCaseProgress: Progress
@@ -329,6 +333,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             completionHandler: completionHandler
                         ).run()
                     } else {
+                        guard let parentUuid else {
+                            logger.error("❌ parentUuid not available")
+                            completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: 1002, userInfo: [NSLocalizedDescriptionKey: "Missing parentUuid"]))
+                            return
+                        }
+                        
                         useCaseProgress = CreateFolderUseCase(
                             user: self.user,
                             itemTemplate: itemTemplate,
@@ -404,6 +414,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         useCaseProgress = useCase.run()
 
                     } else {
+                        
+                        guard let parentUuid else {
+                            logger.error("❌ parentUuid not available")
+                            completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: 1002, userInfo: [NSLocalizedDescriptionKey: "Missing parentUuid"]))
+                            return
+                        }
+                        
                         let useCase = UploadFileOrUpdateContentUseCase(
                             networkFacade: self.networkFacade,
                             user: self.user,
