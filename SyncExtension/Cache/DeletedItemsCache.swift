@@ -29,20 +29,21 @@ final class DeletedFolderCache {
     }
 
     func isFolderDeleted(_ folderId: String) -> Bool {
-        var isDeleted = false
-        let now = Date()
-
-        queue.sync {
-            if let expiration = self.deletedFolders[folderId], expiration > now {
-                isDeleted = true
-            } else {
-                self.deletedFolders.removeValue(forKey: folderId)
+        return queue.sync {
+            
+            let now = Date()
+            if let expiration = self.deletedFolders[folderId] {
+                return expiration > now
             }
+            return false
         }
-
-        return isDeleted
     }
 
+    func removeFolder(_ folderId: String) {
+        queue.async(flags: .barrier) {
+            self.deletedFolders.removeValue(forKey: folderId)
+        }
+    }
    
     private func cleanupIfNeeded() {
         if deletedFolders.count > maxEntries {

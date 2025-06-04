@@ -23,10 +23,10 @@ actor FolderMetaCache {
             meta[id] = nil
         }
 
-
-        if inProgress[id] != nil {
+        if var continuations = inProgress[id] {
             return try await withCheckedThrowingContinuation { continuation in
-                inProgress[id]?.append(continuation)
+                continuations.append(continuation)
+                inProgress[id] = continuations
             }
         }
 
