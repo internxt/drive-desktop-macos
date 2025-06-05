@@ -99,12 +99,18 @@ class GetRemoteChangesUseCase {
             offset:folderOffset,
             debug:true
         )
-        folderOffset += limit
+        folderOffset += updatedFolders.count
         let hasMoreFolders = updatedFolders.count == limit
         updatedFolders.forEach{ (folder) in
             guard let updatedAt = Time.dateFromISOString(folder.updatedAt) else {
                 self.logger.error("Cannot create updatedAt date for item \(folder.id) with value \(folder.updatedAt)")
                 return
+            }
+            
+            
+            if DeletedFolderCache.shared.isFolderDeleted(String(folder.id)) && folder.status == "EXISTS" {
+                self.logger.info("folder was restored remove from cache\(folder.name)")
+                DeletedFolderCache.shared.removeFolder(String(folder.id))
             }
             
             if let parentId = folder.parentId {
@@ -128,9 +134,6 @@ class GetRemoteChangesUseCase {
             
             if folder.status == "EXISTS" {
                 
-                if DeletedFolderCache.shared.isFolderDeleted(String(folder.id)) {
-                    DeletedFolderCache.shared.removeFolder(String(folder.id))
-                }
                 
                 guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
                     self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
@@ -172,7 +175,7 @@ class GetRemoteChangesUseCase {
             bucketId: user.bucket,
             debug: true
         )
-        fileOffset += limit
+        fileOffset += updatedFiles.count
         let hasMoreFiles = updatedFiles.count == limit
         
         var mostRecentUpdatedAt: Date = newFilesLastUpdatedAt
