@@ -21,10 +21,14 @@ final class DeletedFolderCache {
 
     func markFolderAsDeleted(_ folderId: String) {
         let expiration = Date().addingTimeInterval(ttl)
-
         queue.async(flags: .barrier) {
-            self.cleanupIfNeeded()
+            self.cleanupExpiredEntries()
             self.deletedFolders[folderId] = expiration
+            if self.deletedFolders.count > self.maxEntries {
+                let sortedEntries = self.deletedFolders.sorted { $0.value < $1.value }
+                let toRemove = sortedEntries.prefix(self.deletedFolders.count - self.maxEntries)
+                toRemove.forEach { self.deletedFolders.removeValue(forKey: $0.key) }
+            }
         }
     }
 
@@ -45,10 +49,8 @@ final class DeletedFolderCache {
         }
     }
    
-    private func cleanupIfNeeded() {
-        if deletedFolders.count > maxEntries {
-            let now = Date()
-            deletedFolders = deletedFolders.filter { $0.value > now }
-        }
+    private func cleanupExpiredEntries() {
+        let now = Date()
+        deletedFolders = deletedFolders.filter { $0.value > now }
     }
 }
