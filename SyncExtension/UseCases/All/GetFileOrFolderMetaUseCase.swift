@@ -44,11 +44,6 @@ struct GetFileOrFolderMetaUseCase {
                     if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
                         let parentFolderId = String(fileMeta.folderId)
                         
-                        if fileMeta.deleted == true {
-                            completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
-                            return
-                        }
-
                         self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.id)")
                         if DeletedFolderCache.shared.isFolderDeleted(parentFolderId) {
                             self.logger.info("❌ Parent was deleted, returning error for item \(fileMeta.plainName ?? "")")
