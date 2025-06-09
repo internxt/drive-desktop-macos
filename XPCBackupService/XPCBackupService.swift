@@ -230,6 +230,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        
+        self.backupDownloadStatus = .InProgress
+        self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
 
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
@@ -256,12 +259,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             do {
                 try await backupDownloadService.downloadFolderBackup(folderId: folderId, downloadAtPath: downloadAtURL, folderName: folderName)
                 self.downloadOperationQueue.addBarrierBlock {
+                    self.backupDownloadStatus = .Done
                     logger.info("Download operations completed")
                     reply(nil, nil)
                 }
                 
                 
             } catch {
+                self.backupDownloadStatus = .Failed
                 logger.error(["Failed to download folder backup", error])
                 error.reportToSentry()
                 reply(nil, error.localizedDescription)
