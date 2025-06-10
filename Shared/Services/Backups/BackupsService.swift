@@ -715,7 +715,7 @@ class BackupsService: ObservableObject {
                 self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.backupUploadProgress * 100)% synced"])
             }
             
-            if(backupStatus.status == .Done || backupStatus.status == .Failed) {
+            if(backupStatus.status == .Done || backupStatus.status == .Failed || backupStatus.status == .Stopped) {
                 
                 self.backupUploadProgressTimer?.cancel()
             }
