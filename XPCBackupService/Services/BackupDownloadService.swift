@@ -35,16 +35,17 @@ struct BackupDownloadService {
     }
     
     func downloadBackupFolderAtPath(folderId: String, downloadAtPath: URL) async throws {
-        let backupFolders = try await backupAPI.getBackupChilds(folderId: folderId)
-        
-        backupDownloadProgress.totalUnitCount += Int64(backupFolders.result.count)
-        
-        // Create each folder, and request the folders childs
-        try backupFolders.result.forEach{backupFolder in
+      
+        let folderStream = Paginator.paginate { offset, limit in
+            let response = try await backupAPI.getBackupChilds(folderId: folderId, offset: offset, limit: limit)
+            return response.result
+        }
+
+        for try await backupFolder in folderStream {
+            backupDownloadProgress.totalUnitCount += 1
+
             let backupFolderName = try backupFolder.plainName ?? self.decryptName(name: backupFolder.name, bucketId: backupBucket)
-            let folderURL = self.getURLForItem(
-                baseURL: downloadAtPath, itemName: backupFolderName
-            )
+            let folderURL = self.getURLForItem(baseURL: downloadAtPath, itemName: backupFolderName)
             let creationDate = Time.dateFromISOString(backupFolder.createdAt) ?? Date()
             try self.createFolder(folderURL: folderURL, creationDate: creationDate)
             logger.info("📁 Folder created at \(folderURL.path)")
@@ -52,19 +53,21 @@ struct BackupDownloadService {
                 do {
                     try await self.downloadBackupFolderAtPath(folderId: String(backupFolder.id), downloadAtPath: folderURL)
                 } catch {
-                    logger.error("Failed to download backup folder with name \(backupFolderName) at \(downloadAtPath)")
+                    logger.error("❌ Failed to download backup folder \(backupFolderName) at \(downloadAtPath.path)")
                 }
-                
             }
-            
         }
-        
-        // Download files
-        let backupFiles = try await backupAPI.getBackupFiles(folderId: folderId)
-        backupDownloadProgress.totalUnitCount += Int64(backupFiles.result.count)
-        for backupFile in backupFiles.result {
+
+        let fileStream = Paginator.paginate { offset, limit in
+            let response = try await backupAPI.getBackupFiles(folderId: folderId, offset: offset, limit: limit)
+            return response.result
+        }
+
+        for try await backupFile in fileStream {
+            backupDownloadProgress.totalUnitCount += 1
+
             let backupFileName = try backupFile.plainName ?? self.decryptName(name: backupFile.name, bucketId: backupFile.bucket)
-            logger.info("Filename to download \(backupFileName)")
+            logger.info("📄 Filename to download \(backupFileName)")
             let fileURL = self.getURLForItem(baseURL: downloadAtPath, itemName: backupFileName, itemType: backupFile.type)
             self.downloadFile(
                 fileId: backupFile.fileId,
@@ -72,7 +75,6 @@ struct BackupDownloadService {
                 downloadAt: fileURL
             )
         }
-        
     }
     
     func downloadFolderBackup(folderId: String, downloadAtPath: URL,folderName: String) async throws {
