@@ -61,6 +61,8 @@
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
+		AA08F36D2DEE5DF400F9D0CA /* FolderMetaCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */; };
+		AA08F36F2DEE5E0C00F9D0CA /* DeletedItemsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08F36E2DEE5E0B00F9D0CA /* DeletedItemsCache.swift */; };
 		AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AA2C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
@@ -454,6 +456,8 @@
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
+		AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderMetaCache.swift; sourceTree = "<group>"; };
+		AA08F36E2DEE5E0B00F9D0CA /* DeletedItemsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletedItemsCache.swift; sourceTree = "<group>"; };
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		AA3B497C2D44839C00924536 /* freshclam */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = freshclam; sourceTree = "<group>"; };
 		AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfreshclam.3.0.2.dylib; sourceTree = "<group>"; };
@@ -759,6 +763,15 @@
 				AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */,
 			);
 			path = InternxtDesktopTests;
+			sourceTree = "<group>";
+		};
+		AA08F36B2DEE5CC100F9D0CA /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */,
+				AA08F36E2DEE5E0B00F9D0CA /* DeletedItemsCache.swift */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 		AA40B3BB2D3B296E00FC1FC3 /* Antivirus */ = {
@@ -1284,6 +1297,7 @@
 		E1FB2D832A76C48600473AE1 /* SyncExtension */ = {
 			isa = PBXGroup;
 			children = (
+				AA08F36B2DEE5CC100F9D0CA /* Cache */,
 				E140C32E2AC3776500A88B9F /* Extensions */,
 				E109717A2A81133C00ABED41 /* UseCases */,
 				E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */,
@@ -1845,6 +1859,7 @@
 				E190AC4B2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift in Sources */,
 				E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */,
 				E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */,
+				AA08F36F2DEE5E0C00F9D0CA /* DeletedItemsCache.swift in Sources */,
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
 				E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */,
@@ -1869,6 +1884,7 @@
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				AAF71A6E2CDF180100476000 /* UploadFileWorkspaceUseCase.swift in Sources */,
 				AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */,
+				AA08F36D2DEE5DF400F9D0CA /* FolderMetaCache.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
 				AAF71A6A2CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift in Sources */,

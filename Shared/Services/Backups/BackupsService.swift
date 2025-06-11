@@ -536,6 +536,9 @@ class BackupsService: ObservableObject {
         let itemBackup = ItemBackup(itemId: folderId, device: device)
         DispatchQueue.main.sync {
             self.backupsItemsInprogress.append(itemBackup)
+            self.backupDownloadStatus = .InProgress
+            self.backupDownloadedItems = 0
+            self.backupDownloadProgress = 0
         }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
@@ -571,6 +574,7 @@ class BackupsService: ObservableObject {
                 if error == nil {
                     DispatchQueue.main.async {
                         self.removeItem(item: itemBackup)
+                        self.backupDownloadStatus = .Done
                     }
                     self.logger.info("Backup Folder downloaded✅")
                 } else {
@@ -581,12 +585,12 @@ class BackupsService: ObservableObject {
         )
         
         backupDownloadProgressTimer?.cancel()
-//        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
-//            .autoconnect()
-//            .sink(
-//             receiveValue: {_ in
-//                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
-//            })
+        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
+            })
 
     }
     
@@ -711,7 +715,7 @@ class BackupsService: ObservableObject {
                 self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.backupUploadProgress * 100)% synced"])
             }
             
-            if(backupStatus.status == .Done || backupStatus.status == .Failed) {
+            if(backupStatus.status == .Done || backupStatus.status == .Failed || backupStatus.status == .Stopped) {
                 
                 self.backupUploadProgressTimer?.cancel()
             }

@@ -31,7 +31,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let mnemonic: String
     let authManager: AuthManager
     let activityManager: ActivityManager
-    let realtime: RealtimeService?
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
@@ -39,6 +38,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let domain: NSFileProviderDomain
     var workspace: [AvailableWorkspace]
     var workspaceCredentials: WorkspaceCredentialsResponse?
+    private static let folderCache = FolderMetaCache()
     required init(domain: NSFileProviderDomain) {
         
         
@@ -96,19 +96,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         logger.info("Created extension with domain \(domain.displayName)")
-        let config = authManager.config
-        if let authToken = config.getAuthToken() {
-            self.realtime = RealtimeService.init(
-                token: authToken,
-                onConnect: {},
-                onDisconnect: {},
-                onEvent: {
-                    Task {try? await manager.signalEnumerator(for: .workingSet)}
-                }
-            )
-        } else {
-            self.realtime = nil
-        }
+
         super.init()
         
         do {
@@ -283,95 +271,181 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     
-    
-    func createItem(basedOn itemTemplate: NSFileProviderItem, fields: NSFileProviderItemFields, contents url: URL?, options: NSFileProviderCreateItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
-        refreshAuthTokensIfNeeded()
-        // This is a Microsoft Office tmp file, we don't want to sync this
-        if(itemTemplate.filename.hasPrefix("~$")) {
+    func createItem(
+        basedOn itemTemplate: NSFileProviderItem,
+        fields: NSFileProviderItemFields,
+        contents url: URL?,
+        options: NSFileProviderCreateItemOptions = [],
+        request: NSFileProviderRequest,
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+    ) -> Progress {
+
+        self.refreshAuthTokensIfNeeded()
+
+        if itemTemplate.filename.hasPrefix("~$") {
             logger.info("⚠️ Microsoft Office tmp file detected with name: \(itemTemplate.filename)")
             completionHandler(itemTemplate, [], false, nil)
-            return Progress()
+            return Progress(totalUnitCount: 100)
         }
         
         logger.info("Creating file with name \(itemTemplate.filename)")
         
         let shouldCreateFolder = itemTemplate.contentType == .folder
         let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
-                
+
+        let parentId = itemTemplate.parentItemIdentifier == .rootContainer
+            ? String(self.user.root_folder_id)
+            : itemTemplate.parentItemIdentifier.rawValue
+
+        let callId = UUID().uuidString
+        let parentProgress = Progress(totalUnitCount: 100)
         
-        if shouldCreateFolder {
-            if isWorkspaceDomain(){
-                return CreateFolderWorkspaceUseCase(user: user, itemTemplate: itemTemplate, workspace: workspace, completionHandler: completionHandler).run()
-            }
-            return CreateFolderUseCase(user: user,itemTemplate: itemTemplate, completionHandler: completionHandler).run()
+        
+        if itemTemplate.parentItemIdentifier == .trashContainer {
+            logger.info("parent deleted, not creating item")
+            let error = NSError.fileProviderErrorForNonExistentItem(withIdentifier: itemTemplate.itemIdentifier)
+            completionHandler(nil, [], false, error)
+            return Progress()
         }
         
-        if shouldCreateFile {
-            guard let contentUrl = url else {
-                logger.error("Did not receive content to create file, cannot create")
-                return Progress()
-            }
-            
-           
-            let filename = NSString(string:itemTemplate.filename)
-            let fileCopy = makeTemporaryURL("plain", filename.pathExtension)
-            try! FileManager.default.copyItem(at: contentUrl, to: fileCopy)
-            
-            let encryptedFileDestination =  makeTemporaryURL("encrypted", "enc")
-            let thumbnailFileDestination = makeTemporaryURL("thumbnail", "jpg")
-            let encryptedThumbnailFileDestination = makeTemporaryURL("encrypted_thumbnail", "enc")
-            
-            func completionHandlerInternal(_ item: NSFileProviderItem?, _ fields: NSFileProviderItemFields, _ shouldFetch:Bool, _ error:Error?) -> Void {
+
+        Task.detached(priority: .userInitiated) { [weak self] in
+            guard let self = self else { return }
+
+            do {
+                var parentUuid: String? = nil
                 
-                completionHandler(item, fields, shouldFetch, error)
-                
-                try? FileManager.default.removeItem(at: fileCopy)
-                try? FileManager.default.removeItem(at: encryptedFileDestination)
-                try? FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
-                try? FileManager.default.removeItem(at: thumbnailFileDestination)
-                
-            }
-            
-            if isWorkspaceDomain(){
-                guard let credentials = workspaceCredentials,
-                      let workspaceMnemonic = authManager.workspaceMnemonic else {
-                    let error = NSError(
-                        domain: NSCocoaErrorDomain,
-                        code: NSFileWriteUnknownError,
-                        userInfo: [
-                            NSLocalizedDescriptionKey: "Workspace environment is not properly configured."
-                        ]
-                    )
-                    logger.error("❌ Workspace environment validation failed: credentials or mnemonic missing")
-                    completionHandler(nil, [], false, error)
-                    return Progress()
+                if !self.isWorkspaceDomain() {
+                     parentUuid = try await Self.folderCache.getOrFetch(for: parentId, fetch: {
+                        let folderMeta = try await self.driveNewAPI.getFolderMetaById(id: parentId, debug: true)
+                        return folderMeta.uuid!
+                    }, callId: callId)
                 }
-                return UploadFileOrUpdateContentWorkspaceUseCase(
-                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
-                    user: user,
-                    activityManager: activityManager,
-                    item: itemTemplate,
-                    url: fileCopy,
-                    encryptedFileDestination: encryptedFileDestination,
-                    thumbnailFileDestination: thumbnailFileDestination,
-                    encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
-                    completionHandler: completionHandlerInternal, workspace: workspace, workspaceCredentials: credentials
-                ).run()
+  
+
+                if shouldCreateFolder {
+                    let useCaseProgress: Progress
+                    if self.isWorkspaceDomain() {
+                        useCaseProgress = CreateFolderWorkspaceUseCase(
+                            user: self.user,
+                            itemTemplate: itemTemplate,
+                            workspace: self.workspace,
+                            completionHandler: completionHandler
+                        ).run()
+                    } else {
+                        guard let parentUuid else {
+                            logger.error("❌ parentUuid not available")
+                            completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: 1002, userInfo: [NSLocalizedDescriptionKey: "Missing parentUuid"]))
+                            return
+                        }
+                        
+                        useCaseProgress = CreateFolderUseCase(
+                            user: self.user,
+                            itemTemplate: itemTemplate,
+                            parentUuid: parentUuid,
+                            completionHandler: completionHandler
+                        ).run()
+                    }
+                    parentProgress.addChild(useCaseProgress, withPendingUnitCount: 100)
+                }
+
+                if shouldCreateFile {
+                    guard let contentUrl = url else {
+                        logger.error("Did not receive content to create file, cannot create")
+                        completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: NSFileWriteUnknownError))
+                        return
+                    }
+
+                    let filename = NSString(string: itemTemplate.filename)
+                    let fileCopy = self.makeTemporaryURL("plain", filename.pathExtension)
+                    try FileManager.default.copyItem(at: contentUrl, to: fileCopy)
+
+                    let encryptedFileDestination = self.makeTemporaryURL("encrypted", "enc")
+                    let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
+                    let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
+
+                    func completionHandlerInternal(
+                        _ item: NSFileProviderItem?,
+                        _ fields: NSFileProviderItemFields,
+                        _ shouldFetch: Bool,
+                        _ error: Error?
+                    ) {
+                        completionHandler(item, fields, shouldFetch, error)
+                        try? FileManager.default.removeItem(at: fileCopy)
+                        try? FileManager.default.removeItem(at: encryptedFileDestination)
+                        try? FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
+                        try? FileManager.default.removeItem(at: thumbnailFileDestination)
+                    }
+
+                    let useCaseProgress: Progress
+
+                    if self.isWorkspaceDomain() {
+                        guard let credentials = self.workspaceCredentials,
+                              let workspaceMnemonic = self.authManager.workspaceMnemonic else {
+                            let error = NSError(
+                                domain: NSCocoaErrorDomain,
+                                code: NSFileWriteUnknownError,
+                                userInfo: [
+                                    NSLocalizedDescriptionKey: "Workspace environment is not properly configured."
+                                ]
+                            )
+                            logger.error("❌ Workspace environment validation failed: credentials or mnemonic missing")
+                            completionHandler(nil, [], false, error)
+                            return
+                        }
+
+                        let useCase = UploadFileOrUpdateContentWorkspaceUseCase(
+                            networkFacade: NetworkFacade(
+                                mnemonic: workspaceMnemonic,
+                                networkAPI: APIFactory.NetworkWorkspace
+                            ),
+                            user: self.user,
+                            activityManager: self.activityManager,
+                            item: itemTemplate,
+                            url: fileCopy,
+                            encryptedFileDestination: encryptedFileDestination,
+                            thumbnailFileDestination: thumbnailFileDestination,
+                            encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
+                            completionHandler: completionHandlerInternal,
+                            workspace: self.workspace,
+                            workspaceCredentials: credentials
+                        )
+
+                        useCaseProgress = useCase.run()
+
+                    } else {
+                        
+                        guard let parentUuid else {
+                            logger.error("❌ parentUuid not available")
+                            completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: 1002, userInfo: [NSLocalizedDescriptionKey: "Missing parentUuid"]))
+                            return
+                        }
+                        
+                        let useCase = UploadFileOrUpdateContentUseCase(
+                            networkFacade: self.networkFacade,
+                            user: self.user,
+                            activityManager: self.activityManager,
+                            item: itemTemplate,
+                            url: fileCopy,
+                            encryptedFileDestination: encryptedFileDestination,
+                            thumbnailFileDestination: thumbnailFileDestination,
+                            encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
+                            completionHandler: completionHandlerInternal,
+                            parentUuid: parentUuid
+                        )
+
+                        useCaseProgress = useCase.run()
+                    }
+
+                    parentProgress.addChild(useCaseProgress, withPendingUnitCount: 100)
+                }
+            } catch {
+                logger.error("❌ Error in createItem: \(error.localizedDescription)")
+                completionHandler(nil, [], false, error)
             }
-            return UploadFileOrUpdateContentUseCase(
-                networkFacade: networkFacade,
-                user: user,
-                activityManager: activityManager,
-                item: itemTemplate,
-                url: fileCopy,
-                encryptedFileDestination: encryptedFileDestination,
-                thumbnailFileDestination: thumbnailFileDestination,
-                encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
-                completionHandler: completionHandlerInternal
-            ).run()
         }
-        
-        return Progress()
+
+        return parentProgress
     }
     
     func modifyItem(_ item: NSFileProviderItem, baseVersion version: NSFileProviderItemVersion, changedFields: NSFileProviderItemFields, contents newContents: URL?, options: NSFileProviderModifyItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {

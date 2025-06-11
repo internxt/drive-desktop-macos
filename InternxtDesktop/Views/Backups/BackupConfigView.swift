@@ -41,7 +41,7 @@ struct BackupConfigView: View {
                         device: self.$device,
                         progress: $backupsService.backupUploadProgress,
                         backupDownloadStatus: self.$backupDownloadStatus,
-                        progressDownload: $backupsService.backupDownloadProgress,
+                        progressDownload: $backupsService.backupDownloadProgress
                     )
                     
                     BackupActionsView.frame(maxWidth: .infinity)

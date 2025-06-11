@@ -61,3 +61,35 @@ class BackupConfigurationManager {
         return (backupAPI, driveNewAPI, networkFacade)
     }
 }
+
+struct Paginator {
+    static func paginate<T>(
+        limit: Int = 50,
+        fetchPage: @escaping (_ offset: Int, _ limit: Int) async throws -> [T]
+    ) -> AsyncThrowingStream<T, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                var offset = 0
+
+                do {
+                    while true {
+                        let page = try await fetchPage(offset, limit)
+                        for item in page {
+                            continuation.yield(item)
+                        }
+
+                        if page.count < limit {
+                            break
+                        }
+
+                        offset += limit
+                    }
+
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+}

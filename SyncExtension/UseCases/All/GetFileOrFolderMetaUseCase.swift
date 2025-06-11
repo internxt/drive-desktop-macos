@@ -34,88 +34,108 @@ struct GetFileOrFolderMetaUseCase {
     }
     
     public func run() -> Progress {
-        
         Task {
             do {
-                var itemFound = false
-                self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a file")
-                if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: self.identifier.rawValue) {
-                    let parentIsRootContainer = fileMeta.folderId == user.root_folder_id
-                    guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for file \(fileMeta.id) with value \(fileMeta.createdAt)")
-                        throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
+                let identifierRaw = self.identifier.rawValue
+
+                if UUID(uuidString: identifierRaw) != nil {
+                    // File
+                    self.logger.info("Trying to get metadata for item \(identifierRaw) as a file")
+                    if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
+                        let parentFolderId = String(fileMeta.folderId)
+                        
+                        self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.id)")
+                        if DeletedFolderCache.shared.isFolderDeleted(parentFolderId) {
+                            self.logger.info("❌ Parent was deleted, returning error for item \(fileMeta.plainName ?? "")")
+                            completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                            return
+                        }
+                        let parentIsRootContainer = fileMeta.folderId == user.root_folder_id
+
+                        guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
+                            self.logger.error("Cannot create createdAt date for file \(fileMeta.id) with value \(fileMeta.createdAt)")
+                            throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
+                        }
+                        
+                        guard let updatedAt = Time.dateFromISOString(fileMeta.updatedAt) else {
+                            self.logger.error("Cannot create updatedAt date for file \(fileMeta.id) with value \(fileMeta.updatedAt)")
+                            throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
+                        }
+                        
+                        guard let sizeInt = Int(fileMeta.size) else {
+                            self.logger.error("Cannot get size for file \(fileMeta.id) with size value \(fileMeta.size)")
+                            throw GetFileOrFolderMetaUseCaseError.InvalidSize
+                        }
+                        
+                        let fileItem = FileProviderItem(
+                            identifier: self.identifier,
+                            filename: FileProviderItem.getFilename(name: fileMeta.plainName ?? fileMeta.name, itemExtension: fileMeta.type),
+                            parentId: parentIsRootContainer ? .rootContainer : NSFileProviderItemIdentifier(rawValue: parentFolderId),
+                            createdAt: createdAt,
+                            updatedAt: updatedAt,
+                            itemExtension: fileMeta.type,
+                            itemType: .file,
+                            size: sizeInt
+                        )
+
+                        completionHandler(fileItem, nil)
+                        self.logger.info("✅ Got metadata for file with name \(fileMeta.plainName ?? fileMeta.name) and id \(identifierRaw)")
+                        return
                     }
-                    
-                    guard let updatedAt = Time.dateFromISOString(fileMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(fileMeta.id) with value \(fileMeta.updatedAt)")
-                        throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
+                } else {
+                    // Folder
+                    self.logger.info("Trying to get metadata for item \(identifierRaw) as a folder")
+                    if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: identifierRaw) {
+
+                        
+                        if folderMeta.deleted == true {
+                            completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                            return
+                        }
+                        if let parentFolderId = folderMeta.parentId  {
+                            
+                            if DeletedFolderCache.shared.isFolderDeleted(String(parentFolderId)) {
+                                self.logger.info("❌ Parent was deleted, returning error for item \(folderMeta.plainName ?? "")")
+                                DeletedFolderCache.shared.markFolderAsDeleted(String(folderMeta.id)) // mark this folder as deleted
+                                completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                                return
+                            }
+                            
+                        }
+
+
+
+                        guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
+                            self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
+                            throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
+                        }
+
+                        guard let updatedAt = Time.dateFromISOString(folderMeta.updatedAt) else {
+                            self.logger.error("Cannot create updatedAt date for folder \(folderMeta.id) with value \(folderMeta.updatedAt)")
+                            throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
+                        }
+
+                        let parentId = folderMeta.parentId.map { NSFileProviderItemIdentifier(String($0)) } ?? .rootContainer
+
+                        let folderItem = FileProviderItem(
+                            identifier: self.identifier,
+                            filename: folderMeta.plainName ?? folderMeta.name,
+                            parentId: parentId,
+                            createdAt: createdAt,
+                            updatedAt: updatedAt,
+                            itemExtension: nil,
+                            itemType: .folder
+                        )
+
+                        completionHandler(folderItem, nil)
+                        self.logger.info("✅ Got metadata for folder with name \(folderItem.filename)")
+                        return
                     }
-                    
-                    guard let sizeInt = Int(fileMeta.size) else {
-                        self.logger.error("Cannot get size for file \(fileMeta.id) with size value \(fileMeta.size)")
-                        throw GetFileOrFolderMetaUseCaseError.InvalidSize
-                    }
-                    
-                    let fileItem = FileProviderItem(
-                        identifier: self.identifier,
-                        // TODO: Decrypt the name if needed
-                        filename: FileProviderItem.getFilename(name: fileMeta.plainName ?? fileMeta.name, itemExtension: fileMeta.type)
-                        ,
-                        parentId: parentIsRootContainer ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(fileMeta.folderId)),
-                        createdAt: createdAt,
-                        updatedAt: updatedAt,
-                        itemExtension: fileMeta.type,
-                        itemType: .file,
-                        size:sizeInt
-                    )
-                    
-                    completionHandler(fileItem, nil)
-                    self.logger.info("✅ Got metadata for file with name \(fileMeta.plainName ?? fileMeta.name) and id \(self.identifier.rawValue)")
-                    itemFound = true
                 }
-                if (itemFound == true){ return }
-                
-                self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a folder")
-                if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: self.identifier.rawValue) {
-                    guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
-                        throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
-                    }
-                    
-                    guard let updatedAt = Time.dateFromISOString(folderMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.id) with value \(folderMeta.updatedAt)")
-                        throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
-                    }
-                    
-                    var parentId: NSFileProviderItemIdentifier = .rootContainer
-                    
-                    if folderMeta.parentId != nil {
-                        parentId = NSFileProviderItemIdentifier(String(folderMeta.parentId!))
-                    }
-                    
-                    
-                    let folderItem = FileProviderItem(
-                        identifier: self.identifier,
-                        // TODO: Decrypt the name if needed
-                        filename: folderMeta.plainName ?? folderMeta.name,
-                        parentId: parentId,
-                        createdAt: createdAt,
-                        updatedAt: updatedAt,
-                        itemExtension: nil,
-                        itemType: .folder
-                    )
-                    
-                    
-                    completionHandler(folderItem, nil)
-                    self.logger.info("✅ Got metadata for folder with name \(folderItem.filename)")
-                    itemFound = true
-                }
-                if (itemFound == true){ return }
-                // If we reached this, there was no way to found the file/folder
                 throw GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to get folder meta for \(identifier.rawValue): \(error.getErrorDescription())")
+                self.logger.error("❌ Failed to get item meta for \(identifier.rawValue): \(error.getErrorDescription())")
                 completionHandler(nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }
