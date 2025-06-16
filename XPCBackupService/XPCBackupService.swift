@@ -7,6 +7,7 @@
 
 import Foundation
 import InternxtSwiftCore
+import Network
 
 let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupService")
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
@@ -32,6 +33,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) -> Void {
+        // Check network connectivity using NetworkConnectivityService
+        if !NetworkConnectivityService.shared.isNetworkAvailable() {
+            logger.error("The Internet connection appears to be offline.")
+            reply(nil, "The Internet connection appears to be offline.")
+            return
+        }
+        
         let backupRealm = SyncedNodeRepository.shared
         self.uploadOperationQueue.maxConcurrentOperationCount = 10
         logger.info("Going to backup folders: \(backupURLs)")
@@ -179,6 +187,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        // Check network connectivity using NetworkConnectivityService
+        if !NetworkConnectivityService.shared.isNetworkAvailable() {
+            logger.error("The Internet connection appears to be offline.")
+            reply(nil, "The Internet connection appears to be offline.")
+            return
+        }
+        
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
@@ -230,6 +245,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        // Check network connectivity using NetworkConnectivityService
+        if !NetworkConnectivityService.shared.isNetworkAvailable() {
+            logger.error("The Internet connection appears to be offline.")
+            reply(nil, "The Internet connection appears to be offline.")
+            return
+        }
+        
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
 
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
@@ -314,8 +336,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     }
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
+        // Check network connectivity using NetworkConnectivityService
+        if !NetworkConnectivityService.shared.isNetworkAvailable() {
+            logger.error("The Internet connection appears to be offline.")
+            reply(nil, "The Internet connection appears to be offline.")
+            return
+        }
         
-
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
