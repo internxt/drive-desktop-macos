@@ -103,7 +103,7 @@ struct WidgetView: View {
                             WidgetContentView(activityEntries: $activityManager.activityEntries).environmentObject(backupsService)
                         }
                     }.frame(maxWidth: .infinity,maxHeight: .infinity)
-                    WidgetFooterView()
+                    WidgetFooterView(isSyncing: $activityManager.isSyncing)
                 } else {
                     Spacer()
                     AppText("Loading user...").foregroundColor(.Highlight)
