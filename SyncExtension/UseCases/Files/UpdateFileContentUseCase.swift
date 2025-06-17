@@ -66,9 +66,7 @@ struct UpdateFileContentUseCase {
             parentFolderId: Int(getParentId()) ?? -1
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+
         
         
         return Date()
@@ -86,9 +84,7 @@ struct UpdateFileContentUseCase {
             elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+   
     }
     
     private func trackError(processIdentifier: String, error: any Error) {
@@ -103,9 +99,7 @@ struct UpdateFileContentUseCase {
             error: error
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+
     }
     
     

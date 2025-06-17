@@ -61,6 +61,7 @@ class BackupsService: ObservableObject {
     @Published var selectedDevice: Device? = nil
     @Published var backupUploadProgress: Double = 0.0
     @Published var backupDownloadedItems: Int64 = 0
+    @Published var backupDownloadProgress: Double = 0.0
     @Published var backupUploadStatus: BackupStatus = .Idle
     @Published var backupDownloadStatus: BackupStatus = .Idle
     @Published var deviceDownloading: Device? = nil
@@ -374,13 +375,11 @@ class BackupsService: ObservableObject {
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
             self?.backupUploadStatus = .Failed
-            Analytics.shared.track(event: FailureBackupEvent(foldersToBackup: self?.foldersToBackup.count ?? 0, error: errorMessage))
         }
     }
 
     private func propagateUploadSuccess() {
         logger.info("Device backed up successfully, tracking backup success event")
-        Analytics.shared.track(event: SuccessBackupEvent(foldersToBackup: self.foldersToBackup.count))
         DispatchQueue.main.async { [weak self] in
             self?.backupUploadProgress = 1
             self?.currentDeviceHasBackup = true
@@ -476,6 +475,7 @@ class BackupsService: ObservableObject {
         DispatchQueue.main.sync {
             self.backupDownloadStatus = .InProgress
             self.backupDownloadedItems = 0
+            self.backupDownloadProgress = 0
         }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
@@ -536,6 +536,9 @@ class BackupsService: ObservableObject {
         let itemBackup = ItemBackup(itemId: folderId, device: device)
         DispatchQueue.main.sync {
             self.backupsItemsInprogress.append(itemBackup)
+            self.backupDownloadStatus = .InProgress
+            self.backupDownloadedItems = 0
+            self.backupDownloadProgress = 0
         }
         guard let deviceBucketId = device.bucket else {
             logger.error("Bucket id is nil")
@@ -571,6 +574,7 @@ class BackupsService: ObservableObject {
                 if error == nil {
                     DispatchQueue.main.async {
                         self.removeItem(item: itemBackup)
+                        self.backupDownloadStatus = .Done
                     }
                     self.logger.info("Backup Folder downloaded✅")
                 } else {
@@ -581,12 +585,12 @@ class BackupsService: ObservableObject {
         )
         
         backupDownloadProgressTimer?.cancel()
-//        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
-//            .autoconnect()
-//            .sink(
-//             receiveValue: {_ in
-//                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
-//            })
+        self.backupDownloadProgressTimer = Timer.publish(every: 2, on:.main, in: .common)
+            .autoconnect()
+            .sink(
+             receiveValue: {_ in
+                 self.checkBackupDownloadProgress(xpcBackupService: xpcBackupService)
+            })
 
     }
     
@@ -711,7 +715,7 @@ class BackupsService: ObservableObject {
                 self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.backupUploadProgress * 100)% synced"])
             }
             
-            if(backupStatus.status == .Done || backupStatus.status == .Failed) {
+            if(backupStatus.status == .Done || backupStatus.status == .Failed || backupStatus.status == .Stopped) {
                 
                 self.backupUploadProgressTimer?.cancel()
             }
@@ -731,6 +735,7 @@ class BackupsService: ObservableObject {
                     self.backupDownloadStatus = backupDownloadStatus.status
                 }
                 self.backupDownloadedItems = backupDownloadStatus.completedSyncs
+                self.backupDownloadProgress = backupDownloadStatus.progress
                 self.logger.info("Backup download is in \(backupDownloadStatus.status) status, \(backupDownloadStatus.completedSyncs) items downloaded")
             }
             

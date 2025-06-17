@@ -59,9 +59,10 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
-		AA059A352BFE36C500A07D45 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = AA059A342BFE36C500A07D45 /* Rudder */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
+		AA08F36D2DEE5DF400F9D0CA /* FolderMetaCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */; };
+		AA08F36F2DEE5E0C00F9D0CA /* DeletedItemsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08F36E2DEE5E0B00F9D0CA /* DeletedItemsCache.swift */; };
 		AA0B47A92C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AA2C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
@@ -139,7 +140,6 @@
 		E10B0FDD2A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
-		E12479D92C107C52000DAC11 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
 		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D2E2A9501BB00C7ABF0 /* Sentry */; };
 		E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E1313D3A2A9504D400C7ABF0 /* Sentry */; };
@@ -249,10 +249,6 @@
 		E1A0AC5C2AB85131005E71D6 /* Windows.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5B2AB85131005E71D6 /* Windows.swift */; };
 		E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC5E2AB85BF4005E71D6 /* SendFeedbackView.swift */; };
 		E1A0AC612AB8639C005E71D6 /* AppTextArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC602AB8639C005E71D6 /* AppTextArea.swift */; };
-		E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC632AB884F0005E71D6 /* Rudder */; };
-		E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
-		E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC652AB88507005E71D6 /* Analytics.swift */; };
-		E1A0AC6B2AB88A86005E71D6 /* Rudder in Frameworks */ = {isa = PBXBuildFile; productRef = E1A0AC6A2AB88A86005E71D6 /* Rudder */; };
 		E1A0AC6D2AB88B5A005E71D6 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		E1A0AC722AB89B1B005E71D6 /* AnyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC712AB89B1B005E71D6 /* AnyTransition.swift */; };
@@ -460,6 +456,8 @@
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternxtDesktopTests.swift; sourceTree = "<group>"; };
+		AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderMetaCache.swift; sourceTree = "<group>"; };
+		AA08F36E2DEE5E0B00F9D0CA /* DeletedItemsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletedItemsCache.swift; sourceTree = "<group>"; };
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		AA3B497C2D44839C00924536 /* freshclam */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = freshclam; sourceTree = "<group>"; };
 		AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfreshclam.3.0.2.dylib; sourceTree = "<group>"; };
@@ -583,7 +581,6 @@
 		E1A0AC5B2AB85131005E71D6 /* Windows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Windows.swift; sourceTree = "<group>"; };
 		E1A0AC5E2AB85BF4005E71D6 /* SendFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFeedbackView.swift; sourceTree = "<group>"; };
 		E1A0AC602AB8639C005E71D6 /* AppTextArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextArea.swift; sourceTree = "<group>"; };
-		E1A0AC652AB88507005E71D6 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfo.swift; sourceTree = "<group>"; };
 		E1A0AC712AB89B1B005E71D6 /* AnyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTransition.swift; sourceTree = "<group>"; };
 		E1A0AC762AB8AAFE005E71D6 /* ThumbnailGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailGenerator.swift; sourceTree = "<group>"; };
@@ -637,7 +634,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA059A352BFE36C500A07D45 /* Rudder in Frameworks */,
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
@@ -674,7 +670,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1A0AC642AB884F0005E71D6 /* Rudder in Frameworks */,
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
@@ -698,7 +693,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1A0AC6B2AB88A86005E71D6 /* Rudder in Frameworks */,
 				E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */,
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
@@ -769,6 +763,15 @@
 				AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */,
 			);
 			path = InternxtDesktopTests;
+			sourceTree = "<group>";
+		};
+		AA08F36B2DEE5CC100F9D0CA /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */,
+				AA08F36E2DEE5E0B00F9D0CA /* DeletedItemsCache.swift */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 		AA40B3BB2D3B296E00FC1FC3 /* Antivirus */ = {
@@ -939,7 +942,6 @@
 				E140C3322AC379AA00A88B9F /* DriveFileService.swift */,
 				E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */,
 				E17C84C32AB2FEF500A58414 /* ActivityManager.swift */,
-				E1A0AC652AB88507005E71D6 /* Analytics.swift */,
 				E1A0AC762AB8AAFE005E71D6 /* ThumbnailGenerator.swift */,
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
@@ -1295,6 +1297,7 @@
 		E1FB2D832A76C48600473AE1 /* SyncExtension */ = {
 			isa = PBXGroup;
 			children = (
+				AA08F36B2DEE5CC100F9D0CA /* Cache */,
 				E140C32E2AC3776500A88B9F /* Extensions */,
 				E109717A2A81133C00ABED41 /* UseCases */,
 				E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */,
@@ -1330,7 +1333,6 @@
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
 				E1FD8C702BA989B600C257E0 /* XCGLogger */,
-				AA059A342BFE36C500A07D45 /* Rudder */,
 				E19639612C63CA20009EDAFB /* RealmSwift */,
 			);
 			productName = XPCBackupService;
@@ -1421,7 +1423,6 @@
 				E1313D2E2A9501BB00C7ABF0 /* Sentry */,
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E1ADD0512AA8D68D00D95694 /* SocketIO */,
-				E1A0AC632AB884F0005E71D6 /* Rudder */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
 				E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */,
 				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
@@ -1451,7 +1452,6 @@
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 				E198D7E02AAA3A2800107753 /* SocketIO */,
-				E1A0AC6A2AB88A86005E71D6 /* Rudder */,
 				E1FD8C6E2BA989AE00C257E0 /* XCGLogger */,
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
 				E196395F2C63CA14009EDAFB /* Realm */,
@@ -1507,7 +1507,6 @@
 				E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
-				E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
@@ -1634,7 +1633,6 @@
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
 				E1EEB5872C1C52A900370D77 /* Time.swift in Sources */,
-				E12479D92C107C52000DAC11 /* Analytics.swift in Sources */,
 				3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */,
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
@@ -1802,7 +1800,6 @@
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
-				E1A0AC662AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
 				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
@@ -1862,6 +1859,7 @@
 				E190AC4B2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift in Sources */,
 				E145E16F2A82ABEB00B07E0B /* TrashFolderUseCase.swift in Sources */,
 				E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */,
+				AA08F36F2DEE5E0C00F9D0CA /* DeletedItemsCache.swift in Sources */,
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
 				E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */,
@@ -1872,7 +1870,6 @@
 				E17C84C12AB2880B00A58414 /* Color.swift in Sources */,
 				318549702B698AAC00D559E1 /* Device.swift in Sources */,
 				E1CC520F2A98B460009DEEAA /* Bundle.swift in Sources */,
-				E1A0AC692AB88507005E71D6 /* Analytics.swift in Sources */,
 				E1581DE02A96835F0051DD46 /* DownloadFileUseCase.swift in Sources */,
 				E1D24AF52C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				31ED949E2B7151E200EF699F /* DecryptUtils.swift in Sources */,
@@ -1887,6 +1884,7 @@
 				E10971822A828BC900ABED41 /* ConfigLoader.swift in Sources */,
 				AAF71A6E2CDF180100476000 /* UploadFileWorkspaceUseCase.swift in Sources */,
 				AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */,
+				AA08F36D2DEE5DF400F9D0CA /* FolderMetaCache.swift in Sources */,
 				E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */,
 				E13B839D2AFBBE67009F6684 /* AppUserDefaults.swift in Sources */,
 				AAF71A6A2CDF16C300476000 /* UploadFileOrUpdateContentWorkspaceUseCase.swift in Sources */,
@@ -1963,7 +1961,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1997,7 +1995,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2030,7 +2028,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2316,7 +2314,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				"OTHER_CFLAGS[arch=*]" = (
@@ -2341,7 +2339,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 74;
+				CURRENT_PROJECT_VERSION = 75;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2365,7 +2363,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2400,7 +2398,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2466,7 +2464,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2528,7 +2526,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				"OTHER_CFLAGS[arch=*]" = (
@@ -2553,7 +2551,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 74;
+				CURRENT_PROJECT_VERSION = 75;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2576,7 +2574,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2600,7 +2598,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 74;
+				CURRENT_PROJECT_VERSION = 75;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2623,7 +2621,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2657,7 +2655,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2691,7 +2689,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.5;
+				MARKETING_VERSION = 2.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2819,14 +2817,6 @@
 				version = 10.49.2;
 			};
 		};
-		E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rudderlabs/rudder-sdk-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.5;
-			};
-		};
 		E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin";
@@ -2863,11 +2853,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
-		};
-		AA059A342BFE36C500A07D45 /* Rudder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
-			productName = Rudder;
 		};
 		AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2948,16 +2933,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
-		};
-		E1A0AC632AB884F0005E71D6 /* Rudder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
-			productName = Rudder;
-		};
-		E1A0AC6A2AB88A86005E71D6 /* Rudder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1A0AC622AB884F0005E71D6 /* XCRemoteSwiftPackageReference "rudder-sdk-ios" */;
-			productName = Rudder;
 		};
 		E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -43,6 +43,7 @@
 "BACKUP_TITLE" = "Backup";
 "BACKUP_LAST_UPLOADED_%@" = "Last updated %@";
 "BACKUP_BACKING_UP" = "Backing up...";
+"BACKUP_BACKING_DOWNLOAD" = "Downloading backup ...";
 "BACKUP_STOP_BACKUP" = "Stop backup";
 "BACKUP_DOWNLOAD" = "Download";
 "BACKUP_DOWNLOAD_STOP" = "Stop download";

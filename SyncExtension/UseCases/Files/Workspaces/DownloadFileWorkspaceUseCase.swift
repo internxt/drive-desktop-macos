@@ -56,10 +56,7 @@ struct DownloadFileWorkspaceUseCase {
             parentFolderId: driveFile.folderId
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
-        
+
         return Date()
     }
     
@@ -76,9 +73,7 @@ struct DownloadFileWorkspaceUseCase {
         )
         
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+
     }
     
     private func trackError(driveFile: DriveFile,processIdentifier: String, error: any Error) {
@@ -92,9 +87,7 @@ struct DownloadFileWorkspaceUseCase {
             error: error
         )
         
-        DispatchQueue.main.async {
-            Analytics.shared.track(event: event)
-        }
+
     }
  
     public func run() -> Progress {
