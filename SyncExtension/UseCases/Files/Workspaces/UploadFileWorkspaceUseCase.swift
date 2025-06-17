@@ -23,7 +23,7 @@ struct UploadFileWorkspaceUseCase {
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     private let driveAPI = APIFactory.Drive
-    private let driveNewAPI = APIFactory.DriveNew
+    private let driveNewAPI = APIFactory.DriveWorkspace
     private let config = ConfigLoader().get()
     private let user: DriveUser
     private let activityManager: ActivityManager
@@ -201,7 +201,8 @@ struct UploadFileWorkspaceUseCase {
                     driveItemId: createdFile.id,
                     fileURL: self.fileContent,
                     destinationURL: self.thumbnailFileDestination,
-                    encryptedThumbnailDestination: self.encryptedThumbnailFileDestination
+                    encryptedThumbnailDestination: self.encryptedThumbnailFileDestination,
+                    fileUuid: createdFile.uuid
                 )
                 
                 if let thumbnailUploadUnwrapped = thumbnailUpload {
@@ -229,7 +230,7 @@ struct UploadFileWorkspaceUseCase {
         
     }
     
-    func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL) async -> CreateThumbnailResponse? {
+    func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
         do {
             let thumbnailGenerationResult = try await ThumbnailGenerator.shared.generateThumbnail(
                 for: fileURL,
@@ -258,14 +259,14 @@ struct UploadFileWorkspaceUseCase {
             }
             
             
-            let createdThumbnail = try await driveAPI.createThumbnailOld(createThumbnail: CreateThumbnailDataOld(
+            let createdThumbnail = try await driveNewAPI.createThumbnail(createThumbnail: CreateThumbnailData(
                 bucketFile: uploadFileResult.id,
                 bucketId: uploadFileResult.bucket,
-                fileId: driveItemId,
                 height: thumbnailGenerationResult.height,
                 width: thumbnailGenerationResult.width,
                 size: Int64(size),
-                type: fileExtension)
+                type: fileExtension,
+                fileUuid: fileUuid)
             )
             
             return createdThumbnail
