@@ -18,7 +18,10 @@ class ActivityManager: ObservableObject {
     private var notificationToken: NotificationToken?
     @Published var activityEntries: [ActivityEntry] = []
     private var realm: Realm? = nil
-    
+    @Published var isSyncing: Bool = false
+    private var lastEntryCount: Int = 0
+    private var syncTimer: Timer?
+    private let syncTimeout: TimeInterval = 5.0
     private func getRealm() -> Realm? {
         do {
             return try Realm(configuration: Realm.Configuration(
@@ -32,6 +35,20 @@ class ActivityManager: ObservableObject {
         }
         
     }
+    
+    private func setSyncing(_ syncing: Bool) {
+        if isSyncing != syncing {
+            isSyncing = syncing
+        }
+    }
+
+    private func restartSyncTimeout() {
+        syncTimer?.invalidate()
+        syncTimer = Timer.scheduledTimer(withTimeInterval: syncTimeout, repeats: false) { [weak self] _ in
+            self?.setSyncing(false)
+        }
+    }
+
     
     func clean() throws {
         activityEntries = []
@@ -73,6 +90,11 @@ class ActivityManager: ObservableObject {
         
         DispatchQueue.main.async {
             self.activityEntries = newEntries
+            if newEntries.count > self.lastEntryCount {
+                self.lastEntryCount = newEntries.count
+                self.setSyncing(true)
+                self.restartSyncTimeout()
+            }
         }
         
     }
