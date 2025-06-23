@@ -47,6 +47,13 @@ struct LogService {
         systemDestination.showLineNumber = true
         systemDestination.showDate = true
         
+        log.dateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(secondsFromGMT: 2 * 3600)
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+            return formatter
+        }()
         
         log.add(destination: systemDestination)
         
