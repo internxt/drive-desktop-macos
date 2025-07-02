@@ -20,8 +20,8 @@ class ActivityManager: ObservableObject {
     private var realm: Realm? = nil
     @Published var isSyncing: Bool = false
     private var lastEntryCount: Int = 0
-    private var syncTimer: Timer?
-    private let syncTimeout: TimeInterval = 5.0
+    private var syncDebouncer: Timer?
+    private let syncDebounceInterval: TimeInterval = 5.0
     private func getRealm() -> Realm? {
         do {
             return try Realm(configuration: Realm.Configuration(
@@ -41,11 +41,15 @@ class ActivityManager: ObservableObject {
             isSyncing = syncing
         }
     }
-
-    private func restartSyncTimeout() {
-        syncTimer?.invalidate()
-        syncTimer = Timer.scheduledTimer(withTimeInterval: syncTimeout, repeats: false) { [weak self] _ in
-            self?.setSyncing(false)
+    
+    private func activityDidOccur() {
+        DispatchQueue.main.async {
+            self.setSyncing(true)
+            
+            self.syncDebouncer?.invalidate()
+            self.syncDebouncer = Timer.scheduledTimer(withTimeInterval: self.syncDebounceInterval, repeats: false) { [weak self] _ in
+                self?.setSyncing(false)
+            }
         }
     }
 
@@ -61,62 +65,53 @@ class ActivityManager: ObservableObject {
     }
     
     func saveActivityEntry(entry: ActivityEntry) {
-        
-        do {
-            let realm = getRealm()
-            try realm?.write {
-                realm?.add(entry)
-            }
-        } catch {
-            error.reportToSentry()
-        }
-
-    }
+         activityDidOccur()
+         
+         do {
+             let realm = getRealm()
+             try realm?.write {
+                 realm?.add(entry, update: .modified)
+             }
+         } catch {
+             error.reportToSentry()
+         }
+     }
 
     func updateActivityEntries() {
-        guard let realm = getRealm() else {
-            return
-        }
+        guard let realm = getRealm() else { return }
+        
         let entries = realm.objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
 
-        
-        var newEntries: [ActivityEntry] = []
-        for i in 0..<activityActionsLimit {
-            if i + 1 <= entries.count {
-                newEntries.append(entries[i])
-            }
-            
-        }
+        let newEntries = Array(entries.prefix(activityActionsLimit))
         
         DispatchQueue.main.async {
             self.activityEntries = newEntries
-            if newEntries.count > self.lastEntryCount {
-                self.lastEntryCount = newEntries.count
-                self.setSyncing(true)
-                self.restartSyncTimeout()
-            }
         }
-        
     }
-
-    func observeLatestActivityEntries() -> Void {
-        if self.notificationToken == nil {
-            guard let realm = getRealm() else {
+    
+    func observeLatestActivityEntries() {
+        guard let realm = getRealm() else { return }
+        
+        let result = realm.objects(ActivityEntry.self)
+        
+        self.notificationToken = result.observe { [weak self] (changes: RealmCollectionChange) in
+            switch changes {
+            case .initial:
+                self?.updateActivityEntries()
+            case .update:
+                self?.updateActivityEntries()
+                self?.activityDidOccur()
+            case .error(let error):
+                error.reportToSentry()
                 return
             }
-            let result = realm.objects(ActivityEntry.self)
-            self.notificationToken = result.observe{[weak self] (changes: RealmCollectionChange) in
-                switch changes {
-                    case .initial:
-                        self?.updateActivityEntries()
-                    case .update:
-                        self?.updateActivityEntries()
-                    case .error:
-                        return
-                    }
-            }
         }
     }
+
+    deinit {
+         notificationToken?.invalidate()
+         syncDebouncer?.invalidate()
+     }
 
 }
 
