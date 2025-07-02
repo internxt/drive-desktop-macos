@@ -63,7 +63,14 @@ struct LogService {
         
         let logFile = logsDirectoryUnwrapped.appendingPathComponent("\(subsystem.rawValue).log")
         
-        let fileDestination = FileDestination(writeToFile: logFile, identifier: "\(subsystem.rawValue).\(category).fileDestination", shouldAppend: true)
+        let fileDestination = AutoRotatingFileDestination(
+            writeToFile: logFile,
+            identifier: "\(subsystem.rawValue).\(category).fileDestination",
+            shouldAppend: true,
+            maxFileSize: 1000 * 1024 * 1024,
+            targetMaxLogFiles: 1
+        )
+   
         
         
         fileDestination.outputLevel = .debug
