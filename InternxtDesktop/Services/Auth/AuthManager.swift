@@ -59,9 +59,7 @@ class AuthManager: ObservableObject {
     }
     
     func initializeCurrentUser() async throws {
-        guard let legacyAuthToken = config.getLegacyAuthToken() else {
-            throw AuthError.LegacyAuthTokenNotInConfig
-        }
+
         
         guard let authToken = config.getAuthToken() else {
             throw AuthError.AuthTokenNotInConfig
@@ -71,6 +69,7 @@ class AuthManager: ObservableObject {
             email:refreshUserResponse.user.email,
             uuid: refreshUserResponse.user.uuid
         )
+        try config.setAuthToken(authToken: refreshUserResponse.newToken)
         try config.setUser(user: refreshUserResponse.user)
         let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces()
         try config.setAvailableWorkspaces(workspaces: workspaces.availableWorkspaces)
@@ -338,6 +337,16 @@ class AuthManager: ObservableObject {
             throw DecryptionError.invalidDecryptedData
         }
         return decryptedMessage
+    }
+    
+    func logoutUser() async {
+         
+        do {
+            try await _ = APIFactory.DriveNew.logout()
+        } catch {
+            self.logger.error("Error during logout: \(error.localizedDescription)")
+        }
+        
     }
 }
 
