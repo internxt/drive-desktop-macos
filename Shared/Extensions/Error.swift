@@ -11,7 +11,7 @@ import InternxtSwiftCore
 
 extension Error {
     func reportToSentry() {
-        sentryLogger.error("\(String(describing: self))")
+        sentryLogger.error(self.getErrorDescription())
         SentrySDK.capture(error: self)
     }
     
