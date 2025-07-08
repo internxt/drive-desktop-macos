@@ -19,9 +19,6 @@ class ActivityManager: ObservableObject {
     @Published var activityEntries: [ActivityEntry] = []
     private var realm: Realm? = nil
     @Published var isSyncing: Bool = false
-    private var lastEntryCount: Int = 0
-    private var syncDebouncer: Timer?
-    private let syncDebounceInterval: TimeInterval = 5.0
     private func getRealm() -> Realm? {
         do {
             return try Realm(configuration: Realm.Configuration(
@@ -36,24 +33,6 @@ class ActivityManager: ObservableObject {
         
     }
     
-    private func setSyncing(_ syncing: Bool) {
-        if isSyncing != syncing {
-            isSyncing = syncing
-        }
-    }
-    
-    private func activityDidOccur() {
-        DispatchQueue.main.async {
-            self.setSyncing(true)
-            
-            self.syncDebouncer?.invalidate()
-            self.syncDebouncer = Timer.scheduledTimer(withTimeInterval: self.syncDebounceInterval, repeats: false) { [weak self] _ in
-                self?.setSyncing(false)
-            }
-        }
-    }
-
-    
     func clean() throws {
         activityEntries = []
         let realm = getRealm()
@@ -65,53 +44,57 @@ class ActivityManager: ObservableObject {
     }
     
     func saveActivityEntry(entry: ActivityEntry) {
-         activityDidOccur()
-         
-         do {
-             let realm = getRealm()
-             try realm?.write {
-                 realm?.add(entry, update: .modified)
-             }
-         } catch {
-             error.reportToSentry()
-         }
-     }
+        
+        do {
+            let realm = getRealm()
+            try realm?.write {
+                realm?.add(entry)
+            }
+        } catch {
+            error.reportToSentry()
+        }
+
+    }
 
     func updateActivityEntries() {
-        guard let realm = getRealm() else { return }
-        
+        guard let realm = getRealm() else {
+            return
+        }
         let entries = realm.objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
 
-        let newEntries = Array(entries.prefix(activityActionsLimit))
+        
+        var newEntries: [ActivityEntry] = []
+        for i in 0..<activityActionsLimit {
+            if i + 1 <= entries.count {
+                newEntries.append(entries[i])
+            }
+            
+        }
         
         DispatchQueue.main.async {
             self.activityEntries = newEntries
         }
+        
     }
-    
-    func observeLatestActivityEntries() {
-        guard let realm = getRealm() else { return }
-        
-        let result = realm.objects(ActivityEntry.self)
-        
-        self.notificationToken = result.observe { [weak self] (changes: RealmCollectionChange) in
-            switch changes {
-            case .initial:
-                self?.updateActivityEntries()
-            case .update:
-                self?.updateActivityEntries()
-                self?.activityDidOccur()
-            case .error(let error):
-                error.reportToSentry()
+
+    func observeLatestActivityEntries() -> Void {
+        if self.notificationToken == nil {
+            guard let realm = getRealm() else {
                 return
+            }
+            let result = realm.objects(ActivityEntry.self)
+            self.notificationToken = result.observe{[weak self] (changes: RealmCollectionChange) in
+                switch changes {
+                    case .initial:
+                        self?.updateActivityEntries()
+                    case .update:
+                        self?.updateActivityEntries()
+                    case .error:
+                        return
+                    }
             }
         }
     }
-
-    deinit {
-         notificationToken?.invalidate()
-         syncDebouncer?.invalidate()
-     }
 
 }
 
