@@ -71,14 +71,18 @@ struct SettingsMenuView: View {
         NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
     }
     
-    func handleLogout() -> Void {
-        do {
-            try authManager.signOut()
-        } catch {
-            error.reportToSentry()
+    func handleLogout() {
+        Task {
+            
+            do {
+                await authManager.logoutUser()
+                try authManager.signOut()
+            } catch {
+                error.reportToSentry()
+            }
         }
-        
     }
+
     
     func handleOpenSupport() -> Void {
         URLDictionary.HELP_CENTER.open()

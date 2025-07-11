@@ -29,6 +29,7 @@
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Tout est à jour";
+"SYNC_STATUS_SYNCING" = "Synchronisation en cours...";
 
 // Widget sync entry
 "SYNC_ENTRY_KIND_TRASHED" = "Déplacé vers la corbeille";

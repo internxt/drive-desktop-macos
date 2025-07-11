@@ -17,7 +17,7 @@ struct BackupFrequencySelectorView: View {
             AppText("BACKUP_UPLOAD_FREQUENCY")
                 .font(.SMMedium)
                 .foregroundColor(.Gray80)
-            HStack(spacing: 8){
+            HStack(spacing: 12){
                 AppSelector(
                     size: .MD,
                     options: [
@@ -33,7 +33,8 @@ struct BackupFrequencySelectorView: View {
                         setFrequency(option: selectedOption)
                         self.onClick(self.currentFrequency)
                         
-                    }, isDisabled : isDisabled).frame(width: 140)
+                    }, isDisabled : isDisabled)
+                    .frame(width: 150)
                
                 if self.currentFrequency != .manually {
                     AppText(String(format: NSLocalizedString("BACKUP_NEXT_DATE", comment: ""), nextBackupTime))

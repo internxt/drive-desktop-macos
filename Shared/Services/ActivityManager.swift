@@ -18,7 +18,7 @@ class ActivityManager: ObservableObject {
     private var notificationToken: NotificationToken?
     @Published var activityEntries: [ActivityEntry] = []
     private var realm: Realm? = nil
-    
+    @Published var isSyncing: Bool = false
     private func getRealm() -> Realm? {
         do {
             return try Realm(configuration: Realm.Configuration(

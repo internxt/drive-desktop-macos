@@ -47,6 +47,13 @@ struct LogService {
         systemDestination.showLineNumber = true
         systemDestination.showDate = true
         
+        log.dateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(secondsFromGMT: 2 * 3600)
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+            return formatter
+        }()
         
         log.add(destination: systemDestination)
         
@@ -56,7 +63,14 @@ struct LogService {
         
         let logFile = logsDirectoryUnwrapped.appendingPathComponent("\(subsystem.rawValue).log")
         
-        let fileDestination = FileDestination(writeToFile: logFile, identifier: "\(subsystem.rawValue).\(category).fileDestination", shouldAppend: true)
+        let fileDestination = AutoRotatingFileDestination(
+            writeToFile: logFile,
+            identifier: "\(subsystem.rawValue).\(category).fileDestination",
+            shouldAppend: true,
+            maxFileSize: 1000 * 1024 * 1024,
+            targetMaxLogFiles: 1
+        )
+   
         
         
         fileDestination.outputLevel = .debug

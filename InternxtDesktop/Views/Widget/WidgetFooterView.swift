@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WidgetFooterView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Binding var isSyncing: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -30,8 +31,12 @@ struct WidgetFooterView: View {
                 AppIcon(iconName: .Check, size: 12, color: Color.white)
                 
             }.padding(2)
-            AppText("SYNC_STATUS_UP_TO_DATE").font(.SMMedium)
-            
+            if isSyncing {
+                AppText("SYNC_STATUS_SYNCING").font(.SMMedium)
+            } else {
+                
+                AppText("SYNC_STATUS_UP_TO_DATE").font(.SMMedium)
+            }
         }
     }
     
@@ -40,6 +45,6 @@ struct WidgetFooterView: View {
 
 struct WidgetFooterView_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetFooterView().frame(maxWidth: 300)
+        WidgetFooterView(isSyncing: .constant(false)).frame(maxWidth: 300)
     }
 }

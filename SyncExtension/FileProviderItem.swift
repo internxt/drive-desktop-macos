@@ -137,4 +137,14 @@ class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItem
         
         return UTType(tag: itemExtension, tagClass: .filenameExtension, conformingTo: nil) ?? UTType.plainText
     }
+    var fileSystemFlags: NSFileProviderFileSystemFlags {
+        var flags: NSFileProviderFileSystemFlags = []
+        
+        flags.insert(.userReadable)
+        flags.insert(.userWritable)
+        flags.insert(.userExecutable)
+        
+        return flags
+    }
+
 }
