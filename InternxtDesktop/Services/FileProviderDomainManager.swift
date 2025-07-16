@@ -73,7 +73,7 @@ class FileProviderDomainManager: ObservableObject {
         do {
             if !workspaces.isEmpty{
                 let identifier = NSFileProviderDomainIdentifier(rawValue: workspaces[0].workspaceUser.workspaceId)
-                let domain = NSFileProviderDomain(identifier: identifier, displayName: "Internxt Drive for Business")
+                let domain = NSFileProviderDomain(identifier: identifier, displayName: "for Business")
                 
                 try await NSFileProviderManager.add(domain)
                 
