@@ -61,10 +61,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.deviceUuid = deviceUuid
     }
 
-    // TODO: get auth token from user defaults from XPC Service.
-    private var backupAPI: BackupAPI {
-        return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: authToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-    }
 
     private var backupNewAPI: BackupAPI {
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())

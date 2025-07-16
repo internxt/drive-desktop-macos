@@ -16,10 +16,9 @@ enum GetFolderMetaUseCaseError: Error {
     case InvalidUpdatedAt
 }
 
-
 struct GetFolderMetaUseCase {
     let logger = syncExtensionLogger
-    private let driveAPI: DriveAPI = APIFactory.Drive
+    private let driveAPI: DriveAPI = APIFactory.DriveNew
     private let completionHandler: (NSFileProviderItem?, Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier
     init(identifier: NSFileProviderItemIdentifier, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) {

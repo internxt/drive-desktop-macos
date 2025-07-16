@@ -22,7 +22,6 @@ enum GetFileOrFolderMetaUseCaseError: Error {
 
 struct GetFileOrFolderMetaUseCase {
     let logger = syncExtensionLogger
-    private let driveAPI: DriveAPI = APIFactory.Drive
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let completionHandler: (NSFileProviderItem?, Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier
