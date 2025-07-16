@@ -11,7 +11,7 @@ import InternxtSwiftCore
 
 struct CreateFolderWorkspaceUseCase {
     let logger = syncExtensionWorkspaceLogger
-    let driveNewAPI = APIFactory.DriveNew
+    let driveNewAPI = APIFactory.DriveWorkspace
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
@@ -27,22 +27,20 @@ struct CreateFolderWorkspaceUseCase {
     func run() -> Progress {
         Task {
         
+            let workspaceId = workspace[0].workspaceUser.workspaceId
+            let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
+            let parentFolderUuid = itemTemplate.parentItemIdentifier == .rootContainer  ? rootFolderUuid : itemTemplate.parentItemIdentifier.rawValue
             
             do {
                 guard !workspace.isEmpty else {
                     self.logger.error("Workspace array is empty, cannot proceed with item access.")
                     return
                 }
-
-                let workspaceId = workspace[0].workspaceUser.workspaceId
-                let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
-                let parentFolderId = itemTemplate.parentItemIdentifier == .rootContainer  ? rootFolderUuid : itemTemplate.parentItemIdentifier.rawValue
-         
-                let filename = itemTemplate.filename as NSString
-                self.logger.info("✅ Parent Folder id to create: \(parentFolderId)")
-
                 
-                let createdFolder = try await driveNewAPI.createFolderWorkspace(parentFolderUuid: parentFolderId, folderName: filename.deletingPathExtension, workspaceUuid: workspaceId,debug: true)
+                let filename = itemTemplate.filename as NSString
+                self.logger.info("✅ Parent Folder id to create: \(parentFolderUuid)")
+
+                let createdFolder = try await driveNewAPI.createFolderWorkspace(parentFolderUuid: parentFolderUuid, folderName: filename.deletingPathExtension, workspaceUuid: workspaceId,debug: true)
                 completionHandler(FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: createdFolder.uuid),
                     filename: createdFolder.plainName ?? createdFolder.name,
@@ -55,9 +53,36 @@ struct CreateFolderWorkspaceUseCase {
                 
                 self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
             } catch {
-                error.reportToSentry()
-                self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
-                completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                
+                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                    // Handle duplicated folder error
+                    do {
+                        let folderResult = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentFolderUuid, folderName: itemTemplate.filename)
+
+                        
+                        if let folder = folderResult.existentFolders.first(where: {
+                            $0.plainName == itemTemplate.filename && $0.removed == false
+                        }) {
+                            completionHandler(FileProviderItem(
+                                identifier: NSFileProviderItemIdentifier(rawValue: String(folder.uuid)),
+                                filename: folder.plainName,
+                                parentId: itemTemplate.parentItemIdentifier,
+                                createdAt: Time.dateFromISOString(folder.createdAt) ?? Date(),
+                                updatedAt: Time.dateFromISOString(folder.updatedAt) ?? Date(),
+                                itemExtension: nil,
+                                itemType: .folder
+                            ), [], false, nil)
+                        }
+                        
+                    } catch {
+                        self.logger.error("❌ Failed to get folder: \(error.getErrorDescription())")
+                        completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                    }
+                }else {
+                    error.reportToSentry()
+                    self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                }
             }
         }
         
