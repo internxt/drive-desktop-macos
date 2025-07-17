@@ -22,7 +22,6 @@ struct UploadFileOrUpdateContentUseCase {
     private let fileContent: URL
     private let networkFacade: NetworkFacade
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
-    private let driveAPI = APIFactory.Drive
     private let driveNewAPI = APIFactory.DriveNew
     private let config = ConfigLoader().get()
     private let user: DriveUser
