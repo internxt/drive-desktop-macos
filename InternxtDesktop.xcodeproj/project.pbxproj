@@ -106,8 +106,6 @@
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
 		AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */; };
-		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
-		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
 		AAC188E82C222EB3007E321A /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E72C222EB3007E321A /* Sentry */; };
 		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
@@ -315,10 +313,6 @@
 		E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
 		E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */; };
-		E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */; };
-		E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6C2BA9899400C257E0 /* XCGLogger */; };
-		E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6E2BA989AE00C257E0 /* XCGLogger */; };
-		E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C702BA989B600C257E0 /* XCGLogger */; };
 		E1FD8C732BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
@@ -645,7 +639,6 @@
 				AA16C5D02E303B8100E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
 				AA16C5CE2E303B8100E1C295 /* CocoaLumberjack in Frameworks */,
-				E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,8 +661,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAC188E82C222EB3007E321A /* Sentry in Frameworks */,
-				AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */,
-				AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */,
 				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -679,7 +670,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
-				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
 				AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
@@ -695,7 +685,6 @@
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
 				E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */,
-				E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,7 +692,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */,
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
 				AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
@@ -1344,7 +1332,6 @@
 			packageProductDependencies = (
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
-				E1FD8C702BA989B600C257E0 /* XCGLogger */,
 				E19639612C63CA20009EDAFB /* RealmSwift */,
 				AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */,
 				AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */,
@@ -1402,8 +1389,6 @@
 			);
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
-				AAC188E12C222E1A007E321A /* ObjcExceptionBridging */,
-				AAC188E32C222E1A007E321A /* XCGLogger */,
 				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
 				AAC188E72C222EB3007E321A /* Sentry */,
 			);
@@ -1438,8 +1423,6 @@
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E1ADD0512AA8D68D00D95694 /* SocketIO */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
-				E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */,
-				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
 				E19639592C63B46C009EDAFB /* Realm */,
 				E196395B2C63B46C009EDAFB /* RealmSwift */,
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
@@ -1468,7 +1451,6 @@
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 				E198D7E02AAA3A2800107753 /* SocketIO */,
-				E1FD8C6E2BA989AE00C257E0 /* XCGLogger */,
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
 				E196395F2C63CA14009EDAFB /* Realm */,
 				AA16C5C92E303B7700E1C295 /* CocoaLumberjack */,
@@ -1526,7 +1508,6 @@
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
-				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
@@ -2860,14 +2841,6 @@
 				kind = branch;
 			};
 		};
-		E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2915,16 +2888,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
 			productName = ObjectivePGP;
-		};
-		AAC188E12C222E1A007E321A /* ObjcExceptionBridging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = ObjcExceptionBridging;
-		};
-		AAC188E32C222E1A007E321A /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
 		};
 		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3000,26 +2963,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
-		};
-		E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = ObjcExceptionBridging;
-		};
-		E1FD8C6C2BA9899400C257E0 /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
-		};
-		E1FD8C6E2BA989AE00C257E0 /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
-		};
-		E1FD8C702BA989B600C257E0 /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
