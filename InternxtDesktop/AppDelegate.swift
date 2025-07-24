@@ -311,14 +311,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         Task {
             do {
                 self.startTokensRefreshing()
-                await antivirusManager.fetchAntivirusStatus()
-                await usageManager.updateUsage()
-                await backupsService.fetchBackupStatus()
-                self.logger.info("✅ Usage updated")
-                antivirusManager.downloadDatabases()
                 try await authManager.initializeCurrentUser()
                 self.logger.info("✅ Current user initialized")
-                
+                await usageManager.updateUsage()
+                self.logger.info("✅ Usage updated")
                 guard let user = self.authManager.user else {
                     throw AuthError.noUserFound
                 }
@@ -327,7 +323,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
 
                 
                 self.logger.info("Login success")
-                
+                await antivirusManager.fetchAntivirusStatus()
+                antivirusManager.downloadDatabases()
                 guard let workspaces = self.authManager.availableWorkspaces else {
                     return
                 }
@@ -345,6 +342,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
         Task {
             await self.initializeBackups()
+            await backupsService.fetchBackupStatus()
+            
         }
         
         self.setupWidget()
