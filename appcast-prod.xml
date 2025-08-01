@@ -3,12 +3,12 @@
     <channel>
         <title>Internxt Drive</title>
         <item>
-            <title>2.5.7</title>
-            <pubDate>Wed, 09 Jul 2025 12:11:13 -0500</pubDate>
-            <sparkle:version>76</sparkle:version>
-            <sparkle:shortVersionString>2.5.7</sparkle:shortVersionString>
+            <title>2.5.8</title>
+            <pubDate>Fri, 01 Aug 2025 08:25:44 -0500</pubDate>
+            <sparkle:version>77</sparkle:version>
+            <sparkle:shortVersionString>2.5.8</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/internxt/drive-desktop-macos/releases/download/v2.5.7.76/Internxt_Drive_2.5.7.76.dmg" length="57563386" type="application/octet-stream" sparkle:edSignature="3sMsDeknFGtwJk4nf69AHLrBLCfgpApOb9prfTBmnIl5BCEiDx/aBeTwmZZ7QTGvdsO1omI55tEPCkiS+iFTCg=="/>
+            <enclosure url="https://github.com/internxt/drive-desktop-macos/releases/download/v2.5.8.77/Internxt_Drive_2.5.8.77.dmg" length="57572462" type="application/octet-stream" sparkle:edSignature="bZXNx/Ktzs9OsZidEVCGNwlf0+vuPXr4injPdKzc97HKkoLQGe3XZwo7M17vxbZUoB26St8fIX1HIOKjlljOCw=="/>
         </item>
     </channel>
 </rss>
