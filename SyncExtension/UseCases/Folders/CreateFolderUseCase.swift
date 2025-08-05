@@ -11,7 +11,6 @@ import InternxtSwiftCore
 
 struct CreateFolderUseCase {
     let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let itemTemplate: NSFileProviderItem
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
@@ -49,9 +48,39 @@ struct CreateFolderUseCase {
                 
                 self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
             } catch {
-                error.reportToSentry()
-                self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
-                completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                
+                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                    // Handle duplicated folder error
+                    do {
+                        let folderResult = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentUUID, folderName: itemTemplate.filename)
+
+                        
+                        if let folder = folderResult.existentFolders.first(where: {
+                            $0.plainName == itemTemplate.filename && $0.removed == false
+                        }) {
+                            completionHandler(FileProviderItem(
+                                identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
+                                filename: folder.plainName,
+                                parentId: itemTemplate.parentItemIdentifier,
+                                createdAt: Time.dateFromISOString(folder.createdAt) ?? Date(),
+                                updatedAt: Time.dateFromISOString(folder.updatedAt) ?? Date(),
+                                itemExtension: nil,
+                                itemType: .folder
+                            ), [], false, nil)
+                        }
+                        
+                    } catch {
+                        self.logger.error("❌ Failed to get folder: \(error.getErrorDescription())")
+                        completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                    }
+                }else {
+                    error.reportToSentry()
+                    self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                }
+                
+                
+
             }
         }
         

@@ -17,7 +17,6 @@ struct DriveFileService {
     static var shared = DriveFileService()
     private let trashAPI: TrashAPI = APIFactory.Trash
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
-    private let driveAPI: DriveAPI = APIFactory.Drive
     
     
     /// Given a file uuid, modifies it status to **TRASHED**

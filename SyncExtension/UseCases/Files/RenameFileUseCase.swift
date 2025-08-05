@@ -11,7 +11,6 @@ import InternxtSwiftCore
 
 struct RenameFileUseCase {
     let logger = syncExtensionLogger
-    let driveAPI = APIFactory.Drive
     let driveNewAPI = APIFactory.DriveNew
     let item: NSFileProviderItem
     let changedFields: NSFileProviderItemFields

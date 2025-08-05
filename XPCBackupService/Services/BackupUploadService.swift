@@ -61,10 +61,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.deviceUuid = deviceUuid
     }
 
-    // TODO: get auth token from user defaults from XPC Service.
-    private var backupAPI: BackupAPI {
-        return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: authToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-    }
 
     private var backupNewAPI: BackupAPI {
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
@@ -102,6 +98,20 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         DispatchQueue.main.async {
             self.canDoBackup = false
         }
+    }
+    
+// MARK: - Thread-Safe  Operations
+   
+    private func addSyncedNodeSafely(_ node: SyncedNode) async throws {
+        try await Task.detached {
+            try SyncedNodeRepository.shared.addSyncedNode(node)
+        }.value
+    }
+    
+    private func editSyncedNodeDateSafely(remoteUuid: String, date: Date) async throws {
+        try await Task.detached {
+            try SyncedNodeRepository.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: date)
+        }.value
     }
 
     private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
@@ -152,11 +162,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
 
-            try SyncedNodeRepository.shared.addSyncedNode(
+            try await addSyncedNodeSafely(
                 SyncedNode(
                     remoteId: createdFolder.id,
                     deviceId: node.deviceId,
-                    remoteUuid: "",
+                    remoteUuid: createdFolder.uuid,
                     url: nodeURL,
                     rootBackupFolder: node.rootBackupFolder,
                     parentId: node.parentId,
@@ -182,11 +192,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
-                    try SyncedNodeRepository.shared.addSyncedNode(
+                    try await addSyncedNodeSafely(
                         SyncedNode(
                             remoteId: folder.id,
                             deviceId: node.deviceId,
-                            remoteUuid: "",
+                            remoteUuid: folder.uuid ?? "",
                             url: nodeURL,
                             rootBackupFolder: node.rootBackupFolder,
                             parentId: node.parentId,
@@ -257,7 +267,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
 
                 // Edit date in synced database
-                try SyncedNodeRepository.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: Date())
+                try await editSyncedNodeDateSafely(remoteUuid: remoteUuid, date: Date())
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
@@ -289,7 +299,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
 
 
-                try SyncedNodeRepository.shared.addSyncedNode(
+                try await addSyncedNodeSafely(
                     SyncedNode(
                         remoteId: createdFile.id,
                         deviceId: node.deviceId,
@@ -346,7 +356,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
-                    try SyncedNodeRepository.shared.addSyncedNode(
+                    try await addSyncedNodeSafely(
                         SyncedNode(
                             remoteId: file.id,
                             deviceId: node.deviceId,

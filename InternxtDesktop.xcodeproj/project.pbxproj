@@ -67,6 +67,12 @@
 		AA0B47AA2C24D9BF0036FE1A /* BackupDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12479DA2C19B2D5000DAC11 /* BackupDownloadService.swift */; };
 		AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EEB5852C1C4B8800370D77 /* BackupDownloadItemOperation.swift */; };
 		AA0B47AC2C24D9EE0036FE1A /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E16B2A82A21500B07E0B /* Time.swift */; };
+		AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */; };
+		AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */; };
+		AA16C5CA2E303B7700E1C295 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = AA16C5C92E303B7700E1C295 /* CocoaLumberjack */; };
+		AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */; };
+		AA16C5CE2E303B8100E1C295 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */; };
+		AA16C5D02E303B8100E1C295 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */; };
 		AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2019662C53F8B700901B93 /* Debouncer.swift */; };
 		AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497C2D44839C00924536 /* freshclam */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -100,8 +106,6 @@
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
 		AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */; };
-		AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E12C222E1A007E321A /* ObjcExceptionBridging */; };
-		AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E32C222E1A007E321A /* XCGLogger */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
 		AAC188E82C222EB3007E321A /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E72C222EB3007E321A /* Sentry */; };
 		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
@@ -309,10 +313,6 @@
 		E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
 		E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */; };
-		E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */; };
-		E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6C2BA9899400C257E0 /* XCGLogger */; };
-		E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C6E2BA989AE00C257E0 /* XCGLogger */; };
-		E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = E1FD8C702BA989B600C257E0 /* XCGLogger */; };
 		E1FD8C732BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
@@ -636,8 +636,9 @@
 			files = (
 				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				3120B5622B84F32500F524F1 /* Sentry in Frameworks */,
+				AA16C5D02E303B8100E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
-				E1FD8C712BA989B600C257E0 /* XCGLogger in Frameworks */,
+				AA16C5CE2E303B8100E1C295 /* CocoaLumberjack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,8 +661,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAC188E82C222EB3007E321A /* Sentry in Frameworks */,
-				AAC188E22C222E1A007E321A /* ObjcExceptionBridging in Frameworks */,
-				AAC188E42C222E1A007E321A /* XCGLogger in Frameworks */,
 				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -671,7 +670,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
-				E1FD8C6B2BA9899400C257E0 /* ObjcExceptionBridging in Frameworks */,
+				AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				E1313D2F2A9501BB00C7ABF0 /* Sentry in Frameworks */,
@@ -681,11 +680,11 @@
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */,
 				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
 				E1ADD0522AA8D68D00D95694 /* SocketIO in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
 				E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */,
-				E1FD8C6D2BA9899400C257E0 /* XCGLogger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,10 +692,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1FD8C6F2BA989AE00C257E0 /* XCGLogger in Frameworks */,
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
+				AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
+				AA16C5CA2E303B7700E1C295 /* CocoaLumberjack in Frameworks */,
 				E198D7E12AAA3A2800107753 /* SocketIO in Frameworks */,
 				E19639602C63CA14009EDAFB /* Realm in Frameworks */,
 				E1313D3B2A9504D400C7ABF0 /* Sentry in Frameworks */,
@@ -1332,8 +1332,9 @@
 			packageProductDependencies = (
 				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				3120B5612B84F32500F524F1 /* Sentry */,
-				E1FD8C702BA989B600C257E0 /* XCGLogger */,
 				E19639612C63CA20009EDAFB /* RealmSwift */,
+				AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */,
+				AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1388,8 +1389,6 @@
 			);
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
-				AAC188E12C222E1A007E321A /* ObjcExceptionBridging */,
-				AAC188E32C222E1A007E321A /* XCGLogger */,
 				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
 				AAC188E72C222EB3007E321A /* Sentry */,
 			);
@@ -1424,11 +1423,11 @@
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E1ADD0512AA8D68D00D95694 /* SocketIO */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
-				E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */,
-				E1FD8C6C2BA9899400C257E0 /* XCGLogger */,
 				E19639592C63B46C009EDAFB /* Realm */,
 				E196395B2C63B46C009EDAFB /* RealmSwift */,
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
+				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
+				AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1452,9 +1451,10 @@
 				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E1313D3A2A9504D400C7ABF0 /* Sentry */,
 				E198D7E02AAA3A2800107753 /* SocketIO */,
-				E1FD8C6E2BA989AE00C257E0 /* XCGLogger */,
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
 				E196395F2C63CA14009EDAFB /* Realm */,
+				AA16C5C92E303B7700E1C295 /* CocoaLumberjack */,
+				AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -1508,9 +1508,9 @@
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
-				E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
+				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1948,7 +1948,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -1961,7 +1961,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1983,7 +1983,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1995,7 +1995,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2016,7 +2016,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2028,7 +2028,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2339,7 +2339,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2363,7 +2363,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2383,7 +2383,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2398,7 +2398,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2551,7 +2551,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2574,7 +2574,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2598,7 +2598,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2621,7 +2621,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2640,7 +2640,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2655,7 +2655,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2674,7 +2674,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 77;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2689,7 +2689,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.5.7;
+				MARKETING_VERSION = 2.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2777,6 +2777,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.9.0;
+			};
+		};
 		AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzyzanowskim/ObjectivePGP.git";
@@ -2833,14 +2841,6 @@
 				kind = branch;
 			};
 		};
-		E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/DaveWoodCom/XCGLogger.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2854,20 +2854,40 @@
 			package = E1313D2D2A9501BB00C7ABF0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
+		AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		AA16C5C92E303B7700E1C295 /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
 		AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
 			productName = ObjectivePGP;
-		};
-		AAC188E12C222E1A007E321A /* ObjcExceptionBridging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = ObjcExceptionBridging;
-		};
-		AAC188E32C222E1A007E321A /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
 		};
 		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2943,26 +2963,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1ADD0502AA8D68D00D95694 /* XCRemoteSwiftPackageReference "socket" */;
 			productName = SocketIO;
-		};
-		E1FD8C6A2BA9899400C257E0 /* ObjcExceptionBridging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = ObjcExceptionBridging;
-		};
-		E1FD8C6C2BA9899400C257E0 /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
-		};
-		E1FD8C6E2BA989AE00C257E0 /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
-		};
-		E1FD8C702BA989B600C257E0 /* XCGLogger */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1FD8C692BA9899400C257E0 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

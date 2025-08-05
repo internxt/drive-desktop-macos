@@ -16,7 +16,6 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     let logger = syncExtensionLogger
     private let enumeratedItemIdentifier: NSFileProviderItemIdentifier
     private let anchor = NSFileProviderSyncAnchor(initialAnchor.data(using: .utf8)!)
-    private let driveAPI =  APIFactory.Drive
     private let user: DriveUser
     private let domain: NSFileProviderDomain
     private let workspace: [AvailableWorkspace]

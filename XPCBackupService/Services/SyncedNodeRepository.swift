@@ -22,10 +22,10 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     
     typealias T = SyncedNode
     static var shared = SyncedNodeRepository()
-    private var realm: Realm?
+    
     private init() {}
     
-    func getRealm() throws -> Realm? {
+    private func getRealm() throws -> Realm {
         do {
             return try Realm(configuration: Realm.Configuration(
                 fileURL: ConfigLoader.realmURL,
@@ -41,8 +41,8 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
         do {
             let realm = try getRealm()
             let detachedNode = SyncedNode(value: node)
-            try realm?.write {
-                realm?.add(detachedNode)
+            try realm.write {
+                realm.add(detachedNode)
             }
         } catch {
             throw BackupUploadError.CannotAddNodeToRealm
@@ -52,7 +52,7 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     
     func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode? {
         do {
-            let realm = try Realm()
+            let realm = try getRealm()
             return realm.objects(SyncedNode.self)
                 .filter("url == %@ AND deviceId == %@", url.absoluteString, deviceId)
                 .first
@@ -66,13 +66,13 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
         do {
             let realm = try getRealm()
             
-            guard let node = realm?.objects(SyncedNode.self).first(where: { syncedNode in
+            guard let node = realm.objects(SyncedNode.self).first(where: { syncedNode in
                 syncedNode.remoteUuid == remoteUuid
             }) else {
                 throw BackupUploadError.CannotFindNodeToRealm
             }
             
-            try realm?.write {
+            try realm.write {
                 node.updatedAt = date
             }
         } catch {
@@ -83,7 +83,7 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     func find(url: URL, deviceId: Int) -> SyncedNode? {
         do {
             let realm = try getRealm()
-            return realm?.objects(SyncedNode.self).first { $0.url == url.absoluteString && $0.deviceId == deviceId }
+            return realm.objects(SyncedNode.self).first { $0.url == url.absoluteString && $0.deviceId == deviceId }
         } catch {
             return nil
         }
@@ -103,7 +103,7 @@ struct SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     
     func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode? {
         do {
-            let realm = try Realm()
+            let realm = try getRealm()
             return realm.resolve(reference)
         } catch {
             logger.error("Failed to resolve thread-safe reference: \(error)")

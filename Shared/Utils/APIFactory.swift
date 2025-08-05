@@ -12,7 +12,7 @@ enum APIFactoryError: Error {
     case MissingLegacyToken
 }
 
-var CLIENT_NAME = "drive-desktop"
+var CLIENT_NAME = "drive-desktop-macos"
 func getVersion() -> String {
     guard let version = Bundle.main.releaseVersionNumber else {
         return "NO_VERSION"
@@ -62,16 +62,7 @@ struct APIFactory {
         let workspaceHeader = configLoader.getWorkspaceCredentials()?.tokenHeader
         return DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader , gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
-    
-    static var Drive: DriveAPI {
-        let configLoader = ConfigLoader()
-        
-        let config = configLoader.get()
-        let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
-        
-        return DriveAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
-    }
-    
+      
     static var Photos: PhotosAPI {
         let configLoader = ConfigLoader()
         

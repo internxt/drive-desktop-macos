@@ -11,7 +11,6 @@ import InternxtSwiftCore
 
 struct DeleteFileOrFolderUseCase {
     let logger = syncExtensionLogger
-    private let driveAPI: DriveAPI = APIFactory.Drive
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let completionHandler: (Error?) -> Void
     private let identifier: NSFileProviderItemIdentifier
