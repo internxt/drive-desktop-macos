@@ -345,14 +345,18 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
                 do {
-                    let parentChilds = try await backupNewAPI.getBackupFiles(folderId: "\(remoteParentId)")
+                    let existenceFile = ExistenceFile(plainName: filename.deletingPathExtension, type: filename.pathExtension)
 
+                    
+                    let result = try await backupNewAPI.getExistenceFileInFolderByPlainName(uuid: remoteParentUuid, files: [existenceFile])
+                    
                     let nodePlainName = (node.name as NSString).deletingPathExtension
-                    let file = parentChilds.result.first { currentFile in
-                        return currentFile.plainName == nodePlainName && currentFile.removed == false
+  
+                    let matchingFile = result.existentFiles.first {
+                        $0.plainName == nodePlainName
                     }
-
-                    guard let file = file else {
+                
+                    guard let file = matchingFile else {
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
