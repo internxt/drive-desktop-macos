@@ -23,6 +23,8 @@
 "WIDGET_SETTINGS_LOGOUT_OPTION" = "Déconnexion";
 "WIDGET_SETTINGS_QUIT_OPTION" = "Quitter";
 "WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
+"WIDGET_SETTINGS_CLEANER_OPTION" = "Cleaner";
+
 
 // Widget new option
 "WIDGET_SETTINGS_NEW_OPTION" = "Nouveau";
@@ -83,6 +85,7 @@
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
 "SETTINGS_TAB_BACKUPS_TITLE" = "Sauvegarde";
 "SETTINGS_TAB_ANTIVIRUS_TITLE" = "Antivirus";
+"SETTINGS_TAB_CLEANER_TITLE" = "Cleaner";
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
