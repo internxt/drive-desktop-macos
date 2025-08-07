@@ -143,8 +143,9 @@ struct SettingsView: View {
             )
         case .Antivirus:
             AntivirusTabView(viewModel: antivirusManager)
-        default:
-            EmptyView()
+        case .Cleaner:
+            CleanerTabView()
+ 
         }
     }
     

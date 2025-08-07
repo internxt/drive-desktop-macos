@@ -87,6 +87,7 @@
 		AA628F2C2D4BFBA800421CB7 /* OnboardingSlide7View.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */; };
 		AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
+		AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
@@ -467,6 +468,7 @@
 		AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide6View.swift; sourceTree = "<group>"; };
 		AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide7View.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
+		AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanerTabView.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
@@ -790,6 +792,14 @@
 				AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		AA7FC5A22E450C2A0018C333 /* Cleaner */ = {
+			isa = PBXGroup;
+			children = (
+				AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */,
+			);
+			path = Cleaner;
 			sourceTree = "<group>";
 		};
 		AAA6666B2D40680700C2B9DF /* ClamAVResources */ = {
@@ -1273,6 +1283,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AA7FC5A22E450C2A0018C333 /* Cleaner */,
 				AA40B3BB2D3B296E00FC1FC3 /* Antivirus */,
 				3104526A2B4B1C3A00984716 /* Backups */,
 				E13B83952AFBBCC1009F6684 /* App */,
@@ -1733,6 +1744,7 @@
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				E1DB295D2A7D64AB009036B8 /* WidgetHeaderView.swift in Sources */,
 				E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */,
+				AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */,
 				AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */,
 				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
 				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
