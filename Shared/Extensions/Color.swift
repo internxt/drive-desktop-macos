@@ -31,4 +31,6 @@ extension Color {
     static let Surface = Color("Surface")
     static let Red = Color("Red")
     static let TextRed = Color("TextRed")
+    static let DefaultBackground = Color("DefaultBackground")
+    static let DefaultText = Color("DefaultText")
 }
