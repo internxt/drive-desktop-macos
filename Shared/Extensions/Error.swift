@@ -16,12 +16,22 @@ extension Error {
     }
     
     func getErrorDescription() -> String {
-         if let apiClientError = self as? APIClientError {
-             let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
-             return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
-         }
-         return self.localizedDescription
-     }
+        if let apiClientError = self as? APIClientError {
+            let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
+            return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
+        }
+        return self.localizedDescription
+    }
+    
+    func checkUnauthorizedError() {
+        if let apiClientError = self as? APIClientError, apiClientError.statusCode == 401 {
+            DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                }
+            }
+        }
+    }
 }
 
 extension NSAlert {
@@ -37,4 +47,8 @@ extension NSAlert {
             URLDictionary.UPGRADE_PLAN.open()
         }
     }
+}
+
+extension Notification.Name {
+    static let userDidLogout = Notification.Name("userDidLogout")
 }

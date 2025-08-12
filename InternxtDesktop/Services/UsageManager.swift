@@ -44,6 +44,7 @@ class UsageManager: ObservableObject {
             
         } catch {
             error.reportToSentry()
+            error.checkUnauthorizedError()
             DispatchQueue.main.async {
                 self.usageError = error
                 self.loadingUsage = false

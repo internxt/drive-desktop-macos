@@ -69,8 +69,13 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
         ErrorUtils.start()
-        
-        
+                
+        NotificationCenter.default.addObserver(self,
+        selector: #selector(handleUserLogout),
+        name: .userDidLogout,
+        object: nil)
+
+
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
@@ -129,6 +134,20 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
     }
     
+    
+    @objc func handleUserLogout(_ notification: Notification) {
+        self.logger.info("🔴 User logout due 401 error")
+        DispatchQueue.main.async { [weak self] in
+            do {
+                try self?.authManager.signOut()
+                self?.logger.info("✅ Successfully signed out user from main app due to 401 error")
+            } catch {
+                self?.logger.error("❌ Failed to sign out user in main app: \(error)")
+                error.reportToSentry()
+            }
+        }
+        
+    }
     
     
     func pushRegistry(
@@ -424,6 +443,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     func applicationWillTerminate(_ notification: Notification) {
         destroyWidget()
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func initPreviewMode() {
