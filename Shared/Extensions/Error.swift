@@ -12,7 +12,6 @@ import InternxtSwiftCore
 extension Error {
     func reportToSentry() {
         sentryLogger.error(self.getErrorDescription())
-        checkUnauthorizedError()
         SentrySDK.capture(error: self)
     }
     
