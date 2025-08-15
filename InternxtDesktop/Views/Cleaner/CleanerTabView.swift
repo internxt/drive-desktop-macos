@@ -24,7 +24,7 @@ struct CleanerTabView: View {
             case .scanning:
                 ScanningView()
             case .results:
-                ResultsView()
+                CleanupView()
             }
         }
     }
@@ -38,29 +38,7 @@ struct ScanningView: View {
     }
 }
 
-struct ResultsView: View {
-    var body: some View {
-        VStack (spacing: 8){
-            Image(systemName: "sparkle")
-            Text("Your device is clean")
-            Text("No further actions are neccessary")
-            
-            HStack {
-                ScanDetailView(title: "ANTIVIRUS_SCANNED_FILES", value: 10)
-                Divider()
-                    .frame(height: 40)
-                    .padding(.horizontal,24)
-                ScanDetailView(title: "ANTIVIRUS_DETECTED_FILES", value: 10)
-            }
-            
-            AppButton(title: "Finish") {
-                
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-    }
-}
 
 struct LockedFeatureOverlay: View {
     var isVisible: Bool

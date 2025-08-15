@@ -89,6 +89,7 @@
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
+		AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA919D752E4FCC0600287FAE /* CleanupView.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
 		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
@@ -470,6 +471,7 @@
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanerTabView.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
+		AA919D752E4FCC0600287FAE /* CleanupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupView.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
 		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
@@ -798,6 +800,7 @@
 			isa = PBXGroup;
 			children = (
 				AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */,
+				AA919D752E4FCC0600287FAE /* CleanupView.swift */,
 			);
 			path = Cleaner;
 			sourceTree = "<group>";
@@ -1748,6 +1751,7 @@
 				AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */,
 				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
 				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
+				AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
 				E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */,
 				E17C84B22AB22C1400A58414 /* OnboardingSlide2View.swift in Sources */,
