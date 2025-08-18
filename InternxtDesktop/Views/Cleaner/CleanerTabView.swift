@@ -95,14 +95,6 @@ struct LockedFeatureModal: View {
             })
         }
         .padding(32)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-              .fill(Color.DefaultBackground)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.white.opacity(0.15), lineWidth: 0.5)
-                )
-        )
         .frame(width: 343)
         .frame(height: 282)
     }
