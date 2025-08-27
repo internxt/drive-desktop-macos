@@ -104,6 +104,11 @@
 		AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666F2D40684500C2B9DF /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAA666812D40692900C2B9DF /* libjson-c.5.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AAA666822D40692900C2B9DF /* libssl.3.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA666712D40684500C2B9DF /* libssl.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA6F6392E5F9AA6000082ED /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA6F6372E5F9AA6000082ED /* main.swift */; };
+		AAA6F63C2E5F9BD2000082ED /* internxt.InternxtDesktop.cleaner.helper.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = AAA6F63A2E5F9B23000082ED /* internxt.InternxtDesktop.cleaner.helper.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AAA6F63E2E5F9D0D000082ED /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA6F63D2E5F9D0D000082ED /* Helper.swift */; };
+		AAA6F63F2E5F9D3E000082ED /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2019662C53F8B700901B93 /* Debouncer.swift */; };
+		AAA6F6422E5F9DFC000082ED /* Helper in Resources */ = {isa = PBXBuildFile; fileRef = AAA6F62F2E5F9A9D000082ED /* Helper */; };
 		AAAD0D9D2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */; };
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
@@ -329,6 +334,13 @@
 			remoteGlobalIDString = 31DEAEAD2B75139400E76D53;
 			remoteInfo = XPCBackupService;
 		};
+		AAA6F6402E5F9DE1000082ED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AAA6F62E2E5F9A9D000082ED;
+			remoteInfo = Helper;
+		};
 		E15F8C292B762B0400C60EFA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
@@ -380,6 +392,25 @@
 				AAA666802D40692900C2B9DF /* libcrypto.3.dylib in CopyFiles */,
 				AAA666812D40692900C2B9DF /* libjson-c.5.dylib in CopyFiles */,
 				AAA666822D40692900C2B9DF /* libssl.3.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAA6F62D2E5F9A9D000082ED /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		AAA6F63B2E5F9BB7000082ED /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 1;
+			files = (
+				AAA6F63C2E5F9BD2000082ED /* internxt.InternxtDesktop.cleaner.helper.plist in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,6 +511,10 @@
 		AAA666702D40684500C2B9DF /* libclammspack.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclammspack.0.dylib; sourceTree = "<group>"; };
 		AAA666712D40684500C2B9DF /* libssl.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libssl.3.dylib; sourceTree = "<group>"; };
 		AAA666772D40685C00C2B9DF /* clamscan */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = clamscan; sourceTree = "<group>"; };
+		AAA6F62F2E5F9A9D000082ED /* Helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Helper; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAA6F6372E5F9AA6000082ED /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		AAA6F63A2E5F9B23000082ED /* internxt.InternxtDesktop.cleaner.helper.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = internxt.InternxtDesktop.cleaner.helper.plist; sourceTree = "<group>"; };
+		AAA6F63D2E5F9D0D000082ED /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		AAAC21442C2E567100B44904 /* XPCBackupServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XPCBackupServiceDebug.entitlements; sourceTree = "<group>"; };
 		AAAD0D9C2CE11D0D003F27BB /* DownloadFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -660,6 +695,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAA6F62C2E5F9A9D000082ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E15F8C222B762B0400C60EFA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -826,6 +868,16 @@
 				AAA666712D40684500C2B9DF /* libssl.3.dylib */,
 			);
 			path = lib;
+			sourceTree = "<group>";
+		};
+		AAA6F6382E5F9AA6000082ED /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				AAA6F6372E5F9AA6000082ED /* main.swift */,
+				AAA6F63A2E5F9B23000082ED /* internxt.InternxtDesktop.cleaner.helper.plist */,
+				AAA6F63D2E5F9D0D000082ED /* Helper.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		AAAD0D9E2CE12D5B003F27BB /* Workspaces */ = {
@@ -1208,6 +1260,7 @@
 				E15F8C262B762B0400C60EFA /* XPCBackupServiceTests */,
 				AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */,
 				AA08891A2C4AF29F00D5CC40 /* InternxtDesktopTests */,
+				AAA6F6382E5F9AA6000082ED /* Helper */,
 				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 				E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */,
@@ -1223,6 +1276,7 @@
 				E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */,
 				AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */,
 				AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */,
+				AAA6F62F2E5F9A9D000082ED /* Helper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1388,6 +1442,25 @@
 			productReference = AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		AAA6F62E2E5F9A9D000082ED /* Helper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAA6F6332E5F9A9D000082ED /* Build configuration list for PBXNativeTarget "Helper" */;
+			buildPhases = (
+				AAA6F62B2E5F9A9D000082ED /* Sources */,
+				AAA6F62C2E5F9A9D000082ED /* Frameworks */,
+				AAA6F62D2E5F9A9D000082ED /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Helper;
+			packageProductDependencies = (
+			);
+			productName = Helper;
+			productReference = AAA6F62F2E5F9A9D000082ED /* Helper */;
+			productType = "com.apple.product-type.tool";
+		};
 		E15F8C242B762B0400C60EFA /* XPCBackupServiceTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E15F8C2B2B762B0400C60EFA /* Build configuration list for PBXNativeTarget "XPCBackupServiceTests" */;
@@ -1423,10 +1496,12 @@
 				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
 				AAA6667A2D4068E100C2B9DF /* CopyFiles */,
 				AAA6667D2D4068FE00C2B9DF /* CopyFiles */,
+				AAA6F63B2E5F9BB7000082ED /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AAA6F6412E5F9DE1000082ED /* PBXTargetDependency */,
 				E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */,
 				31DEAEB92B75139400E76D53 /* PBXTargetDependency */,
 			);
@@ -1481,7 +1556,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					31DEAEAD2B75139400E76D53 = {
@@ -1492,6 +1567,9 @@
 					};
 					AA0889182C4AF29F00D5CC40 = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					AAA6F62E2E5F9A9D000082ED = {
+						CreatedOnToolsVersion = 16.3;
 					};
 					E15F8C242B762B0400C60EFA = {
 						CreatedOnToolsVersion = 15.2;
@@ -1536,6 +1614,7 @@
 				E15F8C242B762B0400C60EFA /* XPCBackupServiceTests */,
 				AA08890C2C4AF27C00D5CC40 /* SyncExtensionTests */,
 				AA0889182C4AF29F00D5CC40 /* InternxtDesktopTests */,
+				AAA6F62E2E5F9A9D000082ED /* Helper */,
 			);
 		};
 /* End PBXProject section */
@@ -1574,6 +1653,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAA6F6422E5F9DFC000082ED /* Helper in Resources */,
 				E145E16A2A829C6B00B07E0B /* env.sample.json in Resources */,
 				E18300AC2AA21E7200AD023C /* InstrumentSans-Medium.ttf in Resources */,
 				E191368C2AA0FB4C00CAF0FA /* Localizable.strings in Resources */,
@@ -1686,6 +1766,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAA6F62B2E5F9A9D000082ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAA6F6392E5F9AA6000082ED /* main.swift in Sources */,
+				AAA6F63E2E5F9D0D000082ED /* Helper.swift in Sources */,
+				AAA6F63F2E5F9D3E000082ED /* Debouncer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1928,6 +2018,11 @@
 			target = 31DEAEAD2B75139400E76D53 /* XPCBackupService */;
 			targetProxy = 31DEAEB82B75139400E76D53 /* PBXContainerItemProxy */;
 		};
+		AAA6F6412E5F9DE1000082ED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AAA6F62E2E5F9A9D000082ED /* Helper */;
+			targetProxy = AAA6F6402E5F9DE1000082ED /* PBXContainerItemProxy */;
+		};
 		E15F8C2A2B762B0400C60EFA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E1FB2D232A76BF0200473AE1 /* InternxtDesktop */;
@@ -1976,7 +2071,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = XPCBackupService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2010,7 +2105,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = XPCBackupService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2043,7 +2138,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = XPCBackupService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2192,6 +2287,71 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Beta;
+		};
+		AAA6F6342E5F9A9D000082ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_OUTPUT_FORMAT = binary;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.cleaner.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AAA6F6352E5F9A9D000082ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_OUTPUT_FORMAT = binary;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.cleaner.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AAA6F6362E5F9A9D000082ED /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_OUTPUT_FORMAT = binary;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.cleaner.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Beta;
 		};
@@ -2346,7 +2506,6 @@
 		E17AA0262A8A7EDD00C7EE6E /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGNING_ALLOWED = YES;
@@ -2378,7 +2537,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
@@ -2413,7 +2572,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2558,7 +2717,6 @@
 		E1FB2D4A2A76BF0300473AE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGNING_ALLOWED = YES;
@@ -2589,7 +2747,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
@@ -2605,7 +2763,6 @@
 		E1FB2D4B2A76BF0300473AE1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGNING_ALLOWED = YES;
@@ -2636,7 +2793,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
@@ -2670,7 +2827,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2704,7 +2861,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2746,6 +2903,16 @@
 				AA08891E2C4AF29F00D5CC40 /* Debug */,
 				AA08891F2C4AF29F00D5CC40 /* Release */,
 				AA0889202C4AF29F00D5CC40 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAA6F6332E5F9A9D000082ED /* Build configuration list for PBXNativeTarget "Helper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAA6F6342E5F9A9D000082ED /* Debug */,
+				AAA6F6352E5F9A9D000082ED /* Release */,
+				AAA6F6362E5F9A9D000082ED /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
