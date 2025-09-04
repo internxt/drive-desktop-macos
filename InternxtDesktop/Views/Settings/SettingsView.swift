@@ -23,6 +23,7 @@ struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var scheduleManager: ScheduledBackupManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var cleanerService: CleanerService
     public var updater: SPUUpdater? = nil
     @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
@@ -144,7 +145,7 @@ struct SettingsView: View {
         case .Antivirus:
             AntivirusTabView(viewModel: antivirusManager)
         case .Cleaner:
-            CleanerTabView()
+            CleanerTabView(cleanerService: cleanerService)
  
         }
     }
