@@ -101,6 +101,8 @@
 		AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
 		AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA919D752E4FCC0600287FAE /* CleanupView.swift */; };
+		AA93BEBA2E720E8200F12334 /* CleaningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA93BEB92E720E8200F12334 /* CleaningView.swift */; };
+		AA93BEBE2E72128800F12334 /* LockedFeatureCleanerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA93BEBD2E72128800F12334 /* LockedFeatureCleanerView.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
 		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
@@ -529,6 +531,8 @@
 		AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanerTabView.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
 		AA919D752E4FCC0600287FAE /* CleanupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupView.swift; sourceTree = "<group>"; };
+		AA93BEB92E720E8200F12334 /* CleaningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleaningView.swift; sourceTree = "<group>"; };
+		AA93BEBD2E72128800F12334 /* LockedFeatureCleanerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedFeatureCleanerView.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
 		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
@@ -893,6 +897,8 @@
 				AA919D752E4FCC0600287FAE /* CleanupView.swift */,
 				AA13E0392E62557A00DD47CB /* CleanerRowComponents.swift */,
 				AA13E03B2E6255C400DD47CB /* StorageMeterView.swift */,
+				AA93BEB92E720E8200F12334 /* CleaningView.swift */,
+				AA93BEBD2E72128800F12334 /* LockedFeatureCleanerView.swift */,
 			);
 			path = Cleaner;
 			sourceTree = "<group>";
@@ -1904,6 +1910,7 @@
 				AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */,
 				AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */,
 				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
+				AA93BEBA2E720E8200F12334 /* CleaningView.swift in Sources */,
 				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
 				AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
@@ -1973,6 +1980,7 @@
 				E1880B972AA6111B001FC171 /* SettingsView.swift in Sources */,
 				E18300B02AA2395100AD023C /* FileExtension.swift in Sources */,
 				E17C84B62AB276C000A58414 /* OnboardingSlide3View.swift in Sources */,
+				AA93BEBE2E72128800F12334 /* LockedFeatureCleanerView.swift in Sources */,
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
