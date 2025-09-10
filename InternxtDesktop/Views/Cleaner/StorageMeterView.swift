@@ -12,10 +12,20 @@ import SwiftUI
 struct StorageMeterView: View {
     let scanResult: ScanResult?
     let selectedCategories: Set<String>
+    
+    @State private var systemTotalCapacity: Double = 0.0
 
     var totalStorage: Double {
         guard let result = scanResult else { return 0 }
         return Double(result.totalSize) / (1024 * 1024 * 1024)
+    }
+
+    var percentageToSave: Int {
+        guard let result = scanResult, systemTotalCapacity > 0 else { return 0 }
+        let deletableInGB = Double(result.totalSize) / (1024 * 1024 * 1024)
+        let totalSystemInGB = systemTotalCapacity / (1024 * 1024 * 1024)
+        let percentage = (deletableInGB / totalSystemInGB) * 100
+        return Int(percentage.rounded())
     }
 
     var categories: [StorageCategory] {
@@ -40,11 +50,11 @@ struct StorageMeterView: View {
         ZStack {
             VStack(spacing: 30) {
                 AppText("Select a category to\npreview content")
-                     .font(.BaseRegular)
-                     .foregroundColor(.DefaultText)
-                     .lineLimit(2)
-                     .truncationMode(.tail)
-                     .multilineTextAlignment(.center)
+                    .font(.BaseRegular)
+                    .foregroundColor(.DefaultText)
+                    .lineLimit(2)
+                    .truncationMode(.tail)
+                    .multilineTextAlignment(.center)
 
                 ZStack {
                     if categories.isEmpty {
@@ -70,7 +80,7 @@ struct StorageMeterView: View {
                             .foregroundColor(.DefaultTextStrong)
 
                         if scanResult != nil {
-                            AppText("Save up to 7% of your space")
+                            AppText("Save up to \(percentageToSave)% of your space")
                                 .font(.XSRegular)
                                 .foregroundColor(.DefaultText)
                                 .multilineTextAlignment(.center)
@@ -86,6 +96,9 @@ struct StorageMeterView: View {
                 .padding(.horizontal, 40)
             }
         }
+        .onAppear {
+            getSystemDiskSpace()
+        }
     }
 
     private func getSegmentAngles(for index: Int) -> (start: CGFloat, end: CGFloat) {
@@ -94,22 +107,18 @@ struct StorageMeterView: View {
         let totalValue = categories.reduce(0) { $0 + $1.value }
         guard totalValue > 0 else { return (0, 0) }
         
-        // Configuración ajustada para gaps mínimos como en Figma
-        let gapSize: CGFloat = 0.008 // Gap muy pequeño para coincidir con el diseño de Figma
+        let gapSize: CGFloat = 0.008
         let totalGaps = CGFloat(categories.count - 1) * gapSize
         let availableSpace: CGFloat = 0.5 - totalGaps
         
-        // Calcular tamaño mínimo para segmentos muy pequeños
-        let minSegmentSize = availableSpace / CGFloat(categories.count) * 0.15 // 15% del tamaño promedio
+        let minSegmentSize = availableSpace / CGFloat(categories.count) * 0.15
         
-        // Determinar valores ajustados para cada categoría
         var adjustedValues: [Double] = []
         var totalAdjusted: Double = 0
         
         for category in categories {
             let proportionalSize = CGFloat(category.value / totalValue) * availableSpace
             if proportionalSize < minSegmentSize {
-                // Asignar tamaño mínimo a segmentos muy pequeños
                 let adjustedValue = Double(minSegmentSize / availableSpace) * totalValue
                 adjustedValues.append(adjustedValue)
                 totalAdjusted += adjustedValue
@@ -119,7 +128,6 @@ struct StorageMeterView: View {
             }
         }
         
-        // Calcular posición del segmento actual
         var accumulatedBefore: Double = 0
         for i in 0..<index {
             accumulatedBefore += adjustedValues[i]
@@ -127,17 +135,27 @@ struct StorageMeterView: View {
         
         let currentSegmentValue = adjustedValues[index]
         
-        // Calcular posiciones sin gaps primero
         let startPercent = CGFloat(accumulatedBefore / totalAdjusted) * availableSpace
         let endPercent = CGFloat((accumulatedBefore + currentSegmentValue) / totalAdjusted) * availableSpace
         
-        // Aplicar gaps acumulados correctamente
         let gapsBeforeSegment = CGFloat(index) * gapSize
         
         return (
             start: startPercent + gapsBeforeSegment,
             end: endPercent + gapsBeforeSegment
         )
+    }
+    
+    func getSystemDiskSpace() {
+        let rootURL = URL(fileURLWithPath: "/")
+        do {
+            let values = try rootURL.resourceValues(forKeys: [.volumeTotalCapacityKey])
+            if let total = values.volumeTotalCapacity {
+                self.systemTotalCapacity = Double(total)
+            }
+        } catch {
+            print("Error retrieving disk space: \(error)")
+        }
     }
 }
 

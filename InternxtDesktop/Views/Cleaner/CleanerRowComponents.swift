@@ -10,21 +10,26 @@ import SwiftUI
 
 struct CategoryRow: View {
     let category: CleanupCategory
-    let isSelected: Bool
+    let checkboxState: CheckboxState
     let isHighlighted: Bool
-    let onToggle: (Bool) -> Void
+    let onToggle: (CheckboxState) -> Void
     let onTap: () -> Void
     
     var body: some View {
         HStack(spacing: 12) {
-            Toggle("", isOn: Binding(
-                get: { isSelected },
-                set: { newValue in
-                    onToggle(newValue)
+            Button(action: {
+                let nextState: CheckboxState = switch checkboxState {
+                case .unchecked: .checked
+                case .checked: .unchecked
+                case .mixed: .checked
                 }
-            ))
-            .toggleStyle(CheckboxToggleStyle())
-            .labelsHidden()
+                onToggle(nextState)
+            }) {
+                CheckboxView(state: checkboxState)
+            }
+            .buttonStyle(.plain)
+            .frame(minWidth: 24, minHeight: 24)
+            .contentShape(Rectangle())
                         
             AppText(category.name)
                 .font(.BaseRegular)
@@ -65,19 +70,24 @@ struct CategoryRow: View {
 
 struct FileRow: View {
     let file: CleanupFile
-    let isSelected: Bool
-    let onToggle: (Bool) -> Void
+    let checkboxState: CheckboxState
+    let onToggle: (CheckboxState) -> Void
     
     var body: some View {
         HStack(spacing: 12) {
-            Toggle("", isOn: Binding(
-                get: { isSelected },
-                set: { newValue in
-                    onToggle(newValue)
+            Button(action: {
+                let nextState: CheckboxState = switch checkboxState {
+                case .unchecked: .checked
+                case .checked: .unchecked
+                case .mixed: .checked
                 }
-            ))
-            .toggleStyle(CheckboxToggleStyle())
-            .labelsHidden()
+                onToggle(nextState)
+            }) {
+                CheckboxView(state: checkboxState)
+            }
+            .buttonStyle(.plain)
+            .frame(minWidth: 24, minHeight: 24)
+            .contentShape(Rectangle())
             
             Text(file.name)
                 .font(.BaseRegular)
@@ -103,3 +113,56 @@ struct FileRow: View {
         return formatter.string(fromByteCount: bytes)
     }
 }
+
+enum CheckboxState {
+    case unchecked
+    case checked
+    case mixed
+}
+
+struct CheckboxView: View {
+    let state: CheckboxState
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color.clear)
+                .frame(width: 16, height: 16)
+            
+            RoundedRectangle(cornerRadius: 3)
+                .fill(backgroundColor)
+                .frame(width: 16, height: 16)
+            
+            RoundedRectangle(cornerRadius: 3)
+                .stroke(borderColor, lineWidth: 1)
+                .frame(width: 16, height: 16)
+            
+            if state == .checked {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+            } else if state == .mixed {
+                Rectangle()
+                    .fill(.white)
+                    .frame(width: 8, height: 2)
+            }
+        }
+        .frame(minWidth: 20, minHeight: 20)
+        .contentShape(Rectangle())
+    }
+    
+    private var backgroundColor: Color {
+        switch state {
+        case .unchecked: return .clear
+        case .checked, .mixed: return .accentColor
+        }
+    }
+    
+    private var borderColor: Color {
+        switch state {
+        case .unchecked: return .secondary
+        case .checked, .mixed: return .accentColor
+        }
+    }
+}
+
