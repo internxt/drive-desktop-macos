@@ -49,7 +49,25 @@
 "BACKUP_STOP_BACKUP" = "Stop backup";
 "BACKUP_DOWNLOAD" = "Download";
 "BACKUP_DOWNLOAD_STOP" = "Stop download";
-"BACKUP_BROWSE_FILES" = "Browse files";
+
+// Cleaner Service Errors
+"CLEANER_ERROR_CONNECTION_FAILED" = "Could not connect to cleaning service";
+"CLEANER_ERROR_HELPER_NOT_AVAILABLE" = "Helper service is not available";
+"CLEANER_ERROR_SCAN_FAILED" = "Error during scan: %@";
+"CLEANER_ERROR_CLEANUP_FAILED" = "Error during cleanup: %@";
+"CLEANER_ERROR_OPERATION_NOT_FOUND" = "Operation not found";
+"CLEANER_ERROR_INVALID_DATA" = "Invalid data received";
+"CLEANER_ERROR_CONNECTION_TIMEOUT" = "Connection timeout";
+
+// Cleaner Error Messages
+"CLEANER_ERROR_PERMISSION_DENIED" = "Permission denied for: %@";
+"CLEANER_ERROR_PATH_NOT_FOUND" = "Path not found: %@";
+"CLEANER_ERROR_FILE_IN_USE" = "File in use: %@";
+"CLEANER_ERROR_INTERNAL_ERROR" = "Internal error: %@";
+"CLEANER_ERROR_OPERATION_CANCELLED" = "Operation was cancelled";
+"CLEANER_ERROR_INVALID_DATA_MESSAGE" = "Invalid data: %@";
+"CLEANER_ERROR_CONFIGURATION_ERROR" = "Configuration error: %@";
+
 "BACKUP_SELECTED_FOLDERS" = "Selected folders";
 "BACKUP_CHANGE_FOLDERS" = "Change folders";
 "BACKUP_%@_NUMBER_OF_FOLDERS_SELECTED" = "%@ folders selected";
@@ -223,4 +241,3 @@
 "ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "Are you sure you want to cancel the current scan?";
 "ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continue Scanning";
 "ANTIVIRUS_SCAN_AGAIN" = "Scan again";
-

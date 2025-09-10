@@ -226,6 +226,20 @@
 "ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continuer l'analyse";
 "ANTIVIRUS_SCAN_AGAIN" = "Analyser à nouveau";
 
+// Cleaner Service Errors
+"CLEANER_ERROR_CONNECTION_FAILED" = "Impossible de se connecter au service de nettoyage";
+"CLEANER_ERROR_HELPER_NOT_AVAILABLE" = "Le service d'aide n'est pas disponible";
+"CLEANER_ERROR_SCAN_FAILED" = "Erreur pendant le scan: %@";
+"CLEANER_ERROR_CLEANUP_FAILED" = "Erreur pendant le nettoyage: %@";
+"CLEANER_ERROR_OPERATION_NOT_FOUND" = "Opération introuvable";
+"CLEANER_ERROR_INVALID_DATA" = "Données invalides reçues";
+"CLEANER_ERROR_CONNECTION_TIMEOUT" = "Délai de connexion expiré";
 
-
-
+// Cleaner Error Messages
+"CLEANER_ERROR_PERMISSION_DENIED" = "Permission refusée pour: %@";
+"CLEANER_ERROR_PATH_NOT_FOUND" = "Chemin non trouvé: %@";
+"CLEANER_ERROR_FILE_IN_USE" = "Fichier en cours d'utilisation: %@";
+"CLEANER_ERROR_INTERNAL_ERROR" = "Erreur interne: %@";
+"CLEANER_ERROR_OPERATION_CANCELLED" = "Opération annulée";
+"CLEANER_ERROR_INVALID_DATA_MESSAGE" = "Données invalides: %@";
+"CLEANER_ERROR_CONFIGURATION_ERROR" = "Erreur de configuration: %@";

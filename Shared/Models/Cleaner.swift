@@ -104,19 +104,19 @@ enum CleanerError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .permissionDenied(let path):
-            return "Permission denied for: \(path)"
+            return String(format: NSLocalizedString("CLEANER_ERROR_PERMISSION_DENIED", comment: "Error message for permission denied"), path)
         case .pathNotFound(let path):
-            return "Path not found: \(path)"
+            return String(format: NSLocalizedString("CLEANER_ERROR_PATH_NOT_FOUND", comment: "Error message for path not found"), path)
         case .fileInUse(let path):
-            return "File in use: \(path)"
+            return String(format: NSLocalizedString("CLEANER_ERROR_FILE_IN_USE", comment: "Error message for file in use"), path)
         case .internalError(let message):
-            return "Internal error: \(message)"
+            return String(format: NSLocalizedString("CLEANER_ERROR_INTERNAL_ERROR", comment: "Error message for internal error"), message)
         case .operationCancelled:
-            return "Operation was cancelled"
+            return NSLocalizedString("CLEANER_ERROR_OPERATION_CANCELLED", comment: "Error message for operation cancelled")
         case .invalidData(let message):
-            return "Invalid data: \(message)"
+            return String(format: NSLocalizedString("CLEANER_ERROR_INVALID_DATA_MESSAGE", comment: "Error message for invalid data"), message)
         case .configurationError(let message):
-            return "Configuration error: \(message)"
+            return String(format: NSLocalizedString("CLEANER_ERROR_CONFIGURATION_ERROR", comment: "Error message for configuration error"), message)
         }
     }
 }
@@ -137,7 +137,7 @@ struct CleanerCategories {
         ]
     }
     
-    /// App cache category - Requirement 1
+ 
     static func appCacheCategory() -> CleanupCategory {
         return CleanupCategory(
             id: "app_cache",
@@ -154,7 +154,7 @@ struct CleanerCategories {
         )
     }
     
-    /// Log files category - Requirement 1
+ 
     static func logFilesCategory() -> CleanupCategory {
         return CleanupCategory(
             id: "log_files",
@@ -171,7 +171,7 @@ struct CleanerCategories {
         )
     }
     
-    /// Trash category - Requirement 1
+ 
     static func trashCategory() -> CleanupCategory {
         return CleanupCategory(
             id: "trash",
@@ -200,7 +200,7 @@ struct CleanerCategories {
         )
     }
     
-    /// Web storage category - Requirement 1
+  
     static func webStorageCategory() -> CleanupCategory {
         return CleanupCategory(
             id: "web_storage",
@@ -217,7 +217,7 @@ struct CleanerCategories {
         )
     }
     
-    /// Web cache category - Requirement 1
+
     static func webCacheCategory() -> CleanupCategory {
         let homeDirectory = NSHomeDirectory()
         
@@ -269,4 +269,73 @@ enum CleanupType : Codable {
 
 struct CleanupData : Codable {
     let type: CleanupType
+}
+
+
+enum CleanerServiceError: LocalizedError {
+    case connectionFailed
+    case helperNotAvailable
+    case scanFailed(underlying: Error)
+    case cleanupFailed(underlying: Error)
+    case operationNotFound
+    case invalidData
+    case connectionTimeout
+    
+    var errorDescription: String? {
+        switch self {
+        case .connectionFailed:
+            return NSLocalizedString("CLEANER_ERROR_CONNECTION_FAILED", comment: "Error message for connection failed")
+        case .helperNotAvailable:
+            return NSLocalizedString("CLEANER_ERROR_HELPER_NOT_AVAILABLE", comment: "Error message for helper not available")
+        case .scanFailed(let error):
+            return String(format: NSLocalizedString("CLEANER_ERROR_SCAN_FAILED", comment: "Error message for scan failed"), error.localizedDescription)
+        case .cleanupFailed(let error):
+            return String(format: NSLocalizedString("CLEANER_ERROR_CLEANUP_FAILED", comment: "Error message for cleanup failed"), error.localizedDescription)
+        case .operationNotFound:
+            return NSLocalizedString("CLEANER_ERROR_OPERATION_NOT_FOUND", comment: "Error message for operation not found")
+        case .invalidData:
+            return NSLocalizedString("CLEANER_ERROR_INVALID_DATA", comment: "Error message for invalid data")
+        case .connectionTimeout:
+            return NSLocalizedString("CLEANER_ERROR_CONNECTION_TIMEOUT", comment: "Error message for connection timeout")
+        }
+    }
+}
+
+enum CleanerState: Equatable {
+    case idle
+    case connecting
+    case scanning(progress: Double?)
+    case cleaning(progress: CleanupProgress?)
+    case completed
+    case error(String)
+    case cancelling
+    case cancelled
+    
+    var isLoading: Bool {
+        switch self {
+        case .connecting, .scanning, .cleaning:
+            return true
+        default:
+            return false
+        }
+    }
+    static func == (lhs: CleanerState, rhs: CleanerState) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle), (.connecting, .connecting), (.completed, .completed):
+            return true
+        case let (.scanning(lProgress), .scanning(rProgress)):
+            return lProgress == rProgress
+        case let (.cleaning(lProgress), .cleaning(rProgress)):
+            if let lProg = lProgress, let rProg = rProgress {
+                return lProg.percentage == rProg.percentage &&
+                       lProg.processedFiles == rProg.processedFiles &&
+                       lProg.totalFiles == rProg.totalFiles
+            }
+            return lProgress == nil && rProgress == nil
+        case let (.error(lMessage), .error(rMessage)):
+            return lMessage == rMessage
+        default:
+            return false
+        }
+    }
 }

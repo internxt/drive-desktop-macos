@@ -227,6 +227,20 @@
 "ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continuar escaneando";
 "ANTIVIRUS_SCAN_AGAIN" = "Escanear de nuevo";
 
+// Cleaner Service Errors
+"CLEANER_ERROR_CONNECTION_FAILED" = "No se pudo conectar al servicio de limpieza";
+"CLEANER_ERROR_HELPER_NOT_AVAILABLE" = "El servicio auxiliar no está disponible";
+"CLEANER_ERROR_SCAN_FAILED" = "Error durante el escaneo: %@";
+"CLEANER_ERROR_CLEANUP_FAILED" = "Error durante la limpieza: %@";
+"CLEANER_ERROR_OPERATION_NOT_FOUND" = "Operación no encontrada";
+"CLEANER_ERROR_INVALID_DATA" = "Datos inválidos recibidos";
+"CLEANER_ERROR_CONNECTION_TIMEOUT" = "Tiempo de espera agotado";
 
-
-
+// Cleaner Error Messages
+"CLEANER_ERROR_PERMISSION_DENIED" = "Permiso denegado para: %@";
+"CLEANER_ERROR_PATH_NOT_FOUND" = "Ruta no encontrada: %@";
+"CLEANER_ERROR_FILE_IN_USE" = "Archivo en uso: %@";
+"CLEANER_ERROR_INTERNAL_ERROR" = "Error interno: %@";
+"CLEANER_ERROR_OPERATION_CANCELLED" = "Operación cancelada";
+"CLEANER_ERROR_INVALID_DATA_MESSAGE" = "Datos inválidos: %@";
+"CLEANER_ERROR_CONFIGURATION_ERROR" = "Error de configuración: %@";
