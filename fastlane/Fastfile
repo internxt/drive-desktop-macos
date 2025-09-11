@@ -15,12 +15,13 @@ platform :mac do
   desc "Configure provisioning profiles"
   lane :setup_dev_provisioning_profiles do
     match(
-      type: "developer_id", 
+      type: "developer_id",
       readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.cleaner.helper"
       ],
     )
 
@@ -57,8 +58,9 @@ platform :mac do
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
-      ]
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.cleaner.helper"
+      ],
     )
   
     
@@ -156,7 +158,8 @@ platform :mac do
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.cleaner.helper"
       ],
     )
 
