@@ -5,29 +5,40 @@
 //  Created by Patricio Tovar on 29/8/25.
 //
 
-import Foundation
-
+import SwiftUI
+import OSLog
+import Combine
 
 class CleanerService: ObservableObject {
-    // MARK: - Dependencies
-    private let connectionManager: XPCConnectionManaging
-    private let serviceManager: ServiceManaging
-    private let dataManager = XPCDataManager()
     
     // MARK: - Published Properties
-    @Published var state: XPCManagerState = .idle
+    @Published var state: CleanerState = .idle
     @Published var scanResult: ScanResult?
     @Published var currentFiles: [CleanupFile] = []
-    @Published var currentCleaningProgress: CleanupProgress?
     @Published var cleanupResult: [CleanupResult] = []
+    @Published var currentCleaningProgress: CleanupProgress?
+    @Published var isCancelling: Bool = false
+    @Published var viewState: CleanerViewState = .scanning
     
-    // MARK: - Private Properties
-    private var currentConnection: NSXPCConnection?
-    private let helperServiceName = "internxt.InternxtDesktop.cleaner.helper"
+    private let connectionService: XPCConnectionService
+    private let helperService: HelperManagementService
+    private let scanService: ScanOperationService
+    private let cleanupService: CleanupOperationService
+    
+    private var cancellables = Set<AnyCancellable>()
+    private var _cleanupViewModel: CleanupViewModel?
     
     // MARK: - Computed Properties
+    @MainActor
+    var cleanupViewModel: CleanupViewModel {
+        if _cleanupViewModel == nil {
+            _cleanupViewModel = CleanupViewModel(cleanerService: self)
+        }
+        return _cleanupViewModel!
+    }
+    
     var isConnected: Bool {
-        currentConnection != nil
+        connectionService.isConnected
     }
     
     var isScanning: Bool {
@@ -45,433 +56,296 @@ class CleanerService: ObservableObject {
         return nil
     }
     
+    var canCancelOperation: Bool {
+        return isCleaning || isScanning
+    }
+    
     // MARK: - Initialization
-    init(connectionManager: XPCConnectionManaging? = nil,
-         serviceManager: ServiceManaging? = nil) {
-        self.connectionManager = connectionManager ?? XPCCleanerConnectionManager(serviceName: helperServiceName)
-        self.serviceManager = serviceManager ?? HelperServiceManager(serviceName: helperServiceName)
+    init(
+        connectionService: XPCConnectionService? = nil,
+        helperService: HelperManagementService? = nil,
+        scanService: ScanOperationService? = nil,
+        cleanupService: CleanupOperationService? = nil
+    ) {
+        self.connectionService = connectionService ?? XPCConnectionService()
+        self.helperService = helperService ?? HelperManagementService()
+        self.scanService = scanService ?? ScanOperationService(connectionService: self.connectionService)
+        self.cleanupService = cleanupService ?? CleanupOperationService(connectionService: self.connectionService)
+        
+        setupBindings()
     }
     
-
-
+    deinit {
+        cleanup()
+    }
     
-    @MainActor
-    func cleanupCategoriesWithProgressPolling(_ categories: [CleanupCategory],
-                                           options: CleanupOptions = .default,
-                                           progressHandler: @escaping @Sendable (CleanupProgress) async -> Void) async throws -> [CleanupResult] {
-        
-        state = .cleaning
-        
-        do {
-            try await establishConnection()
-            
-            guard let helper = currentConnection?.remoteObjectProxy as? CleanerHelperXPCProtocol else {
-                throw XPCManagerError.noRemoteProxy
+    private func cleanup() {
+        connectionService.invalidateConnection()
+    }
+    
+    private func setupBindings() {
+        // View state observers
+        $currentCleaningProgress
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] progress in
+                guard let self = self else { return }
+                if progress != nil && self.viewState != .cleaning {
+                    self.viewState = .cleaning
+                }
             }
-            
-            let results = try await performCleanupWithPolling(helper: helper, categories: categories, options: options, progressHandler: progressHandler)
-            self.cleanupResult = results
-            state = .idle
-            return results
-            
-        } catch {
-            state = .error(error.localizedDescription)
-            throw error
-        }
+            .store(in: &cancellables)
+        
+        $cleanupResult
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] results in
+                guard let self = self else { return }
+                if !results.isEmpty {
+                    self.viewState = .results
+                }
+            }
+            .store(in: &cancellables)
     }
     
-    @MainActor
+    // MARK: - View State Management
+    func resetCleanupState() {
+        _cleanupViewModel = nil
+        viewState = .scanning
+    }
+    
+    func setViewState(_ newState: CleanerViewState) {
+        viewState = newState
+    }
+    
+    func startCleaning() {
+        viewState = .cleaning
+    }
+    
+    func showResults() {
+        viewState = .results
+    }
+    
+    func backToScanning() {
+        viewState = .scanning
+        cleanupResult = []
+        currentCleaningProgress = nil
+    }
+    
     func scanCategories() async {
-        state = .scanning
-        
-        do {
-            try await establishConnection()
-            let result = try await performScan()
+        await executeOperation(newState: .scanning(progress: nil)) {
+            try await connectionService.ensureConnection()
+            let result = try await scanService.performScan()
+            await MainActor.run {
+                self.scanResult = result
+            }
             
-            scanResult = result
-            state = .idle
-                        
-        } catch {
-            state = .error(error.localizedDescription)
         }
     }
     
-    
-    @MainActor
-    func cleanupWithSpecificFiles(_ cleanupData: CleanupData,
-                                 options: CleanupOptions = .default,
-                                 progressHandler: @escaping @Sendable (CleanupProgress) async -> Void) async throws -> [CleanupResult] {
-        
-        state = .cleaning
-        
-        do {
-            try await establishConnection()
-            
-            guard let helper = currentConnection?.remoteObjectProxy as? CleanerHelperXPCProtocol else {
-                throw XPCManagerError.noRemoteProxy
-            }
-            
-            let cleanupDataEncoded = try dataManager.encode(cleanupData)
-            let optionsData = try dataManager.encode(options)
-            
-            let operationId = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-                helper.startCleanupWithSpecificFilesProgress(cleanupData: cleanupDataEncoded,
-                                                            optionsData: optionsData) { operationId, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    continuation.resume(returning: operationId)
-                }
-            }
-            
-            await pollProgress(helper: helper, operationId: operationId) { progress in
-                await MainActor.run {
-                     self.currentCleaningProgress = progress
-                     print("📊 Progress Update - Files: \(progress.processedFiles)/\(progress.totalFiles), Freed: \(progress.freedSpace) bytes, %: \(progress.percentage)")
-                 }
-                await progressHandler(progress)
-            }
-            
-            let results = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[CleanupResult], Error>) in
-                helper.getCleanupResult(operationId: operationId) { data, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    
-                    guard let data = data else {
-                        continuation.resume(throwing: XPCManagerError.decodingFailed)
-                        return
-                    }
-                    
-                    do {
-                        let results = try self.dataManager.decode([CleanupResult].self, from: data)
-                        self.cleanupResult = results
-                        print("Polling cleanup completed: \(results)")
-                        continuation.resume(returning: results)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-            
-            state = .idle
-            return results
-            
-        } catch {
-            state = .error(error.localizedDescription)
-            throw error
-        }
-    }
-    
-    @MainActor
     func loadFilesForCategory(_ category: CleanupCategory) async {
-        do {
-            let files = try await getFilesForCategory(category)
-            currentFiles = files
-            print("Loaded \(files.count) files for category: \(category.name)")
-        } catch {
-            state = .error("Error loading files: \(error.localizedDescription)")
+        await executeOperation(newState: .idle) {
+            try await connectionService.ensureConnection()
+            let files = try await scanService.getFilesForCategory(category)
+            
+           
+            await MainActor.run {
+                self.currentFiles = files
+            }
         }
+    }
+    
+    func cleanupCategories(
+        _ categories: [CleanupCategory],
+        options: CleanupOptions = .default,
+        progressHandler: @escaping @Sendable (CleanupProgress) async -> Void
+    ) async throws -> [CleanupResult] {
+        
+        return try await executeAsyncOperation(newState: .cleaning(progress: nil)) {
+            try await connectionService.ensureConnection()
+            
+            let results = try await cleanupService.performCleanup(
+                categories: categories,
+                options: options,
+                progressHandler: { progress in
+                    await MainActor.run {
+                        self.currentCleaningProgress = progress
+                    }
+                    await progressHandler(progress)
+                }
+            )
+            await MainActor.run {
+                self.cleanupResult = results
+            }
+            
+            return results
+        }
+    }
+    
+    func cleanupSpecificFiles(
+        _ cleanupData: CleanupData,
+        options: CleanupOptions = .default,
+        progressHandler: @escaping @Sendable (CleanupProgress) async -> Void
+    ) async throws -> [CleanupResult] {
+        
+        return try await executeAsyncOperation(newState: .cleaning(progress: nil)) {
+            try await connectionService.ensureConnection()
+            
+            let results = try await cleanupService.performSpecificFilesCleanup(
+                cleanupData: cleanupData,
+                options: options,
+                progressHandler: { progress in
+                    await MainActor.run {
+                        self.currentCleaningProgress = progress
+                    }
+                    await progressHandler(progress)
+                }
+            )
+            
+            await MainActor.run {
+                self.cleanupResult = results
+            }
+            return results
+        }
+    }
+    
+    func cancelCurrentOperation() async {
+        guard isCleaning || isScanning else { return }
+        
+        await updateState(.cancelling)
+        isCancelling = true
+        
+        await cleanupService.cancelCurrentOperation()
+        
+        await updateState(.cancelled)
+        currentCleaningProgress = nil
+        isCancelling = false
     }
     
     func reinstallHelper() async {
-        do {
-            try await uninstallHelper()
-            try await Task.sleep(nanoseconds: 2_000_000_000)
+        await executeOperation(newState: .connecting) {
+            await helperService.reinstallHelper()
             
-            try serviceManager.registerHelper()
-            print("✅ Helper re-registered successfully")
-            
-            if serviceManager.getHelperStatus() == .enabled {
+            if getHelperStatus() == .enabled {
                 try await Task.sleep(nanoseconds: 2_000_000_000)
                 await scanCategories()
             }
-            
-        } catch {
-            state = .error("Reinstall failed: \(error.localizedDescription)")
         }
     }
     
     func uninstallHelper() async throws {
-        print("🚫 Uninstalling helper daemon...")
+        try await helperService.uninstallHelper()
+        connectionService.invalidateConnection()
+    }
+    
+    func getHelperStatus() -> HelperStatusType {
+        return helperService.status
+    }
+    
+    func tryRegisterHelper() async -> Bool {
+        return await helperService.tryRegisterHelper()
+    }
+    
+    func openSystemSettings() {
+        helperService.openSystemSettings()
+    }
+    
+    // MARK: - Private Helpers - Operation Management
+    private func executeOperation<T>(
+        newState: CleanerState,
+        operation: () async throws -> T
+    ) async {
+        await updateState(newState)
         
         do {
-            try serviceManager.unregisterHelper()
-            print("✅ Helper unregistered successfully")
+            _ = try await operation()
+            await updateState(.completed)
         } catch {
-            print("⚠️ Unregistration failed (might not be registered): \(error)")
+            await handleError(error)
+        }
+    }
+    
+    private func executeAsyncOperation<T>(
+        newState: CleanerState,
+        operation: () async throws -> T
+    ) async throws -> T {
+        await updateState(newState)
+        
+        do {
+            let result = try await operation()
+            await updateState(.completed)
+            return result
+        } catch {
+            await handleError(error)
             throw error
         }
     }
+    @MainActor
+    private func updateState(_ newState: CleanerState) async {
+        
+        state = newState
+    }
     
-    deinit {
-        connectionManager.invalidateConnection()
+    private func handleError(_ error: Error) async {
+        let errorMessage: String
+        
+        switch error {
+        case let cleanerError as CleanerServiceError:
+            errorMessage = cleanerError.localizedDescription
+        default:
+            errorMessage = error.localizedDescription
+        }
+        
+        await updateState(.error(errorMessage))
     }
 }
 
-// MARK: - Private Methods
-private extension CleanerService {
-    func establishConnection() async throws {
-        // Verificar si el helper está registrado
-        let helperStatus = serviceManager.getHelperStatus()
-        if helperStatus != .enabled {
-            print("Helper not enabled, status: \(helperStatus)")
-            try serviceManager.registerHelper()
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-        }else {
-           try serviceManager.unregisterHelper()
-            try await Task.sleep(nanoseconds: 2_000_000_000) //
-            try serviceManager.registerHelper()
-        }
-        
-        guard let connection = connectionManager.createConnection() else {
-            throw XPCManagerError.connectionFailed
-        }
-        
-        currentConnection = connection
-        
-        // Verificar que la conexión funciona
-        try await verifyConnection()
-        print("✅ XPC Connection established successfully")
-    }
-    
-    func verifyConnection() async throws {
-        guard let helper = currentConnection?.remoteObjectProxy as? CleanerHelperXPCProtocol else {
-            throw XPCManagerError.noRemoteProxy
-        }
-        
-        // Test connection with a simple operation
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            helper.cancelOperation {
-                continuation.resume()
-            }
-        }
-    }
-    @MainActor
-    func performScan() async throws -> ScanResult {
-        guard let helper = currentConnection?.remoteObjectProxy as? CleanerHelperXPCProtocol else {
-            throw XPCManagerError.noRemoteProxy
-        }
-        
-        let categories = CleanerCategories.getAllCategories()
-        let options = CleanupOptions.default
-        
-        let categoriesData = try dataManager.encode(categories)
-        let optionsData = try dataManager.encode(options)
-        
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<ScanResult, Error>) in
-            helper.scanCategories(categoriesData: categoriesData,
-                                 optionsData: optionsData) { [weak self] data, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                
-                guard let data = data else {
-                    continuation.resume(throwing: XPCManagerError.decodingFailed)
-                    return
-                }
-                
-                do {
-                    let scanResult = try self?.dataManager.decode(ScanResult.self, from: data)
-                    guard let result = scanResult else {
-                        continuation.resume(throwing: XPCManagerError.decodingFailed)
-                        return
-                    }
-                    print("Scan Result: \(result)")
-                    continuation.resume(returning: result)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-    
 
-    
-
-    func performCleanupWithPolling(helper: CleanerHelperXPCProtocol,
-                                   categories: [CleanupCategory],
-                                   options: CleanupOptions,
-                                   progressHandler: @escaping @Sendable (CleanupProgress) async -> Void) async throws -> [CleanupResult] {
+extension CleanerService {
+    enum HelperStatusType: Equatable {
+        case notRegistered     // rawValue: 0
+        case enabled           // rawValue: 1
+        case requiresApproval  // rawValue: 2
+        case notFound          // rawValue: 3
+        case unknown(Int)
         
-        let categoriesData = try dataManager.encode(categories)
-        let optionsData = try dataManager.encode(options)
-        
-        let operationId = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-            helper.startCleanupWithProgress(categoriesData: categoriesData,
-                                           optionsData: optionsData) { operationId, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                continuation.resume(returning: operationId)
+        init(rawValue: Int) {
+            switch rawValue {
+            case 0: self = .notRegistered
+            case 1: self = .enabled
+            case 2: self = .requiresApproval
+            case 3: self = .notFound
+            default: self = .unknown(rawValue)
             }
         }
         
-        print("Started cleanup operation with ID: \(operationId)")
-        
-        
-        await pollProgress(helper: helper, operationId: operationId) { progress in
-            await MainActor.run {
-                self.currentCleaningProgress = progress
+        var userMessage: String {
+            switch self {
+            case .enabled:
+                return "Cleaning service is ready"
+            case .requiresApproval:
+                return "Please approve the cleaning service in System Settings > Privacy & Security > Login Items"
+            case .notRegistered:
+                return "Cleaning service needs to be registered"
+            case .notFound:
+                return "Cleaning service not found"
+            case .unknown(let code):
+                return "Unknown cleaning service status (\(code))"
             }
-            await progressHandler(progress)
         }
         
+        var shouldShowSystemSettings: Bool {
+            self == .requiresApproval
+        }
         
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[CleanupResult], Error>) in
-            helper.getCleanupResult(operationId: operationId) { data, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                
-                guard let data = data else {
-                    continuation.resume(throwing: XPCManagerError.decodingFailed)
-                    return
-                }
-                
-                do {
-                    let results = try self.dataManager.decode([CleanupResult].self, from: data)
-                    print("Polling cleanup completed: \(results)")
-                    continuation.resume(returning: results)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
+        var isError: Bool {
+            self != .enabled
+        }
+        
+        var needsUserAction: Bool {
+            self == .requiresApproval
+        }
+        
+        var canAutoRegister: Bool {
+            self == .notRegistered
         }
     }
-    
-    func pollProgress(helper: CleanerHelperXPCProtocol,
-                     operationId: String,
-                     progressHandler: @escaping @Sendable (CleanupProgress) async -> Void) async {
-        var isCompleted = false
-        var lastProgressPercentage: Double = -1
-        var consecutiveNoProgress = 0
-        let maxConsecutiveNoProgress = 20 
-        
-        print("🔍 Starting progress polling for operation: \(operationId)")
-        
-        while !isCompleted {
-            do {
-                let progressData = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data?, Error>) in
-                    helper.getCleanupProgress(operationId: operationId) { data, error in
-                        if let error = error {
-                            continuation.resume(throwing: error)
-                            return
-                        }
-                        continuation.resume(returning: data)
-                    }
-                }
-                
-                if let data = progressData {
-                    let progress = try dataManager.decode(CleanupProgress.self, from: data)
-                    
-                    await progressHandler(progress)
-                    
-                    print("📊 Progress: \(progress.percentage)% - \(progress.currentFile)")
-                    
-                    if progress.percentage != lastProgressPercentage {
-                        consecutiveNoProgress = 0
-                        lastProgressPercentage = progress.percentage
-                    } else {
-                        consecutiveNoProgress += 1
-                    }
-                    
-                    if progress.percentage >= 100.0 {
-                        print("✅ Progress reached 100%, waiting for final results...")
-                        try await Task.sleep(nanoseconds: 2_000_000_000)
-                        break
-                    }
-                    
-                } else {
-                    print("📊 No progress data available yet...")
-                    consecutiveNoProgress += 1
-                }
-                
-                let resultData = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data?, Error>) in
-                    helper.getCleanupResult(operationId: operationId) { data, error in
-                        if let error = error {
-                            if error.localizedDescription.contains("not found") {
-                                continuation.resume(throwing: error)
-                                return
-                            }
-                            continuation.resume(returning: nil)
-                            return
-                        }
-                        continuation.resume(returning: data)
-                    }
-                }
-                
-                if resultData != nil {
-                    print("✅ Operation \(operationId) completed - results found")
-                    isCompleted = true
-                    break
-                }
-                
-                if consecutiveNoProgress >= maxConsecutiveNoProgress {
-                    print("⚠️ No progress for too long, assuming completion...")
-                    isCompleted = true
-                    break
-                }
-                
-           
-                try await Task.sleep(nanoseconds: 500_000_000)
-                
-            } catch {
-                print("❌ Error during polling: \(error)")
-                
-              
-                if error.localizedDescription.contains("not found") {
-                    print("❌ Operation not found, stopping polling")
-                    isCompleted = true
-                    break
-                }
-                
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-            }
-        }
-        
-        print("🏁 Polling completed for operation: \(operationId)")
-    }
-    
-    func getFilesForCategory(_ category: CleanupCategory,
-                            options: CleanupOptions = .default) async throws -> [CleanupFile] {
-        guard let helper = currentConnection?.remoteObjectProxy as? CleanerHelperXPCProtocol else {
-            throw XPCManagerError.noRemoteProxy
-        }
-        
-        let categoryData = try dataManager.encode(category)
-        let optionsData = try dataManager.encode(options)
-        
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[CleanupFile], Error>) in
-            helper.getFilesForCategory(categoryData: categoryData,
-                                     optionsData: optionsData) { [weak self] data, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                
-                guard let data = data else {
-                    continuation.resume(throwing: CleanerError.invalidData("No data received"))
-                    return
-                }
-                
-                do {
-                    let files = try self?.dataManager.decode([CleanupFile].self, from: data)
-                    guard let result = files else {
-                        continuation.resume(throwing: XPCManagerError.decodingFailed)
-                        return
-                    }
-                    continuation.resume(returning: result)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-    
 }
