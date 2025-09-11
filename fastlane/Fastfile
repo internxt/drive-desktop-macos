@@ -15,12 +15,14 @@ platform :mac do
   desc "Configure provisioning profiles"
   lane :setup_dev_provisioning_profiles do
     match(
-      type: "developer_id", 
-      readonly: true,
+      type: "developer_id",
+      readonly: false,
+      api_key_path: './app_store_key.json',
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.cleaner.helper"
       ],
     )
 
@@ -53,12 +55,14 @@ platform :mac do
     # Prepare certificates using Match
     match(
       type: "developer_id",
-      readonly: true,
+      readonly: false,
+      api_key_path: './app_store_key.json',
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
-      ]
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.cleaner.helper"
+      ],
     )
   
     
@@ -152,11 +156,13 @@ platform :mac do
     # Prepare certificates using Match
     match(
       type: "developer_id",
-      readonly: true,
+      readonly: false,
+      api_key_path: './app_store_key.json',
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.cleaner.helper"
       ],
     )
 
