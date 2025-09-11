@@ -16,8 +16,7 @@ platform :mac do
   lane :setup_dev_provisioning_profiles do
     match(
       type: "developer_id",
-      readonly: false,
-      api_key_path: './app_store_key.json',
+      readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
@@ -55,8 +54,7 @@ platform :mac do
     # Prepare certificates using Match
     match(
       type: "developer_id",
-      readonly: false,
-      api_key_path: './app_store_key.json',
+      readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
@@ -156,8 +154,7 @@ platform :mac do
     # Prepare certificates using Match
     match(
       type: "developer_id",
-      readonly: false,
-      api_key_path: './app_store_key.json',
+      readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
