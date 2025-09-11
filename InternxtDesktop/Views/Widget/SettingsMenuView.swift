@@ -25,10 +25,10 @@ struct SettingsMenuView: View {
         GeometryReader { proxy in
             ZStack {
                 VStack(alignment: .leading, spacing: 0) {
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: handleOpenPreferences)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: settingsHandler(for: .General))
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: handleOpenAntivirus)
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", showNew: true, onPress: handleOpenAntivirus)
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", showNew: true, onPress: settingsHandler(for: .Antivirus))
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", showNew: true, onPress:settingsHandler(for: .Cleaner))
 
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
@@ -60,17 +60,16 @@ struct SettingsMenuView: View {
         }.frame(width: 140)
     }
     
-    func handleOpenPreferences() -> Void {
-        settingsManager.focusedTab = .General
-        Task { await usageManager.updateUsage() }
-        NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
+
+
+    func settingsHandler(for tab: TabView) -> () -> Void {
+        return {
+            settingsManager.focusedTab = tab
+            Task { await usageManager.updateUsage() }
+            NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
+        }
     }
-    
-    func handleOpenAntivirus() -> Void {
-        settingsManager.focusedTab = .Antivirus
-        Task { await usageManager.updateUsage() }
-        NSApp.sendAction(#selector(AppDelegate.openSettingsWindow), to: nil, from: nil)
-    }
+
     
     func handleLogout() {
         Task {
