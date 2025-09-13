@@ -14,7 +14,7 @@ class ScanOperationService {
     // MARK: - Dependencies
     private let connectionService: XPCConnectionService
     private let dataManager: XPCDataManager
-    private let logger = Logger(subsystem: "com.internxt.desktop", category: "ScanOperation")
+  //  private let logger = Logger(subsystem: "com.internxt.desktop", category: "ScanOperation")
     
     // MARK: - Initialization
     init(connectionService: XPCConnectionService, dataManager: XPCDataManager = XPCDataManager()) {
@@ -24,7 +24,7 @@ class ScanOperationService {
     
     // MARK: - Public Interface
     func performScan() async throws -> ScanResult {
-        logger.info("Starting scan operation...")
+        cleanerLogger.info("Starting scan operation...")
         
         guard let helper = connectionService.getHelperProxy() else {
             throw CleanerServiceError.helperNotAvailable
@@ -50,7 +50,7 @@ class ScanOperationService {
         _ category: CleanupCategory,
         options: CleanupOptions = .default
     ) async throws -> [CleanupFile] {
-        logger.info("Loading files for category: \(category.name)")
+        cleanerLogger.info("Loading files for category: \(category.name)")
         
         guard let helper = connectionService.getHelperProxy() else {
             throw CleanerServiceError.helperNotAvailable
@@ -76,7 +76,7 @@ class ScanOperationService {
                 
                 do {
                     let files = try self.dataManager.decode([CleanupFile].self, from: data)
-                    self.logger.info("Loaded \(files.count) files for category: \(category.name)")
+                    cleanerLogger.info("Loaded \(files.count) files for category: \(category.name)")
                     continuation.resume(returning: files)
                 } catch {
                     continuation.resume(throwing: error)
@@ -92,23 +92,23 @@ class ScanOperationService {
         continuation: CheckedContinuation<ScanResult, Error>
     ) {
         if let error = error {
-            logger.error("Scan failed with error: \(error.localizedDescription)")
+            cleanerLogger.error("Scan failed with error: \(error.localizedDescription)")
             continuation.resume(throwing: CleanerServiceError.scanFailed(underlying: error))
             return
         }
         
         guard let data = data else {
-            logger.error("Scan failed: no data received")
+            cleanerLogger.error("Scan failed: no data received")
             continuation.resume(throwing: CleanerServiceError.invalidData)
             return
         }
         
         do {
             let scanResult = try dataManager.decode(ScanResult.self, from: data)
-            logger.info("Scan completed successfully with \(scanResult.categories.count) categories")
+            cleanerLogger.info("Scan completed successfully with \(scanResult.categories.count) categories")
             continuation.resume(returning: scanResult)
         } catch {
-            logger.error("Scan failed during decoding: \(error.localizedDescription)")
+            cleanerLogger.error("Scan failed during decoding: \(error.localizedDescription)")
             continuation.resume(throwing: CleanerServiceError.scanFailed(underlying: error))
         }
     }

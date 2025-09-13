@@ -40,7 +40,7 @@ struct SettingsView: View {
                         TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
                         TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
                         TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus)
-                        TabItem(iconName: .Shield, label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner)
+                        TabItem(iconName: .Cleaner, label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)

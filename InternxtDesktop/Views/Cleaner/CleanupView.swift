@@ -343,6 +343,8 @@ class CleanupViewModel: ObservableObject {
                 }
             }
         }
+        
+        resetAfterCleanup()
     }
     
     private func prepareCleanupData() -> CleanupData {
@@ -392,6 +394,24 @@ class CleanupViewModel: ObservableObject {
                 )
             }
         }
+    }
+    
+    @MainActor
+    func resetAfterCleanup() {
+     
+        selectedCategories.removeAll()
+        selectedFilesByCategory.removeAll()
+        selectedCategoryForPreview = nil
+        currentCategoryFiles = []
+        
+        filesCache.removeAll()
+        displayedFilesCache.removeAll()
+        loadedItemsCount.removeAll()
+        
+      
+        isLoadingFiles = false
+        
+     
     }
 }
 
@@ -489,9 +509,9 @@ struct CleanupView: View {
             isInitialized = true
         }
     }
-   // @MainActor
+ 
     private func scanWithStatusCheck() async {
-        let status = cleanerService.getHelperStatus()
+        let status = await cleanerService.getHelperStatus()
         print("Helper status: \(status)")
         
         if status.isError {
@@ -508,7 +528,7 @@ struct CleanupView: View {
     private func retryWithStatusCheck() async {
         cleanerService.state = .idle
         
-        let status = cleanerService.getHelperStatus()
+        let status = await cleanerService.getHelperStatus()
         
         if status.canAutoRegister {
             let registered = await cleanerService.tryRegisterHelper()

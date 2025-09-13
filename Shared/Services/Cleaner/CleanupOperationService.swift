@@ -16,7 +16,7 @@ class CleanupOperationService {
     private let connectionService: XPCConnectionService
     private let dataManager: XPCDataManager
     private let progressPoller: ProgressPollingService
-    private let logger = Logger(subsystem: "com.internxt.desktop", category: "CleanupOperation")
+  //  private let logger = Logger(subsystem: "com.internxt.desktop", category: "CleanupOperation")
     
     // MARK: - Initialization
     init(connectionService: XPCConnectionService, dataManager: XPCDataManager = XPCDataManager()) {
@@ -35,7 +35,7 @@ class CleanupOperationService {
         progressHandler: @escaping @Sendable (CleanupProgress) async -> Void
     ) async throws -> [CleanupResult] {
         
-        logger.info("Starting cleanup operation for \(categories.count) categories")
+        cleanerLogger.info("Starting cleanup operation for \(categories.count) categories")
         
         guard let helper = connectionService.getHelperProxy() else {
             throw CleanerServiceError.helperNotAvailable
@@ -50,7 +50,7 @@ class CleanupOperationService {
             optionsData: optionsData
         )
         
-        logger.info("Started cleanup operation with ID: \(operationId)")
+        cleanerLogger.info("Started cleanup operation with ID: \(operationId)")
         
         await progressPoller.pollProgress(
             operationId: operationId,
@@ -58,7 +58,7 @@ class CleanupOperationService {
         )
         
         let results = try await getCleanupResults(helper: helper, operationId: operationId)
-        logger.info("Cleanup completed with \(results.count) results")
+        cleanerLogger.info("Cleanup completed with \(results.count) results")
         
         return results
     }
@@ -69,7 +69,7 @@ class CleanupOperationService {
         progressHandler: @escaping @Sendable (CleanupProgress) async -> Void
     ) async throws -> [CleanupResult] {
         
-        logger.info("Starting specific files cleanup operation")
+        cleanerLogger.info("Starting specific files cleanup operation")
         
         guard let helper = connectionService.getHelperProxy() else {
             throw CleanerServiceError.helperNotAvailable
@@ -84,32 +84,32 @@ class CleanupOperationService {
             optionsData: optionsData
         )
         
-        logger.info("Started specific files cleanup with ID: \(operationId)")
+        cleanerLogger.info("Started specific files cleanup with ID: \(operationId)")
         
         await progressPoller.pollProgress(
             operationId: operationId,
             progressHandler: { progress in
-                self.logger.debug("Progress Update - Files: \(progress.processedFiles)/\(progress.totalFiles), Freed: \(progress.freedSpace) bytes, %: \(progress.percentage)")
+                cleanerLogger.debug("Progress Update - Files: \(progress.processedFiles)/\(progress.totalFiles), Freed: \(progress.freedSpace) bytes, %: \(progress.percentage)")
                 await progressHandler(progress)
             }
         )
         
         let results = try await getCleanupResults(helper: helper, operationId: operationId)
-        logger.info("Specific files cleanup completed with \(results.count) results")
+        cleanerLogger.info("Specific files cleanup completed with \(results.count) results")
         
         return results
     }
     
     func cancelCurrentOperation() async {
-        logger.info("Cancelling current operation...")
+        cleanerLogger.info("Cancelling current operation...")
         
         guard let helper = connectionService.getHelperProxy() else {
-            logger.warning("Helper not available for cancellation")
+            cleanerLogger.warning("Helper not available for cancellation")
             return
         }
         
         helper.cancelOperation {
-            self.logger.info("Operation cancelled successfully")
+          cleanerLogger.info("Operation cancelled successfully")
         }
     }
     
@@ -125,7 +125,7 @@ class CleanupOperationService {
                 optionsData: optionsData
             ) { operationId, error in
                 if let error = error {
-                    self.logger.error("Failed to start cleanup operation: \(error.localizedDescription)")
+                    cleanerLogger.error("Failed to start cleanup operation: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: operationId)
@@ -145,7 +145,7 @@ class CleanupOperationService {
                 optionsData: optionsData
             ) { operationId, error in
                 if let error = error {
-                    self.logger.error("Failed to start specific files cleanup: \(error.localizedDescription)")
+                    cleanerLogger.error("Failed to start specific files cleanup: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: operationId)
@@ -161,23 +161,23 @@ class CleanupOperationService {
         try await withCheckedThrowingContinuation { continuation in
             helper.getCleanupResult(operationId: operationId) { data, error in
                 if let error = error {
-                    self.logger.error("Failed to get cleanup results: \(error.localizedDescription)")
+                    cleanerLogger.error("Failed to get cleanup results: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                     return
                 }
                 
                 guard let data = data else {
-                    self.logger.error("No cleanup results data received")
+                    cleanerLogger.error("No cleanup results data received")
                     continuation.resume(throwing: CleanerServiceError.invalidData)
                     return
                 }
                 
                 do {
                     let results = try self.dataManager.decode([CleanupResult].self, from: data)
-                    self.logger.info("Successfully decoded \(results.count) cleanup results")
+                    cleanerLogger.info("Successfully decoded \(results.count) cleanup results")
                     continuation.resume(returning: results)
                 } catch {
-                    self.logger.error("Failed to decode cleanup results: \(error.localizedDescription)")
+                    cleanerLogger.error("Failed to decode cleanup results: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 }
             }

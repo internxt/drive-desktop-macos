@@ -23,7 +23,7 @@ class XPCConnectionService: ObservableObject {
     
     // MARK: - Private Properties
     private let connectionManager: XPCConnectionManaging
-    private let logger = Logger(subsystem: "com.internxt.desktop", category: "XPCConnection")
+  //  private let logger = Logger(subsystem: "com.internxt.desktop", category: "XPCConnection")
     private var currentConnection: NSXPCConnection?
     
     // MARK: - Initialization
@@ -56,12 +56,12 @@ class XPCConnectionService: ObservableObject {
             self.isConnected = false
         }
         
-        logger.info("XPC Connection invalidated")
+        cleanerLogger.info("XPC Connection invalidated")
     }
     
     // MARK: - Private Methods
     private func establishConnection() async throws {
-        logger.info("Establishing XPC connection...")
+        cleanerLogger.info("Establishing XPC connection...")
         
         // Create connection
         guard let connection = connectionManager.createConnection() else {
@@ -77,7 +77,7 @@ class XPCConnectionService: ObservableObject {
             self.isConnected = true
         }
         
-        logger.info("XPC Connection established successfully")
+        cleanerLogger.info("XPC Connection established successfully")
     }
     
     private func verifyConnection() async throws {

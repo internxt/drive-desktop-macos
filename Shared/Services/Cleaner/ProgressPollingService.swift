@@ -21,7 +21,7 @@ class ProgressPollingService {
     // MARK: - Dependencies
     private let connectionService: XPCConnectionService
     private let dataManager: XPCDataManager
-    private let logger = Logger(subsystem: "com.internxt.desktop", category: "ProgressPolling")
+    //private let logger = Logger(subsystem: "com.internxt.desktop", category: "ProgressPolling")
     
     // MARK: - Initialization
     init(connectionService: XPCConnectionService, dataManager: XPCDataManager) {
@@ -38,14 +38,14 @@ class ProgressPollingService {
         var lastProgressPercentage: Double = -1
         var consecutiveNoProgress = 0
         
-        logger.info("Starting progress polling for operation: \(operationId)")
+        cleanerLogger.info("Starting progress polling for operation: \(operationId)")
         
         while !isCompleted && consecutiveNoProgress < Constants.maxPollRetries {
             do {
                 // Check progress
                 if let progress = try await fetchProgress(operationId: operationId) {
                     await progressHandler(progress)
-                    logger.debug("Progress: \(progress.percentage)% - \(progress.currentFile)")
+                    cleanerLogger.debug("Progress: \(progress.percentage)% - \(progress.currentFile)")
                     
                     if progress.percentage != lastProgressPercentage {
                         consecutiveNoProgress = 0
@@ -55,18 +55,18 @@ class ProgressPollingService {
                     }
                     
                     if progress.percentage >= 100.0 {
-                        logger.info("Progress reached 100%, waiting for final results...")
+                        cleanerLogger.info("Progress reached 100%, waiting for final results...")
                         try await Task.sleep(nanoseconds: Constants.completionWaitTime)
                         break
                     }
                 } else {
-                    logger.debug("No progress data available yet...")
+                    cleanerLogger.debug("No progress data available yet...")
                     consecutiveNoProgress += 1
                 }
                 
                 // Check if operation is completed
                 if try await hasResults(operationId: operationId) {
-                    logger.info("Operation \(operationId) completed - results found")
+                    cleanerLogger.info("Operation \(operationId) completed - results found")
                     isCompleted = true
                     break
                 }
@@ -74,10 +74,10 @@ class ProgressPollingService {
                 try await Task.sleep(nanoseconds: Constants.pollInterval)
                 
             } catch {
-                logger.error("Error during polling: \(error.localizedDescription)")
+                cleanerLogger.error("Error during polling: \(error.localizedDescription)")
                 
                 if error.localizedDescription.contains("not found") {
-                    logger.info("Operation not found, stopping polling")
+                    cleanerLogger.info("Operation not found, stopping polling")
                     isCompleted = true
                     break
                 }
@@ -87,10 +87,10 @@ class ProgressPollingService {
         }
         
         if consecutiveNoProgress >= Constants.maxPollRetries {
-            logger.warning("No progress for too long, assuming completion...")
+            cleanerLogger.warning("No progress for too long, assuming completion...")
         }
         
-        logger.info("Polling completed for operation: \(operationId)")
+        cleanerLogger.info("Polling completed for operation: \(operationId)")
     }
     
     // MARK: - Private Methods

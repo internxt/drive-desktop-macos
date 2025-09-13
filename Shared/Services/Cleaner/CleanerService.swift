@@ -9,6 +9,8 @@ import SwiftUI
 import OSLog
 import Combine
 
+let cleanerLogger = LogService.shared.createLogger(subsystem: .Cleaner, category: "Cleaner")
+
 class CleanerService: ObservableObject {
     
     // MARK: - Published Properties
@@ -127,6 +129,8 @@ class CleanerService: ObservableObject {
     func backToScanning() {
         viewState = .scanning
         cleanupResult = []
+        scanResult = nil
+        currentFiles = []
         currentCleaningProgress = nil
     }
     
@@ -224,7 +228,7 @@ class CleanerService: ObservableObject {
         await executeOperation(newState: .connecting) {
             await helperService.reinstallHelper()
             
-            if getHelperStatus() == .enabled {
+            if await getHelperStatus() == .enabled {
                 try await Task.sleep(nanoseconds: 2_000_000_000)
                 await scanCategories()
             }
@@ -236,8 +240,11 @@ class CleanerService: ObservableObject {
         connectionService.invalidateConnection()
     }
     
-    func getHelperStatus() -> HelperStatusType {
-        return helperService.status
+
+    
+    func getHelperStatus() async -> HelperStatusType {
+       await helperService.updateStatus()
+       return helperService.status
     }
     
     func tryRegisterHelper() async -> Bool {
