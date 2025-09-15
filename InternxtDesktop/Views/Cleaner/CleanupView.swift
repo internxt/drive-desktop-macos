@@ -519,7 +519,6 @@ struct CleanupView: View {
                 helperStatus = status
                 showingHelperAlert = true
             }
-            return
         }
         
         await cleanerService.scanCategories()

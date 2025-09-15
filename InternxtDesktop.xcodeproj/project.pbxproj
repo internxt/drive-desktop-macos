@@ -2430,6 +2430,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.cleaner.helper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

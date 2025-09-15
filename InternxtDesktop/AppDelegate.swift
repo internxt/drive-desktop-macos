@@ -342,6 +342,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         
         Task {
+            await cleanerService.tryRegisterHelper()
             await self.initializeBackups()
             await backupsService.fetchBackupStatus()
             
