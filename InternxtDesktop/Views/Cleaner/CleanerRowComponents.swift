@@ -15,9 +15,15 @@ struct CategoryRow: View {
     let onToggle: (CheckboxState) -> Void
     let onTap: () -> Void
     
+    private var isDisabled: Bool {
+        return category.size == 0 || !category.canAccess
+    }
+    
     var body: some View {
         HStack(spacing: 12) {
             Button(action: {
+                guard !isDisabled else { return }
+                
                 let nextState: CheckboxState = switch checkboxState {
                 case .unchecked: .checked
                 case .checked: .unchecked
@@ -30,10 +36,11 @@ struct CategoryRow: View {
             .buttonStyle(.plain)
             .frame(minWidth: 24, minHeight: 24)
             .contentShape(Rectangle())
+            .disabled(isDisabled)
                         
             AppText(category.name)
                 .font(.BaseRegular)
-                .foregroundColor(.DefaultTextStrong)
+                .foregroundColor(isDisabled ? .secondary : .DefaultTextStrong)
             
             Spacer()
             
@@ -41,14 +48,15 @@ struct CategoryRow: View {
                 if !isHighlighted {
                     AppText(formatFileSize(category.size))
                         .font(.BaseRegular)
-                        .foregroundColor(.DefaultText)
+                        .foregroundColor(isDisabled ? .secondary : .DefaultText)
                     
                     Image(systemName: "chevron.right")
                         .font(.system(size: 17))
-                        .foregroundColor(.Primary)
+                        .foregroundColor(isDisabled ? .secondary : .Primary)
                 }
             }
             .onTapGesture {
+                guard !isDisabled else { return }
                 onTap()
             }
         }
@@ -56,10 +64,18 @@ struct CategoryRow: View {
         .padding(.vertical, 12)
         .background(isHighlighted ? Color.blue.opacity(0.1) : Color.clear)
         .contentShape(Rectangle())
-        .opacity(category.canAccess ? 1.0 : 0.7)
+        .opacity(isDisabled ? 0.5 : 1.0)
+        .onTapGesture {
+            guard !isDisabled else { return }
+            onTap()
+        }
     }
     
     private func formatFileSize(_ bytes: UInt64) -> String {
+        if bytes == 0 {
+            return "0"
+        }
+        
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useGB, .useMB, .useKB]
         formatter.countStyle = .file

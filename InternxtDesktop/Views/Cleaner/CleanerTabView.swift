@@ -39,7 +39,7 @@ struct CleanerTabView: View {
                             await cleanerService.cancelCurrentOperation()
                         }
                        
-                    },
+                    }
                 )
             }
         }
