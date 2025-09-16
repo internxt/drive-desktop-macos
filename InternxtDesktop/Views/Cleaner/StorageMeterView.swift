@@ -80,7 +80,7 @@ struct StorageMeterView: View {
                             .foregroundColor(.DefaultTextStrong)
 
                         if scanResult != nil {
-                            AppText("Save up to \(percentageToSave)% of your space")
+                            AppText("Save up to \(percentageToSave)%\nof your space")
                                 .font(.XSRegular)
                                 .foregroundColor(.DefaultText)
                                 .multilineTextAlignment(.center)
