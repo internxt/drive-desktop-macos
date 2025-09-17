@@ -243,3 +243,22 @@
 "CLEANER_ERROR_OPERATION_CANCELLED" = "Opération annulée";
 "CLEANER_ERROR_INVALID_DATA_MESSAGE" = "Données invalides: %@";
 "CLEANER_ERROR_CONFIGURATION_ERROR" = "Erreur de configuration: %@";
+
+// Cleaner View
+"CLEANER_CONFIRM_CLEANUP_TITLE" = "Confirmer le nettoyage";
+"CLEANER_CONFIRM_CLEANUP_MESSAGE" = "Cette action supprimera définitivement les fichiers sélectionnés de votre appareil. Cela ne peut pas être annulé. Veuillez confirmer pour continuer.";
+"CLEANER_DELETE_FILES" = "Supprimer les fichiers";
+"CLEANER_CLEANING_SERVICE" = "Service de Nettoyage";
+"CLEANER_OPEN_SYSTEM_SETTINGS" = "Ouvrir les Paramètres Système";
+"CLEANER_RETRY" = "Réessayer";
+"CLEANER_REINSTALL_HELPER" = "Réinstaller l'Assistant";
+"CLEANER_ERROR_TITLE" = "Erreur";
+"CLEANER_OK" = "OK";
+"CLEANER_SCANNING" = "Analyse en cours...";
+"CLEANER_CLEANING" = "Nettoyage en cours...";
+"CLEANER_CLEAN_UP" = "Nettoyer";
+"CLEANER_SCANNING_CATEGORIES" = "Analyse des catégories...";
+"CLEANER_LOADING_FILES" = "Chargement des fichiers...";
+"CLEANER_LOADING_MORE" = "Chargement...";
+"CLEANER_SELECT_ALL" = "Tout sélectionner";
+"CLEANER_CANCEL" = "Annuler";

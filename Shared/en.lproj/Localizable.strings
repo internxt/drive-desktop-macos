@@ -242,3 +242,22 @@
 "ANTIVIRUS_CANCEL_SCAN_MESSAGE" = "Are you sure you want to cancel the current scan?";
 "ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continue Scanning";
 "ANTIVIRUS_SCAN_AGAIN" = "Scan again";
+
+// Cleaner View
+"CLEANER_CONFIRM_CLEANUP_TITLE" = "Confirm clean up";
+"CLEANER_CONFIRM_CLEANUP_MESSAGE" = "This action will permanently delete the selected files from your device. This cannot be undone. Please, confirm to continue.";
+"CLEANER_DELETE_FILES" = "Delete files";
+"CLEANER_CLEANING_SERVICE" = "Cleaning Service";
+"CLEANER_OPEN_SYSTEM_SETTINGS" = "Open System Settings";
+"CLEANER_RETRY" = "Retry";
+"CLEANER_REINSTALL_HELPER" = "Reinstall Helper";
+"CLEANER_ERROR_TITLE" = "Error";
+"CLEANER_OK" = "OK";
+"CLEANER_SCANNING" = "Scanning...";
+"CLEANER_CLEANING" = "Cleaning...";
+"CLEANER_CLEAN_UP" = "Clean up";
+"CLEANER_SCANNING_CATEGORIES" = "Scanning categories...";
+"CLEANER_LOADING_FILES" = "Loading files...";
+"CLEANER_LOADING_MORE" = "Loading more...";
+"CLEANER_SELECT_ALL" = "Select all";
+"CLEANER_CANCEL" = "Cancel";

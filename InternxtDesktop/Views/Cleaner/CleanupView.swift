@@ -440,10 +440,10 @@ struct CleanupView: View {
             
             if showModalConfirmCleanup {
                 CustomModalView(
-                    title: "Confirm clean up",
-                    message: "This action will permanently delete the selected files from your device. This cannot be undone. Please, confirm to continue.",
+                    title: "CLEANER_CONFIRM_CLEANUP_TITLE",
+                    message: "CLEANER_CONFIRM_CLEANUP_MESSAGE",
                     cancelTitle: "COMMON_CANCEL",
-                    confirmTitle: "Delete files",
+                    confirmTitle: "CLEANER_DELETE_FILES",
                     confirmColor: .blue,
                     onCancel: {
                         self.showModalConfirmCleanup = false
@@ -461,37 +461,37 @@ struct CleanupView: View {
         .onAppear {
             initializeIfNeeded()
         }
-        .alert("Cleaning Service", isPresented: $showingHelperAlert) {
+        .alert("CLEANER_CLEANING_SERVICE", isPresented: $showingHelperAlert) {
             if let status = helperStatus {
                 if status.shouldShowSystemSettings {
-                    Button("Open System Settings") {
+                    Button("CLEANER_OPEN_SYSTEM_SETTINGS") {
                         cleanerService.openSystemSettings()
                     }
-                    Button("Cancel") { }
+                    Button("CLEANER_CANCEL") { }
                 } else {
-                    Button("Retry") {
+                    Button("CLEANER_RETRY") {
                         Task { await cleanerService.scanCategories() }
                     }
-                    Button("Reinstall Helper") {
+                    Button("CLEANER_REINSTALL_HELPER") {
                         Task { await cleanerService.reinstallHelper() }
                     }
-                    Button("Cancel") { }
+                    Button("CLEANER_CANCEL") { }
                 }
             } else {
-                Button("OK") { }
+                Button("CLEANER_OK") { }
             }
         } message: {
             if let status = helperStatus {
                 Text(status.userMessage)
             }
         }
-        .alert("Error", isPresented: .constant(cleanerService.errorMessage != nil && !showingHelperAlert)) {
-            Button("Retry") {
+        .alert("CLEANER_ERROR_TITLE", isPresented: .constant(cleanerService.errorMessage != nil && !showingHelperAlert)) {
+            Button("CLEANER_RETRY") {
                 Task {
                     await retryWithStatusCheck()
                 }
             }
-            Button("OK") { }
+            Button("CLEANER_OK") { }
         } message: {
             if let errorMessage = cleanerService.errorMessage {
                 Text(errorMessage)
@@ -581,11 +581,11 @@ extension CleanupView {
     private var bottomSection: some View {
         Group {
             if cleanerService.isScanning {
-                progressView(text: "Scanning...")
+                progressView(text: "CLEANER_SCANNING")
             } else if cleanerService.isCleaning {
-                progressView(text: "Cleaning...")
+                progressView(text: "CLEANER_CLEANING")
             } else {
-                AppButton(title: "Clean up") {
+                AppButton(title: "CLEANER_CLEAN_UP") {
                     Task {
                         self.showModalConfirmCleanup = true
                       
@@ -646,7 +646,7 @@ extension CleanupView {
     private var categoriesContent: some View {
         Group {
             if cleanerService.isScanning {
-                loadingView(text: "Scanning categories...")
+                loadingView(text: "CLEANER_SCANNING_CATEGORIES")
             } else {
                 categoriesList
             }
@@ -746,7 +746,7 @@ extension CleanupView {
     private var fileListContent: some View {
         Group {
             if viewModel.isLoadingFiles {
-                loadingView(text: "Loading files...")
+                loadingView(text: "CLEANER_LOADING_FILES")
             } else {
                 filesList
             }
@@ -790,7 +790,7 @@ extension CleanupView {
             Spacer()
             ProgressView()
                 .scaleEffect(0.8)
-            AppText("Loading more...")
+            AppText("CLEANER_LOADING_MORE")
                 .font(.caption)
                 .foregroundColor(.secondary)
             Spacer()
@@ -825,7 +825,7 @@ extension CleanupView {
             .frame(minWidth: 24, minHeight: 24)
             .contentShape(Rectangle())
             
-            Button("Select all", action: action)
+            Button("CLEANER_SELECT_ALL", action: action)
                 .buttonStyle(PlainButtonStyle())
                 .font(.BaseRegular)
                 .foregroundColor(.DefaultText)
@@ -843,5 +843,3 @@ extension SelectionState {
         }
     }
 }
-
-
