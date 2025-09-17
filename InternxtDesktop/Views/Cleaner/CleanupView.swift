@@ -692,6 +692,7 @@ extension CleanupView {
         .frame(width: 270)
     }
 
+    
     private var fileListView: some View {
         VStack(alignment: .leading, spacing: 0) {
             fileListHeader
@@ -700,12 +701,22 @@ extension CleanupView {
         }
         .frame(width: 350)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(NSColor.controlBackgroundColor))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+            UnevenRoundedRectangle(
+                topLeadingRadius: 0,
+                bottomLeadingRadius: 0,
+                bottomTrailingRadius: 10,
+                topTrailingRadius: 10
+            )
+            .fill(Color(NSColor.controlBackgroundColor))
+            .overlay(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 0,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: 10,
+                    topTrailingRadius: 10
                 )
+                .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+            )
         )
         .shadow(color: Color.black.opacity(0.2), radius: 10, x: -5, y: 0)
     }
