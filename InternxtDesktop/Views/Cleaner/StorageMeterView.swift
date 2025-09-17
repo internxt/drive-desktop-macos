@@ -11,18 +11,74 @@ import SwiftUI
 
 struct StorageMeterView: View {
     let scanResult: ScanResult?
+    let selectedCategoryForPreview: CleanupCategory?
+    let selectedCategorySize: UInt64
     let selectedCategories: Set<String>
+    let selectedTotalSize: UInt64
+    let selectedFilesByCategory: [String: Set<String>]
     
     @State private var systemTotalCapacity: Double = 0.0
 
     var totalStorage: Double {
-        guard let result = scanResult else { return 0 }
-        return Double(result.totalSize) / (1024 * 1024 * 1024)
+        if let selectedCategory = selectedCategoryForPreview {
+            return Double(selectedCategory.size) / (1024 * 1024 * 1024)
+        }
+        else if hasSelections {
+            return Double(selectedTotalSize) / (1024 * 1024 * 1024)
+        }
+        else {
+            guard let result = scanResult else { return 0 }
+            return Double(result.totalSize) / (1024 * 1024 * 1024)
+        }
+    }
+    
+    var totalStorageBytes: UInt64 {
+        if let selectedCategory = selectedCategoryForPreview {
+            return selectedCategory.size
+        }
+        else if hasSelections {
+            return selectedTotalSize
+        }
+        else {
+            guard let result = scanResult else { return 0 }
+            return result.totalSize
+        }
+    }
+    
+    var formattedStorageSize: String {
+        let bytes = totalStorageBytes
+        
+        if bytes == 0 {
+            return "0 KB"
+        }
+        
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useGB, .useMB, .useKB]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: Int64(bytes))
+    }
+    
+    var hasSelections: Bool {
+        return !selectedCategories.isEmpty || selectedFilesByCategory.values.contains { !$0.isEmpty }
     }
 
     var percentageToSave: Int {
-        guard let result = scanResult, systemTotalCapacity > 0 else { return 0 }
-        let deletableInGB = Double(result.totalSize) / (1024 * 1024 * 1024)
+        guard systemTotalCapacity > 0 else { return 0 }
+        
+        let sizeToDelete: Double
+        if let selectedCategory = selectedCategoryForPreview {
+            sizeToDelete = Double(selectedCategory.size)
+        }
+        else if hasSelections {
+            sizeToDelete = Double(selectedTotalSize)
+        }
+        else if let result = scanResult {
+            sizeToDelete = Double(result.totalSize)
+        } else {
+            return 0
+        }
+        
+        let deletableInGB = sizeToDelete / (1024 * 1024 * 1024)
         let totalSystemInGB = systemTotalCapacity / (1024 * 1024 * 1024)
         let percentage = (deletableInGB / totalSystemInGB) * 100
         return Int(percentage.rounded())
@@ -33,6 +89,16 @@ struct StorageMeterView: View {
 
         let colors: [Color] = [.blue, .orange, .pink, .purple, .green, .red, .cyan, .yellow]
 
+        if let selectedCategory = selectedCategoryForPreview {
+            let baseColor = colors[0]
+            return [StorageCategory(
+                id: selectedCategory.id,
+                name: selectedCategory.name,
+                value: Double(selectedCategory.size) / (1024 * 1024 * 1024),
+                color: baseColor
+            )]
+        }
+        
         return result.categories.enumerated().map { index, category in
             let isSelected = selectedCategories.contains(category.id)
             let baseColor = colors[index % colors.count]
@@ -75,7 +141,7 @@ struct StorageMeterView: View {
                     }
 
                     VStack(spacing: 8) {
-                        AppText(String(format: "%.1f GB", totalStorage))
+                        AppText(formattedStorageSize)
                             .font(.XXLSemibold)
                             .foregroundColor(.DefaultTextStrong)
 

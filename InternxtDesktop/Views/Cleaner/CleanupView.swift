@@ -55,6 +55,46 @@ class CleanupViewModel: ObservableObject {
         cleanerService.scanResult?.categories ?? []
     }
     
+    var selectedCategorySize: UInt64 {
+        guard let selectedCategory = selectedCategoryForPreview else { return 0 }
+        return selectedCategory.size
+    }
+    
+    var selectedTotalSize: UInt64 {
+        var totalSize: UInt64 = 0
+        
+        for categoryId in selectedCategories {
+            if let category = categories.first(where: { $0.id == categoryId }) {
+                totalSize += category.size
+            }
+        }
+        
+        for (categoryId, filePaths) in selectedFilesByCategory {
+            guard !filePaths.isEmpty else { continue }
+            
+            if selectedCategories.contains(categoryId) {
+                continue
+            }
+            
+            if let cachedFiles = filesCache[categoryId] {
+                let selectedFiles = cachedFiles.filter { filePaths.contains($0.path) }
+                totalSize += selectedFiles.reduce(0) { $0 + $1.size }
+            } else if let category = categories.first(where: { $0.id == categoryId }) {
+                let allFiles = getAllCachedFiles(for: categoryId)
+                if !allFiles.isEmpty {
+                    if filePaths.count == allFiles.count {
+                        totalSize += category.size
+                    } else {
+                        let ratio = Double(filePaths.count) / Double(allFiles.count)
+                        totalSize += UInt64(Double(category.size) * ratio)
+                    }
+                }
+            }
+        }
+        
+        return totalSize
+    }
+    
     var selectedFiles: Set<String> {
         guard let categoryId = selectedCategoryForPreview?.id else { return [] }
         return selectedFilesByCategory[categoryId] ?? []
@@ -686,7 +726,11 @@ extension CleanupView {
         VStack(spacing: 0) {
             StorageMeterView(
                 scanResult: cleanerService.scanResult,
-                selectedCategories: viewModel.selectedCategories
+                selectedCategoryForPreview: viewModel.selectedCategoryForPreview,
+                selectedCategorySize: viewModel.selectedCategorySize,
+                selectedCategories: viewModel.selectedCategories,
+                selectedTotalSize: viewModel.selectedTotalSize,
+                selectedFilesByCategory: viewModel.selectedFilesByCategory
             )
         }
         .frame(width: 270)
