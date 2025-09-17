@@ -49,7 +49,7 @@ struct StorageMeterView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 30) {
-                AppText("Select a category to\npreview content")
+                AppText("CLEANER_SELECT_CATEGORY_PREVIEW")
                     .font(.BaseRegular)
                     .foregroundColor(.DefaultText)
                     .lineLimit(2)
@@ -80,12 +80,12 @@ struct StorageMeterView: View {
                             .foregroundColor(.DefaultTextStrong)
 
                         if scanResult != nil {
-                            AppText("Save up to \(percentageToSave)%\nof your space")
+                            AppText(String(format: NSLocalizedString("CLEANER_SAVE_SPACE_PERCENTAGE", comment: ""), percentageToSave))
                                 .font(.XSRegular)
                                 .foregroundColor(.DefaultText)
                                 .multilineTextAlignment(.center)
                         } else {
-                            AppText("Scanning...")
+                            AppText("CLEANER_SCANNING")
                                 .font(.XSRegular)
                                 .foregroundColor(.DefaultText)
                                 .multilineTextAlignment(.center)

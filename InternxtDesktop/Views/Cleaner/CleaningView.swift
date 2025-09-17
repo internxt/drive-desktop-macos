@@ -14,7 +14,7 @@ struct CleaningView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            AppText("Cleaning...")
+            AppText("CLEANER_CLEANING")
                 .font(.BaseMedium)
                 .foregroundColor(.Gray100)
             
@@ -42,7 +42,7 @@ struct CleaningView: View {
                 freeSpaceGained: ByteCountFormatter.string(fromByteCount: Int64(progress?.freedSpace ?? 0), countStyle: .file)
             )
 
-            AppButton(title: "Stop Clean", onClick: onStopCleaning, type: .dangerBorder)
+            AppButton(title: "CLEANER_STOP_CLEANING", onClick: onStopCleaning, type: .dangerBorder)
             
         }
         .padding(.vertical,55)
@@ -63,7 +63,7 @@ struct CleanupStatsView: View {
                     .font(.BaseMedium)
                     .foregroundColor(.Gray100)
                 
-                Text("Deleted files")
+                AppText("CLEANER_DELETED_FILES")
                     .font(.SMRegular)
                     .foregroundColor(.Gray80)
             }
@@ -78,7 +78,7 @@ struct CleanupStatsView: View {
                     .font(.BaseMedium)
                     .foregroundColor(.Gray100)
                 
-                Text("Free space gained")
+                AppText("CLEANER_FREE_SPACE_GAINED")
                     .font(.SMRegular)
                     .foregroundColor(.Gray80)
             }
@@ -112,13 +112,13 @@ struct ResultsCleanerView: View {
                 .resizable()
                 .frame(width: 58, height: 58)
             
-            AppText("Your device is clean")
-                .font(.BaseMedium)
-                .foregroundColor(.Gray100)
+            AppText("CLEANER_DEVICE_CLEAN_TITLE")
+                .font(.XXLSemibold)
+                .foregroundColor(.DefaultTextStrong)
             
-            AppText("No further actions are neccessary")
+            AppText("CLEANER_DEVICE_CLEAN_SUBTITLE")
                  .font(.SMRegular)
-                 .foregroundColor(.Gray80)
+                 .foregroundColor(.DefaultText)
                  .lineLimit(2)
                  .truncationMode(.tail)
                  .frame(maxWidth: .infinity)
@@ -130,7 +130,7 @@ struct ResultsCleanerView: View {
                 freeSpaceGained: ByteCountFormatter.string(fromByteCount: Int64(totalFreedSpace), countStyle: .file)
             )
 
-            AppButton(title: "Finish", onClick: onFinish)
+            AppButton(title: "CLEANER_FINISH", onClick: onFinish)
             
         }
         .padding(.vertical, 55)

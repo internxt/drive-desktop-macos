@@ -262,3 +262,13 @@
 "CLEANER_LOADING_MORE" = "Chargement...";
 "CLEANER_SELECT_ALL" = "Tout sélectionner";
 "CLEANER_CANCEL" = "Annuler";
+"CLEANER_SCANNING" = "Analyse en cours...";
+"CLEANER_SELECT_CATEGORY_PREVIEW" = "Sélectionnez une catégorie pour\nprévisualiser le contenu";
+"CLEANER_SAVE_SPACE_PERCENTAGE" = "Économisez jusqu'à %d%%\nde votre espace";
+
+"CLEANER_STOP_CLEANING" = "Arrêter le Nettoyage";
+"CLEANER_DELETED_FILES" = "Fichiers supprimés";
+"CLEANER_FREE_SPACE_GAINED" = "Espace libéré";
+"CLEANER_DEVICE_CLEAN_TITLE" = "Votre appareil est propre";
+"CLEANER_DEVICE_CLEAN_SUBTITLE" = "Aucune autre action nécessaire";
+"CLEANER_FINISH" = "Terminer";
