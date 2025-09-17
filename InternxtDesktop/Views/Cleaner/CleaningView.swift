@@ -69,9 +69,7 @@ struct CleanupStatsView: View {
             }
             .frame(maxWidth: .infinity)
             
-            Rectangle()
-                .fill(Color.white.opacity(0.2))
-                .frame(width: 1, height: 30)
+            Divider()
             
             VStack(spacing: 2) {
                 AppText(freeSpaceGained)
