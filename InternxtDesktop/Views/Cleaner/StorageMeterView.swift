@@ -107,7 +107,7 @@ struct StorageMeterView: View {
         let totalValue = categories.reduce(0) { $0 + $1.value }
         guard totalValue > 0 else { return (0, 0) }
         
-        let gapSize: CGFloat = 0.008
+        let gapSize: CGFloat = 0.003
         let totalGaps = CGFloat(categories.count - 1) * gapSize
         let availableSpace: CGFloat = 0.5 - totalGaps
         

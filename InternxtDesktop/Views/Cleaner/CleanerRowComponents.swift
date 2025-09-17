@@ -73,7 +73,7 @@ struct CategoryRow: View {
     
     private func formatFileSize(_ bytes: UInt64) -> String {
         if bytes == 0 {
-            return "0"
+            return "0 KB"
         }
         
         let formatter = ByteCountFormatter()

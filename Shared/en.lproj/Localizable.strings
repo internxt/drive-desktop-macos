@@ -49,6 +49,7 @@
 "BACKUP_STOP_BACKUP" = "Stop backup";
 "BACKUP_DOWNLOAD" = "Download";
 "BACKUP_DOWNLOAD_STOP" = "Stop download";
+"BACKUP_BROWSE_FILES" = "Browse files";
 
 // Cleaner Service Errors
 "CLEANER_ERROR_CONNECTION_FAILED" = "Could not connect to cleaning service";
