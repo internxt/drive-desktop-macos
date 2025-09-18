@@ -61,7 +61,7 @@ struct CategoryRow: View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.vertical, 16)
         .background(isHighlighted ? Color.blue.opacity(0.1) : Color.clear)
         .contentShape(Rectangle())
         .opacity(isDisabled ? 0.5 : 1.0)
@@ -181,4 +181,3 @@ struct CheckboxView: View {
         }
     }
 }
-

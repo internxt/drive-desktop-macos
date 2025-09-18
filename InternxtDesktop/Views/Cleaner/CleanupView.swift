@@ -44,6 +44,7 @@ class CleanupViewModel: ObservableObject {
         static let loadMoreThreshold = 10
         static let maxCategoriesInMemory = 3
         static let maxItemsPerCategory = 5000
+        static let defaultSelectedCategoryIds = ["app_cache", "web_cache", "trash"]
     }
 
     init(cleanerService: CleanerService) {
@@ -453,6 +454,19 @@ class CleanupViewModel: ObservableObject {
         
      
     }
+    
+    func selectDefaultCategories() {
+        selectedCategories.removeAll()
+        selectedFilesByCategory.removeAll()
+        
+        for category in categories {
+            if Constants.defaultSelectedCategoryIds.contains(category.id) {
+                if category.canAccess && category.size > 0 {
+                    selectedCategories.insert(category.id)
+                }             }
+        }
+        
+    }
 }
 
 struct CleanupView: View {
@@ -562,6 +576,7 @@ struct CleanupView: View {
         }
         
         await cleanerService.scanCategories()
+        viewModel.selectDefaultCategories()
     }
     
     private func retryWithStatusCheck() async {
@@ -598,10 +613,13 @@ extension CleanupView {
             mainContentView
             
             if viewModel.selectedCategoryForPreview != nil {
-                HStack {
+                HStack(spacing: 0) {
                     Spacer()
+                    
                     fileListView
+                        .frame(width: 400)
                 }
+                .frame(maxWidth: .infinity, alignment: .trailing)
                 .transition(.move(edge: .trailing))
                 .animation(.easeInOut(duration: 0.3), value: viewModel.selectedCategoryForPreview)
             }
@@ -743,7 +761,6 @@ extension CleanupView {
             Divider().padding(.horizontal, 16)
             fileListContent
         }
-        .frame(width: 350)
         .background(
             UnevenRoundedRectangle(
                 topLeadingRadius: 0,
