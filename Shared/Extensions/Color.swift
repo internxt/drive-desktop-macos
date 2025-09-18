@@ -34,4 +34,5 @@ extension Color {
     static let DefaultBackground = Color("DefaultBackground")
     static let DefaultText = Color("DefaultText")
     static let DefaultTextStrong = Color("DefaultTextStrong")
+    static let PrimaryBadge = Color("BadgeBluePrimary")
 }

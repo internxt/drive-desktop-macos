@@ -165,8 +165,8 @@
 
 // Onboarding > Slide 1
 "ONBOARDING_SLIDE_1_TITLE" = "Internxt Desktop";
-"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Welcome to Internxt Drive!";
-"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Let's start by backing up all of your important files and folders in your finder's sidebar.";
+"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Welcome to Internxt!";
+"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Back up your files with Drive, secure against malware with Antivirus, and optimize performance with Cleaner — all while keeping your privacy protected.";
 "ONBOARDING_SLIDE_1_ACTION" = "Take a tour";
 
 // Onboarding > Slide 2
@@ -174,14 +174,14 @@
 "ONBOARDING_SLIDE_2_SUBTITLE" = "Your personal Internxt Drive folder is located in your Finder sidebar";
 
 // Onboarding > Slide 3
-"ONBOARDING_SLIDE_3_TITLE" = "Save space on your device with smart download";
-"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Store non-essential files as **online only** to save local drive space";
-"ONBOARDING_SLIDE_3_SUBTITLE_2" = "By saving as online only, files are automatically removed from your device and uploaded to the cloud";
+"ONBOARDING_SLIDE_3_TITLE" = "Cleaner";
+"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Free up space locally and optimize your device’s performance.";
+"ONBOARDING_SLIDE_3_SUBTITLE_2" = "Our cleaner finds and removes unnecessary files, so your device runs smoothly.";
 
 // Onboarding > Slide 4
-"ONBOARDING_SLIDE_4_TITLE" = "Sync across devices and access files offline";
-"ONBOARDING_SLIDE_4_SUBTITLE_1" = "Store essential files as **available offline** to always have them on hand";
-"ONBOARDING_SLIDE_4_SUBTITLE_2" = "By saving as available offline, files are stored locally and automatically sync across your devices";
+"ONBOARDING_SLIDE_4_TITLE" = "Drive";
+"ONBOARDING_SLIDE_4_SUBTITLE_1" = "Access all your files from the Internxt Drive folder in your finder sidebar.";
+"ONBOARDING_SLIDE_4_SUBTITLE_2" = "Choose to save space with online-only files, or keep essentials available offline — everything stays secure and in sync across your devices.";
 
 // Onboarding > Slide 5
 "ONBOARDING_SLIDE_5_TITLE" = "Organize your files with just one click";
@@ -190,16 +190,16 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Label files **online only** to save physical hard drive space";
 
 // Onboarding > Slide 6
-"ONBOARDING_SLIDE_6_TITLE" = "Keep your computer safe from virus";
-"ONBOARDING_SLIDE_6_SUBTITLE" = "Internxt’s Desktop app now also features the brand new Internxt Antivirus, with which you can scan and remove any potential malware from your device.";
+"ONBOARDING_SLIDE_6_TITLE" = "Antivirus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "Protect your device from malware and online threats.\n\nInternxt Antivirus keeps you safe with real-time scans and privacy-first security.";
 
 // Onboarding > Slide 7
-"ONBOARDING_SLIDE_7_TITLE" = "Backup your device on the cloud";
-"ONBOARDING_SLIDE_7_SUBTITLE" = "With Internxt's upgraded backup feature, you can now safely backup folders on the cloud in order to free up space locally.";
+"ONBOARDING_SLIDE_7_TITLE" = "Backup";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "With Internxt's upgraded backup feature, you can now safely backup folders on the cloud in order to free up space locally. You can also adjust the backup frequency as you need.";
 
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "You're all set, enjoy your privacy!";
-"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive is ready";
+"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt is ready";
 "ONBOARDING_FINISH_SUBTITLE_2" = "Access your stored files from your Finder’s sidebar";
 "ONBOARDING_FINISH_ACTION" = "Open Internxt Drive";
 
