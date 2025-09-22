@@ -23,29 +23,16 @@ class AntivirusManager: ObservableObject {
     
     @MainActor
     func fetchAntivirusStatus() async {
-        do {
-            appLogger.info("Antivirus Information")
-            let paymentInfo = try await APIFactory.Payment.getPaymentInfo(debug: true)
-            let antivirusEnabled = paymentInfo.featuresPerService.antivirus
-
-            if self.currentState == .scanning {
-                if !antivirusEnabled {
-                    cancelScan(isLocked: true)
-                }
-            } else {
-                self.currentState = antivirusEnabled ? .options : .locked
+        appLogger.info("Antivirus Information")
+        
+    
+        
+        if self.currentState == .scanning {
+            if !FeaturesService.shared.antivirusEnabled {
+                cancelScan(isLocked: true)
             }
-        }
-        catch {
-            
-            guard let apiError = error as? APIClientError else {
-                appLogger.info(error.getErrorDescription())
-                return
-            }
-            appLogger.info(error.getErrorDescription())
-            if(apiError.statusCode == 404) {
-                self.currentState = .locked
-            }
+        } else {
+            self.currentState = FeaturesService.shared.antivirusState
         }
     }
     

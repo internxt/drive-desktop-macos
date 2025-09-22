@@ -7,13 +7,6 @@
 
 import SwiftUI
 
-enum ScanState: Equatable {
-    case locked
-    case options
-    case scanning
-    case results(noThreats: Bool)
-}
-
 struct AntivirusTabView: View {
     @StateObject var viewModel: AntivirusManager
     @Environment(\.colorScheme) var colorScheme

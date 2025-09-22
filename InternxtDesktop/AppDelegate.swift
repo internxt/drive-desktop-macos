@@ -188,9 +188,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             default:
                 self.logger.info("Update Info Event Received")
                 await withTaskGroup(of: Void.self) { group in
-                    group.addTask { await self.antivirusManager.fetchAntivirusStatus() }
-                    group.addTask { await self.backupsService.fetchBackupStatus() }
+                    group.addTask { await FeaturesService.shared.fetchFeaturesStatus() }
                     group.addTask { await self.usageManager.updateUsage() }
+                    group.addTask { await self.antivirusManager.fetchAntivirusStatus() }
+                    group.addTask { await self.backupsService.fetchBackupStatus()}
+                    
                 }
             }
             completion()
@@ -324,8 +326,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
 
                 
                 self.logger.info("Login success")
-                await antivirusManager.fetchAntivirusStatus()
-                antivirusManager.downloadDatabases()
                 guard let workspaces = self.authManager.availableWorkspaces else {
                     return
                 }
@@ -342,9 +342,12 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         
         Task {
-            await cleanerService.tryRegisterHelper()
+            await FeaturesService.shared.fetchFeaturesStatus()
             await self.initializeBackups()
+            await antivirusManager.fetchAntivirusStatus()
             await backupsService.fetchBackupStatus()
+            await cleanerService.tryRegisterHelper()
+            antivirusManager.downloadDatabases()
             
         }
         

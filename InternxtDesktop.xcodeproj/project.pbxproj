@@ -100,6 +100,9 @@
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
+		AA8D9AEF2E7CC2370068B333 /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
+		AA8D9AF02E7CC2370068B333 /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
+		AA8D9AF12E7CC3300068B333 /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
 		AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA919D752E4FCC0600287FAE /* CleanupView.swift */; };
 		AA93BEBA2E720E8200F12334 /* CleaningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA93BEB92E720E8200F12334 /* CleaningView.swift */; };
 		AA93BEBE2E72128800F12334 /* LockedFeatureCleanerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA93BEBD2E72128800F12334 /* LockedFeatureCleanerView.swift */; };
@@ -534,6 +537,7 @@
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanerTabView.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
+		AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesService.swift; sourceTree = "<group>"; };
 		AA919D752E4FCC0600287FAE /* CleanupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupView.swift; sourceTree = "<group>"; };
 		AA93BEB92E720E8200F12334 /* CleaningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleaningView.swift; sourceTree = "<group>"; };
 		AA93BEBD2E72128800F12334 /* LockedFeatureCleanerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedFeatureCleanerView.swift; sourceTree = "<group>"; };
@@ -1083,6 +1087,7 @@
 				E145E16B2A82A21500B07E0B /* Time.swift */,
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
 				E1FD8C722BA989D900C257E0 /* LogService.swift */,
+				AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1804,6 +1809,7 @@
 				E1FD8C752BA989D900C257E0 /* LogService.swift in Sources */,
 				3120B5692B84F47700F524F1 /* Error.swift in Sources */,
 				3120B5682B84F46800F524F1 /* DecryptUtils.swift in Sources */,
+				AA8D9AF12E7CC3300068B333 /* FeaturesService.swift in Sources */,
 				AAE7975C2C875F5000AEFDEF /* URLDictionary.swift in Sources */,
 				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
@@ -2000,6 +2006,7 @@
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
 				AA93BEC42E72328900F12334 /* CleanupOperationService.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
+				AA8D9AF02E7CC2370068B333 /* FeaturesService.swift in Sources */,
 				E1DB29632A7D6BA5009036B8 /* WidgetFooterView.swift in Sources */,
 				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
@@ -2046,6 +2053,7 @@
 				AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */,
 				AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */,
 				E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */,
+				AA8D9AEF2E7CC2370068B333 /* FeaturesService.swift in Sources */,
 				E1581DDE2A9678000051DD46 /* MoveFolderUseCase.swift in Sources */,
 				E10971812A827A9500ABED41 /* CreateFolderUseCase.swift in Sources */,
 				E106D4672ABAEE4400E3BF7A /* Date.swift in Sources */,
