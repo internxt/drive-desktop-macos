@@ -147,8 +147,8 @@
 
 // Onboarding > Slide 1
 "ONBOARDING_SLIDE_1_TITLE" = "Internxt Desktop";
-"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Bienvenue sur Internxt Drive !";
-"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Commençons par sauvegarder tous vos fichiers et dossiers importants dans la barre latérale de votre Finder";
+"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Bienvenue sur Internxt!";
+"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Sauvegardez vos fichiers avec Drive, protégez-les contre les malwares avec Antivirus et optimisez les performances avec Cleaner — tout en préservant votre confidentialité.";
 "ONBOARDING_SLIDE_1_ACTION" = "Faire une visite guidée";
 
 // Onboarding > Slide 2
@@ -156,12 +156,12 @@
 "ONBOARDING_SLIDE_2_SUBTITLE" = "Votre dossier personnel Internxt Drive se trouve dans la barre latérale du Finder";
 
 // Onboarding > Slide 3
-"ONBOARDING_SLIDE_3_TITLE" = "Économisez de l'espace sur votre appareil grâce au téléchargement intelligent";
-"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Gardez les fichiers non essentiels comme **en ligne uniquement** pour économiser de l'espace sur le disque local";
-"ONBOARDING_SLIDE_3_SUBTITLE_2" = "En enregistrant uniquement en ligne, les fichiers sont automatiquement supprimés de votre appareil et téléchargés sur le cloud";
+"ONBOARDING_SLIDE_3_TITLE" = "Cleaner";
+"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Libérez de l’espace localement et optimisez les performances de votre appareil.";
+"ONBOARDING_SLIDE_3_SUBTITLE_2" = "Notre nettoyeur détecte et supprime les fichiers inutiles afin que votre appareil fonctionne sans encombre.";
 
 // Onboarding > Slide 4
-"ONBOARDING_SLIDE_4_TITLE" = "Synchronisez vos appareils et accédez à vos fichiers hors ligne";
+"ONBOARDING_SLIDE_4_TITLE" = "Drive";
 "ONBOARDING_SLIDE_4_SUBTITLE_1" = "Gardez les fichiers essentiels comme **disponibles hors ligne** pour les avoir toujours sous la main";
 "ONBOARDING_SLIDE_4_SUBTITLE_2" = "En enregistrant comme disponibles hors ligne, les fichiers sont enregistrés localement et se synchronisent automatiquement sur tous vos appareils";
 
@@ -172,17 +172,17 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Étiqueter les fichiers **uniquement en ligne** pour économiser de l'espace sur le disque dur";
 
 // Onboarding > Slide 6
-"ONBOARDING_SLIDE_6_TITLE" = "Protégez votre ordinateur contre les virus";
-"ONBOARDING_SLIDE_6_SUBTITLE" = "L'application de bureau d'Internxt propose désormais le tout nouveau Internxt Antivirus, avec lequel vous pouvez analyser et supprimer tout logiciel malveillant potentiel de votre appareil.";
+"ONBOARDING_SLIDE_6_TITLE" = "Antivirus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "Protégez votre appareil contre les malwares et les menaces en ligne.\n\nInternxt Antivirus vous protège grâce à des analyses en temps réel et une sécurité centrée sur la confidentialité.";
 
 // Onboarding > Slide 7
-"ONBOARDING_SLIDE_7_TITLE" = "Sauvegardez votre appareil dans le cloud";
-"ONBOARDING_SLIDE_7_SUBTITLE" = "Avec la fonctionnalité de sauvegarde améliorée d'Internxt, vous pouvez désormais sauvegarder en toute sécurité des dossiers dans le cloud afin de libérer de l'espace localement.";
+"ONBOARDING_SLIDE_7_TITLE" = "Backup";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "Avec la fonctionnalité de sauvegarde améliorée d'Internxt, vous pouvez désormais sauvegarder en toute sécurité des dossiers dans le cloud afin de libérer de l'espace localement. Vous pouvez également ajuster la fréquence des sauvegardes selon vos besoins.";
 
 
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "Vous êtes prêt, profitez de votre confidentialité !";
-"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive est prêt";
+"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt est prêt";
 "ONBOARDING_FINISH_SUBTITLE_2" = "Accédez à vos fichiers stockés depuis la barre latérale";
 "ONBOARDING_FINISH_ACTION" = "Ouvrir Internxt Drive";
 
