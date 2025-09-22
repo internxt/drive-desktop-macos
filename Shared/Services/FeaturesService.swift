@@ -45,6 +45,14 @@ class FeaturesService: ObservableObject {
             antivirusEnabled = paymentInfo.featuresPerService.antivirus
             logger.info("Antivirus feature status: \(antivirusEnabled)")
             
+            // Update cleaner status
+            if let cleanerStatus = paymentInfo.featuresPerService.cleaner {
+                cleanerEnabled = cleanerStatus
+                logger.info("Cleaner feature status: \(cleanerStatus)")
+            } else {
+                cleanerEnabled = false
+                logger.warning("No cleaner information found in payment info")
+            }
             
             lastFetchDate = Date()
             logger.info("Features status updated successfully")
@@ -56,6 +64,7 @@ class FeaturesService: ObservableObject {
                 if apiError.statusCode == 404 {
                     backupEnabled = false
                     antivirusEnabled = false
+                    cleanerEnabled = false
                     logger.info("Payment info not found (404), disabling all features")
                 }
             }
@@ -72,6 +81,9 @@ class FeaturesService: ObservableObject {
         return antivirusEnabled ? .options : .locked
     }
     
+    var cleanerState: CleanerFeatureState {
+        return cleanerEnabled ? .active : .locked
+    }
 }
 
 
@@ -83,6 +95,11 @@ enum ScanState: Equatable {
 }
 
 enum BackupState: Equatable {
+    case locked
+    case active
+}
+
+enum CleanerFeatureState: Equatable {
     case locked
     case active
 }

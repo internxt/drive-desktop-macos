@@ -16,35 +16,60 @@ enum CleanerViewState {
 
 struct CleanerTabView: View {
     @StateObject var cleanerService: CleanerService
+    @StateObject private var featuresService = FeaturesService.shared
     
-      
     var body: some View {
         ZStack {
-            switch cleanerService.viewState {
-            case .locked:
-                LockedFeatureOverlay(isVisible: true)
-            case .scanning:
-                CleanupView(
-                    cleanerService: cleanerService)
-            case .results:
-                ResultsCleanerView( cleanupResults: cleanerService.cleanupResult,
-                onFinish: {
-                    cleanerService.backToScanning()
-                })
-            case .cleaning:
-                CleaningView(
-                    progress: cleanerService.currentCleaningProgress,
-                    onStopCleaning: {
-                        Task {
-                            await cleanerService.cancelCurrentOperation()
+            if featuresService.isLoading {
+                loadingView
+            } else {
+                switch determineViewState() {
+                case .locked:
+                    LockedFeatureOverlay(isVisible: true)
+                case .scanning:
+                    CleanupView(cleanerService: cleanerService)
+                case .results:
+                    ResultsCleanerView(
+                        cleanupResults: cleanerService.cleanupResult,
+                        onFinish: {
+                            cleanerService.backToScanning()
                         }
-                       
-                    }
-                )
+                    )
+                case .cleaning:
+                    CleaningView(
+                        progress: cleanerService.currentCleaningProgress,
+                        onStopCleaning: {
+                            Task {
+                                await cleanerService.cancelCurrentOperation()
+                            }
+                        }
+                    )
+                }
             }
         }
     }
+    
+    private func determineViewState() -> CleanerViewState {
+        guard featuresService.cleanerEnabled else {
+            return .locked
+        }
+        return cleanerService.viewState
+    }
+    
+    private var loadingView: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+                .scaleEffect(1.2)
+            
+            AppText("Checking feature availability...")
+                .font(.BaseRegular)
+                .foregroundColor(.DefaultText)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.DefaultBackground)
+    }
 }
+
 #Preview {
     CleanerTabView(cleanerService: CleanerService())
 }
