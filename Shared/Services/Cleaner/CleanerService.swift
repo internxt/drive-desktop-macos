@@ -20,7 +20,7 @@ class CleanerService: ObservableObject {
     @Published var cleanupResult: [CleanupResult] = []
     @Published var currentCleaningProgress: CleanupProgress?
     @Published var isCancelling: Bool = false
-    @Published var viewState: CleanerViewState = .scanning
+    @Published var viewState: CleanerViewState = .locked
     
     private let connectionService: XPCConnectionService
     private let helperService: HelperManagementService

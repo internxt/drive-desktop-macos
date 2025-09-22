@@ -303,7 +303,7 @@ final class CleanupEngine {
                     await self.concurrencySemaphore.wait()
                     defer { Task { await self.concurrencySemaphore.signal() } }
                     
-                    let verification = await self.fileOperations.verifyFile(file.path, options: options)
+                    let verification = await self.fileOperations.verifyFile(file.path, options: options, shouldbeVerifyInUseFile: true)
                     return verification.exists && !verification.shouldSkip ? file : nil
                 }
             }

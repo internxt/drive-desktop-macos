@@ -81,7 +81,56 @@ struct CleanupOptions: Codable {
     static let `default` = CleanupOptions(
         exclusionRules: [
             ExclusionRule(type: .fileName, pattern: "Internxt", caseSensitive: false),
-            ExclusionRule(type: .directoryName, pattern: "internxt", caseSensitive: false)
+            ExclusionRule(type: .directoryName, pattern: "internxt", caseSensitive: false),
+            
+      
+            ExclusionRule(type: .fileName, pattern: "*LaunchServices*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*.csstore", caseSensitive: false),
+            
+           
+            ExclusionRule(type: .fileName, pattern: "*iconservices*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "com.apple.iconservices.store", caseSensitive: false),
+       
+            ExclusionRule(type: .directoryName, pattern: "*Spotlight*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*Spotlight*", caseSensitive: false),
+            
+       
+            ExclusionRule(type: .directoryName, pattern: "CloudKit", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "com.apple.bird", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*CloudKit*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*icloud*", caseSensitive: false),
+            
+       
+            ExclusionRule(type: .directoryName, pattern: "*kext*", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "*kernel*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*.kext", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "com.apple.kext.caches", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "com.apple.kernelcaches", caseSensitive: false),
+            
+        
+            ExclusionRule(type: .directoryName, pattern: "*preboot*", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "*boot*", caseSensitive: false),
+            
+            
+            ExclusionRule(type: .directoryName, pattern: "TouchIconCache", caseSensitive: false),
+            
+            
+            ExclusionRule(type: .fileName, pattern: "com.apple.LaunchServices*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "com.apple.iconservices*", caseSensitive: false),
+        
+            ExclusionRule(type: .directoryName, pattern: "CrashReporter", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "DiagnosticReports", caseSensitive: false),
+       
+            ExclusionRule(type: .fileName, pattern: "*.tmp", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*.lock", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "*.pid", caseSensitive: false),
+            
+            ExclusionRule(type: .fileName, pattern: "com.apple.*.plist", caseSensitive: false),
+            
+          
+            ExclusionRule(type: .directoryName, pattern: "com.apple.kext.caches", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "com.apple.kernelcaches", caseSensitive: false),
+            ExclusionRule(type: .directoryName, pattern: "com.apple.preboot", caseSensitive: false)
         ],
         skipHiddenFiles: true,
         skipSystemFiles: true,
@@ -89,7 +138,6 @@ struct CleanupOptions: Codable {
         dryRun: false
     )
 }
-
 // MARK: - Error Types
 
 enum CleanerError: Error, LocalizedError {

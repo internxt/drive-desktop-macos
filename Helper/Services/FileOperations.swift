@@ -12,7 +12,7 @@ import os
 // MARK: - File Operations Protocol
 
 protocol FileOperationsProtocol {
-    func verifyFile(_ path: String, options: CleanupOptions) async -> FileVerification
+    func verifyFile(_ path: String, options: CleanupOptions,shouldbeVerifyInUseFile:Bool) async -> FileVerification
     func shouldExcludeFile(_ path: String, options: CleanupOptions) async -> Bool
     func deleteFile(at path: String) async throws -> UInt64
 }
@@ -23,7 +23,7 @@ final class FileOperationsManager: FileOperationsProtocol {
     private let logger = Logger(subsystem: "com.internxt.cleaner", category: "FileOperations")
     private let excludedPathsCache = LRUCache<String, Bool>(maxSize: 1000)
     
-    func verifyFile(_ path: String, options: CleanupOptions) async -> FileVerification {
+    func verifyFile(_ path: String, options: CleanupOptions,shouldbeVerifyInUseFile:Bool = false) async -> FileVerification {
         var isDirectory: ObjCBool = false
         guard fileManager.fileExists(atPath: path, isDirectory: &isDirectory) else {
             return FileVerification(exists: false, canDelete: false, size: 0, shouldSkip: false)
@@ -32,6 +32,12 @@ final class FileOperationsManager: FileOperationsProtocol {
         guard !isDirectory.boolValue else {
             return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
         }
+        if shouldbeVerifyInUseFile {
+            if await isFileInUse(path) {
+                return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
+            }
+        }
+
         
         let url = URL(fileURLWithPath: path)
         do {
@@ -116,6 +122,22 @@ final class FileOperationsManager: FileOperationsProtocol {
     
     func clearCache() async {
         await excludedPathsCache.clear()
+    }
+    
+    private func isFileInUse(_ path: String) async -> Bool {
+        let task = Process()
+        task.launchPath = "/usr/sbin/lsof"
+        task.arguments = [path]
+        task.standardOutput = Pipe()
+        task.standardError = Pipe()
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            return task.terminationStatus == 0
+        } catch {
+            return false
+        }
     }
 }
 
@@ -227,7 +249,7 @@ final class FileScanner {
                 }
                 
                 // File verification and exclusion
-                let verification = await self.fileOperations.verifyFile(fileURL.path, options: options)
+                let verification = await self.fileOperations.verifyFile(fileURL.path, options: options, shouldbeVerifyInUseFile: false)
                 if verification.shouldSkip || !verification.exists {
                     continue
                 }

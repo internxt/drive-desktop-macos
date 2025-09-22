@@ -23,7 +23,7 @@ struct CleanerTabView: View {
             if featuresService.isLoading {
                 loadingView
             } else {
-                switch determineViewState() {
+                switch cleanerService.viewState {
                 case .locked:
                     LockedFeatureOverlay(isVisible: true)
                 case .scanning:
@@ -46,14 +46,17 @@ struct CleanerTabView: View {
                     )
                 }
             }
+        }.onAppear{
+            determineViewState()
         }
     }
     
-    private func determineViewState() -> CleanerViewState {
+    private func determineViewState() {
         guard featuresService.cleanerEnabled else {
-            return .locked
+            self.cleanerService.viewState =  .locked
+            return
         }
-        return cleanerService.viewState
+        
     }
     
     private var loadingView: some View {
