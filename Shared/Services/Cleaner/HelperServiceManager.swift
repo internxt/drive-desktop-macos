@@ -109,14 +109,23 @@ class HelperManagementService: ObservableObject {
         
         do {
             try await uninstallHelper()
+            cleanerLogger.info("Helper uninstalled successfully")
+        } catch {
+            cleanerLogger.warning("Helper uninstallation failed (might not exist): \(error.localizedDescription)")
+        }
+        
+        do {
             try await Task.sleep(nanoseconds: Constants.helperRegistrationDelay * 2)
-            
+        } catch {
+            cleanerLogger.warning("Sleep interrupted: \(error.localizedDescription)")
+        }
+        
+        do {
             try serviceManager.registerHelper()
             await updateStatus()
-            
-            cleanerLogger.info("Helper re-registered successfully with status")
+            cleanerLogger.info("Helper re-registered successfully with status: \(status.userMessage)")
         } catch {
-            cleanerLogger.error("Helper reinstallation failed: \(error.localizedDescription)")
+            cleanerLogger.error("Helper registration failed: \(error.localizedDescription)")
         }
     }
     
