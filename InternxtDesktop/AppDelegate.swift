@@ -347,14 +347,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             await antivirusManager.fetchAntivirusStatus()
             await backupsService.fetchBackupStatus()
             
+            await cleanerService.reinstallHelper()
+            
             if FeaturesService.shared.cleanerEnabled {
-                let helperRegistered =
-                await cleanerService.tryRegisterHelper()
-                if helperRegistered {
-                    logger.info("✅ Cleaner helper registered successfully (feature enabled)")
-                } else {
-                    logger.warning("⚠️ Cleaner helper registration failed (feature enabled)")
-                }
+                await cleanerService.reinstallHelper()
             } else {
                 logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
             }
