@@ -292,29 +292,63 @@ final class CleanupEngine {
             await Task.yield()
         }
     }
-    
+        
     private func preValidateFiles(_ files: [CleanupFile], options: CleanupOptions) async -> [CleanupFile] {
+        guard !files.isEmpty else { return [] }
+        
         return await withTaskGroup(of: CleanupFile?.self) { group in
-            var validFiles: [CleanupFile] = []
-            validFiles.reserveCapacity(files.count)
+            let resultCollector = ResultCollector(expectedCount: files.count)
             
             for file in files {
-                group.addTask {
+                group.addTask { [weak self] in
+                    guard let self = self else { return nil }
+                    
+                    guard await self.quickFileCheck(file.path) else {
+                        return nil
+                    }
+                    
                     await self.concurrencySemaphore.wait()
                     defer { Task { await self.concurrencySemaphore.signal() } }
                     
-                    let verification = await self.fileOperations.verifyFile(file.path, options: options, shouldbeVerifyInUseFile: true)
+                    let verification = await self.fileOperations.verifyFile(
+                        file.path,
+                        options: options,
+                        shouldbeVerifyInUseFile: true
+                    )
+                    
                     return verification.exists && !verification.shouldSkip ? file : nil
                 }
             }
             
+            return await resultCollector.collectResults(from: group)
+        }
+    }
+
+    private actor ResultCollector {
+        private var validFiles: [CleanupFile] = []
+        private let expectedCount: Int
+        
+        init(expectedCount: Int) {
+            self.expectedCount = expectedCount
+            self.validFiles.reserveCapacity(expectedCount)
+        }
+        
+        func collectResults(from group: TaskGroup<CleanupFile?>) async -> [CleanupFile] {
             for await validFile in group {
                 if let file = validFile {
                     validFiles.append(file)
                 }
             }
-            
             return validFiles
         }
     }
+
+    private func quickFileCheck(_ path: String) async -> Bool {
+        return await Task.detached {
+            var isDirectory: ObjCBool = false
+            let exists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+            return exists && !isDirectory.boolValue
+        }.value
+    }
+
 }

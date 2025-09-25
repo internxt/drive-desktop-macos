@@ -52,11 +52,13 @@ struct CleanerTabView: View {
     }
     
     private func determineViewState() {
-        guard featuresService.cleanerEnabled else {
-            self.cleanerService.viewState =  .locked
-            return
+        if !featuresService.cleanerEnabled {
+            self.cleanerService.viewState = .locked
+        } else {
+            if self.cleanerService.viewState == .locked {
+                self.cleanerService.viewState = .scanning
+            }
         }
-        
     }
     
     private var loadingView: some View {

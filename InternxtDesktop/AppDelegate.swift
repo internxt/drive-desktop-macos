@@ -347,8 +347,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             await antivirusManager.fetchAntivirusStatus()
             await backupsService.fetchBackupStatus()
             
-            await cleanerService.reinstallHelper()
-            
             if FeaturesService.shared.cleanerEnabled {
                 await cleanerService.reinstallHelper()
             } else {

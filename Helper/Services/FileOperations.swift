@@ -23,32 +23,30 @@ final class FileOperationsManager: FileOperationsProtocol {
     private let logger = Logger(subsystem: "com.internxt.cleaner", category: "FileOperations")
     private let excludedPathsCache = LRUCache<String, Bool>(maxSize: 1000)
     
-    func verifyFile(_ path: String, options: CleanupOptions,shouldbeVerifyInUseFile:Bool = false) async -> FileVerification {
-        var isDirectory: ObjCBool = false
-        guard fileManager.fileExists(atPath: path, isDirectory: &isDirectory) else {
+    func verifyFile(_ path: String, options: CleanupOptions, shouldbeVerifyInUseFile: Bool = false) async -> FileVerification {
+        
+        var fileStat = stat()
+        guard stat(path, &fileStat) == 0 else {
             return FileVerification(exists: false, canDelete: false, size: 0, shouldSkip: false)
         }
         
-        guard !isDirectory.boolValue else {
+        guard (fileStat.st_mode & S_IFMT) == S_IFREG else {
             return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
         }
+        
         if shouldbeVerifyInUseFile {
-            if await isFileInUse(path) {
+            if isFileInUse(path) {
+                self.logger.info("File is in use: \(path)")
                 return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
             }
         }
-
         
-        let url = URL(fileURLWithPath: path)
-        do {
-            let values = try url.resourceValues(forKeys: [.fileAllocatedSizeKey, .isWritableKey])
-            let size = UInt64(values.fileAllocatedSize ?? 0)
-            let canDelete = values.isWritable ?? false
-            
-            return FileVerification(exists: true, canDelete: canDelete, size: size, shouldSkip: false)
-        } catch {
-            return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
-        }
+        let size = UInt64(fileStat.st_size)
+        
+        let canDelete = (fileStat.st_mode & S_IWUSR) != 0
+        
+        self.logger.info("File verified successfully: \(path)")
+        return FileVerification(exists: true, canDelete: canDelete, size: size, shouldSkip: false)
     }
     
     func shouldExcludeFile(_ path: String, options: CleanupOptions) async -> Bool {
@@ -65,7 +63,6 @@ final class FileOperationsManager: FileOperationsProtocol {
     func deleteFile(at path: String) async throws -> UInt64 {
         let url = URL(fileURLWithPath: path)
         
-        // Get file size before deletion
         let resourceValues = try url.resourceValues(forKeys: [.fileAllocatedSizeKey])
         let fileSize = UInt64(resourceValues.fileAllocatedSize ?? 0)
         
@@ -124,7 +121,7 @@ final class FileOperationsManager: FileOperationsProtocol {
         await excludedPathsCache.clear()
     }
     
-    private func isFileInUse(_ path: String) async -> Bool {
+    private func isFileInUse(_ path: String) -> Bool {
         let task = Process()
         task.launchPath = "/usr/sbin/lsof"
         task.arguments = [path]
@@ -158,7 +155,7 @@ final class FileScanner {
     private let yieldInterval: TimeInterval
     
     init(fileOperations: FileOperationsProtocol,
-         maxFilesInMemory: Int = 15_000,
+         maxFilesInMemory: Int = 50_000,
          yieldInterval: TimeInterval = 0.01) {
         self.fileOperations = fileOperations
         self.maxFilesInMemory = maxFilesInMemory
