@@ -34,12 +34,12 @@ final class FileOperationsManager: FileOperationsProtocol {
             return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
         }
         
-        if shouldbeVerifyInUseFile {
-            if isFileInUse(path) {
-                self.logger.info("File is in use: \(path)")
-                return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
-            }
-        }
+//        if shouldbeVerifyInUseFile {
+//            if isFileInUse(path) {
+//                self.logger.info("File is in use: \(path)")
+//                return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
+//            }
+//        }
         
         let size = UInt64(fileStat.st_size)
         
@@ -92,7 +92,11 @@ final class FileOperationsManager: FileOperationsProtocol {
             case .extension:
                 testValue = rule.caseSensitive ? fileExtension : fileExtension.lowercased()
             case .regex:
-                return evaluateRegexRule(pattern: pattern, testValue: path, caseSensitive: rule.caseSensitive)
+               
+                if evaluateRegexRule(pattern: pattern, testValue: path, caseSensitive: rule.caseSensitive) {
+                    return true
+                }
+                continue
             }
             
             if testValue.contains(pattern) {
@@ -102,7 +106,6 @@ final class FileOperationsManager: FileOperationsProtocol {
         
         return false
     }
-    
     private func evaluateRegexRule(pattern: String, testValue: String, caseSensitive: Bool) -> Bool {
         do {
             let regexOptions: NSRegularExpression.Options = caseSensitive ? [] : [.caseInsensitive]

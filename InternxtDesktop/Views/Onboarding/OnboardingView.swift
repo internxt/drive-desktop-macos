@@ -90,7 +90,8 @@ struct OnboardingView: View {
         case 2:
             VStack(alignment: .center) {
                 Image("folderIllustration").resizable()
-                    .scaledToFit().frame(width: 204)
+                    .scaledToFit().frame(width: 252,height: 264)
+
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         case 3:

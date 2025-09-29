@@ -108,7 +108,12 @@ struct CleanupOptions: Codable {
             ExclusionRule(type: .extension, pattern: "lock", caseSensitive: false),
             ExclusionRule(type: .extension, pattern: "pid", caseSensitive: false),
             ExclusionRule(type: .extension, pattern: "kext", caseSensitive: false),
-            ExclusionRule(type: .fileName, pattern: "com.apple.plist", caseSensitive: false)
+            ExclusionRule(type: .fileName, pattern: "plist", caseSensitive: false),
+            ExclusionRule(type: .regex, pattern: ".*kernel.*", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "boot", caseSensitive: false),
+            ExclusionRule(type: .fileName, pattern: "bird", caseSensitive: false),
+
+
 
         ],
         skipHiddenFiles: true,
@@ -160,7 +165,7 @@ struct CleanerCategories {
             trashCategory(),
             webStorageCategory(),
             webCacheCategory(),
-            testCategory()
+       //     testCategory()
         ]
     }
     
@@ -168,7 +173,7 @@ struct CleanerCategories {
     static func appCacheCategory() -> CleanupCategory {
         return CleanupCategory(
             id: "app_cache",
-            name: "Application Cache",
+            name: "App Cache",
             paths: [
                 NSHomeDirectory() + "/Library/Caches",
                 "/System/Library/Caches",
@@ -250,7 +255,7 @@ struct CleanerCategories {
         
         return CleanupCategory(
             id: "web_cache",
-            name: "Web Browser Cache",
+            name: "Web Cache",
             paths: [
                 homeDirectory + "/Library/Caches/com.apple.Safari",
                 homeDirectory + "/Library/Caches/Google/Chrome",

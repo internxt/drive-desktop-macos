@@ -40,8 +40,7 @@ struct StorageMeterView: View {
             return selectedTotalSize
         }
         else {
-            guard let result = scanResult else { return 0 }
-            return result.totalSize
+            return 0
         }
     }
     
@@ -72,9 +71,7 @@ struct StorageMeterView: View {
         else if hasSelections {
             sizeToDelete = Double(selectedTotalSize)
         }
-        else if let result = scanResult {
-            sizeToDelete = Double(result.totalSize)
-        } else {
+        else {
             return 0
         }
         

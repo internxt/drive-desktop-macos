@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "EN - Light.pdf",
+      "filename" : "EN - Light.svg",
       "idiom" : "universal"
     },
     {
@@ -11,11 +11,11 @@
           "value" : "dark"
         }
       ],
-      "filename" : "EN - Dark.pdf",
+      "filename" : "EN - Dark.svg",
       "idiom" : "universal"
     },
     {
-      "filename" : "EN - Light 1.pdf",
+      "filename" : "EN - Light 1.svg",
       "idiom" : "universal",
       "locale" : "en"
     },
@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "EN - Dark 1.pdf",
+      "filename" : "EN - Dark 1.svg",
       "idiom" : "universal",
       "locale" : "en"
     }
