@@ -13,6 +13,7 @@ enum TabView {
     case Account
     case Backup
     case Antivirus
+    case Cleaner
 }
 struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -22,6 +23,7 @@ struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var scheduleManager: ScheduledBackupManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var cleanerService: CleanerService
     public var updater: SPUUpdater? = nil
     @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
@@ -38,6 +40,7 @@ struct SettingsView: View {
                         TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
                         TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
                         TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus)
+                        TabItem(iconName: .Cleaner, label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner, iscleanerTab: true)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
@@ -141,17 +144,24 @@ struct SettingsView: View {
             )
         case .Antivirus:
             AntivirusTabView(viewModel: antivirusManager)
-        default:
-            EmptyView()
+        case .Cleaner:
+            CleanerTabView(cleanerService: cleanerService)
+ 
         }
     }
-    
-    func TabItem(iconName: AppIconName, label: String, id: TabView) -> some View {
-        return VStack(alignment: .center, spacing:2) {
-            AppIcon(iconName: iconName, size: 28, color: Color("Gray100"))
+    @ViewBuilder
+    func TabItem(iconName: AppIconName, label: String, id: TabView, iscleanerTab: Bool = false) -> some View {
+        VStack(alignment: .center, spacing: 2) {
+            if iscleanerTab {
+                Image("tabCleanerIcon")
+                    .renderingMode(.template)
+                    .foregroundColor(.DefaultText)
+                    .frame(width: 28, height: 28)
+            } else {
+                AppIcon(iconName: iconName, size: 28, color: Color("Gray100"))
+            }
             AppText(label).font(.XSMedium)
         }
-        
         .padding(.horizontal, 16)
         .padding(.vertical, 6)
         .background(Color(colorScheme == .dark ? "Gray10" : "Gray5").opacity(settingsManager.focusedTab == id ? 1 : 0))

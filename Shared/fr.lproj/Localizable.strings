@@ -23,6 +23,8 @@
 "WIDGET_SETTINGS_LOGOUT_OPTION" = "Déconnexion";
 "WIDGET_SETTINGS_QUIT_OPTION" = "Quitter";
 "WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
+"WIDGET_SETTINGS_CLEANER_OPTION" = "Cleaner";
+
 
 // Widget new option
 "WIDGET_SETTINGS_NEW_OPTION" = "Nouveau";
@@ -83,6 +85,7 @@
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Compte";
 "SETTINGS_TAB_BACKUPS_TITLE" = "Sauvegarde";
 "SETTINGS_TAB_ANTIVIRUS_TITLE" = "Antivirus";
+"SETTINGS_TAB_CLEANER_TITLE" = "Cleaner";
 "SETTINGS_DEVICE_NAME" = "Nom de l'appareil";
 "SETTINGS_CHECK_FOR_UPDATES" = "Vérifier les mises à jour";
 "SETTINGS_LAST_UPDATE_CHECK_%@" = "Dernière vérification %@";
@@ -144,8 +147,8 @@
 
 // Onboarding > Slide 1
 "ONBOARDING_SLIDE_1_TITLE" = "Internxt Desktop";
-"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Bienvenue sur Internxt Drive !";
-"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Commençons par sauvegarder tous vos fichiers et dossiers importants dans la barre latérale de votre Finder";
+"ONBOARDING_SLIDE_1_SUBTITLE_1" = "Bienvenue sur Internxt!";
+"ONBOARDING_SLIDE_1_SUBTITLE_2" = "Sauvegardez vos fichiers avec Drive, protégez-les contre les malwares avec Antivirus et optimisez les performances avec Cleaner — tout en préservant votre confidentialité.";
 "ONBOARDING_SLIDE_1_ACTION" = "Faire une visite guidée";
 
 // Onboarding > Slide 2
@@ -153,12 +156,12 @@
 "ONBOARDING_SLIDE_2_SUBTITLE" = "Votre dossier personnel Internxt Drive se trouve dans la barre latérale du Finder";
 
 // Onboarding > Slide 3
-"ONBOARDING_SLIDE_3_TITLE" = "Économisez de l'espace sur votre appareil grâce au téléchargement intelligent";
-"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Gardez les fichiers non essentiels comme **en ligne uniquement** pour économiser de l'espace sur le disque local";
-"ONBOARDING_SLIDE_3_SUBTITLE_2" = "En enregistrant uniquement en ligne, les fichiers sont automatiquement supprimés de votre appareil et téléchargés sur le cloud";
+"ONBOARDING_SLIDE_3_TITLE" = "Cleaner";
+"ONBOARDING_SLIDE_3_SUBTITLE_1" = "Libérez de l’espace localement et optimisez les performances de votre appareil.";
+"ONBOARDING_SLIDE_3_SUBTITLE_2" = "Notre nettoyeur détecte et supprime les fichiers inutiles afin que votre appareil fonctionne sans encombre.";
 
 // Onboarding > Slide 4
-"ONBOARDING_SLIDE_4_TITLE" = "Synchronisez vos appareils et accédez à vos fichiers hors ligne";
+"ONBOARDING_SLIDE_4_TITLE" = "Drive";
 "ONBOARDING_SLIDE_4_SUBTITLE_1" = "Gardez les fichiers essentiels comme **disponibles hors ligne** pour les avoir toujours sous la main";
 "ONBOARDING_SLIDE_4_SUBTITLE_2" = "En enregistrant comme disponibles hors ligne, les fichiers sont enregistrés localement et se synchronisent automatiquement sur tous vos appareils";
 
@@ -169,17 +172,17 @@
 "ONBOARDING_SLIDE_5_LIST_ITEM_2" = "Étiqueter les fichiers **uniquement en ligne** pour économiser de l'espace sur le disque dur";
 
 // Onboarding > Slide 6
-"ONBOARDING_SLIDE_6_TITLE" = "Protégez votre ordinateur contre les virus";
-"ONBOARDING_SLIDE_6_SUBTITLE" = "L'application de bureau d'Internxt propose désormais le tout nouveau Internxt Antivirus, avec lequel vous pouvez analyser et supprimer tout logiciel malveillant potentiel de votre appareil.";
+"ONBOARDING_SLIDE_6_TITLE" = "Antivirus";
+"ONBOARDING_SLIDE_6_SUBTITLE" = "Protégez votre appareil contre les malwares et les menaces en ligne.\n\nInternxt Antivirus vous protège grâce à des analyses en temps réel et une sécurité centrée sur la confidentialité.";
 
 // Onboarding > Slide 7
-"ONBOARDING_SLIDE_7_TITLE" = "Sauvegardez votre appareil dans le cloud";
-"ONBOARDING_SLIDE_7_SUBTITLE" = "Avec la fonctionnalité de sauvegarde améliorée d'Internxt, vous pouvez désormais sauvegarder en toute sécurité des dossiers dans le cloud afin de libérer de l'espace localement.";
+"ONBOARDING_SLIDE_7_TITLE" = "Backup";
+"ONBOARDING_SLIDE_7_SUBTITLE" = "Avec la fonctionnalité de sauvegarde améliorée d'Internxt, vous pouvez désormais sauvegarder en toute sécurité des dossiers dans le cloud afin de libérer de l'espace localement. Vous pouvez également ajuster la fréquence des sauvegardes selon vos besoins.";
 
 
 // Onboarding > Finish
 "ONBOARDING_FINISH_TITLE" = "Vous êtes prêt, profitez de votre confidentialité !";
-"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt Drive est prêt";
+"ONBOARDING_FINISH_SUBTITLE_1" = "Internxt est prêt";
 "ONBOARDING_FINISH_SUBTITLE_2" = "Accédez à vos fichiers stockés depuis la barre latérale";
 "ONBOARDING_FINISH_ACTION" = "Ouvrir Internxt Drive";
 
@@ -223,6 +226,49 @@
 "ANTIVIRUS_CANCEL_SCAN_CONTINUE" = "Continuer l'analyse";
 "ANTIVIRUS_SCAN_AGAIN" = "Analyser à nouveau";
 
+// Cleaner Service Errors
+"CLEANER_ERROR_CONNECTION_FAILED" = "Impossible de se connecter au service de nettoyage";
+"CLEANER_ERROR_HELPER_NOT_AVAILABLE" = "Le service d'aide n'est pas disponible";
+"CLEANER_ERROR_SCAN_FAILED" = "Erreur pendant le scan: %@";
+"CLEANER_ERROR_CLEANUP_FAILED" = "Erreur pendant le nettoyage: %@";
+"CLEANER_ERROR_OPERATION_NOT_FOUND" = "Opération introuvable";
+"CLEANER_ERROR_INVALID_DATA" = "Données invalides reçues";
+"CLEANER_ERROR_CONNECTION_TIMEOUT" = "Délai de connexion expiré";
 
+// Cleaner Error Messages
+"CLEANER_ERROR_PERMISSION_DENIED" = "Permission refusée pour: %@";
+"CLEANER_ERROR_PATH_NOT_FOUND" = "Chemin non trouvé: %@";
+"CLEANER_ERROR_FILE_IN_USE" = "Fichier en cours d'utilisation: %@";
+"CLEANER_ERROR_INTERNAL_ERROR" = "Erreur interne: %@";
+"CLEANER_ERROR_OPERATION_CANCELLED" = "Opération annulée";
+"CLEANER_ERROR_INVALID_DATA_MESSAGE" = "Données invalides: %@";
+"CLEANER_ERROR_CONFIGURATION_ERROR" = "Erreur de configuration: %@";
 
+// Cleaner View
+"CLEANER_CONFIRM_CLEANUP_TITLE" = "Confirmer le nettoyage";
+"CLEANER_CONFIRM_CLEANUP_MESSAGE" = "Cette action supprimera définitivement les fichiers sélectionnés de votre appareil. Cela ne peut pas être annulé. Veuillez confirmer pour continuer.";
+"CLEANER_DELETE_FILES" = "Supprimer les fichiers";
+"CLEANER_CLEANING_SERVICE" = "Service de Nettoyage";
+"CLEANER_OPEN_SYSTEM_SETTINGS" = "Ouvrir les Paramètres Système";
+"CLEANER_RETRY" = "Réessayer";
+"CLEANER_REINSTALL_HELPER" = "Réinstaller l'Assistant";
+"CLEANER_ERROR_TITLE" = "Erreur";
+"CLEANER_OK" = "OK";
+"CLEANER_SCANNING" = "Analyse en cours...";
+"CLEANER_CLEANING" = "Nettoyage en cours...";
+"CLEANER_CLEAN_UP" = "Nettoyer";
+"CLEANER_SCANNING_CATEGORIES" = "Analyse des catégories...";
+"CLEANER_LOADING_FILES" = "Chargement des fichiers...";
+"CLEANER_LOADING_MORE" = "Chargement...";
+"CLEANER_SELECT_ALL" = "Tout sélectionner";
+"CLEANER_CANCEL" = "Annuler";
+"CLEANER_SCANNING" = "Analyse en cours...";
+"CLEANER_SELECT_CATEGORY_PREVIEW" = "Sélectionnez une catégorie pour\nprévisualiser le contenu";
+"CLEANER_SAVE_SPACE_PERCENTAGE" = "Économisez jusqu'à %d%%\nde votre espace";
 
+"CLEANER_STOP_CLEANING" = "Arrêter le Nettoyage";
+"CLEANER_DELETED_FILES" = "Fichiers supprimés";
+"CLEANER_FREE_SPACE_GAINED" = "Espace libéré";
+"CLEANER_DEVICE_CLEAN_TITLE" = "Votre appareil est propre";
+"CLEANER_DEVICE_CLEAN_SUBTITLE" = "Aucune autre action nécessaire";
+"CLEANER_FINISH" = "Terminer";

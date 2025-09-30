@@ -47,6 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let settingsManager = SettingsTabManager()
     var scheduledManager: ScheduledBackupManager!
     let antivirusManager = AntivirusManager()
+    let cleanerService = CleanerService()
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
@@ -79,7 +80,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -206,9 +207,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             default:
                 self.logger.info("Update Info Event Received")
                 await withTaskGroup(of: Void.self) { group in
-                    group.addTask { await self.antivirusManager.fetchAntivirusStatus() }
-                    group.addTask { await self.backupsService.fetchBackupStatus() }
+                    group.addTask { await FeaturesService.shared.fetchFeaturesStatus() }
                     group.addTask { await self.usageManager.updateUsage() }
+                    group.addTask { await self.antivirusManager.fetchAntivirusStatus() }
+                    group.addTask { await self.backupsService.fetchBackupStatus()}
+                    
                 }
             }
             completion()
@@ -342,8 +345,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
 
                 
                 self.logger.info("Login success")
-                await antivirusManager.fetchAntivirusStatus()
-                antivirusManager.downloadDatabases()
                 guard let workspaces = self.authManager.availableWorkspaces else {
                     return
                 }
@@ -360,9 +361,18 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         
         Task {
+            await FeaturesService.shared.fetchFeaturesStatus()
             await self.initializeBackups()
+            await antivirusManager.fetchAntivirusStatus()
             await backupsService.fetchBackupStatus()
             
+            if FeaturesService.shared.cleanerEnabled {
+                await cleanerService.reinstallHelper()
+            } else {
+                logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
+            }
+            
+            antivirusManager.downloadDatabases()
         }
         
         self.setupWidget()
@@ -649,4 +659,3 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
 
 }
-
