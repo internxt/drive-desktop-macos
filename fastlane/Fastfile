@@ -79,7 +79,8 @@ platform :mac do
       xcargs: "ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO -allowProvisioningUpdates",
       export_xcargs: "-allowProvisioningUpdates",
       buildlog_path: "build/logs",
-      derived_data_path: "./derived_data"
+      derived_data_path: "./derived_data",
+      skip_profile_detection: true
     )
 
     # Notarize the app
@@ -181,7 +182,8 @@ platform :mac do
       xcargs: "ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO -allowProvisioningUpdates",
       export_xcargs: "-allowProvisioningUpdates",
       buildlog_path: "build/logs",
-      derived_data_path: "./derived_data"
+      derived_data_path: "./derived_data",
+      skip_profile_detection: true
     )
 
     # Notarize the app
