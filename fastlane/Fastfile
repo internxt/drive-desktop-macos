@@ -1,3 +1,4 @@
+
 require 'addressable/template'
 require 'json'
 
@@ -7,6 +8,7 @@ ENV["REPOSITORY_PROD_BRANCH"] = "main"
 ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
 
 default_platform(:mac)
+
 
 platform :mac do
 
@@ -69,18 +71,12 @@ platform :mac do
     dmg_destination_dir = "build"
       
     # Build, archive and sign the .app
-    gym(
+    build_mac_app(
+      clean: true,
+      output_directory: 'build',
+      export_method: "developer-id",
       scheme: "InternxtDesktop",
       configuration: "Beta",
-      export_method: "developer-id",
-      output_directory: "build",
-      output_name: "Internxt Drive",
-      clean: true,
-      xcargs: "ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO -allowProvisioningUpdates",
-      export_xcargs: "-allowProvisioningUpdates",
-      buildlog_path: "build/logs",
-      derived_data_path: "./derived_data",
-      skip_profile_detection: true
     )
 
     # Notarize the app
@@ -88,12 +84,11 @@ platform :mac do
       package: app_path,
       api_key_path: './app_store_key.json'
     )
-    
     final_dmg_path = "./#{dmg_destination_dir}/#{dmg_final_name}"
-    
     # Build the DMG using nodejs create-dmg package
     Dir.chdir("..") do
       sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
+      # Create a DMG directory
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
       sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
     end
@@ -121,11 +116,14 @@ platform :mac do
     dmg_asset = release_assets.find { |asset| asset["name"].include? "dmg" }
     dmg_download_url = dmg_asset["browser_download_url"]
 
+
     # Send an slack message with the new DMG ready
+    # TODO: Add changelog and latest changes from previous release
     slack(
       pretext: "Drive Desktop MacOS v#{version} is ready for QA\n<#{dmg_download_url}|Download DMG Installer>\n\nInstructions:\nLogout and then uninstall totally the previous app version to prevent unpredictable effects",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
+
 
   end
 
@@ -172,18 +170,12 @@ platform :mac do
     dmg_destination_dir = "build"
       
     # Build, archive and sign the .app
-    gym(
-      scheme: "InternxtDesktop",
-      configuration: "Release",
-      export_method: "developer-id",
-      output_directory: "build",
-      output_name: "Internxt Drive",
+    build_mac_app(
       clean: true,
-      xcargs: "ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO -allowProvisioningUpdates",
-      export_xcargs: "-allowProvisioningUpdates",
-      buildlog_path: "build/logs",
-      derived_data_path: "./derived_data",
-      skip_profile_detection: true
+      output_directory: 'build',
+      export_method: "developer-id",
+      scheme: "InternxtDesktop",
+      configuration: "Release"
     )
 
     # Notarize the app
@@ -191,12 +183,11 @@ platform :mac do
       package: app_path,
       api_key_path: './app_store_key.json'
     )
-    
     final_dmg_path = "./#{dmg_destination_dir}/#{dmg_final_name}"
-    
     # Build the DMG using nodejs create-dmg package
     Dir.chdir("..") do
       sh("create-dmg", app_path, dmg_destination_dir, "--overwrite")
+      # Create a DMG directory
       # Move the DMG to the dmg directory so we can export easily the artifact later in Github Actions
       sh("mv", "./#{dmg_destination_dir}/#{dmg_original_name}", final_dmg_path)
     end
@@ -224,11 +215,14 @@ platform :mac do
     dmg_asset = release_assets.find { |asset| asset["name"].include? "dmg" }
     dmg_download_url = dmg_asset["browser_download_url"]
 
+
     # Send an slack message with the new DMG ready
+    # TODO: Add changelog and latest changes from previous release
     slack(
       pretext: "🚀[RELEASE]🚀 Drive Desktop MacOS v#{version} production release is ready in draft mode\n<#{dmg_download_url}|Download DMG Installer>\n\nInstructions:\nLogout and then uninstall totally the previous app version to prevent unpredictable effects",
       slack_url: ENV["SLACK_WEBHOOK_MAC_TEAM"]
     )
+
 
   end
 end
