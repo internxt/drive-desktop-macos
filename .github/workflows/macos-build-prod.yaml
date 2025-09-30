@@ -7,13 +7,19 @@ on:
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   SLACK_WEBHOOK_MAC_TEAM: ${{secrets.SLACK_WEBHOOK_MAC_TEAM}}
+
 jobs:
   build:
     runs-on: macos-14
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Select Xcode 16
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+
+      - name: Show Xcode version
+        run: xcodebuild -version
 
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.7.0
@@ -47,12 +53,7 @@ jobs:
       - name: Install create-dmg
         run: npm install -g create-dmg
       
-      
       - name: Run Fastlane release
         run: fastlane prod_ci --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
-       
-
-
-          
