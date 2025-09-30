@@ -1,5 +1,4 @@
 name: Build and Sign Internxt Desktop MacOS App - Prod
-
 on:
   workflow_dispatch:
 
@@ -14,12 +13,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      
+      # Select Xcode version explicitly
       - name: Select Xcode version
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.2.0'
-
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      
+      - name: Show Xcode and Swift versions
+        run: |
+          xcodebuild -version
+          swift --version
+          xcode-select -p
+      
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
@@ -32,7 +36,7 @@ jobs:
           name: "env.local.json"
           json: ${{ secrets.JSON_ENV }}
           dir: 'InternxtDesktop/'
-
+      
       - name: Add App Store JSON
         id: create-app-store-json
         uses: jsdaniell/create-json@v1.2.2
@@ -43,17 +47,26 @@ jobs:
       # See https://github.com/actions/runner/issues/2958
       - name: Install Python Setuptools
         run: sudo -H pip install setuptools
-
+      
       - name: Install Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
+      
       - name: Install create-dmg
         run: npm install -g create-dmg
       
-      - name: Build and Sign with Fastlane (verbose)
-        run: bundle exec fastlane build_prod --verbose
+      - name: Run Fastlane release
+        run: fastlane prod_ci --verbose 2>&1 | tee build.log
         env:
           MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_PASSWORD }}
-
+      
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-logs
+          path: |
+            build.log
+            build/logs/
+            ~/Library/Logs/gym/
