@@ -146,6 +146,28 @@ actor CleanerHelperTool {
         results.reserveCapacity(selectedCategories.count)
         logger.info("Cleanup starting for \(selectedCategories.count) selected categories")
         
+        var totalEstimatedFiles = 0
+        for category in selectedCategories {
+            let estimatedFiles = max(10, Int(category.size / 50_000))
+            totalEstimatedFiles += estimatedFiles
+        }
+        
+        let progressTracker = GlobalProgressTracker(
+            totalCategories: selectedCategories.count,
+            estimatedTotalFiles: totalEstimatedFiles
+        )
+        
+        let globalProgressHandler: @Sendable (CleanupProgress) async -> Void = { categoryProgress in
+            let currentCategoryIndex = selectedCategories.firstIndex { $0.id == categoryProgress.categoryId } ?? 0
+            
+            let globalProgress = await progressTracker.createGlobalProgress(
+                categoryProgress: categoryProgress,
+                currentCategoryIndex: currentCategoryIndex
+            )
+            
+            await progressHandler(globalProgress)
+        }
+        
         for (index, category) in selectedCategories.enumerated() {
             try Task.checkCancellation()
             
@@ -154,9 +176,21 @@ actor CleanerHelperTool {
             do {
                 let result = try await cleanupEngine.cleanupCategory(category,
                                                                    options: options,
-                                                                   progressHandler: progressHandler)
+                                                                   progressHandler: globalProgressHandler)
                 results.append(result)
+                
+                await progressTracker.updateProgress(
+                    addedFiles: result.processedFiles,
+                    addedSpace: result.freedSpace
+                )
+                
                 logger.info("Completed category: \(category.name), freed: \(ByteCountFormatter.string(fromByteCount: Int64(result.freedSpace), countStyle: .file))")
+                
+                let completedProgress = await progressTracker.createCompletedProgress(
+                    categoryIndex: index,
+                    categoryName: category.name
+                )
+                await progressHandler(completedProgress)
                 
                 if index % 3 == 0 {
                     await clearCaches()
@@ -181,6 +215,9 @@ actor CleanerHelperTool {
                 results.append(errorResult)
             }
         }
+        
+        let finalProgress = await progressTracker.createFinalProgress()
+        await progressHandler(finalProgress)
         
         logger.info("Cleanup completed for all categories. Total results: \(results.count)")
         return results
@@ -454,3 +491,74 @@ actor LRUCache<Key: Hashable, Value>: CacheProtocol {
     }
 }
 
+
+
+actor GlobalProgressTracker {
+    private var processedFiles = 0
+    private var freedSpace: UInt64 = 0
+    private let totalCategories: Int
+    private let estimatedTotalFiles: Int
+    
+    init(totalCategories: Int, estimatedTotalFiles: Int) {
+        self.totalCategories = totalCategories
+        self.estimatedTotalFiles = max(estimatedTotalFiles, 1)
+    }
+    
+    func updateProgress(addedFiles: Int, addedSpace: UInt64) {
+        processedFiles += addedFiles
+        freedSpace += addedSpace
+    }
+    
+    func createGlobalProgress(
+        categoryProgress: CleanupProgress,
+        currentCategoryIndex: Int
+    ) -> CleanupProgress {
+      
+        let completedCategoriesProgress = Double(currentCategoryIndex) / Double(totalCategories)
+        let currentCategoryContribution = categoryProgress.percentage / 100.0 / Double(totalCategories)
+        let globalProgressDecimal = completedCategoriesProgress + currentCategoryContribution
+        
+        let globalPercentage = min(max(globalProgressDecimal * 100.0, 0.0), 100.0)
+        
+        let calculatedProcessedFiles = Int(globalProgressDecimal * Double(estimatedTotalFiles))
+        let actualProcessedFiles = min(calculatedProcessedFiles, estimatedTotalFiles)
+        
+        return CleanupProgress(
+            categoryId: "global",
+            categoryName: "Processing \(currentCategoryIndex + 1)/\(totalCategories): \(categoryProgress.categoryName)",
+            currentFile: categoryProgress.currentFile,
+            processedFiles: actualProcessedFiles,
+            totalFiles: estimatedTotalFiles,
+            freedSpace: freedSpace + categoryProgress.freedSpace,
+            percentage: globalPercentage
+        )
+    }
+    
+    func createCompletedProgress(categoryIndex: Int, categoryName: String) -> CleanupProgress {
+        let categoryProgress = Double(categoryIndex + 1) / Double(totalCategories)
+        let percentage = min(categoryProgress * 100.0, 100.0)
+        let calculatedProcessedFiles = Int(categoryProgress * Double(estimatedTotalFiles))
+        
+        return CleanupProgress(
+            categoryId: "global",
+            categoryName: "Completed \(categoryIndex + 1)/\(totalCategories): \(categoryName)",
+            currentFile: "Category completed",
+            processedFiles: min(calculatedProcessedFiles, estimatedTotalFiles),
+            totalFiles: estimatedTotalFiles,
+            freedSpace: freedSpace,
+            percentage: percentage
+        )
+    }
+    
+    func createFinalProgress() -> CleanupProgress {
+        return CleanupProgress(
+            categoryId: "global",
+            categoryName: "Cleanup completed",
+            currentFile: "All categories processed",
+            processedFiles: estimatedTotalFiles,
+            totalFiles: estimatedTotalFiles,
+            freedSpace: freedSpace,
+            percentage: 100.0
+        )
+    }
+}

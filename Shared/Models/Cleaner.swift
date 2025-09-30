@@ -164,8 +164,7 @@ struct CleanerCategories {
             logFilesCategory(),
             trashCategory(),
             webStorageCategory(),
-            webCacheCategory(),
-       //     testCategory()
+            webCacheCategory()
         ]
     }
     
@@ -232,7 +231,6 @@ struct CleanerCategories {
         )
     }
     
-  
     static func webStorageCategory() -> CleanupCategory {
         return CleanupCategory(
             id: "web_storage",
