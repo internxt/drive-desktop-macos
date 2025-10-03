@@ -9,7 +9,7 @@ env:
   SLACK_WEBHOOK_MAC_TEAM: ${{secrets.SLACK_WEBHOOK_MAC_TEAM}}
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
 
       - name: Checkout code
