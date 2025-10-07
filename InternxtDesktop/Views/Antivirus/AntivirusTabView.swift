@@ -7,13 +7,6 @@
 
 import SwiftUI
 
-enum ScanState: Equatable {
-    case locked
-    case options
-    case scanning
-    case results(noThreats: Bool)
-}
-
 struct AntivirusTabView: View {
     @StateObject var viewModel: AntivirusManager
     @Environment(\.colorScheme) var colorScheme
@@ -210,11 +203,11 @@ struct AntivirusTabView: View {
             })
             
             HStack {
-                scanDetail(title: "ANTIVIRUS_SCANNED_FILES", value: viewModel.scannedFiles)
+                ScanDetailView(title: "ANTIVIRUS_SCANNED_FILES", value: viewModel.scannedFiles)
                 Divider()
                     .frame(height: 40)
                     .padding(.horizontal,24)
-                scanDetail(title: "ANTIVIRUS_DETECTED_FILES", value: viewModel.detectedFiles)
+                ScanDetailView(title: "ANTIVIRUS_DETECTED_FILES", value: viewModel.detectedFiles)
             }.padding()
                 .frame(maxWidth: .infinity)
                 .background(colorScheme == .dark ? Color("Gray5") :  Color("Surface"))
@@ -271,11 +264,11 @@ struct AntivirusTabView: View {
             }
             
             HStack {
-                scanDetail(title: "ANTIVIRUS_SCANNED_FILES", value: viewModel.scannedFiles)
+                ScanDetailView(title: "ANTIVIRUS_SCANNED_FILES", value: viewModel.scannedFiles)
                 Divider()
                     .frame(height: 40)
                     .padding(.horizontal,24)
-                scanDetail(title: "ANTIVIRUS_DETECTED_FILES", value: viewModel.detectedFiles)
+                ScanDetailView(title: "ANTIVIRUS_DETECTED_FILES", value: viewModel.detectedFiles)
             }
             .padding()
             .frame(maxWidth: .infinity)
@@ -306,17 +299,7 @@ struct AntivirusTabView: View {
         .cornerRadius(8)
     }
     
-    func scanDetail(title: String, value: Int) -> some View {
-        VStack {
-            AppText("\(value)")
-                .font(.BaseMedium)
-                .foregroundColor(.Gray100)
-            
-            AppText(title)
-                .font(.SMRegular)
-                .foregroundColor(.Gray80)
-        }
-    }
+
     
     func userConfirmedRemove() {
         let selectedInfected = viewModel.infectedFiles.filter { $0.isSelected }
@@ -404,6 +387,23 @@ struct AntivirusTabView: View {
 
     
 
+}
+
+struct ScanDetailView: View {
+    let title: String
+    let value: Int
+
+    var body: some View {
+        VStack {
+            AppText("\(value)")
+                .font(.BaseMedium)
+                .foregroundColor(.Gray100)
+            
+            AppText(title)
+                .font(.SMRegular)
+                .foregroundColor(.Gray80)
+        }
+    }
 }
 
 struct AntivirusTabView_Previews: PreviewProvider {

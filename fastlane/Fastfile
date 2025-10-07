@@ -15,7 +15,7 @@ platform :mac do
   desc "Configure provisioning profiles"
   lane :setup_dev_provisioning_profiles do
     match(
-      type: "developer_id", 
+      type: "developer_id",
       readonly: true,
       app_identifier: [
         "internxt.InternxtDesktop",
@@ -58,7 +58,7 @@ platform :mac do
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
         "com.internxt.XPCBackupService"
-      ]
+      ],
     )
   
     

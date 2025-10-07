@@ -18,6 +18,7 @@ enum AppButtonType {
     case primary
     case secondary
     case danger
+    case dangerBorder
 }
 
 func getHeightBySize(size: AppButtonSize) -> CGFloat {
@@ -155,6 +156,27 @@ struct DangerAppButtonStyle: ButtonStyle {
     }
 }
 
+struct DangerBorderAppButtonStyle: ButtonStyle {
+    public var size: AppButtonSize
+    public var isExpanded: Bool
+
+    func makeBody(configuration: Self.Configuration) -> some View {
+
+        return configuration.label
+            .frame(height: getHeightBySize(size: self.size))
+            .frame(maxWidth: isExpanded ? .infinity : nil)
+            .padding(.horizontal, getPaddingBySize(size: self.size))
+            .foregroundColor(.red)
+            .background(Color.clear)
+            .cornerRadius(6)
+            .font(getTextFontBySize(size: self.size))
+            .overlay(
+                   RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.red, lineWidth: 1.5)
+               )
+    }
+}
+
 struct AppButton: View {
     public let title: String
     public let onClick: () -> Void
@@ -232,6 +254,22 @@ struct AppButton: View {
                     self.onClick()
                 }
                 .buttonStyle(DangerAppButtonStyle(size: self.size, isExpanded: self.isExpanded))
+                .disabled(!isEnabled)
+            }
+        case .dangerBorder:
+            if let icon = icon {
+                Button(action: {
+                    self.onClick()
+                }, label: {
+                    AppIcon(iconName: icon, color: .Gray80)
+                })
+                .buttonStyle(DangerBorderAppButtonStyle(size: self.size, isExpanded: self.isExpanded))
+                .disabled(!isEnabled)
+            } else {
+                Button(LocalizedStringKey(self.title)) {
+                    self.onClick()
+                }
+                .buttonStyle(DangerBorderAppButtonStyle(size: self.size, isExpanded: self.isExpanded))
                 .disabled(!isEnabled)
             }
         }

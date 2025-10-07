@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   internxt.InternxtDesktop.cleaner.helper.plist
+   InternxtDesktop
+
+   Created by Patricio Tovar on 27/8/25.
+   Copyright (c) 2025 ___ORGANIZATIONNAME___. All rights reserved.
+-->
+<plist version="1.0">
+<dict>
+    <key>BundleProgram</key>
+    <string>Contents/Resources/Helper</string>
+    <key>Label</key>
+    <string>internxt.InternxtDesktop.cleaner.helper</string>
+    <key>MachServices</key>
+    <dict>
+        <key>internxt.InternxtDesktop.cleaner.helper</key>
+        <true/>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+
+
