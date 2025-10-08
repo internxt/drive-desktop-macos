@@ -69,6 +69,28 @@ class HelperManagementService: ObservableObject {
         )
     }
     
+    func ensureHelperIsRegistered() async -> Bool {
+        cleanerLogger.info("Checking helper status...")
+        await updateStatus()
+        
+        switch status {
+        case .enabled:
+            cleanerLogger.info("Helper is already enabled and running")
+            return true
+            
+        case .requiresApproval:
+            cleanerLogger.warning("Helper requires user approval in System Settings")
+            return true
+            
+        case .notRegistered, .notFound:
+            cleanerLogger.info("Helper not registered, attempting registration...")
+            return await tryRegisterHelper()
+            
+        case .unknown(let code):
+            cleanerLogger.warning("Unknown helper status: \(code), attempting registration...")
+            return await tryRegisterHelper()
+        }
+    }
     
     func updateStatus() async {
         let newStatus = CleanerService.HelperStatusType(
