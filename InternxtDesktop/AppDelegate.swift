@@ -367,7 +367,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             await backupsService.fetchBackupStatus()
             
             if FeaturesService.shared.cleanerEnabled {
-                await cleanerService.reinstallHelper()
+                await cleanerService.ensureHelperInstalled()
             } else {
                 logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
             }
