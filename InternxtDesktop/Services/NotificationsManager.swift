@@ -121,7 +121,7 @@ class NotificationsManager: NSObject, ObservableObject {
             if let error = error {
                 appLogger.info("❌ Error sending notification: \(error.localizedDescription)")
             } else {
-                appLogger.info("✅ Notication sended: \(title)")
+                appLogger.info("✅ Notication sent: \(title)")
             }
         }
     }
