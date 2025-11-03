@@ -51,6 +51,10 @@ class BackupsService: ObservableObject {
     var currentDevice: Device? = nil
     let activityManager = ActivityManager()
     @Published var thereAreMissingFoldersToBackup = false
+    
+    private var userUuid: String? {
+        return ConfigLoader().getUser()?.uuid
+    }
     @Published var deviceResponse: Result<[Device], Error>? = nil
     @Published var foldersToBackup: [FolderToBackup] = []
     @Published var currentDeviceHasBackup = false
@@ -108,10 +112,8 @@ class BackupsService: ObservableObject {
 
         do {
             let realm = getRealm()
-            let user = ConfigLoader().getUser()
-            let userEmail = user?.email
             
-            let folderToBackupRealmObject = FolderToBackupRealmObject(url: url, status: .selected,user: userEmail)
+            let folderToBackupRealmObject = FolderToBackupRealmObject(url: url, status: .selected, user: userUuid)
             try realm.write {
                 realm.add(folderToBackupRealmObject)
             }
@@ -152,12 +154,10 @@ class BackupsService: ObservableObject {
     func restoreFolderToBackup() async {
         do {
             let realm = getRealm()
-            let user = ConfigLoader().getUser()
-            let userEmail = user?.email
             
             try realm.write {
                 let foldersToDelete = realm.objects(FolderToBackupRealmObject.self).filter { folder in
-                    folder.user == userEmail || folder.user == nil
+                    folder.user == self.userUuid || folder.user == nil
                 }
                 realm.delete(foldersToDelete)
                 
@@ -172,12 +172,10 @@ class BackupsService: ObservableObject {
     
     func initFolderToBackup() async {
         let realm = getRealm()
-        let user = ConfigLoader().getUser()
-        let userEmail = user?.email
         
         let allFolders = realm.objects(FolderToBackupRealmObject.self)
         let filteredFolders = allFolders.filter { folder in
-            folder.user == userEmail || folder.user == nil
+            folder.user == self.userUuid || folder.user == nil
         }
         
         backupFoldersToBackup = filteredFolders.map { $0.clone() }
@@ -185,12 +183,10 @@ class BackupsService: ObservableObject {
     
     @MainActor func getFoldernames() -> [String] {
         let realm = getRealm()
-        let user = ConfigLoader().getUser()
-        let userEmail = user?.email
         
         let allFolders = realm.objects(FolderToBackupRealmObject.self).sorted(byKeyPath: "createdAt", ascending: false)
         let foldernamesToBackup = allFolders.filter { folder in
-            folder.user == userEmail || folder.user == nil
+            folder.user == self.userUuid || folder.user == nil
         }
 
         var array: [String] = []
@@ -205,12 +201,10 @@ class BackupsService: ObservableObject {
 
     func loadFoldersToBackup() {
         let realm = getRealm()
-        let user = ConfigLoader().getUser()
-        let userEmail = user?.email
         
         let allFolders = realm.objects(FolderToBackupRealmObject.self).sorted(byKeyPath: "createdAt", ascending: true)
         let folderToBackupRealmObjects = allFolders.filter { folder in
-            folder.user == userEmail || folder.user == nil
+            folder.user == self.userUuid || folder.user == nil
         }
         
         var folderToBackupMissing = false
