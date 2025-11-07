@@ -35,12 +35,10 @@ class ActivityManager: ObservableObject {
     
     func clean() throws {
         activityEntries = []
-        let realm = getRealm()
-        try realm?.write{
-            realm?.deleteAll()
+        guard let realm = getRealm() else { return }
+        try realm.write {
+            realm.delete(realm.objects(ActivityEntry.self))
         }
-        
-        
     }
     
     func saveActivityEntry(entry: ActivityEntry) {

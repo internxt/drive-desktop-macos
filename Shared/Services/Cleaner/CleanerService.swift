@@ -224,6 +224,12 @@ class CleanerService: ObservableObject {
         isCancelling = false
     }
     
+    func ensureHelperInstalled() async {
+        await executeOperation(newState: .connecting) {
+            let _ = await helperService.ensureHelperIsRegistered()
+        }
+    }
+    
     func reinstallHelper() async {
         await executeOperation(newState: .connecting) {
             await helperService.reinstallHelper()

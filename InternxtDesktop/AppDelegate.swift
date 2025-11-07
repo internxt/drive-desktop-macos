@@ -48,12 +48,14 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var scheduledManager: ScheduledBackupManager!
     let antivirusManager = AntivirusManager()
     let cleanerService = CleanerService()
+    let notificationsManager = NotificationsManager.shared
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
+    var notificationsTimer: AnyCancellable?
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     
@@ -326,6 +328,17 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             })
     }
     
+    private func startNotificationsPolling() {
+        self.notificationsTimer = Timer.publish(every: 21600, on: .main, in: .common)
+            .autoconnect()
+            .sink { _ in
+                Task {
+                    await self.notificationsManager.getNotifications()
+                }
+            }
+    }
+
+    
     private func loginSuccess() {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
@@ -361,13 +374,15 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         
         Task {
+            await self.notificationsManager.getNotifications()
+            self.startNotificationsPolling()
             await FeaturesService.shared.fetchFeaturesStatus()
             await self.initializeBackups()
             await antivirusManager.fetchAntivirusStatus()
             await backupsService.fetchBackupStatus()
             
             if FeaturesService.shared.cleanerEnabled {
-                await cleanerService.reinstallHelper()
+                await cleanerService.ensureHelperInstalled()
             } else {
                 logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
             }
@@ -557,6 +572,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func cleanUpTimers() {
         self.refreshTokensTimer?.cancel()
+        self.notificationsTimer?.cancel()
     }
     
     

@@ -53,7 +53,11 @@ class CleanupViewModel: ObservableObject {
 
     // MARK: - Computed Properties
     var categories: [CleanupCategory] {
-        cleanerService.scanResult?.categories ?? []
+        let allCategories = cleanerService.scanResult?.categories ?? []
+        
+        return allCategories.sorted { category1, category2 in
+            category1.name.localizedCaseInsensitiveCompare(category2.name) == .orderedAscending
+        }
     }
     
     var selectedCategorySize: UInt64 {
@@ -638,20 +642,15 @@ extension CleanupView {
 
     private var bottomSection: some View {
         Group {
-            if cleanerService.isScanning {
-                progressView(text: "CLEANER_SCANNING")
-            } else if cleanerService.isCleaning {
-                progressView(text: "CLEANER_CLEANING")
-            } else {
-                AppButton(title: "CLEANER_CLEAN_UP") {
-                    Task {
-                        self.showModalConfirmCleanup = true
-                      
-                    }
+            
+            AppButton(title: "CLEANER_CLEAN_UP") {
+                Task {
+                    self.showModalConfirmCleanup = true
+                  
                 }
-                .disabled(!viewModel.hasAnySelections)
-                .padding(.bottom, 20)
             }
+            .disabled(!viewModel.hasAnySelections || cleanerService.isScanning || cleanerService.isCleaning)
+            .padding(.bottom, 20)
         }
     }
 
