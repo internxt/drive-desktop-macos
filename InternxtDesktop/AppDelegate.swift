@@ -71,6 +71,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
+        logSystemInformation()
         ErrorUtils.start()
                 
         NotificationCenter.default.addObserver(self,
@@ -672,6 +673,28 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         } catch {
             logger.error("❌ Error enumerating changes for \(domain.identifier.rawValue): \(error.localizedDescription)")
         }
+    }
+    
+    private func logSystemInformation() {
+        let processInfo = ProcessInfo.processInfo
+        let osVersion = processInfo.operatingSystemVersion
+        
+        var arch = "Unknown"
+        #if arch(arm64)
+        arch = "Apple Silicon (ARM64)"
+        #elseif arch(x86_64)
+        arch = "Intel (x86_64)"
+        #endif
+        
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        
+        logger.info("========================================")
+        logger.info("System Information")
+        logger.info("========================================")
+        logger.info("macOS: \(osVersion.majorVersion).\(osVersion.minorVersion).\(osVersion.patchVersion)")
+        logger.info("Architecture: \(arch)")
+        logger.info("App Version: \(appVersion)")
+        logger.info("========================================")
     }
 
 }
