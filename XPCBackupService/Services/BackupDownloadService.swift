@@ -18,17 +18,21 @@ struct BackupDownloadService {
     let backupBucket: String
     let backupDownloadProgress: Progress
     
-    func downloadDeviceBackup(deviceId: Int, downloadAt: URL) async throws {
-        let deviceBackupFolders = try await backupAPI.getBackupChilds(folderId: String(deviceId))
-        backupDownloadProgress.totalUnitCount += Int64(deviceBackupFolders.result.count)
-        for deviceBackupFolder in deviceBackupFolders.result {
+    func downloadDeviceBackup(deviceUuid: String, downloadAt: URL) async throws {
+        let deviceBackupFolders = try await backupAPI.getBackupChilds(folderUuid: deviceUuid)
+        backupDownloadProgress.totalUnitCount += Int64(deviceBackupFolders.folders.count)
+        for deviceBackupFolder in deviceBackupFolders.folders {
             let backupFolderName = try deviceBackupFolder.plainName ?? self.decryptName(name: deviceBackupFolder.name, bucketId: backupBucket)
             let backupFolderURL = self.getURLForItem(baseURL: downloadAt, itemName: backupFolderName)
             let creationDate = Time.dateFromISOString(deviceBackupFolder.createdAt) ?? Date()
             try self.createFolder(folderURL: backupFolderURL, creationDate: creationDate)
             backupDownloadProgress.completedUnitCount += 1
+            guard let deviceBackupFolderUuid = deviceBackupFolder.uuid else {
+                logger.error("❌ Failed to download backup folder cannot get folderUuid from \(backupFolderName)")
+                return
+            }
             try await self.downloadBackupFolderAtPath(
-                folderId: String(deviceBackupFolder.id),
+                folderId: deviceBackupFolderUuid,
                 downloadAtPath: backupFolderURL
             )
         }
@@ -37,8 +41,8 @@ struct BackupDownloadService {
     func downloadBackupFolderAtPath(folderId: String, downloadAtPath: URL) async throws {
       
         let folderStream = Paginator.paginate { offset, limit in
-            let response = try await backupAPI.getBackupChilds(folderId: folderId, offset: offset, limit: limit)
-            return response.result
+            let response = try await backupAPI.getBackupChilds(folderUuid: folderId, offset: offset, limit: limit)
+            return response.folders
         }
 
         for try await backupFolder in folderStream {
@@ -51,7 +55,12 @@ struct BackupDownloadService {
             logger.info("📁 Folder created at \(folderURL.path)")
             Task {
                 do {
-                    try await self.downloadBackupFolderAtPath(folderId: String(backupFolder.id), downloadAtPath: folderURL)
+                    
+                    guard let folderUuid = backupFolder.uuid else {
+                        logger.error("❌ Failed to download backup folder cannot get folderUuid from \(backupFolderName)")
+                        return
+                    }
+                    try await self.downloadBackupFolderAtPath(folderId: folderUuid, downloadAtPath: folderURL)
                 } catch {
                     logger.error("❌ Failed to download backup folder \(backupFolderName) at \(downloadAtPath.path)")
                 }
@@ -59,8 +68,8 @@ struct BackupDownloadService {
         }
 
         let fileStream = Paginator.paginate { offset, limit in
-            let response = try await backupAPI.getBackupFiles(folderId: folderId, offset: offset, limit: limit)
-            return response.result
+            let response = try await backupAPI.getBackupFiles(folderUuid: folderId, offset: offset, limit: limit)
+            return response.files
         }
 
         for try await backupFile in fileStream {
