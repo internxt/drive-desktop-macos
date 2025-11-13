@@ -53,10 +53,10 @@ struct DeleteBackupDialogView: View {
 
     func deleteBackup() throws {
         Task {
-            guard let deviceId = self.selectedDevice?.id else {
+            guard let deviceId = self.selectedDevice?.uuid else {
                 throw BackupError.cannotGetDeviceId
             }
-            let _ = try await self.backupsService.deleteBackup(deviceId: deviceId)
+            let _ = try await self.backupsService.deleteBackup(deviceUuid: deviceId)
             await backupsService.loadAllDevices()
             self.onClose()
         }

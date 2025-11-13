@@ -42,17 +42,30 @@ extension BackupContentNavigator {
             
             var moreChilds: [BackupContentItem] = []
             var moreFiles: [BackupContentItem] = []
-            if currentFiles.count >= LIMIT_PER_REQUEST {
-                moreFiles = try await self.getFolderFilesAsBackupContentItems(folderId: folderId, bucketId: bucketId, offset: currentFiles.count, limit: LIMIT_PER_REQUEST)
-            }
             
-            if currentChilds.count >= LIMIT_PER_REQUEST {
-                moreChilds =  try await self.getFolderChildsAsBackupContentItems(folderId: folderId, bucketId: bucketId, offset: currentChilds.count, limit: LIMIT_PER_REQUEST)
-            }
-            let newItems = self.currentItems + moreFiles + moreChilds
+            let needsMoreFiles = currentFiles.count >= LIMIT_PER_REQUEST
+            let needsMoreChilds = currentChilds.count >= LIMIT_PER_REQUEST
             
-            DispatchQueue.main.async {
-                self.currentItems = newItems
+            if needsMoreFiles || needsMoreChilds {
+                let folderMeta = try await backupAPI.getBackupFolderMeta(folderId: folderId.toString())
+                
+                guard let folderUuid = folderMeta.uuid else {
+                    return
+                }
+                
+                if needsMoreFiles {
+                    moreFiles = try await self.getFolderFilesAsBackupContentItems(folderUuid: folderUuid, bucketId: bucketId, offset: currentFiles.count, limit: LIMIT_PER_REQUEST)
+                }
+                
+                if needsMoreChilds {
+                    moreChilds = try await self.getFolderChildsAsBackupContentItems(folderUuid: folderUuid, bucketId: bucketId, offset: currentChilds.count, limit: LIMIT_PER_REQUEST)
+                }
+                
+                let newItems = self.currentItems + moreFiles + moreChilds
+                
+                DispatchQueue.main.async {
+                    self.currentItems = newItems
+                }
             }
         }
         
@@ -71,8 +84,15 @@ extension BackupContentNavigator {
                     self.loadingItems = true
                     self.currentItems = []
                 }
-                async let childs = try self.getFolderChildsAsBackupContentItems(folderId: folderId, bucketId: bucketId, offset: 0, limit: LIMIT_PER_REQUEST)
-                async let files = try self.getFolderFilesAsBackupContentItems(folderId: folderId, bucketId: bucketId, offset: 0, limit: LIMIT_PER_REQUEST)
+                                
+                let folderMeta = try await backupAPI.getBackupFolderMeta(folderId: folderId.toString())
+
+                guard let folderUuid = folderMeta.uuid  else {
+                    return
+                }
+                
+                async let childs = try self.getFolderChildsAsBackupContentItems(folderUuid: folderUuid, bucketId: bucketId, offset: 0, limit: LIMIT_PER_REQUEST)
+                async let files = try self.getFolderFilesAsBackupContentItems(folderUuid: folderUuid, bucketId: bucketId, offset: 0, limit: LIMIT_PER_REQUEST)
                 
                 let results = try await [childs, files]
                 DispatchQueue.main.async {
@@ -92,22 +112,21 @@ extension BackupContentNavigator {
         
     
         
-        private func getFolderChildsAsBackupContentItems(folderId: Int, bucketId: String, offset: Int, limit: Int) async throws -> [BackupContentItem]   {
-            let childs = try await backupAPI.getBackupChilds(folderId: folderId.toString(), offset: offset, limit: limit)
+        private func getFolderChildsAsBackupContentItems(folderUuid: String, bucketId: String, offset: Int, limit: Int) async throws -> [BackupContentItem] {
+            let childs = try await backupAPI.getBackupChilds(folderUuid:folderUuid, offset: offset, limit: limit)
             
-            
-            return childs.result.map{child in
+            return childs.folders.map { child in
                 let name = child.plainName ?? self.decryptName(name: child.name, bucketId: bucketId)
                 return BackupContentItem(id: child.id.toString(), name: name, type: "folder")
             }
         }
         
-        private func getFolderFilesAsBackupContentItems(folderId: Int, bucketId: String, offset: Int, limit: Int) async throws -> [BackupContentItem] {
-            let files = try await backupAPI.getBackupFiles(folderId: folderId.toString(), offset: offset, limit: limit)
+        private func getFolderFilesAsBackupContentItems(folderUuid: String, bucketId: String, offset: Int, limit: Int) async throws -> [BackupContentItem] {
+            let files = try await backupAPI.getBackupFiles(folderUuid: folderUuid, offset: offset, limit: limit)
             
-            return files.result.map{file in
+            return files.files.map { file in
                 let name = file.plainName ?? self.decryptName(name: file.name, bucketId: bucketId)
-                return BackupContentItem(id: file.fileId,name: name, type: file.type ?? "")
+                return BackupContentItem(id: file.fileId, name: name, type: file.type ?? "")
             }
         }
         

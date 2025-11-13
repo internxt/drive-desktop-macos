@@ -333,16 +333,16 @@ class BackupsService: ObservableObject {
         
     }
 
-    func deleteBackup(deviceId: Int?) async throws -> Bool {
-        guard let deviceId = deviceId else {
+    func deleteBackup(deviceUuid: String?) async throws -> Bool {
+        guard let deviceUuid = deviceUuid else {
             throw BackupError.cannotGetDeviceId
         }
 
         var foldersIds: [Int] = []
 
-        let getFoldersResponse = try await APIFactory.getNewBackupsClient().getBackupChilds(folderId: "\(deviceId)")
+        let getFoldersResponse = try await APIFactory.getNewBackupsClient().getBackupChilds(folderUuid: "\(deviceUuid)")
 
-        foldersIds = getFoldersResponse.result.map { result in
+        foldersIds = getFoldersResponse.folders.map { result in
             return result.id
         }
 
@@ -525,7 +525,7 @@ class BackupsService: ObservableObject {
         xpcBackupService.downloadDeviceBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
-            deviceId:device.id,
+            deviceUuid:device.uuid,
             bucketId: deviceBucketId,
             with: {result, error in
                 if error == nil {

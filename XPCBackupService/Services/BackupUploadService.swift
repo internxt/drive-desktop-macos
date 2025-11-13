@@ -182,9 +182,9 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
                 do {
-                    let parentChilds = try await backupNewAPI.getBackupChilds(folderId: "\(safeRemoteParentId)")
+                    let parentChilds = try await backupNewAPI.getBackupChilds(folderUuid: "\(safeRemoteParentUuid)")
 
-                    let folder = parentChilds.result.first { currentFolder in
+                    let folder = parentChilds.folders.first { currentFolder in
                         currentFolder.plainName == foldername && currentFolder.removed == false
                     }
 

@@ -3111,7 +3111,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = "feature/notifications-api";
+				branch = feature/workspaces;
 				kind = branch;
 			};
 		};

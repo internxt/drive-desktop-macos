@@ -175,7 +175,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     @objc func downloadDeviceBackup(
         downloadAt downloadAtURL: String,
         networkAuth: String,
-        deviceId: Int,
+        deviceUuid: String,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
@@ -204,7 +204,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         )
         Task {
             do {
-                try await backupDownloadService.downloadDeviceBackup(deviceId: deviceId, downloadAt: downloadAtURL)
+                try await backupDownloadService.downloadDeviceBackup(deviceUuid: deviceUuid, downloadAt: downloadAtURL)
                 self.downloadOperationQueue.addBarrierBlock {
                     logger.info("Download operations completed")
                     self.backupDownloadStatus = .Done
