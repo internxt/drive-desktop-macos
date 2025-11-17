@@ -49,17 +49,22 @@ struct EnumerateFolderItemsUseCase {
                 let folderId = self.enumeratedItemIdentifier == .rootContainer ? user.root_folder_id.toString() : self.enumeratedItemIdentifier.rawValue
                 var items: Array<NSFileProviderItem> = Array()
                 
-                let folders = try await driveAPI.getFolderFolders(folderId: folderId, offset: self.getOffset(), limit: limit)
-                let files = try await driveAPI.getFolderFiles(folderId: folderId, offset: self.getOffset(), limit: limit)
+                
+                let folderMeta = try await driveAPI.getFolderMetaById(id: folderId)
+
+                guard let folderUuid = folderMeta.uuid  else {
+                    throw UploadFileUseCaseError.InvalidParentUUID
+                }
+     
+                let folders = try await driveAPI.getFolderFolders(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
+                let files = try await driveAPI.getFolderFiles(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
+                
+                let hasMoreFiles = files.files.count == limit;
+                let hasMoreFolders = folders.folders.count == limit
                 
                 
                 
-                let hasMoreFiles = files.result.count == limit;
-                let hasMoreFolders = folders.result.count == limit
-                
-                
-                
-                folders.result.forEach{ (folder) in
+                folders.folders.forEach{ (folder) in
                     if folder.status != "EXISTS" {
                         return
                     }
@@ -87,7 +92,7 @@ struct EnumerateFolderItemsUseCase {
                     items.append(item)
                 }
                 
-                files.result.forEach{ (file) in
+                files.files.forEach{ (file) in
                     if file.status != "EXISTS" {
                         return
                     }

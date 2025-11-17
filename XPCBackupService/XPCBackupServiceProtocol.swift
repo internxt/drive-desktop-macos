@@ -14,7 +14,7 @@ import Foundation
     func downloadDeviceBackup(
         downloadAt downloadAtURL: String,
         networkAuth: String,
-        deviceId: Int,
+        deviceUuid: String,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     )
