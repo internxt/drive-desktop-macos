@@ -149,9 +149,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             do {
                 let refreshTokenCheckResult = try authManager.needRefreshToken()
                 logger.info("Auth token: Created at \(refreshTokenCheckResult.authTokenCreationDate), days until expiration: \(refreshTokenCheckResult.authTokenDaysUntilExpiration)")
-                
-                logger.info("Legacy auth token: Created at \(refreshTokenCheckResult.legacyAuthTokenCreationDate), days until expiration: \(refreshTokenCheckResult.legacyAuthTokenDaysUntilExpiration)")
-                
+                                
                 
                 if refreshTokenCheckResult.needsRefresh {
                     try await authManager.refreshTokens()
@@ -440,7 +438,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     parentProgress.addChild(useCaseProgress, withPendingUnitCount: 100)
                 }
             } catch {
-                logger.error("❌ Error in createItem: \(error.localizedDescription)")
+                logger.error("❌ Error in createItem: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, error)
             }
         }

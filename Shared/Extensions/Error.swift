@@ -17,8 +17,13 @@ extension Error {
     
     func getErrorDescription() -> String {
         if let apiClientError = self as? APIClientError {
-            let responseBody = String(decoding: apiClientError.responseBody, as: UTF8.self)
-            return "APIClientError \(apiClientError.statusCode) - \(responseBody)"
+            let parts = [
+                "APIClientError \(apiClientError.statusCode)",
+                apiClientError.message,
+                apiClientError.responseBody.isEmpty ? nil : String(decoding: apiClientError.responseBody, as: UTF8.self)
+            ].compactMap { $0 }
+            
+            return parts.joined(separator: " | ")
         }
         return self.localizedDescription
     }

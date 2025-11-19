@@ -97,9 +97,6 @@ public struct ConfigLoader {
         
     }
     
-    public func getLegacyAuthToken() -> String? {
-        return self.getFromUserDefaults(key: "LegacyAuthToken")
-    }
     
     public func getAuthToken() -> String? {
         return self.getFromUserDefaults(key: "AuthToken")
@@ -162,20 +159,11 @@ public struct ConfigLoader {
         
     }
     
-    public func setLegacyAuthToken(legacyAuthToken: String) throws -> Void {
-        let saved = self.saveToUserDefaults(key: "LegacyAuthToken", value: legacyAuthToken)
-        
-        if saved == false {
-            throw ConfigLoaderError.CannotSaveAuthToken
-        }
-    }
+
     
-    public func removeLegacyAuthToken() throws -> Void  {
+    public func removeLegacyAuthToken() -> Void  {
         let removed = self.removeFromUserDefaults(key: "LegacyAuthToken")
-        
-        if removed == false {
-            throw ConfigLoaderError.CannotRemoveKey
-        }
+        //keep to remove value
     }
     
     public func setMnemonic(mnemonic: String) throws -> Void {
