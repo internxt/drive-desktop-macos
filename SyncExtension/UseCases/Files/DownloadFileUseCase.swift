@@ -27,6 +27,8 @@ struct DownloadFileUseCase {
     private let encryptedFileDestinationURL: URL
     private let itemIdentifier: NSFileProviderItemIdentifier
     private let activityManager: ActivityManager
+    private let maxRetries: Int = 3
+    private let baseRetryDelay: TimeInterval = 1.0
     init(networkFacade: NetworkFacade,
          user: DriveUser,
          activityManager: ActivityManager,
@@ -46,48 +48,81 @@ struct DownloadFileUseCase {
     
     
     
-    private func trackStart(driveFile: DriveFile, processIdentifier: String) -> Date {
-        let event = DownloadStartedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId
-        )
-        
-
-        
-        return Date()
+    private func shouldRetry(error: Error) -> Bool {
+      
+        if let apiError = error as? APIClientError {
+            let statusCode = apiError.statusCode
+            // Don't retry: 400 errors
+            if statusCode >= 400 && statusCode < 500 {
+                return false
+            }
+            return true
+        }
+        return true
     }
     
-    private func trackEnd(driveFile: DriveFile, processIdentifier: String, startedAt: Date) {
-
-        let event = DownloadCompletedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
-        
- 
+    private func getFileMetaWithRetry(
+        uuid: String,
+        maxRetries: Int,
+        currentAttempt: Int = 1
+    ) async throws -> GetFileMetaByIdResponse {
+        do {
+            return try await driveNewAPI.getFileMetaByUuid(uuid: uuid)
+        } catch {
+            if currentAttempt < maxRetries && shouldRetry(error: error) {
+                let delay = baseRetryDelay * pow(2.0, Double(currentAttempt - 1))
+                self.logger.warning("⚠️ Failed to get file metadata for \(uuid) (attempt \(currentAttempt)). Retrying in \(delay) seconds...")
+                try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                return try await getFileMetaWithRetry(
+                    uuid: uuid,
+                    maxRetries: maxRetries,
+                    currentAttempt: currentAttempt + 1
+                )
+            } else {
+                if currentAttempt >= maxRetries {
+                    self.logger.error("❌ All retry attempts failed to get file metadata for \(uuid) after \(maxRetries) attempts")
+                }
+                throw error
+            }
+        }
     }
     
-    private func trackError(driveFile: DriveFile,processIdentifier: String, error: any Error) {
-        let event = DownloadErrorEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            error: error
-        )
-        
-    
+    private func downloadWithRetry(
+        file: GetFileMetaByIdResponse,
+        progress: Progress,
+        progressHandler: @escaping (Double) -> Void,
+        maxRetries: Int,
+        currentAttempt: Int = 1
+    ) async throws -> URL {
+        do {
+            return try await networkFacade.downloadFile(
+                bucketId: file.bucket,
+                fileId: file.fileId,
+                encryptedFileDestination: encryptedFileDestinationURL,
+                destinationURL: destinationURL,
+                progressHandler: { completedProgress in
+                    let maxProgress = 0.99
+                    progressHandler(completedProgress * maxProgress)
+                },
+                debug: true
+            )
+        } catch {
+            if currentAttempt < maxRetries {
+                let delay = baseRetryDelay * pow(2.0, Double(currentAttempt - 1))
+                self.logger.warning("⚠️ Attempt \(currentAttempt) failed for \(itemIdentifier.rawValue). Retrying in \(delay) seconds...")
+                try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                return try await downloadWithRetry(
+                    file: file,
+                    progress: progress,
+                    progressHandler: progressHandler,
+                    maxRetries: maxRetries,
+                    currentAttempt: currentAttempt + 1
+                )
+            } else {
+                self.logger.error("❌ All retry attempts failed for \(itemIdentifier.rawValue) after \(maxRetries) attempts")
+                throw error
+            }
+        }
     }
  
     public func run() -> Progress {
@@ -104,7 +139,7 @@ struct DownloadFileUseCase {
                     progress.completedUnitCount = Int64(progressPercentage)
                 }
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
-                let file = try await driveNewAPI.getFileMetaByUuid(uuid: itemIdentifier.rawValue)
+                let file = try await getFileMetaWithRetry(uuid: itemIdentifier.rawValue, maxRetries: maxRetries)
                 
                 driveFile = DriveFile(
                     uuid: file.uuid,
@@ -120,20 +155,15 @@ struct DownloadFileUseCase {
                 )
                 
             
-                guard let driveFileUnrawpped = driveFile else {
+                guard driveFile != nil else {
                     throw DownloadFileUseCaseError.DriveFileMissing
                 }
-                let trackStartedAt = trackStart(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid)
-                let decryptedFileURL = try await networkFacade.downloadFile(
-                    bucketId: file.bucket,
-                    fileId: file.fileId,
-                    encryptedFileDestination: encryptedFileDestinationURL,
-                    destinationURL: destinationURL,
-                    progressHandler: { completedProgress in
-                        let maxProgress = 0.99
-                        progressHandler(completedProgress: completedProgress * maxProgress)
-                    },
-                    debug: true
+
+                let decryptedFileURL = try await downloadWithRetry(
+                    file: file,
+                    progress: progress,
+                    progressHandler: progressHandler,
+                    maxRetries: maxRetries
                 )
                 
                 
@@ -151,7 +181,7 @@ struct DownloadFileUseCase {
                     size: Int(file.size)!
                 )
                 
-                trackEnd(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid, startedAt: trackStartedAt)
+   
                 self.logger.info("Fetching file \(fileProviderItem.itemIdentifier.rawValue) inside of \(fileProviderItem.parentItemIdentifier.rawValue)")
                 
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
@@ -162,9 +192,7 @@ struct DownloadFileUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename, kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
-                if let driveFileUnwrapped = driveFile {
-                    trackError(driveFile: driveFileUnwrapped, processIdentifier: driveFileUnwrapped.uuid, error: error)
-                }
+          
                 error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
