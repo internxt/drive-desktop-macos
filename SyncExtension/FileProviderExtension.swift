@@ -154,9 +154,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 if refreshTokenCheckResult.needsRefresh {
                     try await authManager.refreshTokens()
                     logger.info("Auth tokens refreshed successfully")
-                } else {
-                    logger.info("Auth tokens doesn't need a refresh")
-                    
                 }
             } catch {
                 logger.error(["Cannot refresh tokens, something went wrong", error])
@@ -228,6 +225,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
             completionHandler(url, item, error)
             do {
+                guard FileManager.default.fileExists(atPath: encryptedFileDestinationURL.path) else {
+                    return
+                }
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
             } catch {
                 logger.error("Failed to cleanup TMP files for item \(itemIdentifier.rawValue)")
