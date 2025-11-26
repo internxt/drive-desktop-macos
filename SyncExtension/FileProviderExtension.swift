@@ -43,7 +43,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         
         logger.info("Starting sync extension with version \(Bundle.version())")
-        ErrorUtils.start()
+       
         
         self.activityManager = ActivityManager()
         guard let manager = NSFileProviderManager(for: domain) else {
@@ -76,7 +76,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
         }
 
-        ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
         self.user = user
        

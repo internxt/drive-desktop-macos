@@ -72,7 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("App starting")
         logSystemInformation()
-        ErrorUtils.start()
+      
                 
         NotificationCenter.default.addObserver(self,
         selector: #selector(handleUserLogout),
@@ -87,12 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
-        if let user = authManager.user {
-            ErrorUtils.identify(
-                email:user.email,
-                uuid: user.uuid
-            )
-        }
+
         
         
         self.activityManager.observeLatestActivityEntries()

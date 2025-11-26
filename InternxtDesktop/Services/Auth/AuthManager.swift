@@ -61,10 +61,6 @@ class AuthManager: ObservableObject {
             throw AuthError.AuthTokenNotInConfig
         }
         let refreshUserResponse = try await APIFactory.DriveNew.refreshUser(currentAuthToken: authToken)
-        ErrorUtils.identify(
-            email:refreshUserResponse.user.email,
-            uuid: refreshUserResponse.user.uuid
-        )
         try config.setAuthToken(authToken: refreshUserResponse.newToken)
         try config.setUser(user: refreshUserResponse.user)
         let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces()
@@ -133,7 +129,6 @@ class AuthManager: ObservableObject {
         try config.removeWorkspaceCredentials()
         try config.removeWorkspaceMnemonicInfo()
         user = nil
-        ErrorUtils.clean()
         isLoggedIn = false
         self.logger.info("Auth details removed correctly, user is logged out")
     }

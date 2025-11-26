@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import Sentry
 import InternxtSwiftCore
+import AppKit
 
 extension Error {
     func reportToSentry() {
         sentryLogger.error(self.getErrorDescription())
-        SentrySDK.capture(error: self)
     }
     
     func getErrorDescription() -> String {
