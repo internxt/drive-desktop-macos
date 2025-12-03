@@ -110,6 +110,7 @@
 		AA93BEC42E72328900F12334 /* CleanupOperationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA93BEC32E72328900F12334 /* CleanupOperationService.swift */; };
 		AA93BEC62E7233BA00F12334 /* ProgressPollingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA93BEC52E7233BA00F12334 /* ProgressPollingService.swift */; };
 		AA94CA6E2E99E8CE007CEBDF /* NotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94CA6D2E99E8CE007CEBDF /* NotificationsManager.swift */; };
+		AA9DF5452EDF6B2E00D1FE52 /* PackageFileHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
 		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
@@ -543,6 +544,7 @@
 		AA93BEC32E72328900F12334 /* CleanupOperationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupOperationService.swift; sourceTree = "<group>"; };
 		AA93BEC52E7233BA00F12334 /* ProgressPollingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPollingService.swift; sourceTree = "<group>"; };
 		AA94CA6D2E99E8CE007CEBDF /* NotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManager.swift; sourceTree = "<group>"; };
+		AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageFileHandle.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
 		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
@@ -1448,6 +1450,7 @@
 				E17AA02D2A8A826D00C7EE6E /* ExtensionAssets.xcassets */,
 				E198D7DD2AA9EA0A00107753 /* Utils.swift */,
 				E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */,
+				AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */,
 			);
 			path = SyncExtension;
 			sourceTree = "<group>";
@@ -2101,6 +2104,7 @@
 				E1A0AC702AB88B5A005E71D6 /* ProcessInfo.swift in Sources */,
 				E1A0AC7A2AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
 				E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */,
+				AA9DF5452EDF6B2E00D1FE52 /* PackageFileHandle.swift in Sources */,
 				E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

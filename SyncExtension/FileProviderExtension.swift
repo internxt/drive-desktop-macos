@@ -39,6 +39,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     var workspace: [AvailableWorkspace]
     var workspaceCredentials: WorkspaceCredentialsResponse?
     private static let folderCache = FolderMetaCache()
+    private lazy var packageHandler: PackageFileHandler = PackageFileHandler(tmpURL: tmpURL)
+    
     required init(domain: NSFileProviderDomain) {
         
         
@@ -354,12 +356,35 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     }
 
                     let filename = NSString(string: itemTemplate.filename)
-                    let fileCopy = self.makeTemporaryURL("plain", filename.pathExtension)
-                    try FileManager.default.copyItem(at: contentUrl, to: fileCopy)
+                    let realPackageName = filename.deletingPathExtension
+                    let (processedURL, isZippedPackage, zipURL) = try self.packageHandler.handlePackageFileIfNeeded(url: contentUrl, realFilename: realPackageName)
+                    let finalExtension = isZippedPackage ? "zip" : filename.pathExtension
+                    let fileCopy = self.makeTemporaryURL("plain", finalExtension)
+                    
+                    try FileManager.default.copyItem(at: processedURL, to: fileCopy)
+                    
+                    let attributesSize = try FileManager.default.attributesOfItem(atPath: fileCopy.path)[.size] as? Int64
+                    var templateSize: Int64? = nil
+                    if let docSize = itemTemplate.documentSize {
+                        templateSize = Int64(truncating: docSize!)
+                    }
+                    let fileSize = attributesSize ?? templateSize ?? 0
 
                     let encryptedFileDestination = self.makeTemporaryURL("encrypted", "enc")
                     let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
+                    let modifiedFilename = isZippedPackage ? "\(filename.deletingPathExtension).zip" : itemTemplate.filename
+                  
+                    let modifiedItem = FileProviderItem(
+                        identifier: itemTemplate.itemIdentifier,
+                        filename: modifiedFilename,
+                        parentId: itemTemplate.parentItemIdentifier,
+                        createdAt: (itemTemplate.creationDate ?? Date())!,
+                        updatedAt: (itemTemplate.contentModificationDate ?? Date())!,
+                        itemExtension: finalExtension,
+                        itemType: .file,
+                        size: Int(fileSize)
+                    )
 
                     func completionHandlerInternal(
                         _ item: NSFileProviderItem?,
@@ -372,6 +397,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         try? FileManager.default.removeItem(at: encryptedFileDestination)
                         try? FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
                         try? FileManager.default.removeItem(at: thumbnailFileDestination)
+                        if let zipURL = zipURL {
+                            try? FileManager.default.removeItem(at: zipURL)
+                        }
                     }
 
                     let useCaseProgress: Progress
@@ -398,7 +426,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             ),
                             user: self.user,
                             activityManager: self.activityManager,
-                            item: itemTemplate,
+                            item: modifiedItem,
                             url: fileCopy,
                             encryptedFileDestination: encryptedFileDestination,
                             thumbnailFileDestination: thumbnailFileDestination,
@@ -422,7 +450,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             networkFacade: self.networkFacade,
                             user: self.user,
                             activityManager: self.activityManager,
-                            item: itemTemplate,
+                            item: modifiedItem,
                             url: fileCopy,
                             encryptedFileDestination: encryptedFileDestination,
                             thumbnailFileDestination: thumbnailFileDestination,
