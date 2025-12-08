@@ -17,6 +17,7 @@ struct DeviceNameView: View {
             VStack(alignment: .center, spacing: 6) {
                 VStack {
                     AppText(deviceNameUnwrapped).font(.LGMedium)
+                        .accessibilityIdentifier("deviceNameUser")
                 }.frame(height: 36)
                 /* if isEditingDeviceName {
                     HStack {

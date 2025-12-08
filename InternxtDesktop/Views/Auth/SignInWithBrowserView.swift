@@ -27,11 +27,13 @@ struct SignInWithBrowserView: View {
                         AppText("AUTH_DONT_HAVE_ACCOUNT")
                             .font(.BaseMedium)
                             .foregroundColor(.Gray60)
-                        
+                            .accessibilityIdentifier("buttonDontHaveAccount")
+
                         AppText("AUTH_CREATE_ACCOUNT")
                             .font(.BaseMedium)
                             .foregroundColor(.Primary)
                             .onTapGesture {self.openSignUpUrl()}
+                            .accessibilityIdentifier("buttonCreateAccountLogin")
                         
                         
                     }.padding(.top, 24)
