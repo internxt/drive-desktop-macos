@@ -66,6 +66,7 @@ struct WidgetHeaderView: View {
                 .foregroundColor(.Gray100)
                 .lineLimit(1)
                 .help(user?.email ?? "No user found")
+                .accessibilityIdentifier("accountName")
             if(self.usageManager.loadingUsage == true && usageManager.limit == 1) {
                 HStack(alignment: .center,spacing: 4) {
                     ProgressView().progressViewStyle(.circular).controlSize(.mini)
@@ -85,10 +86,14 @@ struct WidgetHeaderView: View {
     func RightActions() -> some View {
         return HStack(alignment: .center, spacing: 0) {
             WidgetIconButtonView(iconName: .Globe, onClick: self.openDriveWeb)
+                .accessibilityIdentifier("OpenWeb")
                 
             WidgetIconButtonView(iconName: .FolderSimple, onClick: self.openFileProviderRoot)
                 .padding(.horizontal, 1)
-            WidgetIconButtonView(iconName: .Gear, onClick: self.openSettings).ifAvailable{view in
+                .accessibilityIdentifier("openVirtualDriveFolder")
+            WidgetIconButtonView(iconName: .Gear, onClick: self.openSettings)
+                .accessibilityIdentifier("openSettings")
+                .ifAvailable{view in
                 
                 if #available(macOS 12, *) {
                     view.overlay(alignment: .bottomLeading) {

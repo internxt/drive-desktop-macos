@@ -26,16 +26,23 @@ struct SettingsMenuView: View {
             ZStack {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: settingsHandler(for: .General))
+                        .accessibilityIdentifier("menuItemPreferences")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
+                        .accessibilityIdentifier("menuItemSupport")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", onPress: settingsHandler(for: .Antivirus))
+                        .accessibilityIdentifier("menuItemAntivirus")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", showNew: true, onPress:settingsHandler(for: .Cleaner))
+                        .accessibilityIdentifier("menuItemCleaner")
 
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)
                     .frame(width: 140, height: 1)
                     .background(Color.Gray10)
+                    .accessibilityIdentifier("menuItemLogout")
+             
                     SettingsMenuOption(label: "WIDGET_SETTINGS_QUIT_OPTION", onPress: handleQuitApp)
+                        .accessibilityIdentifier("menuItemQuit")
                 }
                 .padding(.vertical, 6).ifAvailable{view in
                     

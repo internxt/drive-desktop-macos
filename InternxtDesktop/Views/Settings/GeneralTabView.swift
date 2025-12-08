@@ -24,6 +24,7 @@ struct GeneralTabView: View {
                     .background(Color.clear)
                 DeviceNameView()
             }.frame(maxWidth: .infinity)
+                .accessibilityIdentifier("deviceNameForm")
             Divider()
                 .background(Color.Gray10).padding(.vertical, 24)
             VStack(alignment: .leading,spacing: 0) {
