@@ -11,6 +11,7 @@ struct FolderListItem: Identifiable {
     var name: String
     var type: String?
     var folderIsMissing: Bool?
+    var uuid: String?
 }
 
 
@@ -20,6 +21,7 @@ struct FolderListView<Empty: View>: View {
 
     @Binding var items: [FolderListItem]
     @Binding var selectedId: String?
+    @Binding var selectedUuid: String?
     @Binding var isLoading: Bool
     let onItemSingleTap: (FolderListItem) -> Void
     let onItemDoubleTap: (FolderListItem) -> Void
@@ -166,6 +168,7 @@ struct FolderListView<Empty: View>: View {
                 self.onItemDoubleTap(item)
             }, secondCount: 1, secondAction: {
                 self.selectedId = item.id
+                self.selectedUuid = item.uuid 
                 self.onItemSingleTap(item)
             }
         ))
@@ -209,6 +212,7 @@ struct FolderListView<Empty: View>: View {
             type: "jpg"
         )]),
         selectedId: .constant(nil),
+        selectedUuid: .constant(nil),
         isLoading: .constant(false),
         onItemSingleTap: {item in
             

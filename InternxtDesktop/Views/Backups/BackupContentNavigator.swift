@@ -13,7 +13,9 @@ struct BackupContentNavigator: View {
     let device: Device
     let onClose: () -> Void
     @State var selectedId: String? = nil
+    @State var selectedUuid: String? = nil
     @State var currentFolderId: String? = nil
+    @State var currentFolderUuid: String? = nil
     @StateObject var viewModel = ViewModel()
     
     @Environment(\.colorScheme) var colorScheme
@@ -23,7 +25,7 @@ struct BackupContentNavigator: View {
     
     func getBreadcrumbsLevels() -> Binding<[AppBreadcrumbLevel]> {
         let levels: [AppBreadcrumbLevel] = $viewModel.navigationLevels.wrappedValue.map{level in
-            AppBreadcrumbLevel(id: level.id, name: level.name)
+            AppBreadcrumbLevel(id: level.id, uuid: level.uuid, name: level.name)
         }
         
         return Binding(get: {
@@ -35,9 +37,11 @@ struct BackupContentNavigator: View {
             onLevelTap: {level in
                 self.selectedFolderListItem = nil
                 selectedId = nil
+                selectedUuid = nil
                 self.currentFolderId = level.id
+                self.currentFolderUuid = level.uuid
                 navigateToFolder(
-                    item: FolderListItem(id: level.id, name: level.name, type: "folder")
+                    item: FolderListItem(id: level.id, name: level.name, type: "folder",uuid: level.uuid)
                 )
             },
             levels: getBreadcrumbsLevels()
@@ -70,7 +74,7 @@ struct BackupContentNavigator: View {
         
         return Binding<[FolderListItem]>(get: {
             current.map{ item in
-                FolderListItem(id: item.id, name: item.name, type: item.type)
+                FolderListItem(id: item.id, name: item.name, type: item.type,uuid: item.uuid)
             }
         }, set: {_ in })
     }
@@ -84,6 +88,7 @@ struct BackupContentNavigator: View {
             FolderListView(
                 items: getFolderListItems(),
                 selectedId: $selectedId,
+                selectedUuid: $selectedUuid,
                 isLoading: $viewModel.loadingItems,
                 
                 onItemSingleTap: {item in
@@ -93,6 +98,7 @@ struct BackupContentNavigator: View {
                     self.selectedFolderListItem = nil
                     if item.type == "folder" {
                         self.currentFolderId = item.id
+                        self.currentFolderUuid = item.uuid
                         navigateToFolder(item: item)
                     } else {
                         // Noop, files have no action here
@@ -179,13 +185,14 @@ struct BackupContentNavigator: View {
                         try await backupsService.downloadBackup(device: device, downloadAt: url)
                     } else if let selectedFolderListItem = selectedFolderListItem {
                         guard let selectedId = selectedId else { return }
-                        
+                        guard let selectedUuid = selectedUuid else { return }
                         if selectedFolderListItem.type == "folder" {
-                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId,folderName: selectedFolderListItem.name)
+                            
+                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedUuid,folderName: selectedFolderListItem.name)
                         } else {
                             try await backupsService.downloadFileBackup(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
                         }
-                    } else if let selectedId = currentFolderId {
+                    } else if let selectedId = currentFolderUuid {
                         try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
                     }
                     
