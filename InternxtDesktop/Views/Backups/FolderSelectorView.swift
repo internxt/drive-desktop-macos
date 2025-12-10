@@ -91,8 +91,7 @@ struct FolderSelectorView: View {
             FolderListView(
                 items: self.getSelectorItems(),
                 selectedId: $folderToBackupId,
-                isLoading: .constant(false),
-                
+                selectedUuid: .constant(nil), isLoading: .constant(false),
                 onItemSingleTap: {item in},
                 onItemDoubleTap: {item in},
                 onMissingFolderURLLocated: handleMissingFolderURLLocated,
