@@ -58,6 +58,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let authManager = AuthManager()
         self.authManager = authManager
         guard let user = authManager.user else {
+            do {
+                logger.error("Cannot find user in auth manager, cannot initialize extension")
+                try authManager.signOut()
+            }catch {
+                logger.error("error to logout user \(error.localizedDescription)")
+            }
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
