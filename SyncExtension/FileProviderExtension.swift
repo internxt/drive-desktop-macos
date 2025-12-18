@@ -397,7 +397,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             code: NSFileProviderError.cannotSynchronize.rawValue,
                             userInfo: [
                                 NSLocalizedDescriptionKey: "Cannot upload empty file",
-                                NSLocalizedFailureReasonErrorKey: "The file '\(modifiedFilename)' is empty (0 bytes)",
+                                NSLocalizedFailureReasonErrorKey: "The file '\(modifiedFilename)' is empty",
                                 NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
                             ]
                         )
