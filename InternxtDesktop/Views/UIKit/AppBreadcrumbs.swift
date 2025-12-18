@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AppBreadcrumbLevel {
     let id: String
+    let uuid: String?  
     let name: String
 }
 struct AppBreadcrumbs: View {
@@ -69,12 +70,4 @@ struct AppBreadcrumbLevelView: View {
     
 }
 
-#Preview {
-    AppBreadcrumbs(onLevelTap: {_ in },levels: .constant([
-        AppBreadcrumbLevel(id: "1", name: "Root"),
-        AppBreadcrumbLevel(id: "2", name: "FolderA"),
-        AppBreadcrumbLevel(id: "3", name: "FolderB"),
-        AppBreadcrumbLevel(id: "4", name: "FolderC"),
-        AppBreadcrumbLevel(id: "5", name: "FolderD"),
-    ]))
-}
+
