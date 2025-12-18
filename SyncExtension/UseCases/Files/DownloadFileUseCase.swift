@@ -65,9 +65,9 @@ struct DownloadFileUseCase {
         uuid: String,
         maxRetries: Int,
         currentAttempt: Int = 1
-    ) async throws -> GetFileMetaByIdResponse {
+    ) async throws -> GetFileMetaByIdResponseV2 {
         do {
-            return try await driveNewAPI.getFileMetaByUuid(uuid: uuid)
+            return try await driveNewAPI.getFileMetaByUuidV2(uuid: uuid)
         } catch {
             if currentAttempt < maxRetries && shouldRetry(error: error) {
                 let delay = baseRetryDelay * pow(2.0, Double(currentAttempt - 1))
@@ -88,16 +88,20 @@ struct DownloadFileUseCase {
     }
     
     private func downloadWithRetry(
-        file: GetFileMetaByIdResponse,
+        file: GetFileMetaByIdResponseV2,
         progress: Progress,
         progressHandler: @escaping (Double) -> Void,
         maxRetries: Int,
         currentAttempt: Int = 1
     ) async throws -> URL {
         do {
+            guard let fileId = file.fileId else {
+                throw NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.noSuchItem.rawValue, userInfo: [NSLocalizedDescriptionKey: "File ID is missing"])
+            }
+            
             return try await networkFacade.downloadFile(
                 bucketId: file.bucket,
-                fileId: file.fileId,
+                fileId: fileId,
                 encryptedFileDestination: encryptedFileDestinationURL,
                 destinationURL: destinationURL,
                 progressHandler: { completedProgress in
@@ -151,7 +155,7 @@ struct DownloadFileUseCase {
                     updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
                     folderId: file.folderId,
                     status: DriveItemStatus(rawValue: file.status) ?? DriveItemStatus.exists,
-                    fileId: file.fileId
+                    fileId: file.fileId ?? ""
                 )
                 
             
@@ -159,6 +163,36 @@ struct DownloadFileUseCase {
                     throw DownloadFileUseCaseError.DriveFileMissing
                 }
 
+                if Int(file.size) ?? 0 == 0 {
+                    self.logger.info("⚠️ File \(itemIdentifier.rawValue) has size 0, skipping download")
+                    
+                    
+                    FileManager.default.createFile(atPath: destinationURL.path, contents: nil, attributes: nil)
+                    
+                    let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                    let parentIsRootFolder = file.folderId == user.root_folder_id
+                    let fileProviderItem = FileProviderItem(
+                        identifier: itemIdentifier,
+                        filename: filename,
+                        parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(file.folderId)),
+                        createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
+                        updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
+                        itemExtension: file.type,
+                        itemType: .file,
+                        size: 0
+                    )
+                    
+                    completionHandler(destinationURL, fileProviderItem, nil)
+                    progressHandler(completedProgress: 1)
+                    
+                    let uuidString = fileProviderItem.itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
+                    let objectId = try ObjectId(string: String(uuidString))
+                    activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename, kind: .download, status: .finished))
+                    
+                    self.logger.info("✅ Created empty file with identifier \(itemIdentifier.rawValue)")
+                    return
+                }
+                
                 let decryptedFileURL = try await downloadWithRetry(
                     file: file,
                     progress: progress,

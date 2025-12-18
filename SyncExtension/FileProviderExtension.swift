@@ -380,6 +380,30 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
                     let modifiedFilename = isZippedPackage ? "\(filename.deletingPathExtension).zip" : itemTemplate.filename
+                    
+                    if fileSize == 0 {
+                        logger.error("❌ Cannot upload file with size 0: \(modifiedFilename)")
+                    
+                        try? FileManager.default.removeItem(at: fileCopy)
+                        if let zipURL = zipURL {
+                            try? FileManager.default.removeItem(at: zipURL)
+                        }
+                        
+                        try? FileManager.default.removeItem(at: contentUrl)
+                        
+
+                        let error = NSError(
+                            domain: NSFileProviderErrorDomain,
+                            code: NSFileProviderError.cannotSynchronize.rawValue,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Cannot upload empty file",
+                                NSLocalizedFailureReasonErrorKey: "The file '\(modifiedFilename)' is empty (0 bytes)",
+                                NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
+                            ]
+                        )
+                        completionHandler(nil, [], false, error)
+                        return
+                    }
                   
                     let modifiedItem = FileProviderItem(
                         identifier: itemTemplate.itemIdentifier,
@@ -739,3 +763,4 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
             
 }
+

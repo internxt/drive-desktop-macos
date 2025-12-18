@@ -57,7 +57,7 @@ struct EnumerateFolderItemsUseCase {
                 }
      
                 let folders = try await driveAPI.getFolderFolders(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
-                let files = try await driveAPI.getFolderFiles(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
+                let files = try await driveAPI.getFolderFilesV2(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
                 
                 let hasMoreFiles = files.files.count == limit;
                 let hasMoreFolders = folders.folders.count == limit
