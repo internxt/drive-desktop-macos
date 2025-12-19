@@ -590,6 +590,35 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if contentHasChanged {
+            guard let newContents = newContents else {
+                logger.error("❌ No content URL provided for content change")
+                completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: NSFileWriteUnknownError))
+                return Progress()
+            }
+            do {
+                let fileAttributes = try FileManager.default.attributesOfItem(atPath: newContents.path)
+                let fileSize = fileAttributes[.size] as? Int64 ?? 0
+                
+                if fileSize == 0 {
+                    logger.error("❌ Cannot upload file with size 0: \(item.filename)")
+                    
+                    let error = NSError(
+                        domain: NSFileProviderErrorDomain,
+                        code: NSFileProviderError.cannotSynchronize.rawValue,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Cannot upload empty file",
+                            NSLocalizedFailureReasonErrorKey: "The file '\(item.filename)' is empty",
+                            NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
+                        ]
+                    )
+                    completionHandler(nil, [], false, error)
+                    return Progress()
+                }
+            } catch {
+                logger.error("❌ Failed to get file attributes: \(error.localizedDescription)")
+                completionHandler(nil, [], false, error)
+                return Progress()
+            }
             
             let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
             
@@ -620,7 +649,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     user: self.user,
                     item: item,
                     fileUuid: item.itemIdentifier.rawValue,
-                    url: newContents!,
+                    url: newContents,
                     encryptedFileDestination: encryptedFileDestination,
                     completionHandler: completionHandlerInternal,
                     progress: Progress(totalUnitCount: 100), workspaceCredentials: credentials
@@ -631,7 +660,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 user: self.user,
                 item: item,
                 fileUuid: item.itemIdentifier.rawValue,
-                url: newContents!,
+                url: newContents,
                 encryptedFileDestination: encryptedFileDestination,
                 completionHandler: completionHandlerInternal,
                 progress: Progress(totalUnitCount: 100)
