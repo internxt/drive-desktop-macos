@@ -58,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var notificationsTimer: AnyCancellable?
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private let notificationsPollingInterval: TimeInterval = 30 * 60
     
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -325,7 +326,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     private func startNotificationsPolling() {
-        self.notificationsTimer = Timer.publish(every: 21600, on: .main, in: .common)
+        self.notificationsTimer = Timer.publish(every: notificationsPollingInterval, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
                 Task {
