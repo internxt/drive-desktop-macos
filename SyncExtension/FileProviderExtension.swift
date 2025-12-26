@@ -39,11 +39,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     var workspace: [AvailableWorkspace]
     var workspaceCredentials: WorkspaceCredentialsResponse?
     private static let folderCache = FolderMetaCache()
+    private lazy var packageHandler: PackageFileHandler = PackageFileHandler(tmpURL: tmpURL)
+    
     required init(domain: NSFileProviderDomain) {
         
         
         logger.info("Starting sync extension with version \(Bundle.version())")
-        ErrorUtils.start()
+       
         
         self.activityManager = ActivityManager()
         guard let manager = NSFileProviderManager(for: domain) else {
@@ -56,6 +58,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let authManager = AuthManager()
         self.authManager = authManager
         guard let user = authManager.user else {
+            do {
+                logger.error("Cannot find user in auth manager, cannot initialize extension")
+                try authManager.signOut()
+            }catch {
+                logger.error("error to logout user \(error.localizedDescription)")
+            }
             ErrorUtils.fatal("Cannot find user in auth manager, cannot initialize extension")
         }
         
@@ -76,7 +84,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
         }
 
-        ErrorUtils.identify(email: user.email, uuid: user.uuid)
         
         self.user = user
        
@@ -149,16 +156,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             do {
                 let refreshTokenCheckResult = try authManager.needRefreshToken()
                 logger.info("Auth token: Created at \(refreshTokenCheckResult.authTokenCreationDate), days until expiration: \(refreshTokenCheckResult.authTokenDaysUntilExpiration)")
-                
-                logger.info("Legacy auth token: Created at \(refreshTokenCheckResult.legacyAuthTokenCreationDate), days until expiration: \(refreshTokenCheckResult.legacyAuthTokenDaysUntilExpiration)")
-                
+                                
                 
                 if refreshTokenCheckResult.needsRefresh {
                     try await authManager.refreshTokens()
                     logger.info("Auth tokens refreshed successfully")
-                } else {
-                    logger.info("Auth tokens doesn't need a refresh")
-                    
                 }
             } catch {
                 logger.error(["Cannot refresh tokens, something went wrong", error])
@@ -230,6 +232,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             
             completionHandler(url, item, error)
             do {
+                guard FileManager.default.fileExists(atPath: encryptedFileDestinationURL.path) else {
+                    return
+                }
                 try FileManager.default.removeItem(at: encryptedFileDestinationURL)
             } catch {
                 logger.error("Failed to cleanup TMP files for item \(itemIdentifier.rawValue)")
@@ -357,12 +362,59 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     }
 
                     let filename = NSString(string: itemTemplate.filename)
-                    let fileCopy = self.makeTemporaryURL("plain", filename.pathExtension)
-                    try FileManager.default.copyItem(at: contentUrl, to: fileCopy)
+                    let realPackageName = filename.deletingPathExtension
+                    let (processedURL, isZippedPackage, zipURL) = try self.packageHandler.handlePackageFileIfNeeded(url: contentUrl, realFilename: realPackageName)
+                    let finalExtension = isZippedPackage ? "zip" : filename.pathExtension
+                    let fileCopy = self.makeTemporaryURL("plain", finalExtension)
+                    
+                    try FileManager.default.copyItem(at: processedURL, to: fileCopy)
+                    
+                    let attributesSize = try FileManager.default.attributesOfItem(atPath: fileCopy.path)[.size] as? Int64
+                    var templateSize: Int64? = nil
+                    if let docSize = itemTemplate.documentSize {
+                        templateSize = Int64(truncating: docSize!)
+                    }
+                    let fileSize = attributesSize ?? templateSize ?? 0
 
                     let encryptedFileDestination = self.makeTemporaryURL("encrypted", "enc")
                     let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
+                    let modifiedFilename = isZippedPackage ? "\(filename.deletingPathExtension).zip" : itemTemplate.filename
+                    
+                    if fileSize == 0 {
+                        logger.error("❌ Cannot upload file with size 0: \(modifiedFilename)")
+                    
+                        try? FileManager.default.removeItem(at: fileCopy)
+                        if let zipURL = zipURL {
+                            try? FileManager.default.removeItem(at: zipURL)
+                        }
+                        
+                        try? FileManager.default.removeItem(at: contentUrl)
+                        
+
+                        let error = NSError(
+                            domain: NSFileProviderErrorDomain,
+                            code: NSFileProviderError.cannotSynchronize.rawValue,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Cannot upload empty file",
+                                NSLocalizedFailureReasonErrorKey: "The file '\(modifiedFilename)' is empty",
+                                NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
+                            ]
+                        )
+                        completionHandler(nil, [], false, error)
+                        return
+                    }
+                  
+                    let modifiedItem = FileProviderItem(
+                        identifier: itemTemplate.itemIdentifier,
+                        filename: modifiedFilename,
+                        parentId: itemTemplate.parentItemIdentifier,
+                        createdAt: (itemTemplate.creationDate ?? Date())!,
+                        updatedAt: (itemTemplate.contentModificationDate ?? Date())!,
+                        itemExtension: finalExtension,
+                        itemType: .file,
+                        size: Int(fileSize)
+                    )
 
                     func completionHandlerInternal(
                         _ item: NSFileProviderItem?,
@@ -375,6 +427,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         try? FileManager.default.removeItem(at: encryptedFileDestination)
                         try? FileManager.default.removeItem(at: encryptedThumbnailFileDestination)
                         try? FileManager.default.removeItem(at: thumbnailFileDestination)
+                        if let zipURL = zipURL {
+                            try? FileManager.default.removeItem(at: zipURL)
+                        }
                     }
 
                     let useCaseProgress: Progress
@@ -401,7 +456,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             ),
                             user: self.user,
                             activityManager: self.activityManager,
-                            item: itemTemplate,
+                            item: modifiedItem,
                             url: fileCopy,
                             encryptedFileDestination: encryptedFileDestination,
                             thumbnailFileDestination: thumbnailFileDestination,
@@ -425,7 +480,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             networkFacade: self.networkFacade,
                             user: self.user,
                             activityManager: self.activityManager,
-                            item: itemTemplate,
+                            item: modifiedItem,
                             url: fileCopy,
                             encryptedFileDestination: encryptedFileDestination,
                             thumbnailFileDestination: thumbnailFileDestination,
@@ -440,7 +495,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     parentProgress.addChild(useCaseProgress, withPendingUnitCount: 100)
                 }
             } catch {
-                logger.error("❌ Error in createItem: \(error.localizedDescription)")
+                logger.error("❌ Error in createItem: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, error)
             }
         }
@@ -708,3 +763,4 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
             
 }
+

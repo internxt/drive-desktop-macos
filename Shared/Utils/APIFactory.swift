@@ -91,14 +91,6 @@ struct APIFactory {
         return TrashAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(),workspaceHeader: workspaceHeader, gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
 
-    static var Backup: BackupAPI {
-        let configLoader = ConfigLoader()
-
-        let config = configLoader.get()
-        let token = configLoader.getLegacyAuthToken() ?? "MISSING_TOKEN"
-
-        return BackupAPI(baseUrl: config.DRIVE_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
-    }
     
     static func getBackupsClient() -> BackupAPI {
         return BackupNew

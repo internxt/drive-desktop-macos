@@ -47,16 +47,14 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private let deviceId: Int
     private let deviceUuid: String
     private let bucketId: String
-    private let authToken: String
     private let newAuthToken: String
     @Published var canDoBackup = true
 
-    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String, authToken: String, newAuthToken: String, deviceUuid: String) {
+    init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String,newAuthToken: String, deviceUuid: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
         self.deviceId = deviceId
         self.bucketId = bucketId
-        self.authToken = authToken
         self.newAuthToken = newAuthToken
         self.deviceUuid = deviceUuid
     }
@@ -182,9 +180,9 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
                 do {
-                    let parentChilds = try await backupNewAPI.getBackupChilds(folderId: "\(safeRemoteParentId)")
+                    let parentChilds = try await backupNewAPI.getBackupChilds(folderUuid: "\(safeRemoteParentUuid)")
 
-                    let folder = parentChilds.result.first { currentFolder in
+                    let folder = parentChilds.folders.first { currentFolder in
                         currentFolder.plainName == foldername && currentFolder.removed == false
                     }
 

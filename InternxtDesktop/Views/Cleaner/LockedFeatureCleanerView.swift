@@ -65,5 +65,12 @@ struct LockedFeatureModal: View {
         .padding(32)
         .frame(width: 343)
         .frame(height: 282)
+        .background(Color.DefaultBackground)
+        .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
     }
 }

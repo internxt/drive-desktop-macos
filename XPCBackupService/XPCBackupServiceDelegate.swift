@@ -10,7 +10,7 @@ import Foundation
 class XPCBackupServiceDelegate: NSObject, NSXPCListenerDelegate {
     let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupServiceDelegate")
     func listener(_ listener: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {
-        ErrorUtils.start()
+        
         
         let exportedOption = XPCBackupService()
         newConnection.exportedInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)

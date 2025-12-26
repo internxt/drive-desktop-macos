@@ -52,11 +52,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 return
             }
             
-            guard let authToken = sharedDefaults.string(forKey: LEGACY_TOKEN_KEY) else{
-                logger.error("Cannot get LegacyAuthToken")
-                reply(nil, "Cannot get LegacyAuthToken")
-                return
-            }
+
             
             guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
                 logger.error("Cannot get AuthToken")
@@ -79,7 +75,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 encryptedContentDirectory: FileManager.default.temporaryDirectory,
                 deviceId: deviceId,
                 bucketId: bucketId,
-                authToken: authToken,
                 newAuthToken: newAuthToken,
                 deviceUuid: deviceUuid
             )
@@ -175,7 +170,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     @objc func downloadDeviceBackup(
         downloadAt downloadAtURL: String,
         networkAuth: String,
-        deviceId: Int,
+        deviceUuid: String,
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
@@ -204,7 +199,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         )
         Task {
             do {
-                try await backupDownloadService.downloadDeviceBackup(deviceId: deviceId, downloadAt: downloadAtURL)
+                try await backupDownloadService.downloadDeviceBackup(deviceUuid: deviceUuid, downloadAt: downloadAtURL)
                 self.downloadOperationQueue.addBarrierBlock {
                     logger.info("Download operations completed")
                     self.backupDownloadStatus = .Done

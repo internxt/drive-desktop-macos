@@ -13,9 +13,7 @@ import ObjectivePGP
 struct NeedsTokenRefreshResult {
     var needsRefresh: Bool
     var authTokenCreationDate: Date
-    var legacyAuthTokenCreationDate: Date
     var authTokenDaysUntilExpiration: Int
-    var legacyAuthTokenDaysUntilExpiration: Int
 }
 class AuthManager: ObservableObject {
     let logger = Logger(subsystem: "com.internxt", category: "AuthManager")
@@ -51,9 +49,7 @@ class AuthManager: ObservableObject {
             return false
         }
         
-        guard config.getLegacyAuthToken() != nil else {
-            return false
-        }
+
         
         return true
     }
@@ -65,10 +61,6 @@ class AuthManager: ObservableObject {
             throw AuthError.AuthTokenNotInConfig
         }
         let refreshUserResponse = try await APIFactory.DriveNew.refreshUser(currentAuthToken: authToken)
-        ErrorUtils.identify(
-            email:refreshUserResponse.user.email,
-            uuid: refreshUserResponse.user.uuid
-        )
         try config.setAuthToken(authToken: refreshUserResponse.newToken)
         try config.setUser(user: refreshUserResponse.user)
         let workspaces =  try await APIFactory.DriveNew.getAvailableWorkspaces()
@@ -116,14 +108,12 @@ class AuthManager: ObservableObject {
         let newTokensResponse = try await APIFactory.DriveNew.refreshTokens(currentAuthToken: authToken )
         
         
-        try config.setLegacyAuthToken(legacyAuthToken: newTokensResponse.token)
         try config.setAuthToken(authToken: newTokensResponse.newToken)
     }
     
-    func storeAuthDetails(plainMnemonic: String, authToken: String, legacyAuthToken: String,privateKey: String) throws {
+    func storeAuthDetails(plainMnemonic: String, authToken: String,privateKey: String) throws {
         
         try config.setAuthToken(authToken: authToken)
-        try config.setLegacyAuthToken(legacyAuthToken: legacyAuthToken)
         try config.setMnemonic(mnemonic: plainMnemonic)
         try config.setPrivateKey(privateKey: privateKey)
         isLoggedIn = true
@@ -139,7 +129,6 @@ class AuthManager: ObservableObject {
         try config.removeWorkspaceCredentials()
         try config.removeWorkspaceMnemonicInfo()
         user = nil
-        ErrorUtils.clean()
         isLoggedIn = false
         self.logger.info("Auth details removed correctly, user is logged out")
     }
@@ -166,10 +155,6 @@ class AuthManager: ObservableObject {
         }
         
         
-        guard let base64LegacyToken = components.queryItems?.first(where: { $0.name == "token" })?.value else {
-            self.logger.info("Legacy token not found")
-            return false
-        }
         
         guard let base64Token = components.queryItems?.first(where: { $0.name == "newToken" })?.value else {
             self.logger.info("Token not found")
@@ -181,10 +166,6 @@ class AuthManager: ObservableObject {
             return false
         }
         
-        guard let decodedLegacyToken = Data(base64Encoded: base64LegacyToken.data(using: .utf8)!) else {
-            self.logger.info("Cannot decode legacy token")
-            return false
-        }
         
         guard let decodedMnemonic = Data(base64Encoded: base64Mnemonic.data(using: .utf8)!) else {
             self.logger.info("Cannot decode mnemonic")
@@ -210,8 +191,7 @@ class AuthManager: ObservableObject {
         }
         try self.storeAuthDetails(
             plainMnemonic: plainMnemonic,
-            authToken: config.get().AUTH_TOKEN ?? String(data: decodedToken, encoding: .utf8)!,
-            legacyAuthToken: config.get().LEGACY_AUTH_TOKEN ?? String(data: decodedLegacyToken, encoding: .utf8)!, privateKey: plainBase64PrivateKey
+            authToken: config.get().AUTH_TOKEN ?? String(data: decodedToken, encoding: .utf8)!, privateKey: plainBase64PrivateKey
         )
         
         return true
@@ -219,15 +199,12 @@ class AuthManager: ObservableObject {
     
     
     func needRefreshToken() throws -> NeedsTokenRefreshResult {
-        guard let legacyAuthToken = config.getLegacyAuthToken() else {
-            throw AuthError.LegacyAuthTokenNotInConfig
-        }
+
         
         guard let authToken = config.getAuthToken() else {
             throw AuthError.AuthTokenNotInConfig
         }
 
-        let decodedLegacyAuthToken = try JWTDecoder.decode(jwtToken: legacyAuthToken)
         let decodedAuthToken = try JWTDecoder.decode(jwtToken: authToken)
         
         guard let authTokenExpirationTimestamp = decodedAuthToken["exp"] as? Int else {
@@ -238,54 +215,25 @@ class AuthManager: ObservableObject {
             throw AuthError.InvalidTokenIat
         }
         
-        
-        guard let legacyAuthTokenExpirationTimestamp = decodedLegacyAuthToken["exp"] as? Int else {
-            throw AuthError.InvalidTokenExp
-        }
-        
-        guard let legacyAuthTokenCreationTimestamp = decodedLegacyAuthToken["iat"] as? Int else {
-            throw AuthError.InvalidTokenIat
-        }
-        
         let authTokenExpirationDate = Date(timeIntervalSince1970: TimeInterval(authTokenExpirationTimestamp))
         let authTokenCreationDate = Date(timeIntervalSince1970: TimeInterval(authTokenCreationTimestamp))
-        
-        let legacyAuthTokenExpirationDate = Date(timeIntervalSince1970: TimeInterval(legacyAuthTokenExpirationTimestamp))
-        let legacyAuthTokenCreationDate = Date(timeIntervalSince1970: TimeInterval(legacyAuthTokenCreationTimestamp))
-        
-        
+
         
         let daysUntilAuthTokenExpires = Date().daysUntil(authTokenExpirationDate) ?? 1
-        let daysUntilLegacyAuthTokenExpires = Date().daysUntil(legacyAuthTokenExpirationDate) ?? 1
         
         if daysUntilAuthTokenExpires <= REFRESH_TOKEN_DEADLINE {
             return NeedsTokenRefreshResult(
                 needsRefresh: true,
                 authTokenCreationDate: authTokenCreationDate,
-                legacyAuthTokenCreationDate:legacyAuthTokenCreationDate,
                 authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
-                legacyAuthTokenDaysUntilExpiration: daysUntilLegacyAuthTokenExpires
             )
         }
         
-        if daysUntilLegacyAuthTokenExpires <= REFRESH_TOKEN_DEADLINE {
-            return NeedsTokenRefreshResult(
-                needsRefresh: true,
-                authTokenCreationDate: authTokenCreationDate,
-                legacyAuthTokenCreationDate:legacyAuthTokenCreationDate,
-                authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
-                legacyAuthTokenDaysUntilExpiration: daysUntilLegacyAuthTokenExpires
-            )
-        }
 
-        
-        
         return NeedsTokenRefreshResult(
             needsRefresh: false,
             authTokenCreationDate: authTokenCreationDate,
-            legacyAuthTokenCreationDate:legacyAuthTokenCreationDate,
             authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
-            legacyAuthTokenDaysUntilExpiration: daysUntilLegacyAuthTokenExpires
         )
     }
     

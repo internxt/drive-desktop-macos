@@ -132,8 +132,10 @@ struct SettingsView: View {
         switch settingsManager.focusedTab {
         case .General:
             GeneralTabView(updater: updater)
+                .accessibilityIdentifier("itemSettingsGeneral")
         case .Account:
             AccountTabView()
+                .accessibilityIdentifier("itemSettingsAccount")
                 .environmentObject(authManager)
                 .environmentObject(usageManager)
         case .Backup:
@@ -142,10 +144,15 @@ struct SettingsView: View {
                 backupsService: backupsService,
                 scheduleManager: scheduleManager
             )
+            .accessibilityIdentifier("itemSettingsBackups")
+
+            
         case .Antivirus:
             AntivirusTabView(viewModel: antivirusManager)
+                .accessibilityIdentifier("itemSettingsAntivirus")
         case .Cleaner:
             CleanerTabView(cleanerService: cleanerService)
+                .accessibilityIdentifier("itemSettingsCleaner")
  
         }
     }

@@ -46,57 +46,13 @@ struct DownloadFileWorkspaceUseCase {
     
     
     
-    private func trackStart(driveFile: DriveFile, processIdentifier: String) -> Date {
-        let event = DownloadStartedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId
-        )
-        
-
-        return Date()
-    }
     
-    private func trackEnd(driveFile: DriveFile, processIdentifier: String, startedAt: Date) {
-
-        let event = DownloadCompletedEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
-        
-        
-
-    }
-    
-    private func trackError(driveFile: DriveFile,processIdentifier: String, error: any Error) {
-        let event = DownloadErrorEvent(
-            fileName: driveFile.name,
-            fileExtension: driveFile.type ?? "",
-            fileSize: Int64(driveFile.size),
-            fileUuid: driveFile.uuid,
-            fileId: driveFile.fileId,
-            parentFolderId: driveFile.folderId,
-            error: error
-        )
-        
-
-    }
- 
     public func run() -> Progress {
         let progress = Progress(totalUnitCount: 100)
         
         
         Task {
            
-            var driveFile: DriveFile? = nil
             do {
                 
                 func progressHandler(completedProgress: Double) {
@@ -119,24 +75,35 @@ struct DownloadFileWorkspaceUseCase {
                     return
                 }
                 
-                driveFile = DriveFile(
-                    uuid: file.uuid,
-                    plainName: file.plainName,
-                    name: file.name,
-                    type: file.type,
-                    size: Int(file.size) ?? 0,
-                    createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
-                    updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
-                    folderId: file.folderId,
-                    status: DriveItemStatus(rawValue: file.status) ?? DriveItemStatus.exists,
-                    fileId: file.fileId
-                )
-                
-            
-                guard let driveFileUnrawpped = driveFile else {
-                    throw DownloadFileUseCaseError.DriveFileMissing
+                if Int(file.size) ?? 0 == 0 {
+                    self.logger.info("⚠️ File \(itemIdentifier.rawValue) has size 0, skipping download")
+                    
+                    FileManager.default.createFile(atPath: destinationURL.path, contents: nil, attributes: nil)
+                    
+                    let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                    let parentIsRootFolder = folderUuid == rootFolderUuid
+                    let fileProviderItem = FileProviderItem(
+                        identifier: itemIdentifier,
+                        filename: filename,
+                        parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folderUuid),
+                        createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
+                        updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
+                        itemExtension: file.type,
+                        itemType: .file,
+                        size: 0
+                    )
+                    
+                    completionHandler(destinationURL, fileProviderItem, nil)
+                    progressHandler(completedProgress: 1)
+                    
+                    let uuidString = fileProviderItem.itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
+                    let objectId = try ObjectId(string: String(uuidString))
+                    activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename + "- Workspace", kind: .download, status: .finished))
+                    
+                    self.logger.info("✅ Created empty file with identifier \(itemIdentifier.rawValue)")
+                    return
                 }
-                let trackStartedAt = trackStart(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid)
+
                 let decryptedFileURL = try await networkFacade.downloadFile(
                     bucketId: file.bucket,
                     fileId: file.fileId,
@@ -164,7 +131,7 @@ struct DownloadFileWorkspaceUseCase {
                     size: Int(file.size)!
                 )
                 
-                trackEnd(driveFile: driveFileUnrawpped, processIdentifier: driveFileUnrawpped.uuid, startedAt: trackStartedAt)
+            
                 self.logger.info("Fetching file \(fileProviderItem.itemIdentifier.rawValue) inside of \(fileProviderItem.parentItemIdentifier.rawValue)")
                 
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
@@ -175,9 +142,7 @@ struct DownloadFileWorkspaceUseCase {
                 activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename + "- Workspace", kind: .download, status: .finished))
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
-                if let driveFileUnwrapped = driveFile {
-                    trackError(driveFile: driveFileUnwrapped, processIdentifier: driveFileUnwrapped.uuid, error: error)
-                }
+
                 error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
