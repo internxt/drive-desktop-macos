@@ -2813,8 +2813,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = feature/workspaces;
-				kind = branch;
+				kind = revision;
+				revision = 4e9a993b0e5a1a16f4fb4d9eba07d5c348dbf8fc;
 			};
 		};
 		E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */ = {
