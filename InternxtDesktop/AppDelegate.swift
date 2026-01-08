@@ -259,6 +259,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         await backupsService.loadAllDevices()
         self.logger.info("✅ Backups devices loaded")
         backupsService.loadFoldersToBackup()
+        self.scheduledManager.resumeBackupScheduler()
     }
     
     private func checkVolumeAndEjectIfNeeded() {
@@ -393,7 +394,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         } else {
             self.openWidget(delayed: true)
         }
-        self.scheduledManager.resumeBackupScheduler()
+     //   self.scheduledManager.resumeBackupScheduler()
         
     }
     
@@ -597,7 +598,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         } else {
             display()
         }
-        self.scheduledManager.resumeBackupScheduler()
        
         usageUpdateDebouncer.debounce { [weak self] in
             self?.updateUsage()
