@@ -394,7 +394,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         } else {
             self.openWidget(delayed: true)
         }
-     //   self.scheduledManager.resumeBackupScheduler()
         
     }
     
