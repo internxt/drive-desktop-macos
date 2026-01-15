@@ -67,17 +67,28 @@ struct UpdateFileContentWorkspaceUseCase {
                 self.logger.info("Starting upload for file \(filename)")
                 self.logger.info("Parent id: \(item.parentItemIdentifier.rawValue)")
                 
-                let result = try await networkFacade.uploadFile(
-                    input: inputStream,
-                    encryptedOutput: encryptedFileDestination,
-                    fileSize: sizeInt,
-                    bucketId: workspaceCredentials.bucket,
-                    progressHandler:{ completedProgress in
-                        progress.completedUnitCount = Int64(completedProgress * 100)
-                    }
-                )
+                var uploadFileId: String? = nil
+                var uploadSize: Int = sizeInt
                 
-                self.logger.info("Upload completed with id \(result.id)")
+                if sizeInt > 0 {
+                    let result = try await networkFacade.uploadFile(
+                        input: inputStream,
+                        encryptedOutput: encryptedFileDestination,
+                        fileSize: sizeInt,
+                        bucketId: workspaceCredentials.bucket,
+                        progressHandler:{ completedProgress in
+                            progress.completedUnitCount = Int64(completedProgress * 100)
+                        }
+                    )
+                    
+                    uploadFileId = result.id
+                    uploadSize = result.size
+                    
+                    self.logger.info("Upload completed with id \(result.id)")
+                } else {
+                    self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+                    progress.completedUnitCount = 100
+                }
                
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
                 
@@ -86,7 +97,7 @@ struct UpdateFileContentWorkspaceUseCase {
                 let existingFile = try await driveNewAPI.getFileMetaByUuid(uuid: fileUuid)
                             
                 
-                _ = try await driveNewAPI.replaceFileId(fileUuid: existingFile.uuid, newFileId: result.id, newSize: result.size)
+                _ = try await driveNewAPI.replaceFileId(fileUuid: existingFile.uuid, newFileId: uploadFileId, newSize: uploadSize)
                 
                 let fileProviderItem = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(existingFile.uuid)),
@@ -96,7 +107,7 @@ struct UpdateFileContentWorkspaceUseCase {
                     updatedAt: Time.dateFromISOString(existingFile.updatedAt) ?? Date(),
                     itemExtension: existingFile.type,
                     itemType: .file,
-                    size: result.size
+                    size: uploadSize
                 )
                                 
                 completionHandler(fileProviderItem, [], false, nil )

@@ -144,19 +144,29 @@ struct UploadFileWorkspaceUseCase {
                 self.logger.info("Starting upload for file \(filename)")
                 self.logger.info("Parent id: \(getParentId())")
                 
-                /// Upload a file to the Internxt network and returns an id used later to create a file in Drive with that fileId
-                let result = try await networkFacade.uploadFile(
-                    input: inputStream,
-                    encryptedOutput: encryptedFileDestination,
-                    fileSize: sizeInt,
-                    bucketId: workspaceCredentials.bucket,
-                    progressHandler:{ completedProgress in
-                        progress.completedUnitCount = Int64(completedProgress * 100)
-                    }
-                    ,debug: true
-                )
-                                
-                self.logger.info("Upload completed with id \(result.id)")
+                var uploadFileId: String? = nil
+                var uploadSize: Int = sizeInt
+                
+                if sizeInt > 0 {
+                    let result = try await networkFacade.uploadFile(
+                        input: inputStream,
+                        encryptedOutput: encryptedFileDestination,
+                        fileSize: sizeInt,
+                        bucketId: workspaceCredentials.bucket,
+                        progressHandler:{ completedProgress in
+                            progress.completedUnitCount = Int64(completedProgress * 100)
+                        }
+                        ,debug: true
+                    )
+                    
+                    uploadFileId = result.id
+                    uploadSize = result.size
+                    
+                    self.logger.info("Upload completed with id \(result.id)")
+                } else {
+                    self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+                    progress.completedUnitCount = 100
+                }
                
                 let encryptedFilename = try encrypt.encrypt(
                     string: filename.deletingPathExtension,
@@ -166,10 +176,10 @@ struct UploadFileWorkspaceUseCase {
                 )
   
                 let createdFile = try await driveNewAPI.createFileWorkspace(createFile: CreateFileDataNew(
-                    fileId: result.id,
+                    fileId: uploadFileId,
                     type: filename.pathExtension,
-                    bucket: result.bucket,
-                    size: result.size,
+                    bucket: workspaceCredentials.bucket,
+                    size: uploadSize,
                     folderId: 0,
                     name: encryptedFilename.base64EncodedString(),
                     plainName: filename.deletingPathExtension, folderUuid: getParentId()
@@ -185,7 +195,7 @@ struct UploadFileWorkspaceUseCase {
                     updatedAt: Time.dateFromISOString(createdFile.updatedAt) ?? Date(),
                     itemExtension: createdFile.type,
                     itemType: .file,
-                    size: result.size
+                    size: uploadSize
                 )
                 
                 let uploadDuration = self.trackEnd(processIdentifier: trackId, startedAt: startedAt)

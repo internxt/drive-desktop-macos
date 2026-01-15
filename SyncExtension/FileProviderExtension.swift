@@ -381,29 +381,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
                     let modifiedFilename = isZippedPackage ? "\(filename.deletingPathExtension).zip" : itemTemplate.filename
                     
-                    if fileSize == 0 {
-                        logger.error("❌ Cannot upload file with size 0: \(modifiedFilename)")
-                    
-                        try? FileManager.default.removeItem(at: fileCopy)
-                        if let zipURL = zipURL {
-                            try? FileManager.default.removeItem(at: zipURL)
-                        }
-                        
-                        try? FileManager.default.removeItem(at: contentUrl)
-                        
 
-                        let error = NSError(
-                            domain: NSFileProviderErrorDomain,
-                            code: NSFileProviderError.cannotSynchronize.rawValue,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Cannot upload empty file",
-                                NSLocalizedFailureReasonErrorKey: "The file '\(modifiedFilename)' is empty",
-                                NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
-                            ]
-                        )
-                        completionHandler(nil, [], false, error)
-                        return
-                    }
                   
                     let modifiedItem = FileProviderItem(
                         identifier: itemTemplate.itemIdentifier,
@@ -595,31 +573,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: NSFileWriteUnknownError))
                 return Progress()
             }
-            do {
-                let fileAttributes = try FileManager.default.attributesOfItem(atPath: newContents.path)
-                let fileSize = fileAttributes[.size] as? Int64 ?? 0
-                
-                if fileSize == 0 {
-                    logger.error("❌ Cannot upload file with size 0: \(item.filename)")
-                    
-                    let error = NSError(
-                        domain: NSFileProviderErrorDomain,
-                        code: NSFileProviderError.cannotSynchronize.rawValue,
-                        userInfo: [
-                            NSLocalizedDescriptionKey: "Cannot upload empty file",
-                            NSLocalizedFailureReasonErrorKey: "The file '\(item.filename)' is empty",
-                            NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
-                        ]
-                    )
-                    completionHandler(nil, [], false, error)
-                    return Progress()
-                }
-            } catch {
-                logger.error("❌ Failed to get file attributes: \(error.localizedDescription)")
-                completionHandler(nil, [], false, error)
-                return Progress()
-            }
-            
             let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
             
             func completionHandlerInternal(item: NSFileProviderItem?, fields: NSFileProviderItemFields, shouldFetch: Bool, error: Error?) -> Void{
