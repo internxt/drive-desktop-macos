@@ -166,7 +166,13 @@ struct UpdateFileContentUseCase {
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
-                completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                
+                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
+                    self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
+                } else {
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                }
             }
         }
         
