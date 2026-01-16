@@ -111,7 +111,7 @@ struct UploadFileUseCase {
                         input: inputStream,
                         encryptedOutput: encryptedFileDestination,
                         fileSize: sizeInt,
-                        bucketId: user.bucket,
+                        bucketId: uploadBucket,
                         progressHandler:{ completedProgress in
                             progress.completedUnitCount = Int64(completedProgress * 100)
                         }

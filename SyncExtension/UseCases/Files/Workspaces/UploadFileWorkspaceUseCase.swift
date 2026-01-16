@@ -146,14 +146,14 @@ struct UploadFileWorkspaceUseCase {
                 
                 var uploadFileId: String? = nil
                 var uploadSize: Int = sizeInt
-                var uploadBucket: String = user.bucket
-                
+                var uploadBucket: String = workspaceCredentials.bucket
+
                 if sizeInt > 0 {
                     let result = try await networkFacade.uploadFile(
                         input: inputStream,
                         encryptedOutput: encryptedFileDestination,
                         fileSize: sizeInt,
-                        bucketId: workspaceCredentials.bucket,
+                        bucketId: uploadBucket,
                         progressHandler:{ completedProgress in
                             progress.completedUnitCount = Int64(completedProgress * 100)
                         }
