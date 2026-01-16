@@ -146,6 +146,7 @@ struct UploadFileWorkspaceUseCase {
                 
                 var uploadFileId: String? = nil
                 var uploadSize: Int = sizeInt
+                var uploadBucket: String = user.bucket
                 
                 if sizeInt > 0 {
                     let result = try await networkFacade.uploadFile(
@@ -161,6 +162,7 @@ struct UploadFileWorkspaceUseCase {
                     
                     uploadFileId = result.id
                     uploadSize = result.size
+                    uploadBucket = result.bucket
                     
                     self.logger.info("Upload completed with id \(result.id)")
                 } else {
@@ -178,7 +180,7 @@ struct UploadFileWorkspaceUseCase {
                 let createdFile = try await driveNewAPI.createFileWorkspace(createFile: CreateFileDataNew(
                     fileId: uploadFileId,
                     type: filename.pathExtension,
-                    bucket: workspaceCredentials.bucket,
+                    bucket: uploadBucket,
                     size: uploadSize,
                     folderId: 0,
                     name: encryptedFilename.base64EncodedString(),
