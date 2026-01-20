@@ -85,23 +85,7 @@ struct UpdateFileContentUseCase {
         
    
     }
-    
-    private func trackError(processIdentifier: String, error: any Error) {
-        let filename = (item.filename as NSString)
-        let event = UploadErrorEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: self.fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            error: error
-        )
         
-
-    }
-    
-    
     private func getParentId() -> String {
         return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
     }
@@ -128,26 +112,37 @@ struct UpdateFileContentUseCase {
                 self.logger.info("Starting upload for file \(filename)")
                 self.logger.info("Parent id: \(item.parentItemIdentifier.rawValue)")
                 
-                let result = try await networkFacade.uploadFile(
-                    input: inputStream,
-                    encryptedOutput: encryptedFileDestination,
-                    fileSize: sizeInt,
-                    bucketId: user.bucket,
-                    progressHandler:{ completedProgress in
-                        progress.completedUnitCount = Int64(completedProgress * 100)
-                    }
-                )
+                var uploadFileId: String? = nil
+                var uploadSize: Int = sizeInt
                 
-                self.logger.info("Upload completed with id \(result.id)")
+                if sizeInt > 0 {
+                    let result = try await networkFacade.uploadFile(
+                        input: inputStream,
+                        encryptedOutput: encryptedFileDestination,
+                        fileSize: sizeInt,
+                        bucketId: user.bucket,
+                        progressHandler:{ completedProgress in
+                            progress.completedUnitCount = Int64(completedProgress * 100)
+                        }
+                    )
+                    
+                    uploadFileId = result.id
+                    uploadSize = result.size
+                    
+                    self.logger.info("Upload completed with id \(result.id)")
+                } else {
+                    self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+                    progress.completedUnitCount = 100
+                }
                
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
                 
                 
                 self.logger.info("Getting file meta with UUID: \(self.fileUuid)")
-                let existingFile = try await driveNewAPI.getFileMetaByUuid(uuid: fileUuid)
+                let existingFile = try await driveNewAPI.getFileMetaByUuidV2(uuid: fileUuid)
                             
                 
-                _ = try await driveNewAPI.replaceFileId(fileUuid: existingFile.uuid, newFileId: result.id, newSize: result.size)
+                _ = try await driveNewAPI.replaceFileId(fileUuid: existingFile.uuid, newFileId: uploadFileId, newSize: uploadSize)
                 
                 let fileProviderItem = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(existingFile.uuid)),
@@ -157,7 +152,7 @@ struct UpdateFileContentUseCase {
                     updatedAt: Time.dateFromISOString(existingFile.updatedAt) ?? Date(),
                     itemExtension: existingFile.type,
                     itemType: .file,
-                    size: result.size
+                    size: uploadSize
                 )
                 
                 self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
@@ -169,10 +164,15 @@ struct UpdateFileContentUseCase {
                 
                 
             } catch {
-                self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
                 self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
-                completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                
+                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
+                    self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
+                } else {
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                }
             }
         }
         
