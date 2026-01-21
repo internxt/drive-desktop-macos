@@ -68,7 +68,7 @@ struct Device: Codable, Identifiable {
         self.parentId = deviceAsFolder.parentId
         self.parentUuid = deviceAsFolder.parentUuid
         self.name = deviceAsFolder.name
-        if let plainName = deviceAsFolder.plain_name {
+        if let plainName = deviceAsFolder.plainName {
             self.plainName = plainName
         } else {
             do {
