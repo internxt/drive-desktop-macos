@@ -28,7 +28,43 @@ final class SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     /// Dedicated serial queue for all Realm operations
     private let realmQueue = DispatchQueue(label: "com.internxt.backup.realmQueue", qos: .userInitiated)
     
-    private init() {}
+    private let realmQueueKey = DispatchSpecificKey<Bool>()
+    
+    private init() {
+        realmQueue.setSpecific(key: realmQueueKey, value: true)
+    }
+    
+
+    private func safeSync<T>(_ block: () throws -> T) throws -> T {
+        if DispatchQueue.getSpecific(key: realmQueueKey) == true {
+            return try block()
+        } else {
+            var result: T!
+            var thrownError: Error?
+            realmQueue.sync {
+                do {
+                    result = try block()
+                } catch {
+                    thrownError = error
+                }
+            }
+            if let error = thrownError {
+                throw error
+            }
+            return result
+        }
+    }
+    
+  
+    private func safeSync<T>(_ block: () -> T) -> T {
+        if DispatchQueue.getSpecific(key: realmQueueKey) == true {
+            return block()
+        } else {
+            return realmQueue.sync {
+                block()
+            }
+        }
+    }
     
     private func getRealm() throws -> Realm {
         dispatchPrecondition(condition: .onQueue(realmQueue))
@@ -43,8 +79,7 @@ final class SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     }
     
     func addSyncedNode(_ node: SyncedNode) throws {
-        var thrownError: Error?
-        realmQueue.sync {
+        try safeSync {
             do {
                 let realm = try getRealm()
                 let detachedNode = SyncedNode(value: node)
@@ -52,16 +87,13 @@ final class SyncedNodeRepository : SyncedNodeRepositoryProtocol {
                     realm.add(detachedNode)
                 }
             } catch {
-                thrownError = BackupUploadError.CannotAddNodeToRealm
+                throw BackupUploadError.CannotAddNodeToRealm
             }
-        }
-        if let error = thrownError {
-            throw error
         }
     }
     
     func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode? {
-        return realmQueue.sync {
+        return safeSync {
             do {
                 let realm = try getRealm()
                 if let node = realm.objects(SyncedNode.self)
@@ -79,32 +111,27 @@ final class SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     }
     
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws {
-        var thrownError: Error?
-        realmQueue.sync {
+        try safeSync {
             do {
                 let realm = try getRealm()
                 
                 guard let node = realm.objects(SyncedNode.self).first(where: { syncedNode in
                     syncedNode.remoteUuid == remoteUuid
                 }) else {
-                    thrownError = BackupUploadError.CannotFindNodeToRealm
-                    return
+                    throw BackupUploadError.CannotFindNodeToRealm
                 }
                 
                 try realm.write {
                     node.updatedAt = date
                 }
             } catch {
-                thrownError = BackupUploadError.CannotEditNodeToRealm
+                throw BackupUploadError.CannotEditNodeToRealm
             }
-        }
-        if let error = thrownError {
-            throw error
         }
     }
     
     func find(url: URL, deviceId: Int) -> SyncedNode? {
-        return realmQueue.sync {
+        return safeSync {
             do {
                 let realm = try getRealm()
                 if let node = realm.objects(SyncedNode.self).first(where: { $0.url == url.absoluteString && $0.deviceId == deviceId }) {
@@ -131,7 +158,7 @@ final class SyncedNodeRepository : SyncedNodeRepositoryProtocol {
     }
     
     func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode? {
-        return realmQueue.sync {
+        return safeSync {
             do {
                 let realm = try getRealm()
                 if let node = realm.resolve(reference) {
