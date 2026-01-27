@@ -98,31 +98,25 @@ class BackupTreeNode {
     }
 
     private func nodeIsSynced(url: URL, deviceId: Int) throws -> SyncedNode? {
-        guard let syncedNode = backupRealm.findSyncedNode(url: url, deviceId: deviceId) else {
-            return nil
-        }
+           guard let syncedNode = backupRealm.findSyncedNode(url: url, deviceId: deviceId) else {
+               return nil
+           }
 
-        let threadSafeRef = ThreadSafeReference(to: syncedNode)
+           guard let fileModificationDate = try self.getFileModificationDate() else {
+               return nil
+           }
 
-        guard let resolvedNode = backupRealm.resolveSyncedNode(reference: threadSafeRef) else {
-            return nil
-        }
+           let syncedNodeDate = syncedNode.updatedAt
 
-        guard let fileModificationDate = try self.getFileModificationDate() else {
-            return nil
-        }
+           if syncedNodeDate < fileModificationDate && self.type != .folder {
+               self.syncStatus = .NEEDS_UPDATE
+               self.remoteId = syncedNode.remoteId
+               self.remoteUuid = syncedNode.remoteUuid
+               return nil
+           }
 
-        let syncedNodeDate = resolvedNode.updatedAt
-
-        if syncedNodeDate < fileModificationDate && self.type != .folder {
-            self.syncStatus = .NEEDS_UPDATE
-            self.remoteId = resolvedNode.remoteId
-            self.remoteUuid = resolvedNode.remoteUuid
-            return nil
-        }
-
-        return resolvedNode
-    }
+           return syncedNode
+       }
     
     func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil, onError: @escaping (Error) -> Void) throws -> Void {
         let operation = BackupTreeNodeSyncOperation(backupTreeNode: self)
