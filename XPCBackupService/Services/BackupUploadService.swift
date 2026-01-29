@@ -49,6 +49,8 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private let bucketId: String
     private let newAuthToken: String
     @Published var canDoBackup = true
+    private let maxParentIdRetries = 3
+    private let parentIdRetryDelayNs: UInt64 = 100_000_000
 
     init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String,newAuthToken: String, deviceUuid: String) {
         self.networkFacade = networkFacade
@@ -107,6 +109,29 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private func editSyncedNodeDateSafely(remoteUuid: String, date: Date) async throws {
         try await SyncedNodeRepository.shared.editSyncedNodeDateAsync(remoteUuid: remoteUuid, date: date)
     }
+    
+
+    /// This handles race conditions where child operations start before parent has set remoteParentId.
+    private func waitForParentInfo(node: BackupTreeNode) async -> (remoteParentId: Int, remoteParentUuid: String)? {
+        for attempt in 0..<maxParentIdRetries {
+            let parentInfo = node.getRemoteParentInfo()
+            
+            if let remoteParentId = parentInfo.remoteParentId,
+               let remoteParentUuid = parentInfo.remoteParentUuid {
+                if attempt > 0 {
+                    self.logger.info("Got parent info for \(node.name) after \(attempt) retries")
+                }
+                return (remoteParentId, remoteParentUuid)
+            }
+            
+            if attempt < maxParentIdRetries - 1 {
+                self.logger.info("Waiting for parent info for \(node.name), attempt \(attempt + 1)/\(maxParentIdRetries)")
+                try? await Task.sleep(nanoseconds: parentIdRetryDelayNs)
+            }
+        }
+        
+        return nil
+    }
 
     private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating folder")
@@ -121,16 +146,13 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.logger.info("Going to create folder \(foldername)")
 
         if let _ = node.parentId {
-            guard let parentId = node.remoteParentId else {
+            guard let parentInfo = await waitForParentInfo(node: node) else {
+                self.logger.info("Missing Parent Folder id \(foldername) after \(maxParentIdRetries) retries")
                 return .failure(BackupUploadError.MissingParentFolder)
             }
             
-            guard let parentUuid = node.remoteParentUuid else {
-                return .failure(BackupUploadError.MissingParentFolder)
-            }
-
-            remoteParentId = parentId
-            remoteParentUuid = parentUuid
+            remoteParentId = parentInfo.remoteParentId
+            remoteParentUuid = parentInfo.remoteParentUuid
         } else {
             remoteParentId = self.deviceId
             remoteParentUuid = self.deviceUuid
@@ -223,15 +245,13 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         let filename = (node.name as NSString)
         self.logger.info("Starting backing up file \(filename)")
 
-        guard let remoteParentId = node.remoteParentId else {
-            self.logger.info("Missing parent folderId \(node.name)")
+        guard let parentInfo = await waitForParentInfo(node: node) else {
+            self.logger.info("Missing parent folderId \(node.name) after \(maxParentIdRetries) retries")
             return .failure(BackupUploadError.MissingParentFolder)
         }
         
-        guard let remoteParentUuid = node.remoteParentUuid else {
-            self.logger.info("Missing parent folderUuid \(node.name)")
-            return .failure(BackupUploadError.MissingParentFolder)
-        }
+        let remoteParentId = parentInfo.remoteParentId
+        let remoteParentUuid = parentInfo.remoteParentUuid
 
         self.logger.info("Remote parent id \(remoteParentId)")
 
