@@ -50,6 +50,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private let newAuthToken: String
     @Published var canDoBackup = true
 
+
     init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String,newAuthToken: String, deviceUuid: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
@@ -107,6 +108,8 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private func editSyncedNodeDateSafely(remoteUuid: String, date: Date) async throws {
         try await SyncedNodeRepository.shared.editSyncedNodeDateAsync(remoteUuid: remoteUuid, date: date)
     }
+    
+
 
     private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating folder")
@@ -121,14 +124,13 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.logger.info("Going to create folder \(foldername)")
 
         if let _ = node.parentId {
-            guard let parentId = node.remoteParentId else {
+            let parentInfo = node.getRemoteParentInfo()
+            guard let parentId = parentInfo.remoteParentId,
+                  let parentUuid = parentInfo.remoteParentUuid else {
+                self.logger.error("Missing Parent Folder id \(foldername) - this should not happen if dependencies are correct")
                 return .failure(BackupUploadError.MissingParentFolder)
             }
             
-            guard let parentUuid = node.remoteParentUuid else {
-                return .failure(BackupUploadError.MissingParentFolder)
-            }
-
             remoteParentId = parentId
             remoteParentUuid = parentUuid
         } else {
@@ -223,13 +225,10 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         let filename = (node.name as NSString)
         self.logger.info("Starting backing up file \(filename)")
 
-        guard let remoteParentId = node.remoteParentId else {
-            self.logger.info("Missing parent folderId \(node.name)")
-            return .failure(BackupUploadError.MissingParentFolder)
-        }
-        
-        guard let remoteParentUuid = node.remoteParentUuid else {
-            self.logger.info("Missing parent folderUuid \(node.name)")
+        let parentInfo = node.getRemoteParentInfo()
+        guard let remoteParentId = parentInfo.remoteParentId,
+              let remoteParentUuid = parentInfo.remoteParentUuid else {
+            self.logger.error("Missing parent folderId \(node.name) - this should not happen if dependencies are correct")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
