@@ -160,6 +160,12 @@ class ScheduledBackupManager : ObservableObject{
         Task.detached { [weak self] in
             guard let self = self else { return }
             
+            
+            if await MainActor.run(body: { self.backupsService.backupUploadStatus }) == .InProgress {
+                await self.scheduleNextBackupAfterCompletion()
+                return
+            }
+            
             do {
                 await self.backupsService.loadAllDevices()
                 self.backupsService.loadFoldersToBackup()
