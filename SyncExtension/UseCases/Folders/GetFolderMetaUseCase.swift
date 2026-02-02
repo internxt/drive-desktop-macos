@@ -48,7 +48,7 @@ struct GetFolderMetaUseCase {
                 
                 let folderItem = FileProviderItem(
                     identifier: self.identifier,
-                    filename: folderMeta.plainName,
+                    filename: (folderMeta.name ?? folderMeta.plainName) ?? "",
                     parentId: parentId ,
                     createdAt: createdAt,
                     updatedAt: updateAt,
