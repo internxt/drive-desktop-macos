@@ -104,7 +104,7 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                     let folderItem = FileProviderItem(
                         identifier: self.identifier,
                         // TODO: Decrypt the name if needed
-                        filename: folderMeta.plainName,
+                        filename: (folderMeta.plainName ?? folderMeta.name) ?? "",
                         parentId: parentId,
                         createdAt: createdAt,
                         updatedAt: updatedAt,

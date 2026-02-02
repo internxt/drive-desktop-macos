@@ -400,6 +400,8 @@ class BackupsService: ObservableObject {
 
     private func propagateUploadSuccess() {
         logger.info("Device backed up successfully, tracking backup success event")
+        UserDefaults.standard.set(Date(), forKey: LAST_BACKUP_TIME_KEY)
+        
         DispatchQueue.main.async { [weak self] in
             self?.backupUploadProgress = 1
             self?.currentDeviceHasBackup = true
