@@ -802,7 +802,7 @@ class BackupsService: ObservableObject {
     
     private func removeScheduledBackup() {
         UserDefaults.standard.removeObject(forKey: LAST_BACKUP_TIME_KEY)
-
+        UserDefaults.standard.removeObject(forKey: "INTERNXT_NEXT_SCHEDULED_BACKUP_KEY")
     }
 }
 
