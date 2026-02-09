@@ -101,15 +101,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 // MARK: - Thread-Safe  Operations
    
     private func addSyncedNodeSafely(_ node: SyncedNode) async throws {
-        try await Task.detached {
-            try SyncedNodeRepository.shared.addSyncedNode(node)
-        }.value
+        try await SyncedNodeRepository.shared.addSyncedNodeAsync(node)
     }
     
     private func editSyncedNodeDateSafely(remoteUuid: String, date: Date) async throws {
-        try await Task.detached {
-            try SyncedNodeRepository.shared.editSyncedNodeDate(remoteUuid: remoteUuid, date: date)
-        }.value
+        try await SyncedNodeRepository.shared.editSyncedNodeDateAsync(remoteUuid: remoteUuid, date: date)
     }
 
     private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {

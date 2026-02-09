@@ -27,25 +27,13 @@ struct AppTextArea: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
                 .padding(.horizontal, 12)
-                .ifAvailable {
-                    if #available(macOS 13.0, *) {
-                        $0.scrollDisabled(true).scrollContentBackground(.hidden)
-                    }
+                .scrollDisabled(true)
+                .scrollContentBackground(.hidden)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.Gray40, lineWidth: 1)
+                        .zIndex(5)
                 }
-                .ifAvailable{view in
-                    if #available(macOS 12.0, *) {
-                        view.overlay{
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.Gray40, lineWidth: 1)
-                                .zIndex(5)
-                        }
-                    } else {
-                        view.overlay(RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.Gray40, lineWidth: 1)
-                            .zIndex(5), alignment: .topLeading)
-                    }
-                }
-
         }
     }
 }

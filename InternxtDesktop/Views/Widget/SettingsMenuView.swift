@@ -46,14 +46,8 @@ struct SettingsMenuView: View {
                 }
                 .padding(.vertical, 6).ifAvailable{view in
                     
-                    if #available(macOS 12, *) {
-                        view.overlay{
-                            RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
-                        }
-                    } else {
-                        view.overlay(
-                            RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
-                            , alignment: .top)
+                    view.overlay{
+                        RoundedRectangle(cornerRadius: 8).stroke(Color.Gray20, lineWidth: 1)
                     }
                     
                 }

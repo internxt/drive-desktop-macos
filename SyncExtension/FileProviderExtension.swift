@@ -381,29 +381,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
                     let modifiedFilename = isZippedPackage ? "\(filename.deletingPathExtension).zip" : itemTemplate.filename
                     
-                    if fileSize == 0 {
-                        logger.error("❌ Cannot upload file with size 0: \(modifiedFilename)")
-                    
-                        try? FileManager.default.removeItem(at: fileCopy)
-                        if let zipURL = zipURL {
-                            try? FileManager.default.removeItem(at: zipURL)
-                        }
-                        
-                        try? FileManager.default.removeItem(at: contentUrl)
-                        
 
-                        let error = NSError(
-                            domain: NSFileProviderErrorDomain,
-                            code: NSFileProviderError.cannotSynchronize.rawValue,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Cannot upload empty file",
-                                NSLocalizedFailureReasonErrorKey: "The file '\(modifiedFilename)' is empty",
-                                NSLocalizedRecoverySuggestionErrorKey: "Files with 0 bytes cannot be uploaded."
-                            ]
-                        )
-                        completionHandler(nil, [], false, error)
-                        return
-                    }
                   
                     let modifiedItem = FileProviderItem(
                         identifier: itemTemplate.itemIdentifier,
@@ -590,7 +568,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if contentHasChanged {
-            
+            guard let newContents = newContents else {
+                logger.error("❌ No content URL provided for content change")
+                completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: NSFileWriteUnknownError))
+                return Progress()
+            }
             let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
             
             func completionHandlerInternal(item: NSFileProviderItem?, fields: NSFileProviderItemFields, shouldFetch: Bool, error: Error?) -> Void{
@@ -620,7 +602,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     user: self.user,
                     item: item,
                     fileUuid: item.itemIdentifier.rawValue,
-                    url: newContents!,
+                    url: newContents,
                     encryptedFileDestination: encryptedFileDestination,
                     completionHandler: completionHandlerInternal,
                     progress: Progress(totalUnitCount: 100), workspaceCredentials: credentials
@@ -631,7 +613,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 user: self.user,
                 item: item,
                 fileUuid: item.itemIdentifier.rawValue,
-                url: newContents!,
+                url: newContents,
                 encryptedFileDestination: encryptedFileDestination,
                 completionHandler: completionHandlerInternal,
                 progress: Progress(totalUnitCount: 100)

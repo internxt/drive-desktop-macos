@@ -102,19 +102,31 @@ struct UploadFileUseCase {
                 self.logger.info("Starting upload for file \(filename)")
                 self.logger.info("Parent id: \(getParentId())")
                 
-                /// Upload a file to the Internxt network and returns an id used later to create a file in Drive with that fileId
-                let result = try await networkFacade.uploadFile(
-                    input: inputStream,
-                    encryptedOutput: encryptedFileDestination,
-                    fileSize: sizeInt,
-                    bucketId: user.bucket,
-                    progressHandler:{ completedProgress in
-                        progress.completedUnitCount = Int64(completedProgress * 100)
-                    }
-                    ,debug: true
-                )
-                                
-                self.logger.info("Upload completed with id \(result.id)")
+                var uploadFileId: String? = nil
+                var uploadSize: Int = sizeInt
+                var uploadBucket: String = user.bucket
+                
+                if sizeInt > 0 {
+                    let result = try await networkFacade.uploadFile(
+                        input: inputStream,
+                        encryptedOutput: encryptedFileDestination,
+                        fileSize: sizeInt,
+                        bucketId: uploadBucket,
+                        progressHandler:{ completedProgress in
+                            progress.completedUnitCount = Int64(completedProgress * 100)
+                        }
+                        ,debug: true
+                    )
+                    
+                    uploadFileId = result.id
+                    uploadSize = result.size
+                    uploadBucket = result.bucket
+                    
+                    self.logger.info("Upload completed with id \(result.id)")
+                } else {
+                    self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+                    progress.completedUnitCount = 100
+                }
                
                 let encryptedFilename = try encrypt.encrypt(
                     string: filename.deletingPathExtension,
@@ -123,10 +135,10 @@ struct UploadFileUseCase {
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
                 let createdFile = try await driveNewAPI.createFileNew(createFile: CreateFileDataNew(
-                        fileId: result.id,
+                        fileId: uploadFileId,
                         type: filename.pathExtension,
-                        bucket: result.bucket,
-                        size: result.size,
+                        bucket: uploadBucket,
+                        size: uploadSize,
                         folderId: 0,
                         name: encryptedFilename.base64EncodedString(),
                         plainName: filename.deletingPathExtension,
@@ -145,7 +157,7 @@ struct UploadFileUseCase {
                     updatedAt: Time.dateFromISOString(createdFile.updatedAt) ?? Date(),
                     itemExtension: createdFile.type,
                     itemType: .file,
-                    size: result.size
+                    size: uploadSize
                 )
                 
                 let uploadDuration = self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
@@ -177,7 +189,14 @@ struct UploadFileUseCase {
                 error.reportToSentry()
 
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
-                completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                
+               
+                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
+                    self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
+                } else {
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                }
             }
         }
         
