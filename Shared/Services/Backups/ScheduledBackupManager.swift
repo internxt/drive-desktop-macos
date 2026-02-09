@@ -17,6 +17,7 @@ class ScheduledBackupManager : ObservableObject{
     private let queue = DispatchQueue(label: "com.internxt.backup.scheduler")
     private let BACKUP_FREQUENCY_KEY = "INTERNXT_SELECTED_BACKUP_FREQUENCY"
     private let LAST_BACKUP_TIME_KEY = "INTERNXT_LAST_BACKUP_TIME_KEY"
+    private let NEXT_SCHEDULED_BACKUP_KEY = "INTERNXT_NEXT_SCHEDULED_BACKUP_KEY"
     private var sleepObserver: NSObjectProtocol?
     private var wakeObserver: NSObjectProtocol?
     
@@ -85,6 +86,7 @@ class ScheduledBackupManager : ObservableObject{
         
         guard frequency != .manually else {
             userDefaults.removeObject(forKey: LAST_BACKUP_TIME_KEY)
+            userDefaults.removeObject(forKey: NEXT_SCHEDULED_BACKUP_KEY)
             DispatchQueue.main.async {
                 self.nextBackupTime = ""
             }
@@ -94,18 +96,29 @@ class ScheduledBackupManager : ObservableObject{
         let interval = frequency.timeInterval
         let now = Date()
         
-        if let lastBackupTime = userDefaults.object(forKey: LAST_BACKUP_TIME_KEY) as? Date {
+        if let savedNextBackup = userDefaults.object(forKey: NEXT_SCHEDULED_BACKUP_KEY) as? Date {
+            let timeUntilNext = savedNextBackup.timeIntervalSince(now)
+            
+            if timeUntilNext <= 0 {
+                performBackup()
+            } else {
+                displayNextBackupTime(savedNextBackup)
+                scheduleNextBackup(after: timeUntilNext, interval: interval)
+            }
+        } else if let lastBackupTime = userDefaults.object(forKey: LAST_BACKUP_TIME_KEY) as? Date {
             let nextScheduledBackup = lastBackupTime.addingTimeInterval(interval)
             let timeUntilNext = nextScheduledBackup.timeIntervalSince(now)
             
             if timeUntilNext <= 0 {
                 performBackup()
             } else {
+                saveNextScheduledBackup(nextScheduledBackup)
                 displayNextBackupTime(nextScheduledBackup)
                 scheduleNextBackup(after: timeUntilNext, interval: interval)
             }
         } else {
             let nextBackupDate = now.addingTimeInterval(interval)
+            saveNextScheduledBackup(nextBackupDate)
             displayNextBackupTime(nextBackupDate)
             scheduleNextBackup(after: interval, interval: interval)
         }
@@ -145,6 +158,14 @@ class ScheduledBackupManager : ObservableObject{
         }
     }
     
+    private func saveNextScheduledBackup(_ date: Date) {
+        userDefaults.set(date, forKey: NEXT_SCHEDULED_BACKUP_KEY)
+    }
+    
+    private func clearNextScheduledBackup() {
+        userDefaults.removeObject(forKey: NEXT_SCHEDULED_BACKUP_KEY)
+    }
+    
     private func displayNextBackupTime(_ date: Date) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
@@ -160,6 +181,12 @@ class ScheduledBackupManager : ObservableObject{
         Task.detached { [weak self] in
             guard let self = self else { return }
             
+            
+            if await MainActor.run(body: { self.backupsService.backupUploadStatus }) == .InProgress {
+                await self.scheduleNextBackupAfterCompletion()
+                return
+            }
+            
             do {
                 await self.backupsService.loadAllDevices()
                 self.backupsService.loadFoldersToBackup()
@@ -167,6 +194,7 @@ class ScheduledBackupManager : ObservableObject{
                 
                 let completionTime = Date()
                 self.userDefaults.set(completionTime, forKey: self.LAST_BACKUP_TIME_KEY)
+                self.clearNextScheduledBackup()
                 
                 await MainActor.run {
                     self.backupError = ""
@@ -203,6 +231,8 @@ class ScheduledBackupManager : ObservableObject{
         
         let timeUntilNext = nextBackupDate.timeIntervalSince(now)
         let capturedNextBackupDate = nextBackupDate
+        
+        saveNextScheduledBackup(capturedNextBackupDate)
         
         await MainActor.run {
             self.displayNextBackupTime(capturedNextBackupDate)
