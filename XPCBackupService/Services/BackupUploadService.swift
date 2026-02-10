@@ -237,6 +237,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         do {
             var uploadFileId: String? = nil
             var uploadSize: Int = Int(fileURL.fileSize)
+            var uploadBucketId: String = self.bucketId
             
             if fileURL.fileSize > 0 {
                 let result = try await networkFacade.uploadFile(
@@ -249,6 +250,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 
                 uploadFileId = result.id
                 uploadSize = result.size
+                uploadBucketId = result.bucket
                 
                 self.logger.info("Upload completed with id \(result.id)")
             } else {
@@ -291,7 +293,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     createFileData: CreateFileDataNew(
                         fileId: uploadFileId,
                         type: filename.pathExtension,
-                        bucket: self.bucketId,
+                        bucket: uploadBucketId,
                         size: uploadSize,
                         folderId: remoteParentId,
                         name: encryptedFilename.base64EncodedString(),
