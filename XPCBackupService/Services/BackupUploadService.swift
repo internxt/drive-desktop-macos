@@ -239,11 +239,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             var uploadSize: Int = Int(fileURL.fileSize)
             var uploadBucketId: String = self.bucketId
             
-            if fileURL.fileSize > 0 {
+            if uploadSize > 0 {
                 let result = try await networkFacade.uploadFile(
                     input: inputStream,
                     encryptedOutput: safeEncryptedContentURL,
-                    fileSize: Int(fileURL.fileSize),
+                    fileSize: uploadSize,
                     bucketId: self.bucketId,
                     progressHandler: { _ in }
                 )
