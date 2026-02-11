@@ -235,15 +235,27 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.logger.info("Remote parent id \(remoteParentId)")
 
         do {
-            let result = try await networkFacade.uploadFile(
-                input: inputStream,
-                encryptedOutput: safeEncryptedContentURL,
-                fileSize: Int(fileURL.fileSize),
-                bucketId: self.bucketId,
-                progressHandler: { _ in }
-            )
-
-            self.logger.info("Upload completed with id \(result.id)")
+            var uploadFileId: String? = nil
+            var uploadSize: Int = Int(fileURL.fileSize)
+            var uploadBucketId: String = self.bucketId
+            
+            if uploadSize > 0 {
+                let result = try await networkFacade.uploadFile(
+                    input: inputStream,
+                    encryptedOutput: safeEncryptedContentURL,
+                    fileSize: uploadSize,
+                    bucketId: self.bucketId,
+                    progressHandler: { _ in }
+                )
+                
+                uploadFileId = result.id
+                uploadSize = result.size
+                uploadBucketId = result.bucket
+                
+                self.logger.info("Upload completed with id \(result.id)")
+            } else {
+                self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+            }
 
             if node.syncStatus == .NEEDS_UPDATE {
                 guard let remoteUuid = node.remoteUuid, let remoteId = node.remoteId else {
@@ -252,8 +264,8 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                 let updatedFile = try await backupNewAPI.replaceFileId(
                     fileUuid: remoteUuid,
-                    newFileId: result.id,
-                    newSize: result.size
+                    newFileId: uploadFileId,
+                    newSize: uploadSize
                 )
 
                 self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
@@ -279,10 +291,10 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
            
                 let createdFile = try await backupNewAPI.createBackupFileNew(
                     createFileData: CreateFileDataNew(
-                        fileId: result.id,
+                        fileId: uploadFileId,
                         type: filename.pathExtension,
-                        bucket: result.bucket,
-                        size: result.size,
+                        bucket: uploadBucketId,
+                        size: uploadSize,
                         folderId: remoteParentId,
                         name: encryptedFilename.base64EncodedString(),
                         plainName: filename.deletingPathExtension,
