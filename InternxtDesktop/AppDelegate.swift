@@ -18,6 +18,7 @@ import RealmSwift
 import PushKit
 import UserNotifications
 
+
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillShow(_ notification: Notification) {
         globalUIManager.setWidgetIsOpen(true)
