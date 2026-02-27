@@ -14,6 +14,7 @@ struct BackupContentItem {
     var name: String
     var type: String
     var uuid: String
+    var hasFileId: Bool
 }
 
 struct BackupNavigationLevel {
@@ -122,7 +123,7 @@ extension BackupContentNavigator {
             
             return childs.folders.map { child in
                 let name = child.plainName ?? self.decryptName(name: child.name, bucketId: bucketId)
-                return BackupContentItem(id: child.id.toString(), name: name, type: "folder", uuid: child.uuid!)
+                return BackupContentItem(id: child.id.toString(), name: name, type: "folder", uuid: child.uuid!, hasFileId: true)
             }
         }
         
@@ -130,8 +131,9 @@ extension BackupContentNavigator {
             let files = try await backupAPI.getBackupFiles(folderUuid: folderUuid, offset: offset, limit: limit)
             
             return files.files.map { file in
-                let name = file.plainName ?? self.decryptName(name: file.name, bucketId: bucketId)
-                return BackupContentItem(id: file.fileId, name: name, type: file.type ?? "", uuid: file.uuid)
+                let name = file.plainName ?? self.decryptName(name: file.name ?? "", bucketId: bucketId)
+                let fileHasId = file.fileId != nil
+                return BackupContentItem(id: file.fileId ?? file.uuid, name: name, type: file.type ?? "", uuid: file.uuid, hasFileId: fileHasId)
             }
         }
         
