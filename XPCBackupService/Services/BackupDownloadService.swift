@@ -75,14 +75,21 @@ struct BackupDownloadService {
         for try await backupFile in fileStream {
             backupDownloadProgress.totalUnitCount += 1
 
-            let backupFileName = try backupFile.plainName ?? self.decryptName(name: backupFile.name, bucketId: backupFile.bucket)
+            let backupFileName = try backupFile.plainName ?? self.decryptName(name: backupFile.name ?? "", bucketId: backupFile.bucket)
             logger.info("📄 Filename to download \(backupFileName)")
             let fileURL = self.getURLForItem(baseURL: downloadAtPath, itemName: backupFileName, itemType: backupFile.type)
-            self.downloadFile(
-                fileId: backupFile.fileId,
-                bucketId: backupBucket,
-                downloadAt: fileURL
-            )
+            
+            if let fileId = backupFile.fileId {
+                self.downloadFile(
+                    fileId: fileId,
+                    bucketId: backupBucket,
+                    downloadAt: fileURL
+                )
+            } else {
+                logger.info("⚠️ File \(backupFileName) has no fileId, creating empty file locally")
+                FileManager.default.createFile(atPath: fileURL.path, contents: nil)
+                backupDownloadProgress.completedUnitCount += 1
+            }
         }
     }
     
