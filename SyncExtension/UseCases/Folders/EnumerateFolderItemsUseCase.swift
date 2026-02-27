@@ -107,9 +107,13 @@ struct EnumerateFolderItemsUseCase {
                         return
                     }
                     
+                    guard let resolvedName = file.plainName ?? file.name else {
+                        self.logger.error("Cannot get filename for item \(file.fileId ?? "unknown"), both plainName and name are nil")
+                        return
+                    }
                     
-
-                    let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type
+                    
+                    let filename = FileProviderItem.getFilename(name: resolvedName , itemExtension: file.type
                     )
                     
                     let item = FileProviderItem(
