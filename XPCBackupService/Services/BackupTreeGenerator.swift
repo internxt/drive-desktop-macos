@@ -79,10 +79,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
 
                     for case let url as URL in enumerator {
                         do {
-                            let shouldSkipDescendants = try self.insertInTree(url)
-                            if shouldSkipDescendants {
-                                enumerator.skipDescendants()
-                            }
+                            try self.insertInTree(url)
                         } catch {
                             // We need to decide what to do in this case, for now, at least log the error
                             logger.error("Failed to insert URL \(url) in the backup tree: \(error)")
@@ -105,13 +102,10 @@ class BackupTreeGenerator: BackupTreeGeneration {
     }
     
     
-    /// Inserts a URL into the backup tree. Returns `true` if the URL is a package
-    /// bundle and its descendants should be skipped (the package will be zipped as a single file).
-    @discardableResult
-    func insertInTree(_ url: URL) throws -> Bool {
+    func insertInTree(_ url: URL) throws {
          //  Check if the node already exists in the parent instead of the whole tree
          if nodeIndex[url] != nil {
-             return false
+             return
          }
 
          // 1. Find a parent for the node
@@ -125,12 +119,6 @@ class BackupTreeGenerator: BackupTreeGeneration {
              throw BackupTreeGeneratorError.cannotGetNodeType
          }
 
-         let isPackage = try type.conforms(to: .package) && (try url.isDirectory())
-         
-         if isPackage {
-             logger.info("📦 Detected package file: \(url.lastPathComponent) — treating as single file")
-         }
-
          // We have a parent, and the node does not exists, create the BackupTreeNode
          let newNode = BackupTreeNode(
              id: UUID().uuidString,
@@ -138,7 +126,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
              rootBackupFolder: root,
              parentId: parentNode.id,
              name: url.lastPathComponent,
-             type: isPackage ? .data : type,
+             type: type,
              url: url,
              syncStatus: .LOCAL_ONLY,
              childs: [],
@@ -150,6 +138,5 @@ class BackupTreeGenerator: BackupTreeGeneration {
    
          parentNode.addChild(newNode: newNode)
          nodeIndex[url] = newNode
-         return isPackage
      }
  }

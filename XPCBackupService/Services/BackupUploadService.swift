@@ -23,7 +23,6 @@ enum BackupUploadError: Error {
     case CannotFindNodeToRealm
     case CannotFindNodeInServer
     case BackupStoppedManually
-    case CannotZipPackage
 }
 
 enum BackupDownloadError: Error {
@@ -219,50 +218,17 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             return .failure(BackupUploadError.CannotCreateEncryptedContentURL)
         }
 
-        guard let fileURL = node.url else {
-            return .failure(BackupUploadError.MissingURL)
-        }
-
-        var actualFileURL = fileURL
-        var zipURLToClean: URL? = nil
-        
-        var isDir: ObjCBool = false
-        if FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDir), isDir.boolValue {
-            self.logger.info("📦 Detected package file: \(node.name), zipping before upload")
-            do {
-                let zipURL = try self.zipPackageFile(at: fileURL, name: node.name)
-                actualFileURL = zipURL
-                zipURLToClean = zipURL
-            } catch {
-                self.logger.error("❌ Failed to zip package: \(error.localizedDescription)")
-                return .failure(BackupUploadError.CannotZipPackage)
-            }
-        }
-        
-        guard let inputStream = InputStream(url: actualFileURL) else {
-            if let zipURL = zipURLToClean {
-                try? FileManager.default.removeItem(at: zipURL)
-            }
+        guard let fileURL = node.url, let inputStream = InputStream(url: fileURL) else {
             return .failure(BackupUploadError.CannotOpenInputStream)
         }
 
-        let isPackageZip = zipURLToClean != nil
-        let filename: NSString
-        if isPackageZip {
-            let baseName = (node.name as NSString).deletingPathExtension
-            filename = "\(baseName).zip" as NSString
-        } else {
-            filename = (node.name as NSString)
-        }
-        
+        let filename = (node.name as NSString)
         self.logger.info("Starting backing up file \(filename)")
 
         let parentInfo = node.getRemoteParentInfo()
         guard let remoteParentId = parentInfo.remoteParentId,
               let remoteParentUuid = parentInfo.remoteParentUuid else {
-            if let zipURL = zipURLToClean {
-                try? FileManager.default.removeItem(at: zipURL)
-            }
+            self.logger.error("Missing parent folderId \(node.name) - this should not happen if dependencies are correct")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
@@ -270,7 +236,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
         do {
             var uploadFileId: String? = nil
-            var uploadSize: Int = Int(actualFileURL.fileSize)
+            var uploadSize: Int = Int(fileURL.fileSize)
             var uploadBucketId: String = self.bucketId
             
             if uploadSize > 0 {
@@ -310,10 +276,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                 if encryptedContentURL != nil {
                     try FileManager.default.removeItem(at: encryptedContentURL!)
-                }
-                
-                if let zipURL = zipURLToClean {
-                    try? FileManager.default.removeItem(at: zipURL)
                 }
 
                 return .success(BackupTreeNodeSyncResult(id: remoteId, uuid: remoteUuid))
@@ -362,10 +324,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
                     
                 }
-                
-                if let zipURL = zipURLToClean {
-                    try? FileManager.default.removeItem(at: zipURL)
-                }
 
                 return .success(BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid))
             }
@@ -387,10 +345,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
-            }
-            
-            if let zipURL = zipURLToClean {
-                try? FileManager.default.removeItem(at: zipURL)
             }
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
@@ -433,42 +387,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             return .failure(error)
         }
 
-    }
-
-    private func zipPackageFile(at packageURL: URL, name: String) throws -> URL {
-        let zipFilename = "package-\(UUID().uuidString).zip"
-        let zipURL = encryptedContentDirectory.appendingPathComponent(zipFilename)
-        
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
-        process.arguments = ["-r", "-q", zipURL.path, name]
-        process.currentDirectoryPath = packageURL.deletingLastPathComponent().path
-        
-        let errorPipe = Pipe()
-        process.standardError = errorPipe
-        process.standardOutput = nil
-        
-        try process.run()
-        process.waitUntilExit()
-        
-        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-        errorPipe.fileHandleForReading.closeFile()
-        
-        guard process.terminationStatus == 0 else {
-            let errorMessage = String(data: errorData, encoding: .utf8) ?? "Unknown error"
-            self.logger.error("❌ Zip process failed with status \(process.terminationStatus): \(errorMessage)")
-            throw BackupUploadError.CannotZipPackage
-        }
-        
-        guard FileManager.default.fileExists(atPath: zipURL.path) else {
-            self.logger.error("❌ Zip file was not created at: \(zipURL.path)")
-            throw BackupUploadError.CannotZipPackage
-        }
-        
-        let zipSize = zipURL.fileSize
-        self.logger.info("📦 Package zipped successfully: \(name) -> \(zipSize) bytes")
-        
-        return zipURL
     }
 
 

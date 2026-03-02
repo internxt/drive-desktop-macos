@@ -7,7 +7,6 @@
 
 import Foundation
 import InternxtSwiftCore
-import UniformTypeIdentifiers
 
 let logger = LogService.shared.createLogger(subsystem: .XPCBackups, category: "XPCBackupService")
 public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
@@ -298,21 +297,11 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private func getNodesCountFromURL(_ url: URL) -> Int {
         
         var count = 0
-        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey, .typeIdentifierKey], options: [.skipsHiddenFiles]) {
+        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey], options: [.skipsHiddenFiles]) {
             for case let fileURL as URL in enumerator {
                 do {
-                    let resourceValues = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey, .typeIdentifierKey])
-                    
-                    if let typeID = resourceValues.typeIdentifier,
-                       let type = UTType(typeID),
-                       type.conforms(to: .package),
-                       resourceValues.isDirectory == true {
-                        count += 1
-                        enumerator.skipDescendants()
-                        continue
-                    }
-                    
-                    if resourceValues.isRegularFile! || resourceValues.isDirectory! {
+                    let fileAttributes = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey])
+                    if fileAttributes.isRegularFile! || fileAttributes.isDirectory! {
                         count += 1
                     }
                 } catch {
