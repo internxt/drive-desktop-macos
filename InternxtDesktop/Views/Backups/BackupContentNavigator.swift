@@ -190,7 +190,14 @@ struct BackupContentNavigator: View {
                             
                             try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedUuid,folderName: selectedFolderListItem.name)
                         } else {
-                            try await backupsService.downloadFileBackup(device: device, downloadAt: self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name,itemType: selectedFolderListItem.type), fileId: selectedId)
+                            let selectedItem = viewModel.currentItems.first { $0.id == selectedId }
+                            let downloadURL = self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name, itemType: selectedFolderListItem.type)
+                            
+                            if selectedItem?.hasFileId == true {
+                                try await backupsService.downloadFileBackup(device: device, downloadAt: downloadURL, fileId: selectedId)
+                            } else {
+                                FileManager.default.createFile(atPath: downloadURL.path, contents: nil)
+                            }
                         }
                     } else if let selectedId = currentFolderUuid {
                         try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedId)
