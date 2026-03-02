@@ -622,13 +622,33 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         if contentModificationDateHasChanged {
             logger.info("File content modification date has changed, let it pass")
-            completionHandler(item, [], false, nil)
+            let filename = item.filename as NSString
+            let properItem = FileProviderItem(
+                identifier: item.itemIdentifier,
+                filename: item.filename,
+                parentId: item.parentItemIdentifier,
+                createdAt: (item.creationDate ?? Date()) ?? Date(),
+                updatedAt: (item.contentModificationDate ?? Date()) ?? Date(),
+                itemExtension: filename.pathExtension,
+                itemType: item.contentType == .folder ? .folder : .file
+            )
+            completionHandler(properItem, [], false, nil)
             return Progress()
         }
         
         if lastUsedDateHasChanged {
             logger.info("File last use date has changed, let it pass")
-            completionHandler(item, [], false, nil)
+            let filename = item.filename as NSString
+            let properItem = FileProviderItem(
+                identifier: item.itemIdentifier,
+                filename: item.filename,
+                parentId: item.parentItemIdentifier,
+                createdAt: (item.creationDate ?? Date()) ?? Date(),
+                updatedAt: (item.contentModificationDate ?? Date()) ?? Date(),
+                itemExtension: filename.pathExtension,
+                itemType: item.contentType == .folder ? .folder : .file
+            )
+            completionHandler(properItem, [], false, nil)
             return Progress()
         }
                 
