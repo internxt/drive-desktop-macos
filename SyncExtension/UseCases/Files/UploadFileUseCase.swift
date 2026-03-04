@@ -190,8 +190,55 @@ struct UploadFileUseCase {
 
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
                 
-               
-                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
+                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                    // Handle duplicated file error: file already exists on server
+                    do {
+                        let filename = (item.filename as NSString)
+                        let existenceFile = ExistenceFile(
+                            plainName: filename.deletingPathExtension,
+                            type: filename.pathExtension
+                        )
+                        
+                        self.logger.info("🔍 File already exists (409), checking existence for: \(filename)")
+                        
+                        let existenceResult = try await driveNewAPI.getExistenceFileInFolderByPlainName(
+                            uuid: parentUUID,
+                            files: [existenceFile],
+                            debug: true
+                        )
+                        
+                        guard let existingFile = existenceResult.existentFiles.first(where: {
+                            $0.plainName == filename.deletingPathExtension
+                        }) else {
+                            
+                            completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                            return
+                        }
+                        
+                     
+                        
+                        let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: existingFile.uuid)
+                        
+                        let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
+                        
+                        let fileProviderItem = FileProviderItem(
+                            identifier: NSFileProviderItemIdentifier(rawValue: fileMeta.uuid),
+                            filename: FileProviderItem.getFilename(name: fileMeta.plainName ?? fileMeta.name, itemExtension: fileMeta.type),
+                            parentId: parentIdIsRootFolder ? .rootContainer : item.parentItemIdentifier,
+                            createdAt: Time.dateFromISOString(fileMeta.createdAt) ?? Date(),
+                            updatedAt: Time.dateFromISOString(fileMeta.updatedAt) ?? Date(),
+                            itemExtension: fileMeta.type,
+                            itemType: .file,
+                            size: Int(fileMeta.size) ?? 0
+                        )
+                        
+                        completionHandler(fileProviderItem, [], false, nil)
+                        
+                    } catch {
+                        self.logger.error("❌ Failed to recover existing file after 409: \(error.getErrorDescription())")
+                        completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+                    }
+                } else if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
                     self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
                     completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
                 } else {
