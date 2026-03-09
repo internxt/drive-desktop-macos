@@ -50,6 +50,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private let newAuthToken: String
     @Published var canDoBackup = true
 
+
     init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String,newAuthToken: String, deviceUuid: String) {
         self.networkFacade = networkFacade
         self.encryptedContentDirectory = encryptedContentDirectory
@@ -107,6 +108,8 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private func editSyncedNodeDateSafely(remoteUuid: String, date: Date) async throws {
         try await SyncedNodeRepository.shared.editSyncedNodeDateAsync(remoteUuid: remoteUuid, date: date)
     }
+    
+
 
     private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating folder")
@@ -121,14 +124,13 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.logger.info("Going to create folder \(foldername)")
 
         if let _ = node.parentId {
-            guard let parentId = node.remoteParentId else {
+            let parentInfo = node.getRemoteParentInfo()
+            guard let parentId = parentInfo.remoteParentId,
+                  let parentUuid = parentInfo.remoteParentUuid else {
+                self.logger.error("Missing Parent Folder id \(foldername) - this should not happen if dependencies are correct")
                 return .failure(BackupUploadError.MissingParentFolder)
             }
             
-            guard let parentUuid = node.remoteParentUuid else {
-                return .failure(BackupUploadError.MissingParentFolder)
-            }
-
             remoteParentId = parentId
             remoteParentUuid = parentUuid
         } else {
@@ -223,28 +225,37 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         let filename = (node.name as NSString)
         self.logger.info("Starting backing up file \(filename)")
 
-        guard let remoteParentId = node.remoteParentId else {
-            self.logger.info("Missing parent folderId \(node.name)")
-            return .failure(BackupUploadError.MissingParentFolder)
-        }
-        
-        guard let remoteParentUuid = node.remoteParentUuid else {
-            self.logger.info("Missing parent folderUuid \(node.name)")
+        let parentInfo = node.getRemoteParentInfo()
+        guard let remoteParentId = parentInfo.remoteParentId,
+              let remoteParentUuid = parentInfo.remoteParentUuid else {
+            self.logger.error("Missing parent folderId \(node.name) - this should not happen if dependencies are correct")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
         self.logger.info("Remote parent id \(remoteParentId)")
 
         do {
-            let result = try await networkFacade.uploadFile(
-                input: inputStream,
-                encryptedOutput: safeEncryptedContentURL,
-                fileSize: Int(fileURL.fileSize),
-                bucketId: self.bucketId,
-                progressHandler: { _ in }
-            )
-
-            self.logger.info("Upload completed with id \(result.id)")
+            var uploadFileId: String? = nil
+            var uploadSize: Int = Int(fileURL.fileSize)
+            var uploadBucketId: String = self.bucketId
+            
+            if uploadSize > 0 {
+                let result = try await networkFacade.uploadFile(
+                    input: inputStream,
+                    encryptedOutput: safeEncryptedContentURL,
+                    fileSize: uploadSize,
+                    bucketId: self.bucketId,
+                    progressHandler: { _ in }
+                )
+                
+                uploadFileId = result.id
+                uploadSize = result.size
+                uploadBucketId = result.bucket
+                
+                self.logger.info("Upload completed with id \(result.id)")
+            } else {
+                self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+            }
 
             if node.syncStatus == .NEEDS_UPDATE {
                 guard let remoteUuid = node.remoteUuid, let remoteId = node.remoteId else {
@@ -253,8 +264,8 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                 let updatedFile = try await backupNewAPI.replaceFileId(
                     fileUuid: remoteUuid,
-                    newFileId: result.id,
-                    newSize: result.size
+                    newFileId: uploadFileId,
+                    newSize: uploadSize
                 )
 
                 self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
@@ -280,10 +291,10 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
            
                 let createdFile = try await backupNewAPI.createBackupFileNew(
                     createFileData: CreateFileDataNew(
-                        fileId: result.id,
+                        fileId: uploadFileId,
                         type: filename.pathExtension,
-                        bucket: result.bucket,
-                        size: result.size,
+                        bucket: uploadBucketId,
+                        size: uploadSize,
                         folderId: remoteParentId,
                         name: encryptedFilename.base64EncodedString(),
                         plainName: filename.deletingPathExtension,

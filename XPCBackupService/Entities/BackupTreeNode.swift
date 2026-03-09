@@ -34,6 +34,8 @@ class BackupTreeNode {
     var syncRetries: UInt64 = 0
     var backupRealm: any SyncedNodeRepositoryProtocol
     
+    private let parentIdLock = NSLock()
+    
     init(id: String, deviceId: Int, rootBackupFolder: URL, parentId: String?, name: String, type: BackupTreeNodeType, url: URL?, syncStatus: BackupTreeNodeSyncStatus, childs: [BackupTreeNode], backupUploadService: BackupUploadServiceProtocol, backupRealm: any SyncedNodeRepositoryProtocol, backupTotalProgress: Progress) {
         self.id = id
         self.deviceId = deviceId
@@ -51,6 +53,26 @@ class BackupTreeNode {
     
     func addChild(newNode: BackupTreeNode){
         childs.append(newNode)
+    }
+    
+    func setRemoteParentInfo(remoteParentId: Int?, remoteParentUuid: String?) {
+        parentIdLock.lock()
+        defer { parentIdLock.unlock() }
+        self.remoteParentId = remoteParentId
+        self.remoteParentUuid = remoteParentUuid
+    }
+    
+    func getRemoteParentInfo() -> (remoteParentId: Int?, remoteParentUuid: String?) {
+        parentIdLock.lock()
+        defer { parentIdLock.unlock() }
+        return (self.remoteParentId, self.remoteParentUuid)
+    }
+    
+    
+    private func propagateRemoteInfoToChildren(remoteId: Int?, remoteUuid: String?) {
+        for child in self.childs {
+            child.setRemoteParentInfo(remoteParentId: remoteId, remoteParentUuid: remoteUuid)
+        }
     }
     
     func findNodeById(_ id: String) -> BackupTreeNode? {
@@ -171,10 +193,7 @@ class BackupTreeNode {
                 self.syncStatus = .REMOTE_AND_LOCAL
                 self.remoteId = remoteId
                 self.remoteUuid = remoteUuid
-                for child in self.childs {
-                    child.remoteParentId = remoteId
-                    child.remoteParentUuid = remoteUuid
-                }
+                self.propagateRemoteInfoToChildren(remoteId: remoteId, remoteUuid: remoteUuid)
             case .failure(let error):
             if let startUploadError = error as? StartUploadError {
                 if let apiError = startUploadError.apiError, apiError.statusCode == 420 {
@@ -212,10 +231,7 @@ class BackupTreeNode {
         self.syncStatus = .REMOTE_AND_LOCAL
         self.remoteId = syncedNodeRemoteId
         self.remoteUuid = syncedNoteRemoteUuid
-        for child in self.childs {
-            child.remoteParentId = remoteId
-            child.remoteParentUuid = remoteUuid
-        }
+        self.propagateRemoteInfoToChildren(remoteId: remoteId, remoteUuid: remoteUuid)
     }
 }
 

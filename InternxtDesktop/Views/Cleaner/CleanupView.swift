@@ -222,6 +222,9 @@ class CleanupViewModel: ObservableObject {
     // MARK: - File Selection Methods
     func isFileSelected(_ filePath: String) -> Bool {
         guard let categoryId = selectedCategoryForPreview?.id else { return false }
+        if selectedCategories.contains(categoryId) {
+            return true
+        }
         return selectedFilesByCategory[categoryId]?.contains(filePath) ?? false
     }
 
@@ -260,13 +263,12 @@ class CleanupViewModel: ObservableObject {
         
         let newState: SelectionState = filesSelectAllState == .full ? .none : .full
         
-        selectedCategories.remove(categoryId)
-        
         switch newState {
         case .full:
-            let allFilePaths = Set(getAllCachedFiles(for: categoryId).map { $0.path })
-            selectedFilesByCategory[categoryId] = allFilePaths
+            selectedCategories.insert(categoryId)
+            selectedFilesByCategory.removeValue(forKey: categoryId)
         case .none:
+            selectedCategories.remove(categoryId)
             selectedFilesByCategory.removeValue(forKey: categoryId)
         case .partial:
             break
