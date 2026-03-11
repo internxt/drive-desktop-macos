@@ -15,6 +15,7 @@ struct BackupContentItem {
     var type: String
     var uuid: String
     var hasFileId: Bool
+    var isBundle: Bool = false
 }
 
 struct BackupNavigationLevel {
@@ -117,12 +118,36 @@ extension BackupContentNavigator {
         }
         
     
+    
+        private static let bundleExtensions: Set<String> = [
+            "app", "pages", "key", "numbers", "rtfd", "bundle",
+            "framework", "kext", "plugin", "xpc"
+        ]
+        
+        static func isBundleFolderName(_ name: String) -> Bool {
+            let ext = (name as NSString).pathExtension.lowercased()
+            return bundleExtensions.contains(ext)
+        }
         
         private func getFolderChildsAsBackupContentItems(folderUuid: String, bucketId: String, offset: Int, limit: Int) async throws -> [BackupContentItem] {
             let childs = try await backupAPI.getBackupChilds(folderUuid:folderUuid, offset: offset, limit: limit)
             
             return childs.folders.map { child in
                 let name = child.plainName ?? self.decryptName(name: child.name, bucketId: bucketId)
+
+                if Self.isBundleFolderName(name) {
+                    let ext = (name as NSString).pathExtension
+                    let nameWithoutExt = (name as NSString).deletingPathExtension
+                    return BackupContentItem(
+                        id: child.id.toString(),
+                        name: nameWithoutExt,
+                        type: ext,
+                        uuid: child.uuid!,
+                        hasFileId: false,
+                        isBundle: true
+                    )
+                }
+                
                 return BackupContentItem(id: child.id.toString(), name: name, type: "folder", uuid: child.uuid!, hasFileId: true)
             }
         }

@@ -74,7 +74,7 @@ struct BackupContentNavigator: View {
         
         return Binding<[FolderListItem]>(get: {
             current.map{ item in
-                FolderListItem(id: item.id, name: item.name, type: item.type,uuid: item.uuid)
+                FolderListItem(id: item.id, name: item.name, type: item.type, uuid: item.uuid, isBundle: item.isBundle)
             }
         }, set: {_ in })
     }
@@ -96,7 +96,7 @@ struct BackupContentNavigator: View {
                 },
                 onItemDoubleTap: {item in
                     self.selectedFolderListItem = nil
-                    if item.type == "folder" {
+                    if item.type == "folder" && !item.isBundle {
                         self.currentFolderId = item.id
                         self.currentFolderUuid = item.uuid
                         navigateToFolder(item: item)
@@ -186,9 +186,15 @@ struct BackupContentNavigator: View {
                     } else if let selectedFolderListItem = selectedFolderListItem {
                         guard let selectedId = selectedId else { return }
                         guard let selectedUuid = selectedUuid else { return }
-                        if selectedFolderListItem.type == "folder" {
-                            
-                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedUuid,folderName: selectedFolderListItem.name)
+                        if selectedFolderListItem.type == "folder" || selectedFolderListItem.isBundle {
+
+                            let folderName: String
+                            if selectedFolderListItem.isBundle, let ext = selectedFolderListItem.type {
+                                folderName = "\(selectedFolderListItem.name).\(ext)"
+                            } else {
+                                folderName = selectedFolderListItem.name
+                            }
+                            try await backupsService.downloadFolderBackup(device: device, downloadAt: url, folderId: selectedUuid, folderName: folderName)
                         } else {
                             let selectedItem = viewModel.currentItems.first { $0.id == selectedId }
                             let downloadURL = self.getURLForItem(baseURL: url, itemName: selectedFolderListItem.name, itemType: selectedFolderListItem.type)

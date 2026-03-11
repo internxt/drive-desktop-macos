@@ -69,7 +69,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
                 if try self.root.isDirectory() {
                     guard let enumerator = FileManager.default.enumerator(
                         at: self.root,
-                        includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey],
+                        includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey, .isPackageKey, .isSymbolicLinkKey],
                         options: [.skipsHiddenFiles]
                     ) else {
                         logger.error("Enumerator not found")
@@ -79,6 +79,10 @@ class BackupTreeGenerator: BackupTreeGeneration {
 
                     for case let url as URL in enumerator {
                         do {
+                            let symValues = try url.resourceValues(forKeys: [.isSymbolicLinkKey])
+                            if symValues.isSymbolicLink == true {
+                                continue
+                            }
                             try self.insertInTree(url)
                         } catch {
                             // We need to decide what to do in this case, for now, at least log the error
@@ -102,6 +106,12 @@ class BackupTreeGenerator: BackupTreeGeneration {
     }
     
     
+
+    private static let knownBundleExtensions: Set<String> = [
+        "app", "framework", "bundle", "kext", "plugin",
+        "pages", "key", "numbers", "rtfd", "xpc"
+    ]
+
     func insertInTree(_ url: URL) throws {
          //  Check if the node already exists in the parent instead of the whole tree
          if nodeIndex[url] != nil {
@@ -114,10 +124,22 @@ class BackupTreeGenerator: BackupTreeGeneration {
              throw BackupTreeGeneratorError.parentNodeNotFound
          }
 
-         guard let typeID = try url.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier,
+         let resourceValues = try url.resourceValues(forKeys: [.typeIdentifierKey, .isPackageKey, .isDirectoryKey])
+
+         guard let typeID = resourceValues.typeIdentifier,
                let type = UTType(typeID) else {
              throw BackupTreeGeneratorError.cannotGetNodeType
          }
+
+
+         let utTypeConforms = type.conforms(to: .package)
+         let isPackageResource = resourceValues.isPackage == true
+         let isDirectory = resourceValues.isDirectory == true
+         let ext = url.pathExtension.lowercased()
+         let extensionMatch = isDirectory && Self.knownBundleExtensions.contains(ext)
+         let isPackage = utTypeConforms || isPackageResource || extensionMatch
+
+         let effectiveType: BackupTreeNodeType = isPackage ? .folder : type
 
          // We have a parent, and the node does not exists, create the BackupTreeNode
          let newNode = BackupTreeNode(
@@ -126,7 +148,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
              rootBackupFolder: root,
              parentId: parentNode.id,
              name: url.lastPathComponent,
-             type: type,
+             type: effectiveType,
              url: url,
              syncStatus: .LOCAL_ONLY,
              childs: [],
