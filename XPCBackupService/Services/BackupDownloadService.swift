@@ -62,7 +62,7 @@ struct BackupDownloadService {
                     }
                     try await self.downloadBackupFolderAtPath(folderId: folderUuid, downloadAtPath: folderURL)
                 } catch {
-                    logger.error("❌ Failed to download backup folder \(backupFolderName) at \(downloadAtPath.path)")
+                    logger.error("❌ Failed to download backup folder \(backupFolderName) at \(downloadAtPath.path): \(error.localizedDescription)")
                 }
             }
         }
