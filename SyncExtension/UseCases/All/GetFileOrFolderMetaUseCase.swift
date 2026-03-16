@@ -142,9 +142,9 @@ struct GetFileOrFolderMetaUseCase {
         return Progress()
     }
     
-    private func getFileMetaOrNil(maybeFileUuid: String) async -> GetFileMetaByIdResponse? {
+    private func getFileMetaOrNil(maybeFileUuid: String) async -> GetFileMetaByIdResponseV2? {
         do {
-            let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: maybeFileUuid)
+            let fileMeta = try await driveNewAPI.getFileMetaByUuidV2(uuid: maybeFileUuid)
             
             if fileMeta.uuid != maybeFileUuid {
                 return nil
