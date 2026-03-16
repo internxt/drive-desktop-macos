@@ -65,7 +65,7 @@ struct DriveFileService {
     /// - Returns: A `DriveFile` with the updated name
     ///
     public func renameFile(uuid: String, bucketId: String, newName: String) async throws -> DriveFile {
-        let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: uuid)
+        let fileMeta = try await driveNewAPI.getFileMetaByUuidV2(uuid: uuid)
         
         let updated = try await driveNewAPI.updateFileNew(
             uuid: fileMeta.uuid,
