@@ -71,7 +71,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
 
             backupUploadService = BackupUploadService(
-                networkFacade: NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI),
+                networkFacade: NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, reduceBandwidth: configLoader.getReduceBandwidth()),
                 encryptedContentDirectory: FileManager.default.temporaryDirectory,
                 deviceId: deviceId,
                 bucketId: bucketId,

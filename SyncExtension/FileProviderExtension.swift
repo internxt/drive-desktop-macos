@@ -93,7 +93,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         self.mnemonic = mnemonic
-        self.networkFacade = NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network)
+        
+        let reduceBandwidth = config.getReduceBandwidth()
+        self.networkFacade = NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network, reduceBandwidth: reduceBandwidth)
         
         do {
             self.tmpURL = try manager.temporaryDirectoryURL()
@@ -255,7 +257,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return Progress()
             }
             return DownloadFileWorkspaceUseCase(
-                networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace, reduceBandwidth: config.getReduceBandwidth()),
                 user: user,
                 activityManager: activityManager,
                 itemIdentifier: itemIdentifier,
@@ -430,7 +432,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         let useCase = UploadFileOrUpdateContentWorkspaceUseCase(
                             networkFacade: NetworkFacade(
                                 mnemonic: workspaceMnemonic,
-                                networkAPI: APIFactory.NetworkWorkspace
+                                networkAPI: APIFactory.NetworkWorkspace,
+                                reduceBandwidth: config.getReduceBandwidth()
                             ),
                             user: self.user,
                             activityManager: self.activityManager,
@@ -598,7 +601,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     return Progress()
                 }
                 return UpdateFileContentWorkspaceUseCase(
-                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace, reduceBandwidth: config.getReduceBandwidth()),
                     user: self.user,
                     item: item,
                     fileUuid: item.itemIdentifier.rawValue,

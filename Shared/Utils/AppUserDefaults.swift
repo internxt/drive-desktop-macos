@@ -14,18 +14,20 @@ import Foundation
 struct AppUserDefault<T> {
   let key: String
   let defaultValue: T
+  let defaults: UserDefaults
 
-  init(_ key: DefaultsKeys, defaultValue: T) {
+  init(_ key: DefaultsKeys, defaultValue: T, suiteName: String? = nil) {
     self.key = key.rawValue
     self.defaultValue = defaultValue
+    self.defaults = suiteName != nil ? UserDefaults(suiteName: suiteName!) ?? .standard : .standard
   }
 
   var wrappedValue: T {
     get {
-      return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+      return defaults.object(forKey: key) as? T ?? defaultValue
     }
     set {
-      UserDefaults.standard.set(newValue, forKey: key)
+      defaults.set(newValue, forKey: key)
     }
   }
 }
@@ -33,4 +35,5 @@ struct AppUserDefault<T> {
 enum DefaultsKeys: String {
   case selectedLanguage = "INTERNXT_SELECTED_LANGUAGE"
   case selectedBackupFrequency = "INTERNXT_SELECTED_BACKUP_FREQUENCY"
+  case reduceBandwidth = "INTERNXT_REDUCE_BANDWIDTH"
 }

@@ -29,6 +29,10 @@ struct GeneralTabView: View {
                 .background(Color.Gray10).padding(.vertical, 24)
             VStack(alignment: .leading,spacing: 0) {
                 StartOnLaunchView()
+                
+                AppCheckbox(label: "SETTINGS_ENABLE_LOW_BANDWIDTH", checked: $appSettings.reduceBandwidth)
+                    .padding(.top, 16)
+                
                 HStack(spacing:0) {
                     VStack(alignment:.leading,spacing: 8){
                         AppText("COMMON_LANGUAGE")

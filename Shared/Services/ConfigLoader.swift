@@ -102,6 +102,10 @@ public struct ConfigLoader {
         return self.getFromUserDefaults(key: "AuthToken")
     }
     
+    public func getReduceBandwidth() -> Bool {
+        return UserDefaults(suiteName: SUITE_NAME)?.bool(forKey: "INTERNXT_REDUCE_BANDWIDTH") ?? false
+    }
+    
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: "Mnemonic")
     }
