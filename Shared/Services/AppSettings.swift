@@ -54,6 +54,7 @@ class AppSettings: ObservableObject {
 
     @Published public var selectedLanguage: Languages = .en
     @Published public var selectedBackupFrequency: BackupFrequencyEnum = .manually
+    @Published public var reduceBandwidth: Bool = false
 
     private var bag = Set<AnyCancellable>()
 
@@ -62,6 +63,9 @@ class AppSettings: ObservableObject {
 
     @AppUserDefault(.selectedBackupFrequency, defaultValue: nil)
     private var _backupFrequency: String?
+
+    @AppUserDefault(.reduceBandwidth, defaultValue: false, suiteName: INTERNXT_GROUP_NAME)
+    private var userDefaultsReduceBandwidth: Bool
 
     public init(defaultLanguage: Languages = .deviceLanguage, defaultBackupFrequency: BackupFrequencyEnum = .manually) {
         if _language == nil {
@@ -75,9 +79,11 @@ class AppSettings: ObservableObject {
         }
         
         selectedBackupFrequency = BackupFrequencyEnum(rawValue: _backupFrequency!)!
+        reduceBandwidth = userDefaultsReduceBandwidth
         
         observeForSelectedLanguage()
         observeForSelectedBackupFrequency()
+        observeForReduceBandwidth()
     }
 
     private func observeForSelectedLanguage() {
@@ -94,6 +100,14 @@ class AppSettings: ObservableObject {
             .map({ $0.rawValue })
             .sink { [weak self] value in
                 self?._backupFrequency = value
+            }
+            .store(in: &bag)
+    }
+
+    private func observeForReduceBandwidth() {
+        $reduceBandwidth
+            .sink { [weak self] value in
+                self?.userDefaultsReduceBandwidth = value
             }
             .store(in: &bag)
     }
