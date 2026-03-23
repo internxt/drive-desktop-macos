@@ -272,4 +272,4 @@
 "CLEANER_DEVICE_CLEAN_TITLE" = "Votre appareil est propre";
 "CLEANER_DEVICE_CLEAN_SUBTITLE" = "Aucune autre action nécessaire";
 "CLEANER_FINISH" = "Terminer";
-"SETTINGS_ENABLE_LOW_BANDWIDTH" = "Activer le mode réseau lent";
+"SETTINGS_ENABLE_LOW_BANDWIDTH" = "Activer le mode de faible utilisation du réseau";

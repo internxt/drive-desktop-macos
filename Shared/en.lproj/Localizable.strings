@@ -271,4 +271,4 @@
 "CLEANER_DEVICE_CLEAN_TITLE" = "Your device is clean";
 "CLEANER_DEVICE_CLEAN_SUBTITLE" = "No further actions are necessary";
 "CLEANER_FINISH" = "Finish";
-"SETTINGS_ENABLE_LOW_BANDWIDTH" = "Enable low bandwidth mode";
+"SETTINGS_ENABLE_LOW_BANDWIDTH" = "Enable network low usage mode";
