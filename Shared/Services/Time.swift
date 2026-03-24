@@ -10,10 +10,16 @@ import Foundation
 
 public class Time {
     public static func dateFromISOString(_ dateString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         
-        return dateFormatter.date(from: dateString)
+        if let date = formatter.date(from: dateString) {
+            return date
+        }
+        
+        
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.date(from: dateString)
     }
 
     public static func stringDateFromDate(_ date: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
