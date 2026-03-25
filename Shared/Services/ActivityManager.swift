@@ -76,9 +76,9 @@ class ActivityManager: ObservableObject {
         }
         let entries = realm.objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
 
-        let hasInProgress = !realm.objects(ActivityEntry.self)
+        let hasInProgress = realm.objects(ActivityEntry.self)
             .filter("status == %@", ActivityEntryStatus.inProgress.rawValue)
-            .isEmpty
+            .first != nil
         
         var newEntries: [ActivityEntry] = []
         for i in 0..<activityActionsLimit {
