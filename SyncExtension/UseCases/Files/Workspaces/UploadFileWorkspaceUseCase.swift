@@ -8,6 +8,7 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
+import RealmSwift
 
 
 struct UploadFileWorkspaceUseCase {
@@ -120,6 +121,10 @@ struct UploadFileWorkspaceUseCase {
         self.logger.info("Creating file")
         
         Task {
+           
+            let inProgressId = ObjectId.generate()
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
+            
             do {
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
                 
@@ -223,12 +228,12 @@ struct UploadFileWorkspaceUseCase {
                 }
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished)
                 
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
-
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
                 
                 if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {

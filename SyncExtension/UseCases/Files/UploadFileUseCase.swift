@@ -8,6 +8,7 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
+import RealmSwift
 
 enum UploadFileUseCaseError: Error {
     case InvalidParentId
@@ -82,6 +83,10 @@ struct UploadFileUseCase {
         self.logger.info("Creating file")
         
         Task {
+          
+            let inProgressId = ObjectId.generate()
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
+            
             do {
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
 
@@ -183,11 +188,12 @@ struct UploadFileUseCase {
                 }
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.saveActivityEntry(entry: ActivityEntry(filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished))
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished)
+
                 
             } catch {
                 error.reportToSentry()
-
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
                 
                
