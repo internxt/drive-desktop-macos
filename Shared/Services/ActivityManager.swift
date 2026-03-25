@@ -46,12 +46,28 @@ class ActivityManager: ObservableObject {
         do {
             let realm = getRealm()
             try realm?.write {
-                realm?.add(entry)
+                realm?.add(entry, update: .modified)
             }
         } catch {
             error.reportToSentry()
         }
 
+    }
+    
+    func updateActivityEntryStatus(id: ObjectId, filename: String, kind: ActivityEntryOperationKind, status: ActivityEntryStatus) {
+        guard let realm = getRealm() else { return }
+        if let existing = realm.object(ofType: ActivityEntry.self, forPrimaryKey: id) {
+            do {
+                try realm.write {
+                    existing.filename = filename
+                    existing.status = status
+                }
+            } catch {
+                error.reportToSentry()
+            }
+        } else {
+            saveActivityEntry(entry: ActivityEntry(_id: id, filename: filename, kind: kind, status: status))
+        }
     }
 
     func updateActivityEntries() {
@@ -60,6 +76,9 @@ class ActivityManager: ObservableObject {
         }
         let entries = realm.objects(ActivityEntry.self).sorted(byKeyPath: "createdAt", ascending: false)
 
+        let hasInProgress = !realm.objects(ActivityEntry.self)
+            .filter("status == %@", ActivityEntryStatus.inProgress.rawValue)
+            .isEmpty
         
         var newEntries: [ActivityEntry] = []
         for i in 0..<activityActionsLimit {
@@ -71,6 +90,7 @@ class ActivityManager: ObservableObject {
         
         DispatchQueue.main.async {
             self.activityEntries = newEntries
+            self.isSyncing = hasInProgress
         }
         
     }

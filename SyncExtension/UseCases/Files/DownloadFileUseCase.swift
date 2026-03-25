@@ -135,6 +135,13 @@ struct DownloadFileUseCase {
         
         Task {
            
+            let uuidString = itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
+            let trackingObjectId = try? ObjectId(string: String(uuidString))
+            
+            if let trackingObjectId = trackingObjectId {
+                activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .inProgress))
+            }
+            
             var driveFile: DriveFile? = nil
             do {
                 
@@ -185,9 +192,9 @@ struct DownloadFileUseCase {
                     completionHandler(destinationURL, fileProviderItem, nil)
                     progressHandler(completedProgress: 1)
                     
-                    let uuidString = fileProviderItem.itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
-                    let objectId = try ObjectId(string: String(uuidString))
-                    activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename, kind: .download, status: .finished))
+                    if let trackingObjectId = trackingObjectId {
+                        activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: filename, kind: .download, status: .finished)
+                    }
                     
                     self.logger.info("✅ Created empty file with identifier \(itemIdentifier.rawValue)")
                     return
@@ -221,15 +228,18 @@ struct DownloadFileUseCase {
                 completionHandler(decryptedFileURL, fileProviderItem , nil)
 
                 progressHandler(completedProgress: 1)
-                let uuidString = fileProviderItem.itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
-                let objectId = try ObjectId(string: String(uuidString))
-                activityManager.saveActivityEntry(entry: ActivityEntry(_id: objectId, filename: filename, kind: .download, status: .finished))
+                if let trackingObjectId = trackingObjectId {
+                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: filename, kind: .download, status: .finished)
+                }
                 self.logger.info("✅ Downloaded and decrypted file correctly with identifier \(itemIdentifier.rawValue)")
             } catch {
           
                 error.reportToSentry()
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
+                if let trackingObjectId = trackingObjectId {
+                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .failed)
+                }
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
             }
         }
