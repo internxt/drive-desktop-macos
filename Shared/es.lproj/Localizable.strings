@@ -37,6 +37,8 @@
 "SYNC_ENTRY_KIND_TRASHED" = "Movido a la papelera";
 "SYNC_ENTRY_KIND_DOWNLOADED" = "Descargado";
 "SYNC_ENTRY_KIND_UPLOADED" = "Subido";
+"SYNC_ENTRY_KIND_DOWNLOADING" = "Descargando...";
+"SYNC_ENTRY_KIND_UPLOADING" = "Subiendo...";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";
