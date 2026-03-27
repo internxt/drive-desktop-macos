@@ -46,13 +46,13 @@ struct WidgetSyncEntryView: View {
     var EntryStatusSubtitle: some View {
         switch self.operationKind {
         case .backupDownload:
-            AppText("SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            AppText(status == .inProgress ? "SYNC_ENTRY_KIND_DOWNLOADING" : "SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
         case .trash:
             AppText("SYNC_ENTRY_KIND_TRASHED").font(.XSMedium).foregroundColor(.Gray50)
         case .download:
-            AppText("SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            AppText(status == .inProgress ? "SYNC_ENTRY_KIND_DOWNLOADING" : "SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
         case .upload:
-            AppText("SYNC_ENTRY_KIND_UPLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            AppText(status == .inProgress ? "SYNC_ENTRY_KIND_UPLOADING" : "SYNC_ENTRY_KIND_UPLOADED").font(.XSMedium).foregroundColor(.Gray50)
         default:
             EmptyView()
         }
@@ -63,6 +63,10 @@ struct WidgetSyncEntryView: View {
         switch self.status {
         case .finished:
             AppIcon(iconName: .Check, size: 24, color: .GreenDark)
+        case .inProgress:
+            ProgressView()
+                .scaleEffect(0.7)
+                .frame(width: 24, height: 24)
         default:
             EmptyView()
         }
