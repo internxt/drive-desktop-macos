@@ -168,7 +168,7 @@ struct UploadFileUseCase {
                 let uploadDuration = self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
                 
                 self.logger.info("⏱️ Upload completed in \(uploadDuration) seconds")
-                self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue)")
+                self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue) -  \(item.filename)")
                 
                 self.logger.info("🖼️ Processing thumbnail...")
                 
@@ -188,13 +188,13 @@ struct UploadFileUseCase {
                 }
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished)
 
                 
             } catch {
                 error.reportToSentry()
                 activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
-                self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
+                self.logger.error("❌ Failed to create file \(item.filename) : \(error.getErrorDescription())")
                 
                
                 if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {

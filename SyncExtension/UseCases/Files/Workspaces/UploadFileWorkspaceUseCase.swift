@@ -228,7 +228,7 @@ struct UploadFileWorkspaceUseCase {
                 }
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name ?? createdFile.name, itemExtension: createdFile.type), kind: .upload, status: .finished)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished)
                 
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
