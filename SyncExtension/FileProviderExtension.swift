@@ -706,11 +706,16 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         if actionIdentifier == FileProviderItemActionsManager.MakeAvailableOnline {
             Task {
                 for identifier in itemIdentifiers {
+                    
                     fileProviderItemActions.makeAvailableOnlineOnly(identifier: identifier)
-                    if #available(macOSApplicationExtension 13.0, *) {
-                        try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
-                    } else {
-                        // Nothing we can do here
+                    try? await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    
+                    do {
+                        try await Task.sleep(nanoseconds: 2_000_000_000)
+                        try await manager.evictItem(identifier: identifier)
+                        
+                    } catch {
+                        logger.error("❌ Failed to evict \(identifier.rawValue): \(error.localizedDescription)")
                     }
                 }
                 
