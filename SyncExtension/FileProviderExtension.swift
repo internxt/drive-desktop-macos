@@ -26,7 +26,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let config = ConfigLoader()
     let manager: NSFileProviderManager
     let tmpURL: URL
-    let networkFacade: NetworkFacade
+    var networkFacade: NetworkFacade {
+        let reduceBandwidth = config.getReduceBandwidth()
+        return NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network, reduceBandwidth: reduceBandwidth)
+    }
+    
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
@@ -93,9 +97,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         self.mnemonic = mnemonic
-        
-        let reduceBandwidth = config.getReduceBandwidth()
-        self.networkFacade = NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network, reduceBandwidth: reduceBandwidth)
         
         do {
             self.tmpURL = try manager.temporaryDirectoryURL()
