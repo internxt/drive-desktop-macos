@@ -707,11 +707,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         if actionIdentifier == FileProviderItemActionsManager.MakeAvailableOnline {
             Task {
                 for identifier in itemIdentifiers {
+                    
                     fileProviderItemActions.makeAvailableOnlineOnly(identifier: identifier)
-                    if #available(macOSApplicationExtension 13.0, *) {
-                        try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
-                    } else {
-                        // Nothing we can do here
+                    try? await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    
+                    do {
+                        // Notify macOS of policy change to .inherited and wait for the async update to process.
+                        // This prevents -2008 (nonEvictable) errors when calling evictItem to physically free disk space.
+                        try await Task.sleep(nanoseconds: 2_000_000_000)
+                        try await manager.evictItem(identifier: identifier)
+                    } catch {
+                        logger.error("❌ Failed to evict \(identifier.rawValue): \(error.localizedDescription)")
                     }
                 }
                 
