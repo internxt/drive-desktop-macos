@@ -8,7 +8,8 @@
 import Foundation
 import ServiceManagement
 
-protocol XPCConnectionManaging {
+protocol XPCConnectionManaging: AnyObject {
+    var onInvalidated: (() -> Void)? { get set }
     func createConnection() -> NSXPCConnection?
     func invalidateConnection()
 }
@@ -62,6 +63,7 @@ enum XPCManagerError: LocalizedError {
 class XPCCleanerConnectionManager: XPCConnectionManaging {
     private let serviceName: String
     private var connection: NSXPCConnection?
+    var onInvalidated: (() -> Void)?
     
     init(serviceName: String) {
         self.serviceName = serviceName
@@ -72,13 +74,15 @@ class XPCCleanerConnectionManager: XPCConnectionManaging {
         newConnection.remoteObjectInterface = NSXPCInterface(with: CleanerHelperXPCProtocol.self)
         
         newConnection.interruptionHandler = { [weak self] in
-            print("XPC connection interrupted")
+            cleanerLogger.warning("XPC connection interrupted")
             self?.connection = nil
+            self?.onInvalidated?()
         }
         
         newConnection.invalidationHandler = { [weak self] in
-            print("XPC connection invalidated")
+            cleanerLogger.warning("XPC connection invalidated externally")
             self?.connection = nil
+            self?.onInvalidated?()
         }
         
         newConnection.resume()
