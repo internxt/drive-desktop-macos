@@ -90,6 +90,7 @@
 		AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */; };
 		AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */; };
 		AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */; };
+		AA44C9C42F7CBA7800261D14 /* CleanerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA44C9C32F7CBA7800261D14 /* CleanerViewModel.swift */; };
 		AA5EABE62BFD761F00BA0145 /* NetworkAnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3E892AF141540026C504 /* NetworkAnalyticsEvents.swift */; };
 		AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AA5EABE92BFD770200BA0145 /* AnalyticsEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */; };
@@ -530,6 +531,7 @@
 		AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusTabView.swift; sourceTree = "<group>"; };
 		AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusManager.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
+		AA44C9C32F7CBA7800261D14 /* CleanerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanerViewModel.swift; sourceTree = "<group>"; };
 		AA628F292D4BF73000421CB7 /* OnboardingSlide6View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide6View.swift; sourceTree = "<group>"; };
 		AA628F2B2D4BFBA800421CB7 /* OnboardingSlide7View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSlide7View.swift; sourceTree = "<group>"; };
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
@@ -1246,6 +1248,7 @@
 			isa = PBXGroup;
 			children = (
 				E17DB7092C539A1F0031B465 /* BackupContentNavigatorViewModel.swift */,
+				AA44C9C32F7CBA7800261D14 /* CleanerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1981,6 +1984,7 @@
 				E1880BA22AA63CF2001FC171 /* AccountTabView.swift in Sources */,
 				E1880B9C2AA625D6001FC171 /* DeviceNameView.swift in Sources */,
 				E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */,
+				AA44C9C42F7CBA7800261D14 /* CleanerViewModel.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
 				317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */,
