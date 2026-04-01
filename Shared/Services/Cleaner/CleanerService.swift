@@ -261,6 +261,10 @@ class CleanerService: ObservableObject {
         helperService.openSystemSettings()
     }
     
+    func resetConnection() {
+        connectionService.resetForReconnection()
+    }
+    
     // MARK: - Private Helpers - Operation Management
     private func executeOperation<T>(
         newState: CleanerState,

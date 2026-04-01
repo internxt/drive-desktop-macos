@@ -28,9 +28,21 @@ class XPCConnectionService: ObservableObject {
     
     // MARK: - Initialization
     init(connectionManager: XPCConnectionManaging? = nil) {
-        self.connectionManager = connectionManager ?? XPCCleanerConnectionManager(
+        let manager = connectionManager ?? XPCCleanerConnectionManager(
             serviceName: Constants.helperServiceName
         )
+        self.connectionManager = manager
+        
+        self.connectionManager.onInvalidated = { [weak self] in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                if self.isConnected {
+                    cleanerLogger.warning("XPC connection lost externally — resetting isConnected")
+                    self.isConnected = false
+                    self.currentConnection = nil
+                }
+            }
+        }
     }
     
     deinit {
@@ -41,6 +53,13 @@ class XPCConnectionService: ObservableObject {
     func ensureConnection() async throws {
         guard !isConnected else { return }
         try await establishConnection()
+    }
+    
+    func resetForReconnection() {
+        currentConnection?.invalidate()
+        currentConnection = nil
+        isConnected = false
+        cleanerLogger.info("XPC connection reset for reconnection")
     }
     
     func getHelperProxy() -> CleanerHelperXPCProtocol? {
