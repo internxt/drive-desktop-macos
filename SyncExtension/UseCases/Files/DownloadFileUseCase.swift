@@ -138,10 +138,6 @@ struct DownloadFileUseCase {
             let uuidString = itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
             let trackingObjectId = try? ObjectId(string: String(uuidString))
             
-            if let trackingObjectId = trackingObjectId {
-                activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .inProgress))
-            }
-            
             var driveFile: DriveFile? = nil
             do {
                 
@@ -151,6 +147,11 @@ struct DownloadFileUseCase {
                 }
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
                 let file = try await getFileMetaWithRetry(uuid: itemIdentifier.rawValue, maxRetries: maxRetries)
+                
+                let currentFilename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                if let trackingObjectId = trackingObjectId {
+                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: currentFilename, kind: .download, status: .inProgress)
+                }
                 
                 driveFile = DriveFile(
                     uuid: file.uuid,
