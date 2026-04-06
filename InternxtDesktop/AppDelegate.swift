@@ -333,6 +333,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             .sink { _ in
                 Task {
                     await self.notificationsManager.getNotifications()
+                    // to keep features updated 
+                    await FeaturesService.shared.fetchFeaturesStatus()
                 }
             }
     }
