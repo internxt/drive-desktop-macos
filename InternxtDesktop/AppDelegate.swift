@@ -432,6 +432,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     private func logoutSuccess() {
+        FeaturesService.shared.clearCachedFeatures()
         self.windowsManager.displayDockIcon()
         self.openAuthWindow()
         self.windowsManager.closeAll(except: ["auth"])
