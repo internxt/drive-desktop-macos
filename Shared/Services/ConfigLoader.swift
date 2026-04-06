@@ -166,7 +166,7 @@ public struct ConfigLoader {
 
     
     public func removeLegacyAuthToken() -> Void  {
-        let removed = self.removeFromUserDefaults(key: "LegacyAuthToken")
+        _ = self.removeFromUserDefaults(key: "LegacyAuthToken")
         //keep to remove value
     }
     
