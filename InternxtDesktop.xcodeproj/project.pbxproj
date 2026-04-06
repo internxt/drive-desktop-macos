@@ -145,6 +145,8 @@
 		AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E56C212BC0423A00DBA0BF /* BackupProgressUpdate.swift */; };
 		AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */; };
 		AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */; };
+		AACC83A42F7E06770084FFB6 /* ClamAVDatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */; };
+		AACC83A62F7E068E0084FFB6 /* ClamAVScannerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */; };
 		AACE1FE42CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */; };
 		AACE1FE62CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */; };
 		AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */; };
@@ -566,6 +568,8 @@
 		AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
+		AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClamAVDatabaseService.swift; sourceTree = "<group>"; };
+		AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClamAVScannerService.swift; sourceTree = "<group>"; };
 		AACE1FE32CE1A7F50039ABF4 /* MoveFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AACE1FE52CE1AED10039ABF4 /* MoveFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -1401,6 +1405,8 @@
 				317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */,
 				AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */,
 				AA94CA6D2E99E8CE007CEBDF /* NotificationsManager.swift */,
+				AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */,
+				AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1909,6 +1915,7 @@
 				E17C84CA2AB31E0400A58414 /* OnboardingFinishView.swift in Sources */,
 				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				AA94CA6E2E99E8CE007CEBDF /* NotificationsManager.swift in Sources */,
+				AACC83A62F7E068E0084FFB6 /* ClamAVScannerService.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */,
 				AA93BEC22E7230C500F12334 /* ScanOperationService.swift in Sources */,
@@ -1988,6 +1995,7 @@
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
 				317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */,
+				AACC83A42F7E06770084FFB6 /* ClamAVDatabaseService.swift in Sources */,
 				E1A0AC722AB89B1B005E71D6 /* AnyTransition.swift in Sources */,
 				AA13E0232E61066800DD47CB /* CleanerHelperXPCService.swift in Sources */,
 				3104526E2B4B1C5C00984716 /* StopBackupDialogView.swift in Sources */,
