@@ -14,15 +14,21 @@ class FeaturesService: ObservableObject {
     
     private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "FeaturesService")
     
+    private enum CacheKeys {
+        static let backupEnabled = "FeaturesService.backupEnabled"
+        static let antivirusEnabled = "FeaturesService.antivirusEnabled"
+        static let cleanerEnabled = "FeaturesService.cleanerEnabled"
+    }
+    
     @Published var backupEnabled: Bool = false
     @Published var antivirusEnabled: Bool = false
     @Published var cleanerEnabled: Bool = false
     @Published var isLoading: Bool = false
-    @Published var lastFetchDate: Date?
+   
     
-    private var cancellables = Set<AnyCancellable>()
-    
-    private init() {}
+    private init() {
+        loadCachedFeatures()
+    }
     
     /// Fetches payment info and updates all feature states
     @MainActor
@@ -54,19 +60,15 @@ class FeaturesService: ObservableObject {
                 logger.warning("No cleaner information found in payment info")
             }
             
-            lastFetchDate = Date()
+            persistFeaturesToCache()
             logger.info("Features status updated successfully")
             
         } catch {
             logger.error("Failed to fetch features status: \(error)")
             
-            if let apiError = error as? APIClientError {
-                if apiError.statusCode == 404 {
-                    backupEnabled = false
-                    antivirusEnabled = false
-                    cleanerEnabled = false
-                    logger.info("Payment info not found (404), disabling all features")
-                }
+            if let apiError = error as? APIClientError, apiError.statusCode == 404 {
+                clearCachedFeatures()
+                logger.info("Payment info not found (404), disabling all features and clearing cache")
             }
         }
         
@@ -83,6 +85,29 @@ class FeaturesService: ObservableObject {
     
     var cleanerState: CleanerFeatureState {
         return cleanerEnabled ? .active : .locked
+    }
+    
+    private func loadCachedFeatures() {
+        let defaults = UserDefaults.standard
+        backupEnabled = defaults.bool(forKey: CacheKeys.backupEnabled)
+        antivirusEnabled = defaults.bool(forKey: CacheKeys.antivirusEnabled)
+        cleanerEnabled = defaults.bool(forKey: CacheKeys.cleanerEnabled)
+        logger.info("Loaded cached features — backup: \(backupEnabled), antivirus: \(antivirusEnabled), cleaner: \(cleanerEnabled)")
+    }
+    
+    private func persistFeaturesToCache() {
+        let defaults = UserDefaults.standard
+        defaults.set(backupEnabled, forKey: CacheKeys.backupEnabled)
+        defaults.set(antivirusEnabled, forKey: CacheKeys.antivirusEnabled)
+        defaults.set(cleanerEnabled, forKey: CacheKeys.cleanerEnabled)
+        logger.info("Persisted feature flags to cache")
+    }
+    
+     func clearCachedFeatures() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: CacheKeys.backupEnabled)
+        defaults.removeObject(forKey: CacheKeys.antivirusEnabled)
+        defaults.removeObject(forKey: CacheKeys.cleanerEnabled)
     }
 }
 
