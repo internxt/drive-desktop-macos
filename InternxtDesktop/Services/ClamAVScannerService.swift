@@ -146,28 +146,25 @@ class ClamAVScannerService {
     }
     
     func cancelAll() {
-        DispatchQueue.main.sync {
-            for process in scanProcesses where process.isRunning {
-                process.terminate()
-            }
-            scanProcesses.removeAll()
+        for process in scanProcesses where process.isRunning {
+            process.terminate()
         }
+        scanProcesses.removeAll()
     }
+
     
 
     private func calculateOptimalWorkers(pathCount: Int) -> Int {
-        let maxWorkersLimit = 4
+        let maxWorkersLimit = 3
         let physicalMemoryGB = Int(ProcessInfo.processInfo.physicalMemory / (1024 * 1024 * 1024))
         
         let ramWorkers: Int
-        if physicalMemoryGB <= 8 {
-            ramWorkers = 1  // ~1GB consumed
-        } else if physicalMemoryGB <= 16 {
-            ramWorkers = 2  // ~2GB consumed
-        } else if physicalMemoryGB < 32 {
-            ramWorkers = 3  // ~3GB consumed
+        if physicalMemoryGB > 32 {
+            ramWorkers = 3 
+        } else if physicalMemoryGB >= 24 {
+            ramWorkers = 2
         } else {
-            ramWorkers = 4  // ~4GB consumed
+            ramWorkers = 1
         }
         
         let cpuWorkers = ProcessInfo.processInfo.activeProcessorCount
