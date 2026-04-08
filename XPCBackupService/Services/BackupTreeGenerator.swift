@@ -137,7 +137,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
          let isDirectory = resourceValues.isDirectory == true
          let ext = url.pathExtension.lowercased()
          let extensionMatch = isDirectory && Self.knownBundleExtensions.contains(ext)
-         let isPackage = utTypeConforms || isPackageResource || extensionMatch
+         let isPackage = isDirectory || utTypeConforms || isPackageResource || extensionMatch
 
          let effectiveType: BackupTreeNodeType = isPackage ? .folder : type
 
