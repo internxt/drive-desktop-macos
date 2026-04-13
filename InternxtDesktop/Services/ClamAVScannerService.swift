@@ -10,8 +10,13 @@ import InternxtSwiftCore
 
 class ClamAVScannerService {
     
-    private(set) var scanProcesses: [Process] = []
-    
+    private let processQueue = DispatchQueue(label: "com.internxt.clamav.processQueue")
+    private var _scanProcesses: [Process] = []
+
+    var scanProcesses: [Process] {
+        processQueue.sync { _scanProcesses }
+    }
+
 
     func scanPathsInParallel(
         paths: [String],
@@ -50,8 +55,8 @@ class ClamAVScannerService {
             
             let dispatchGroup = DispatchGroup()
             var allSuccessful = true
-            
-            DispatchQueue.main.sync { self.scanProcesses.removeAll() }
+
+            self.processQueue.sync { self._scanProcesses.removeAll() }
             
             for batch in batches {
                 if batch.isEmpty { continue }
@@ -116,40 +121,46 @@ class ClamAVScannerService {
                 dispatchGroup.enter()
                 process.terminationHandler = { _ in
                     pipe.fileHandleForReading.readabilityHandler = nil
-                    
+
                     if chunkScanned > 0 {
                         onProgress(chunkScanned, currentLineInfo)
                     }
-                    
+
+                   
                     if process.terminationStatus == 2 {
-                        DispatchQueue.main.sync { allSuccessful = false }
+                        allSuccessful = false
                     }
                     dispatchGroup.leave()
                 }
-                
+
                 do {
-                    DispatchQueue.main.sync { self.scanProcesses.append(process) }
+                  
+                    self.processQueue.sync { self._scanProcesses.append(process) }
                     try process.run()
                 } catch {
                     appLogger.error("Error executing parallel clamscan: \(error.localizedDescription)")
-                    DispatchQueue.main.sync { allSuccessful = false }
+                    allSuccessful = false  // safe: only mutated from background thread
                     dispatchGroup.leave()
                 }
             }
             
             dispatchGroup.notify(queue: .main) {
                 appLogger.info("Antivirus: All ClamAV parallel workers finished")
-                self.scanProcesses.removeAll()
+                self.processQueue.async { self._scanProcesses.removeAll() }
                 onComplete(allSuccessful)
             }
         }
     }
     
     func cancelAll() {
-        for process in scanProcesses where process.isRunning {
+        let toTerminate: [Process] = processQueue.sync {
+            let list = _scanProcesses
+            _scanProcesses.removeAll()
+            return list
+        }
+        for process in toTerminate where process.isRunning {
             process.terminate()
         }
-        scanProcesses.removeAll()
     }
 
     
