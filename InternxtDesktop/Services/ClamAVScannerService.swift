@@ -58,6 +58,8 @@ class ClamAVScannerService {
 
             self.processQueue.sync { self._scanProcesses.removeAll() }
             
+            var tempFilesToClean: [URL] = []
+            
             for batch in batches {
                 if batch.isEmpty { continue }
                 
@@ -65,7 +67,19 @@ class ClamAVScannerService {
                 process.executableURL = clamscanURL
                 
                 var arguments = ["--database=\(databaseDir.path)", "--no-summary", "-v", "-r"]
-                arguments.append(contentsOf: batch)
+                
+                let listURL = FileManager.default.temporaryDirectory.appendingPathComponent("clamscan-\(UUID().uuidString).txt")
+                let listContent = batch.joined(separator: "\n")
+                
+                do {
+                    try listContent.write(to: listURL, atomically: true, encoding: .utf8)
+                    arguments.append("--file-list=\(listURL.path)")
+                    tempFilesToClean.append(listURL)
+                } catch {
+                    appLogger.error("Failed to write to file-list, falling back to arguments: \(error)")
+                    arguments.append(contentsOf: batch)
+                }
+                
                 process.arguments = arguments
                 
                 let pipe = Pipe()
@@ -147,6 +161,13 @@ class ClamAVScannerService {
             dispatchGroup.notify(queue: .main) {
                 appLogger.info("Antivirus: All ClamAV parallel workers finished")
                 self.processQueue.async { self._scanProcesses.removeAll() }
+                
+                DispatchQueue.global(qos: .background).async {
+                    for tempURL in tempFilesToClean {
+                        try? FileManager.default.removeItem(at: tempURL)
+                    }
+                }
+                
                 onComplete(allSuccessful)
             }
         }
