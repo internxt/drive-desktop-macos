@@ -349,8 +349,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 self.startTokensRefreshing()
                 try await authManager.initializeCurrentUser()
                 self.logger.info("✅ Current user initialized")
-                await usageManager.updateUsage()
-                self.logger.info("✅ Usage updated")
+                Task {
+                    await self.usageManager.updateUsage()
+                    self.logger.info("✅ Usage updated")
+                }
+                
                 guard let user = self.authManager.user else {
                     throw AuthError.noUserFound
                 }
@@ -375,20 +378,33 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         }
         
         Task {
-            await self.notificationsManager.getNotifications()
-            self.startNotificationsPolling()
-            await FeaturesService.shared.fetchFeaturesStatus()
-            await self.initializeBackups()
-            await antivirusManager.fetchAntivirusStatus()
-            await backupsService.fetchBackupStatus()
-            
-            if FeaturesService.shared.cleanerEnabled {
-                await cleanerService.ensureHelperInstalled()
-            } else {
-                logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
+            await withTaskGroup(of: Void.self) { group in
+               
+                group.addTask {
+                    await self.notificationsManager.getNotifications()
+                    self.startNotificationsPolling()
+                }
+                
+             
+                group.addTask {
+                    await FeaturesService.shared.fetchFeaturesStatus()
+                    if FeaturesService.shared.cleanerEnabled {
+                        await self.cleanerService.ensureHelperInstalled()
+                    } else {
+                        self.logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
+                    }
+                }
+                
+                group.addTask {
+                    await self.initializeBackups()
+                    await self.backupsService.fetchBackupStatus()
+                }
+                
+                group.addTask {
+                    await self.antivirusManager.fetchAntivirusStatus()
+                    self.antivirusManager.downloadDatabases()
+                }
             }
-            
-            antivirusManager.downloadDatabases()
         }
         
         self.setupWidget()
@@ -697,3 +713,4 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
 
 }
+
