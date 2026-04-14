@@ -46,104 +46,121 @@ class ClamAVScannerService {
             }
             
             let totalWorkers = self.calculateOptimalWorkers(pathCount: paths.count)
-            appLogger.info("Antivirus: Starting Scan with \(totalWorkers) parallel clamscan processes")
-            
+            appLogger.info("Antivirus: Starting scan with \(totalWorkers) workers for \(paths.count) files")
+
             var batches: [[String]] = Array(repeating: [], count: totalWorkers)
-            for (index, pathStr) in paths.enumerated() {
-                batches[index % totalWorkers].append(pathStr)
+            for (index, path) in paths.enumerated() {
+                batches[index % totalWorkers].append(path)
             }
-            
+
             let dispatchGroup = DispatchGroup()
+            let successLock = NSLock()
+            let tempFilesLock = NSLock()
             var allSuccessful = true
+            var tempFilesToClean: [URL] = []
 
             self.processQueue.sync { self._scanProcesses.removeAll() }
-            
-            var tempFilesToClean: [URL] = []
-            
-            for batch in batches {
-                if batch.isEmpty { continue }
-                
+
+            for batch in batches where !batch.isEmpty {
+                let listURL = FileManager.default.temporaryDirectory
+                    .appendingPathComponent("clamscan-\(UUID().uuidString).txt")
+
+                do {
+                    try batch.joined(separator: "\n").write(to: listURL, atomically: true, encoding: .utf8)
+                    tempFilesLock.withLock {
+                        tempFilesToClean.append(listURL)
+                    }
+                } catch {
+                    appLogger.error("Cannot write file-list, skipping batch: \(error)")
+                    successLock.withLock { allSuccessful = false }
+                    continue
+                }
+
                 let process = Process()
                 process.executableURL = clamscanURL
-                
-                var arguments = ["--database=\(databaseDir.path)", "--no-summary", "-v", "-r"]
-                
-                let listURL = FileManager.default.temporaryDirectory.appendingPathComponent("clamscan-\(UUID().uuidString).txt")
-                let listContent = batch.joined(separator: "\n")
-                
-                do {
-                    try listContent.write(to: listURL, atomically: true, encoding: .utf8)
-                    arguments.append("--file-list=\(listURL.path)")
-                    tempFilesToClean.append(listURL)
-                } catch {
-                    appLogger.error("Failed to write to file-list, falling back to arguments: \(error)")
-                    arguments.append(contentsOf: batch)
-                }
-                
-                process.arguments = arguments
-                
+                process.arguments = [
+                    "--database=\(databaseDir.path)",
+                    "--no-summary",
+                    "-v",
+                    "-r",
+                    "--file-list=\(listURL.path)"
+                ]
+
                 let pipe = Pipe()
                 process.standardOutput = pipe
                 process.standardError = pipe
-                
-                var lastUpdate = Date.distantPast
-                var chunkScanned = 0
-                var currentLineInfo = ""
-                
-                pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+
+                let bufferLock = NSLock()
+                var lineBuffer = ""
+                var lastProgressUpdate = Date.distantPast
+                var pendingScanned = 0
+                var pendingLineInfo = ""
+
+                pipe.fileHandleForReading.readabilityHandler = { [weak self] fileHandle in
                     let data = fileHandle.availableData
-                    guard !data.isEmpty else { return }
                     
-                    let outputChunk = String(data: data, encoding: .utf8) ?? ""
-                    let lines = outputChunk.components(separatedBy: .newlines)
-                    
-                    var newInfected: [String] = []
-                    var localScanned = 0
-                    var lastLineInfo: String?
-                    
-                    for line in lines {
-                        guard !line.isEmpty else { continue }
-                        if line.contains("FOUND") {
-                            localScanned += 1
-                            newInfected.append(line)
-                            lastLineInfo = line
-                        } else if line.contains(": ") {
-                            localScanned += 1
-                            lastLineInfo = line
+                    guard !data.isEmpty else {
+                        fileHandle.readabilityHandler = nil
+                        return
+                    }
+
+                    bufferLock.withLock {
+                        lineBuffer += String(data: data, encoding: .utf8) ?? ""
+
+                        while let newlineRange = lineBuffer.range(of: "\n") {
+                            let line = String(lineBuffer[lineBuffer.startIndex..<newlineRange.lowerBound])
+                            lineBuffer.removeSubrange(lineBuffer.startIndex...newlineRange.lowerBound)
+
+                            let trimmed = line.trimmingCharacters(in: .whitespaces)
+                            guard !trimmed.isEmpty else { continue }
+
+                            if line.hasSuffix(": FOUND") {
+                                pendingScanned += 1
+                                pendingLineInfo = line
+                                DispatchQueue.main.async { onInfected(line) }
+                            } else if line.hasSuffix(": OK") || line.hasSuffix(": Empty file") || line.hasSuffix(": Symbolic link") {
+                                pendingScanned += 1
+                                pendingLineInfo = line
+                            }
                         }
-                    }
-                    
-                    for infected in newInfected {
-                        onInfected(infected)
-                    }
-                    
-                    let now = Date()
-                    if now.timeIntervalSince(lastUpdate) > 0.1 || !newInfected.isEmpty {
-                        lastUpdate = now
-                        let infoToPass = lastLineInfo ?? ""
-                        let totalChunk = chunkScanned + localScanned
-                        chunkScanned = 0
-                        onProgress(totalChunk, infoToPass)
-                    } else {
-                        chunkScanned += localScanned
-                        if let lInfo = lastLineInfo {
-                            currentLineInfo = lInfo
+                        let now = Date()
+                        if now.timeIntervalSince(lastProgressUpdate) >= 0.1 && pendingScanned > 0 {
+                            lastProgressUpdate = now
+                            let count = pendingScanned
+                            let info = pendingLineInfo
+                            pendingScanned = 0
+                            DispatchQueue.main.async { onProgress(count, info) }
                         }
                     }
                 }
                 
                 dispatchGroup.enter()
-                process.terminationHandler = { _ in
+                process.terminationHandler = { [weak self] proc in
+        
                     pipe.fileHandleForReading.readabilityHandler = nil
+                    
+                    bufferLock.withLock {
+                        if !lineBuffer.trimmingCharacters(in: .whitespaces).isEmpty {
+                            let remaining = lineBuffer
+                            if remaining.hasSuffix(": FOUND") {
+                                DispatchQueue.main.async { onInfected(remaining) }
+                            }
+                            pendingScanned += 1
+                            pendingLineInfo = remaining
+                        }
 
-                    if chunkScanned > 0 {
-                        onProgress(chunkScanned, currentLineInfo)
+                        if pendingScanned > 0 {
+                            let count = pendingScanned
+                            let info = pendingLineInfo
+                            DispatchQueue.main.async { onProgress(count, info) }
+                        }
                     }
 
-                   
-                    if process.terminationStatus == 2 {
-                        allSuccessful = false
+                    if proc.terminationStatus == 2 {
+                        appLogger.error("clamscan exited with error (status 2)")
+                        successLock.withLock { allSuccessful = false }
                     }
+
                     dispatchGroup.leave()
                 }
 
@@ -152,19 +169,23 @@ class ClamAVScannerService {
                     self.processQueue.sync { self._scanProcesses.append(process) }
                     try process.run()
                 } catch {
-                    appLogger.error("Error executing parallel clamscan: \(error.localizedDescription)")
-                    allSuccessful = false  // safe: only mutated from background thread
+                    appLogger.error("Failed to launch clamscan: \(error.localizedDescription)")
+                    pipe.fileHandleForReading.readabilityHandler = nil
+                    successLock.withLock { allSuccessful = false }
                     dispatchGroup.leave()
                 }
             }
             
-            dispatchGroup.notify(queue: .main) {
+            dispatchGroup.notify(queue: .main) { [weak self] in
                 appLogger.info("Antivirus: All ClamAV parallel workers finished")
+                guard let self = self else { return }
+                
                 self.processQueue.async { self._scanProcesses.removeAll() }
                 
+                let urlsToClean = tempFilesLock.withLock { tempFilesToClean }
                 DispatchQueue.global(qos: .background).async {
-                    for tempURL in tempFilesToClean {
-                        try? FileManager.default.removeItem(at: tempURL)
+                    for url in urlsToClean {
+                        try? FileManager.default.removeItem(at: url)
                     }
                 }
                 
