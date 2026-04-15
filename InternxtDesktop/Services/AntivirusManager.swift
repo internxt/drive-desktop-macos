@@ -37,6 +37,7 @@ class AntivirusManager: ObservableObject {
         }
     }
     
+    @MainActor
     func startScan(path: String) {
         infectedFiles = []
         currentState = .scanning
@@ -104,15 +105,13 @@ class AntivirusManager: ObservableObject {
         )
     }
     
+    @MainActor
     func cancelScan(isLocked: Bool = false) {
         isCancelled = true
         scanner.cancelAll()
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.currentState = isLocked ? .locked : .results(noThreats: (self.detectedFiles == 0))
-            if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
-                BookmarkManager.shared.stopAccessing(url: resolvedURL)
-            }
+        self.currentState = isLocked ? .locked : .results(noThreats: (self.detectedFiles == 0))
+        if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
+            BookmarkManager.shared.stopAccessing(url: resolvedURL)
         }
     }
     
@@ -145,6 +144,7 @@ class AntivirusManager: ObservableObject {
         return FileItem(iconName: iconName, fileName: fileName, extensionType: fileExtension, fullPath: filePath)
     }
     
+    @MainActor
     func showAlert(message: String, informativeText: String? = nil, style: NSAlert.Style = .informational, buttonTitle: String = "OK") {
         let alert = NSAlert()
         alert.messageText = message
