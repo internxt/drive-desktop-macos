@@ -57,7 +57,7 @@ class BackupConfigurationManager {
         let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: clientName, clientVersion: getVersion())
         
         guard let mnemonic = getMnemonic() else { return nil }
-        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, debug: true)
+        let networkFacade = NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, reduceBandwidth: ConfigLoader().getReduceBandwidth(), debug: false)
         return (backupAPI, driveNewAPI, networkFacade)
     }
 }

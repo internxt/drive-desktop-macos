@@ -37,6 +37,8 @@
 "SYNC_ENTRY_KIND_TRASHED" = "Movido a la papelera";
 "SYNC_ENTRY_KIND_DOWNLOADED" = "Descargado";
 "SYNC_ENTRY_KIND_UPLOADED" = "Subido";
+"SYNC_ENTRY_KIND_DOWNLOADING" = "Descargando...";
+"SYNC_ENTRY_KIND_UPLOADING" = "Subiendo...";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";
@@ -273,3 +275,4 @@
 "CLEANER_DEVICE_CLEAN_TITLE" = "Tu dispositivo está limpio";
 "CLEANER_DEVICE_CLEAN_SUBTITLE" = "No se requieren más acciones";
 "CLEANER_FINISH" = "Finalizar";
+"SETTINGS_ENABLE_LOW_BANDWIDTH" = "Habilitar el modo de uso reducido de red";

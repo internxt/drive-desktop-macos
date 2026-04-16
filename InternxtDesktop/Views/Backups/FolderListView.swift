@@ -12,6 +12,7 @@ struct FolderListItem: Identifiable {
     var type: String?
     var folderIsMissing: Bool?
     var uuid: String?
+    var isBundle: Bool = false
 }
 
 

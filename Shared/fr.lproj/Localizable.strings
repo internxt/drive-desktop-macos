@@ -37,6 +37,8 @@
 "SYNC_ENTRY_KIND_TRASHED" = "Déplacé vers la corbeille";
 "SYNC_ENTRY_KIND_DOWNLOADED" = "Téléchargé";
 "SYNC_ENTRY_KIND_UPLOADED" = "Téléchargé";
+"SYNC_ENTRY_KIND_DOWNLOADING" = "Téléchargement...";
+"SYNC_ENTRY_KIND_UPLOADING" = "Téléversement...";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";
@@ -272,3 +274,4 @@
 "CLEANER_DEVICE_CLEAN_TITLE" = "Votre appareil est propre";
 "CLEANER_DEVICE_CLEAN_SUBTITLE" = "Aucune autre action nécessaire";
 "CLEANER_FINISH" = "Terminer";
+"SETTINGS_ENABLE_LOW_BANDWIDTH" = "Activer le mode de faible utilisation du réseau";

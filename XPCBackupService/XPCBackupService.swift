@@ -71,7 +71,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             let networkAPI = NetworkAPI(baseUrl: config.NETWORK_API_URL, basicAuthToken: networkAuth, clientName: CLIENT_NAME, clientVersion: getVersion())
 
             backupUploadService = BackupUploadService(
-                networkFacade: NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI),
+                networkFacade: NetworkFacade(mnemonic: mnemonic, networkAPI: networkAPI, reduceBandwidth: configLoader.getReduceBandwidth()),
                 encryptedContentDirectory: FileManager.default.temporaryDirectory,
                 deviceId: deviceId,
                 bucketId: bucketId,
@@ -297,10 +297,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private func getNodesCountFromURL(_ url: URL) -> Int {
         
         var count = 0
-        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey], options: [.skipsHiddenFiles]) {
+        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey, .isPackageKey, .isSymbolicLinkKey], options: [.skipsHiddenFiles]) {
             for case let fileURL as URL in enumerator {
                 do {
-                    let fileAttributes = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey])
+                    let fileAttributes = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey])
+                    if fileAttributes.isSymbolicLink == true {
+                        continue
+                    }
                     if fileAttributes.isRegularFile! || fileAttributes.isDirectory! {
                         count += 1
                     }

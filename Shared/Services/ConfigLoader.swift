@@ -102,6 +102,10 @@ public struct ConfigLoader {
         return self.getFromUserDefaults(key: "AuthToken")
     }
     
+    public func getReduceBandwidth() -> Bool {
+        return UserDefaults(suiteName: SUITE_NAME)?.bool(forKey: "INTERNXT_REDUCE_BANDWIDTH") ?? false
+    }
+    
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: "Mnemonic")
     }
@@ -162,7 +166,7 @@ public struct ConfigLoader {
 
     
     public func removeLegacyAuthToken() -> Void  {
-        let removed = self.removeFromUserDefaults(key: "LegacyAuthToken")
+        _ = self.removeFromUserDefaults(key: "LegacyAuthToken")
         //keep to remove value
     }
     

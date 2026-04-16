@@ -26,7 +26,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let config = ConfigLoader()
     let manager: NSFileProviderManager
     let tmpURL: URL
-    let networkFacade: NetworkFacade
+    var networkFacade: NetworkFacade {
+        let reduceBandwidth = config.getReduceBandwidth()
+        return NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network, reduceBandwidth: reduceBandwidth)
+    }
+    
     let user: DriveUser
     let mnemonic: String
     let authManager: AuthManager
@@ -93,7 +97,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         self.mnemonic = mnemonic
-        self.networkFacade = NetworkFacade(mnemonic: self.mnemonic, networkAPI: APIFactory.Network)
         
         do {
             self.tmpURL = try manager.temporaryDirectoryURL()
@@ -255,7 +258,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return Progress()
             }
             return DownloadFileWorkspaceUseCase(
-                networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace, reduceBandwidth: config.getReduceBandwidth()),
                 user: user,
                 activityManager: activityManager,
                 itemIdentifier: itemIdentifier,
@@ -430,7 +433,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         let useCase = UploadFileOrUpdateContentWorkspaceUseCase(
                             networkFacade: NetworkFacade(
                                 mnemonic: workspaceMnemonic,
-                                networkAPI: APIFactory.NetworkWorkspace
+                                networkAPI: APIFactory.NetworkWorkspace,
+                                reduceBandwidth: config.getReduceBandwidth()
                             ),
                             user: self.user,
                             activityManager: self.activityManager,
@@ -598,7 +602,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     return Progress()
                 }
                 return UpdateFileContentWorkspaceUseCase(
-                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace),
+                    networkFacade: NetworkFacade(mnemonic: workspaceMnemonic, networkAPI: APIFactory.NetworkWorkspace, reduceBandwidth: config.getReduceBandwidth()),
                     user: self.user,
                     item: item,
                     fileUuid: item.itemIdentifier.rawValue,
@@ -703,11 +707,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         if actionIdentifier == FileProviderItemActionsManager.MakeAvailableOnline {
             Task {
                 for identifier in itemIdentifiers {
+                    
                     fileProviderItemActions.makeAvailableOnlineOnly(identifier: identifier)
-                    if #available(macOSApplicationExtension 13.0, *) {
-                        try await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
-                    } else {
-                        // Nothing we can do here
+                    try? await manager.requestModification(of: [.extendedAttributes], forItemWithIdentifier: identifier)
+                    
+                    do {
+                        // Notify macOS of policy change to .inherited and wait for the async update to process.
+                        // This prevents -2008 (nonEvictable) errors when calling evictItem to physically free disk space.
+                        try await Task.sleep(nanoseconds: 2_000_000_000)
+                        try await manager.evictItem(identifier: identifier)
+                    } catch {
+                        logger.error("❌ Failed to evict \(identifier.rawValue): \(error.localizedDescription)")
                     }
                 }
                 

@@ -26,11 +26,11 @@ struct DriveFileService {
     /// - Returns: A `DriveFile` with the updated status to `DriveItemStatus.trashed`
     /// 
     public func trashFile(uuid: String) async throws -> DriveFile {
-        let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: uuid)
+        let fileMeta = try await driveNewAPI.getFileMetaByUuidV2(uuid: uuid)
       
         
-        let trashed: Bool = try await trashAPI.trashFiles(itemsToTrash: [FileToTrash(
-            id: fileMeta.fileId
+        let trashed: Bool = try await trashAPI.trashItemsByUuid(itemsToTrash: [ItemToTrashV2(
+            uuid: uuid, type: .File
         )])
         
         if trashed == false {
@@ -65,7 +65,7 @@ struct DriveFileService {
     /// - Returns: A `DriveFile` with the updated name
     ///
     public func renameFile(uuid: String, bucketId: String, newName: String) async throws -> DriveFile {
-        let fileMeta = try await driveNewAPI.getFileMetaByUuid(uuid: uuid)
+        let fileMeta = try await driveNewAPI.getFileMetaByUuidV2(uuid: uuid)
         
         let updated = try await driveNewAPI.updateFileNew(
             uuid: fileMeta.uuid,
