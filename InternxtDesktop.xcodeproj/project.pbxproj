@@ -3106,7 +3106,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
 			requirement = {
-				branch = feature/workspaces;
+				branch = main;
 				kind = branch;
 			};
 		};

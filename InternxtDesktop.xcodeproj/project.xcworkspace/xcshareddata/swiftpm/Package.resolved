@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/internxt/swift-core",
       "state" : {
-        "branch" : "feature/workspaces",
-        "revision" : "b114c4c39a56041fb4879dde4ba7262560a25a87"
+        "branch" : "main",
+        "revision" : "ab849424b8e12641207184fe3695de0c69a0de80"
       }
     },
     {
