@@ -82,7 +82,6 @@ class GetRemoteChangesUseCase {
                 
                 self.logger.info("✅ Changes enumerated correctly from the server")
             } catch {
-                error.checkUnauthorizedError()
                 error.reportToSentry()
                 observer.finishEnumeratingWithError(error)
                 self.logger.error(["❌ Failed to enumerate remote changes", error.getErrorDescription()])

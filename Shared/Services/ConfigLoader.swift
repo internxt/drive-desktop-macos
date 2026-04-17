@@ -46,6 +46,7 @@ enum ConfigLoaderError: Error {
 
 
 public let INTERNXT_GROUP_NAME = "JR4S3SY396.group.internxt.desktop"
+public let NOTIFICATION_UNAUTHORIZED = "com.internxt.drive.unauthorized"
 
 public var loadedConfig: JSONConfig? = nil
 
