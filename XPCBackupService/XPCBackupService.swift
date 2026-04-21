@@ -89,6 +89,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupUploadService.canDoBackup = true
 
             
+            var failedNodesCount = 0
+            let failureLock = NSLock()
             var totalNodesCount = backupURLs.count
 
             for backupURL in backupURLs {
@@ -138,6 +140,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                             reply(nil, "storageFull")
                         } else {
                             logger.error("Error backing up device \(error)")
+                            failureLock.lock()
+                            failedNodesCount += 1
+                            failureLock.unlock()
                         }
                        
                     }
@@ -149,6 +154,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             self.uploadOperationQueue.addBarrierBlock {
                 logger.info("Sync nodes operations completed")
+                
+                let successCount = totalNodesCount - failedNodesCount
+                if failedNodesCount > 0 {
+                    logger.warning("⚠️ BACKUP SUMMARY: Finished with ERRORS. \(successCount) nodes synced successfully, \(failedNodesCount) nodes FAILED.")
+                } else {
+                    logger.info("✅ BACKUP SUMMARY: All \(totalNodesCount) nodes synced successfully.")
+                }
+
                 // If the backup failed, don't set the status to Done
                 if self.backupUploadStatus != .Failed {
                     self.backupUploadStatus = .Done
