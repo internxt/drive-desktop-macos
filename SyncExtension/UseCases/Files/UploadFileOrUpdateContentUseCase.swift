@@ -62,6 +62,7 @@ struct UploadFileOrUpdateContentUseCase {
             return try await self.driveNewAPI.getFileInFolderByPlainName(folderId: folderIdInt, plainName: filename.deletingPathExtension, type:filename.pathExtension)
             
         } catch {
+            error.reportToSentry()
             return nil
         }
         
