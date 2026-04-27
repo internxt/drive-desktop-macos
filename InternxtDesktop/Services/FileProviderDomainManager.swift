@@ -54,12 +54,22 @@ class FileProviderDomainManager: ObservableObject {
     
     public func exitDomain() async {
         self.logger.info("🧹 Cleaning up FileProvider domain")
-        if let domain = self.managerDomain {
-            try? await NSFileProviderManager.remove(domain)
+        do {
+            let activeDomains = try await NSFileProviderManager.domains()
+            for domain in activeDomains {
+                do {
+                    let preservedURL = try await NSFileProviderManager.remove(domain, mode: .preserveDirtyUserData)
+                    self.logger.info("📁 Domain '\(domain.displayName)' removed — unsynced files preserved at: \(preservedURL)")
+                } catch {
+                    self.logger.error("❌ Failed to remove domain '\(domain.displayName)'")
+                    try? await NSFileProviderManager.remove(domain)
+                }
+            }
+        } catch {
+            self.logger.error("❌ Failed to enumerate domains during exitDomain: \(error)")
         }
         self.manager = nil
         self.managerDomain = nil
-        try? await NSFileProviderManager.removeAllDomains()
     }
     
     

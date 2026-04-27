@@ -492,15 +492,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         // Nothing to do here in preview mode
     }
     
-    private func removeDomain(domain: NSFileProviderDomain, completionHandler: @escaping (URL?, Error?) -> Void) {
-        if #available(macOS 12.0, *) {
-            NSFileProviderManager.remove(domain, mode: NSFileProviderManager.DomainRemovalMode.removeAll, completionHandler:completionHandler)
-        } else {
-            NSFileProviderManager.remove(domain, completionHandler: {error in
-                completionHandler(nil, error)
-            })
-        }
-    }
+
     
     private func destroyWidget() {
         if let statusBarItemUnwrapped = self.statusBarItem {
