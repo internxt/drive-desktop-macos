@@ -89,13 +89,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupUploadService.canDoBackup = true
 
             
+            var failedNodesCount = 0
+            let failureLock = NSLock()
             var totalNodesCount = backupURLs.count
 
             for backupURL in backupURLs {
                 do {
                     let startGeneratingTreeAt = Date()
-                    let nodesCount = self.getNodesCountFromURL(URL(fileURLWithPath: backupURL))
-                    totalNodesCount += nodesCount
+                    
                     let backupTreeGenerator = BackupTreeGenerator(
                         root: URL(fileURLWithPath: backupURL),
                         deviceId: deviceId,
@@ -104,7 +105,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                         backupRealm: backupRealm
                     )
 
-                    let backupTree = try await backupTreeGenerator.generateTree()
+                    let (backupTree, nodesCount) = try await backupTreeGenerator.generateTree()
+                    
+                    totalNodesCount += nodesCount
                     let elapsedTime = Date().timeIntervalSince(startGeneratingTreeAt)
                     logger.info("🌳 Backup tree created successfully in \(Float(elapsedTime * 1000))ms with \(nodesCount) nodes ")
 
@@ -137,6 +140,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                             reply(nil, "storageFull")
                         } else {
                             logger.error("Error backing up device \(error)")
+                            failureLock.lock()
+                            failedNodesCount += 1
+                            failureLock.unlock()
                         }
                        
                     }
@@ -148,6 +154,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             self.uploadOperationQueue.addBarrierBlock {
                 logger.info("Sync nodes operations completed")
+                
+                let successCount = totalNodesCount - failedNodesCount
+                if failedNodesCount > 0 {
+                    logger.warning("⚠️ BACKUP SUMMARY: Finished with ERRORS. \(successCount) nodes synced successfully, \(failedNodesCount) nodes FAILED.")
+                } else {
+                    logger.info("✅ BACKUP SUMMARY: All \(totalNodesCount) nodes synced successfully.")
+                }
+
                 // If the backup failed, don't set the status to Done
                 if self.backupUploadStatus != .Failed {
                     self.backupUploadStatus = .Done
@@ -292,28 +306,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     
     func getBackupDownloadStatus(with reply: @escaping (BackupProgressUpdate?, String?) -> Void) {
         reply(BackupProgressUpdate(status: self.backupDownloadStatus, progress: backupDownloadProgress), nil)
-    }
-
-    private func getNodesCountFromURL(_ url: URL) -> Int {
-        
-        var count = 0
-        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey, .isPackageKey, .isSymbolicLinkKey], options: [.skipsHiddenFiles]) {
-            for case let fileURL as URL in enumerator {
-                do {
-                    let fileAttributes = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey])
-                    if fileAttributes.isSymbolicLink == true {
-                        continue
-                    }
-                    if fileAttributes.isRegularFile! || fileAttributes.isDirectory! {
-                        count += 1
-                    }
-                } catch {
-                    print("Error listing files for \(fileURL)", error)
-                }
-            }
-        }
-
-        return count
     }
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
