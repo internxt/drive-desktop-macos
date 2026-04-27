@@ -116,6 +116,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             logger.error("Failed to clean TMP directory before starting")
             error.reportToSentry()
         }
+
+        APIClient.onUnauthorized = {
+            DistributedNotificationCenter.default().postNotificationName(
+                NSNotification.Name(NOTIFICATION_UNAUTHORIZED),
+                object: nil,
+                userInfo: nil,
+                deliverImmediately: true
+            )
+        }
         
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {

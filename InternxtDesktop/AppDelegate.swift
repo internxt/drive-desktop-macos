@@ -81,6 +81,21 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         name: .userDidLogout,
         object: nil)
 
+        APIClient.onUnauthorized = {
+            DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                }
+            }
+        }
+
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name(NOTIFICATION_UNAUTHORIZED),
+            object: nil,
+            queue: .main
+        ) { _ in
+            NotificationCenter.default.post(name: .userDidLogout, object: nil)
+        }
 
         checkVolumeAndEjectIfNeeded()
         
@@ -296,14 +311,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self.logger.info("Tokens refreshed correctly")
         } catch{
             AuthError.UnableToRefreshToken.reportToSentry()
-            guard let apiClientError = error as? APIClientError else {
-                return
-            }
-            
-            let tokenIsExpired = apiClientError.statusCode == 401
-            if(tokenIsExpired) {
-                try? authManager.signOut()
-            }
         }
     }
     
