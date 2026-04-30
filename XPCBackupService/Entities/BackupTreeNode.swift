@@ -140,26 +140,19 @@ class BackupTreeNode {
            return syncedNode
        }
     
-    func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil, onError: @escaping (Error) -> Void) throws -> Void {
-        let operation = BackupTreeNodeSyncOperation(backupTreeNode: self)
+    func syncBelowNodes(withOperationQueue: OperationQueue, syncGroup: DispatchGroup, onError: @escaping (Error) -> Void) throws -> Void {
+        syncGroup.enter()
+        let operation = BackupTreeNodeSyncOperation(backupTreeNode: self, operationQueue: withOperationQueue, syncGroup: syncGroup)
         
         operation.onError = { error in
             onError(error)
-           
         }
-        if(dependingOfOperation != nil) {
-            operation.addDependency(dependingOfOperation!)
+        
+        operation.completionBlock = {
+            syncGroup.leave()
         }
         
         withOperationQueue.addOperation(operation)
-        
-        for child in self.childs {
-            if(self.type == .folder) {
-                try child.syncBelowNodes(withOperationQueue: withOperationQueue, dependingOfOperation: operation, onError: onError)
-            } else {
-                try child.syncBelowNodes(withOperationQueue: withOperationQueue, onError: onError)
-            }
-        }
     }
     
     private func isRetryable(error: Error) -> Bool {
@@ -176,7 +169,6 @@ class BackupTreeNode {
         return true
     }
    
-    @MainActor
     func syncNode() async throws -> Void {
         
         guard let nodeURL = self.url else {
