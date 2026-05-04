@@ -123,13 +123,15 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             logger.info("⏱️ About to start node sync process for \(trees.count) BackupTrees...")
             var hasErrorOccurred = false
+            let syncGroup = DispatchGroup()
+            
             for backupTree in trees {
                 if hasErrorOccurred {
                     break
                 }
                 do {
                     logger.info("Adding nodes sync operations")
-                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue) { error in
+                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue, syncGroup: syncGroup) { error in
                         
                         
                         if let backupUploadError = error as? BackupError, backupUploadError == .storageFull {
@@ -152,7 +154,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
             }
             
-            self.uploadOperationQueue.addBarrierBlock {
+            syncGroup.notify(queue: .global()) {
                 logger.info("Sync nodes operations completed")
                 
                 let successCount = totalNodesCount - failedNodesCount

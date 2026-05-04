@@ -69,6 +69,9 @@ class AsyncOperation: Operation {
     
     func finish() {
         isExecuting = false
+        // Setting isFinished = true triggers KVO, which Foundation uses
+        // to execute the completionBlock. This guarantees that completionBlock
+        // is always called regardless of success, failure, or cancellation.
         isFinished = true
     }
 }
