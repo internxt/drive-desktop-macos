@@ -33,7 +33,10 @@ struct SettingsMenuView: View {
                         .accessibilityIdentifier("menuItemAntivirus")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", showNew: true, onPress:settingsHandler(for: .Cleaner))
                         .accessibilityIdentifier("menuItemCleaner")
-
+                    
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_REFERRAL_OPTION", onPress: handleOpenReferralLink)
+                        .accessibilityIdentifier("menuItemRefer")
+                    
                     SettingsMenuOption(label: "WIDGET_SETTINGS_LOGOUT_OPTION", onPress: handleLogout)
                     Rectangle()
                     .foregroundColor(.clear)
@@ -87,6 +90,10 @@ struct SettingsMenuView: View {
     
     func handleOpenSupport() -> Void {
         URLDictionary.HELP_CENTER.open()
+    }
+    
+    func handleOpenReferralLink() -> Void {
+        URLDictionary.DRIVE_WEB.open()
     }
     
     func handleSendFeedback() -> Void {
