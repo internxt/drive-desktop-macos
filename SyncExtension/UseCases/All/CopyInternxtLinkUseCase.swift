@@ -23,11 +23,6 @@ struct CopyInternxtLinkUseCase {
     private let itemIdentifiers: [NSFileProviderItemIdentifier]
     private let completionHandler: (Error?) -> Void
 
-  
- 
-    private static let shareBaseURL = "https://drive.internxt.com"
-
-
     init(
         driveAPI: DriveAPI,
         mnemonic: String,
@@ -45,7 +40,8 @@ struct CopyInternxtLinkUseCase {
     func run() -> Progress {
         Task {
             do {
-                for identifier in itemIdentifiers {
+               
+                if let identifier = itemIdentifiers.first {
                     try await processItem(identifier: identifier)
                 }
                 completionHandler(nil)
@@ -60,49 +56,107 @@ struct CopyInternxtLinkUseCase {
 
 
     private func processItem(identifier: NSFileProviderItemIdentifier) async throws {
-        let uuid = identifier.rawValue
-        logger.info("Generating Internxt sharing link for item: \(uuid)")
+        let internxtUUID: String
+        let itemType: String
+        
+        if UUID(uuidString: identifier.rawValue) != nil {
+            internxtUUID = identifier.rawValue
+            itemType = "file"
+        } else {
+           
+            let meta = try await driveAPI.getFolderOrFileMetaById(id: identifier.rawValue)
+            guard let uuid = meta.uuid else {
+                throw CopyInternxtLinkError.missingUUID(identifier.rawValue)
+            }
+            internxtUUID = uuid
+            itemType = meta.isFolder ? "folder" : "file"
+        }
 
         let cipher = InternxtAESCipher()
-
-       
+        let selectedDomain = try await fetchRandomDomain()
         let plainCode = cipher.generateRandomUrlSafeString(length: 8)
-
-
         let encryptionKey = try cipher.encrypt(plaintext: mnemonic, password: plainCode)
 
-  
+       
         let encryptedCode = try cipher.encrypt(plaintext: plainCode, password: mnemonic)
-
-
-        let itemType = UUID(uuidString: uuid) != nil ? "file" : "folder"
-
-
         let payload = CreateSharingPayload(
-            itemId: uuid,
+            itemId: internxtUUID,
             itemType: itemType,
             encryptionKey: encryptionKey,
             encryptionAlgorithm: "inxt-v2",
             encryptedCode: encryptedCode,
-            encryptedPassword: "",
+            encryptedPassword: nil,
             persistPreviousSharing: true
         )
 
+        let response = try await driveAPI.createSharing(payload: payload)
 
-        _ = try await driveAPI.createSharing(payload: payload)
+        let recoveredCode = try cipher.decrypt(
+            cipherBase64: response.encryptedCode,
+            password: mnemonic
+        )
 
-        logger.info("✅ Sharing created for item \(uuid)")
+        let encodedSharingId = encodeV4Uuid(response.id)
+        let shareLink = "\(selectedDomain)/sh/\(itemType)/\(encodedSharingId)/\(recoveredCode)"
+        await copyToClipboard(shareLink)
+    }
 
+    private func encodeV4Uuid(_ uuid: String) -> String {
+        let hex = uuid.replacingOccurrences(of: "-", with: "")
+        guard hex.count == 32 else { return uuid }
 
-        logger.info("⚠️ Link generation pending: CreateSharingResponse fields not yet defined.")
+        var bytes = [UInt8]()
+        bytes.reserveCapacity(16)
+        var idx = hex.startIndex
+        for _ in 0..<16 {
+            let end = hex.index(idx, offsetBy: 2)
+            if let byte = UInt8(hex[idx..<end], radix: 16) {
+                bytes.append(byte)
+            }
+            idx = end
+        }
+
+        return Data(bytes).base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
     }
 
 
+    private func fetchRandomDomain() async throws -> String {
+        do {
+            let response = try await driveAPI.getShareDomains()
+            guard !response.list.isEmpty else {
+                logger.error("⚠️ Share domains list is empty")
+                throw CopyInternxtLinkError.noDomainsAvailable
+            }
+            return response.list[Int.random(in: 0..<response.list.count)]
+        } catch {
+            logger.error("⚠️ Failed to fetch share domains: \(error.localizedDescription)")
+            throw CopyInternxtLinkError.noDomainsAvailable
+        }
+    }
 
+
+    @MainActor
     private func copyToClipboard(_ text: String) {
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(text, forType: .string)
-        logger.info("📋 Internxt share link copied to clipboard: \(text)")
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+    }
+}
+
+
+
+enum CopyInternxtLinkError: Error, LocalizedError {
+    case missingUUID(String)
+    case noDomainsAvailable
+
+    var errorDescription: String? {
+        switch self {
+        case .missingUUID(let id):
+            return "Could not resolve Internxt UUID for FileProvider identifier: \(id)"
+        case .noDomainsAvailable:
+            return "No share domains available from the gateway API"
+        }
     }
 }
