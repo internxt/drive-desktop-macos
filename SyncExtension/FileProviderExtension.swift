@@ -755,6 +755,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             return Progress()
         }
         
+        if actionIdentifier == FileProviderItemActionsManager.CopyInternxtLink {
+            return CopyInternxtLinkUseCase(
+                driveAPI: driveNewAPI,
+                mnemonic: mnemonic,
+                itemIdentifiers: itemIdentifiers,
+                completionHandler: completionHandler
+            ).run()
+        }
+        
         return Progress()
     }
     

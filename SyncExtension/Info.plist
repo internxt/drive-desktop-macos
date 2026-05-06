@@ -51,6 +51,14 @@
 				<key>NSExtensionFileProviderActionName</key>
 				<string>CONTEXT_MENU_OPEN_WEB_BROWSER</string>
 			</dict>
+			<dict>
+				<key>NSExtensionFileProviderActionActivationRule</key>
+				<string>TRUEPREDICATE</string>
+				<key>NSExtensionFileProviderActionIdentifier</key>
+				<string>internxt.InternxtDesktop.sync.Action.CopyInternxtLink</string>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>CONTEXT_MENU_OPEN_INTERNXT_LINK</string>
+			</dict>
 		</array>
 		<key>NSExtensionFileProviderDocumentGroup</key>
 		<string>$(TeamIdentifierPrefix)group.internxt.desktop</string>

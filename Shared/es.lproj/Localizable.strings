@@ -139,6 +139,7 @@
 "CONTEXT_MENU_AVAILABLE_ONLINE_ONLY" = "Cambiar a disponible sólo online";
 "CONTEXT_MENU_REFRESH_CONTENT" = "Refrescar contenido";
 "CONTEXT_MENU_OPEN_WEB_BROWSER" = "Abrir en navegador web";
+"CONTEXT_MENU_OPEN_INTERNXT_LINK" = "Copiar enlace de Internxt";
 
 // Decorations
 "AvailableOfflineLabel" = "Disponible sin conexión";
