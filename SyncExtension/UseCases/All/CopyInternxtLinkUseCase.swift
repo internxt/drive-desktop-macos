@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 import InternxtSwiftCore
 import FileProvider
 import AppKit
@@ -142,6 +141,14 @@ struct CopyInternxtLinkUseCase {
     private func copyToClipboard(_ text: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
+        
+        let alert = NSAlert()
+        alert.messageText = "Link copied"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        
+        NSApp.activate(ignoringOtherApps: true)
+        alert.runModal()
     }
 }
 
