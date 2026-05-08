@@ -77,7 +77,7 @@ struct CopyInternxtLinkUseCase {
 
         let cipher = InternxtAESCipher()
         let selectedDomain = try await fetchRandomDomain()
-        let plainCode = cipher.generateRandomUrlSafeString(length: 8)
+        let plainCode = try cipher.generateRandomUrlSafeString(length: 8)
         let encryptionKey = try cipher.encrypt(plaintext: mnemonic, password: plainCode)
 
        
