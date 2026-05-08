@@ -55,6 +55,10 @@ struct CopyInternxtLinkUseCase {
 
 
     private func processItem(identifier: NSFileProviderItemIdentifier) async throws {
+        guard CryptoUtils().validate(mnemonic: mnemonic) else {
+            throw CopyInternxtLinkError.invalidMnemonic
+        }
+        
         let internxtUUID: String
         let itemType: String
         
@@ -157,6 +161,7 @@ struct CopyInternxtLinkUseCase {
 enum CopyInternxtLinkError: Error, LocalizedError {
     case missingUUID(String)
     case noDomainsAvailable
+    case invalidMnemonic
 
     var errorDescription: String? {
         switch self {
@@ -164,6 +169,8 @@ enum CopyInternxtLinkError: Error, LocalizedError {
             return "Could not resolve Internxt UUID for FileProvider identifier: \(id)"
         case .noDomainsAvailable:
             return "No share domains available from the gateway API"
+        case .invalidMnemonic:
+            return "The user's mnemonic phrase is invalid or malformed"
         }
     }
 }
