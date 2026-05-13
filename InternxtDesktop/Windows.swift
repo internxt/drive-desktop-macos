@@ -14,7 +14,8 @@ import Sparkle
 /// windows will be available without needing to explicitly
 /// creating them
 func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager,antivirusManager : AntivirusManager ,
-                    cleanerService: CleanerService,updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void) -> [WindowConfig] {
+                    cleanerService: CleanerService,updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
+                    fileSizeLimitState: FileSizeLimitState) -> [WindowConfig] {
     let windows = [
         WindowConfig(
             view: AnyView(AppSettingsManagerView{SignInWithBrowserView().environmentObject(authManager)}),
@@ -52,6 +53,18 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
             id: "send-feedback",
             width: 380,
             height: 320
+        ),
+        WindowConfig(
+            view: AnyView(
+                FileSizeLimitWindowView()
+                    .environmentObject(fileSizeLimitState)
+            ),
+            title: nil,
+            id: "file-size-limit",
+            width: 300,
+            height: 150,
+            fixedToFront: true,
+            backgroundColor: Color.Surface
         )
     ]
     
