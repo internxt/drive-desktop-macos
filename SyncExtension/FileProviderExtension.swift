@@ -388,6 +388,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     }
                     let fileSize = attributesSize ?? templateSize ?? 0
 
+                 
+                    if !checkFileSizeLimit(
+                        filename: itemTemplate.filename,
+                        fileBytes: fileSize,
+                        config: self.config
+                    ) {
+                        completionHandler(nil, [], false, NSError.fileSizeExceededError())
+                      
+                        try? FileManager.default.removeItem(at: fileCopy)
+                        if let zipURL = zipURL {
+                            try? FileManager.default.removeItem(at: zipURL)
+                        }
+                        return
+                    }
+
                     let encryptedFileDestination = self.makeTemporaryURL("encrypted", "enc")
                     let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
@@ -587,6 +602,18 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return Progress()
             }
             let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
+
+            let contentFileSize = (try? FileManager.default
+                .attributesOfItem(atPath: newContents.path)[.size] as? Int64) ?? 0
+            if !checkFileSizeLimit(
+                filename: item.filename,
+                fileBytes: contentFileSize,
+                config: self.config
+            ) {
+                completionHandler(nil, [], false, NSError.fileSizeExceededError())
+                return Progress()
+            }
+       
             
             func completionHandlerInternal(item: NSFileProviderItem?, fields: NSFileProviderItemFields, shouldFetch: Bool, error: Error?) -> Void{
                 completionHandler(item, fields, shouldFetch, error)

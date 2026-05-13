@@ -35,3 +35,20 @@ func generateDriveWebURL(isFile:Bool, uuid: String) -> URL{
     }
     return URL(string: "\(URLDictionary.DRIVE_WEB_FOLDER)\(uuid)")!
 }
+
+
+@discardableResult
+func checkFileSizeLimit(filename: String, fileBytes: Int64, config: ConfigLoader) -> Bool {
+    let limitBytes = config.getMaxFileSizeBytes()
+    guard limitBytes < Int64.max, fileBytes > limitBytes else {
+        return true
+    }
+
+    logger.warning("⛔ File '\(filename)' (\(fileBytes) bytes) exceeds limit (\(limitBytes) bytes) — rejecting upload")
+    FileSizeLimitNotifier.postExceeded(
+        filename: filename,
+        fileBytes: fileBytes,
+        limitBytes: limitBytes
+    )
+    return false
+}

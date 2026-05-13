@@ -57,6 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var refreshTokensTimer: AnyCancellable?
     var signalEnumeratorTimer: AnyCancellable?
     var notificationsTimer: AnyCancellable?
+    let fileSizeLimitState = FileSizeLimitState()
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let notificationsPollingInterval: TimeInterval = 30 * 60
@@ -97,10 +98,19 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             NotificationCenter.default.post(name: .userDidLogout, object: nil)
         }
 
+       
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name(NOTIFICATION_FILE_SIZE_EXCEEDED),
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            self?.handleFileSizeExceeded(notification)
+        }
+
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater,closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -350,6 +360,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     private func loginSuccess() {
         self.windowsManager.hideDockIcon()
         self.windowsManager.closeWindow(id: "auth")
+        FileLimitsService.shared.startPolling()
         
         Task {
             do {
@@ -456,6 +467,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func logoutSuccess() {
         FeaturesService.shared.clearCachedFeatures()
+        FileLimitsService.shared.stopPolling()
+        FileLimitsService.shared.clearCache()
         self.windowsManager.displayDockIcon()
         self.openAuthWindow()
         self.windowsManager.closeAll(except: ["auth"])
@@ -590,6 +603,46 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         self.refreshTokensTimer?.cancel()
         self.notificationsTimer?.cancel()
     }
+
+  
+    private let fileSizeBatchDebounceInterval: TimeInterval = 0.6
+
+  
+    private var fileSizePendingAlert: DispatchWorkItem?
+
+  
+    private var fileSizeAlertIsShowing = false
+
+    private func handleFileSizeExceeded(_ notification: Notification) {
+       
+        fileSizePendingAlert?.cancel()
+
+    
+        guard !fileSizeAlertIsShowing else { return }
+
+     
+        let work = DispatchWorkItem { [weak self] in
+            self?.presentFileSizeAlert()
+        }
+        fileSizePendingAlert = work
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + fileSizeBatchDebounceInterval,
+            execute: work
+        )
+    }
+
+    private func presentFileSizeAlert() {
+        let batch = FileSizeLimitNotifier.readAndResetBatch()
+        fileSizeLimitState.isBatch    = batch.rejectedCount > 1
+        fileSizeLimitState.filename   = batch.filename
+        fileSizeLimitState.fileSize   = batch.fileBytes
+        fileSizeLimitState.limitBytes = batch.limitBytes
+        fileSizeLimitState.isVisible  = true
+
+        windowsManager.openWindow(id: "file-size-limit")
+        fileSizeAlertIsShowing = false
+    }
+
     
     
     private func openWidget(delayed: Bool = false) {
