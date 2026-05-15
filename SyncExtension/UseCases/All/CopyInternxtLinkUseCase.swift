@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UserNotifications
 import InternxtSwiftCore
 import FileProvider
 import AppKit
@@ -147,18 +146,21 @@ struct CopyInternxtLinkUseCase {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
 
-        let content = UNMutableNotificationContent()
-        content.title = "Link copied"
-        content.sound = .default
-        let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
-            content: content,
-            trigger: nil
-        )
-        UNUserNotificationCenter.current().add(request) { [self] error in
-            if let error = error {
-                logger.error("❌ Failed to post link-copied notification: \(error.localizedDescription)")
-            }
+        Task.detached {
+            var response: CFOptionFlags = 0
+            CFUserNotificationDisplayAlert(
+                4,
+                kCFUserNotificationNoteAlertLevel,
+                nil,
+                nil,
+                nil,
+                "Link copied" as CFString,
+                nil,
+                "OK" as CFString,
+                nil,
+                nil,
+                &response
+            )
         }
     }
 }
