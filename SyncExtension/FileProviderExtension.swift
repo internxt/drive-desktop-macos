@@ -783,9 +783,20 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
         
         if actionIdentifier == FileProviderItemActionsManager.CopyInternxtLink {
+            let apiToUse: DriveAPI
+            let mnemonicToUse: String
+            
+            if isWorkspaceDomain() {
+                apiToUse = APIFactory.DriveWorkspace
+                mnemonicToUse = authManager.workspaceMnemonic ?? mnemonic
+            } else {
+                apiToUse = driveNewAPI
+                mnemonicToUse = mnemonic
+            }
+
             return CopyInternxtLinkUseCase(
-                driveAPI: driveNewAPI,
-                mnemonic: mnemonic,
+                driveAPI: apiToUse,
+                mnemonic: mnemonicToUse,
                 itemIdentifiers: itemIdentifiers,
                 completionHandler: completionHandler
             ).run()
