@@ -69,9 +69,9 @@ class AuthManager: ObservableObject {
             let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId)
                 try config.setWorkspaceCredentials(credentials: credentials)
             saveWorkspaceMnemonic(key: workspaces.availableWorkspaces[0].workspaceUser.key)
-            DispatchQueue.main.async{ self.workspaceCredentials = credentials}
+            await MainActor.run { self.workspaceCredentials = credentials }
         }
-        DispatchQueue.main.async{
+        await MainActor.run {
             self.user = refreshUserResponse.user
             self.availableWorkspaces = workspaces.availableWorkspaces
         }
@@ -87,7 +87,8 @@ class AuthManager: ObservableObject {
             let credentials = try await APIFactory.DriveNew.getCredentialsWorkspaces(workspaceId: workspaces.availableWorkspaces[0].workspaceUser.workspaceId)
                 try config.setWorkspaceCredentials(credentials: credentials)
             saveWorkspaceMnemonic(key: workspaces.availableWorkspaces[0].workspaceUser.key)
-            DispatchQueue.main.async{ self.workspaceCredentials = credentials
+            await MainActor.run { 
+                self.workspaceCredentials = credentials
                 self.availableWorkspaces = workspaces.availableWorkspaces
             }
         }
@@ -128,6 +129,7 @@ class AuthManager: ObservableObject {
         try config.removeWorkspaces()
         try config.removeWorkspaceCredentials()
         try config.removeWorkspaceMnemonicInfo()
+        try config.removeUser()
         user = nil
         isLoggedIn = false
         self.logger.info("Auth details removed correctly, user is logged out")
