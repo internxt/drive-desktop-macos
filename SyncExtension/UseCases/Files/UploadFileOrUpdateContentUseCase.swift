@@ -62,7 +62,11 @@ struct UploadFileOrUpdateContentUseCase {
             return try await self.driveNewAPI.getFileInFolderByPlainName(folderId: folderIdInt, plainName: filename.deletingPathExtension, type:filename.pathExtension)
             
         } catch {
-            error.reportToSentry()
+            if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
+                // Ignore 404 errors to avoid noise logs
+            } else {
+                error.reportToSentry()
+            }
             return nil
         }
         

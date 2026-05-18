@@ -479,10 +479,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         } catch {
             error.reportToSentry()
         }
-        
-        Task {
-            await domainManager.exitDomain()
-        }
+        domainManager.scheduleExitDomain()
         
     }
     

@@ -22,17 +22,26 @@ class FileProviderDomainManager: ObservableObject {
     lazy var manager: NSFileProviderManager? = nil
     var managerDomain: NSFileProviderDomain? = nil
     @Published var domainStatus: FileProviderDomainStatus = .Idle
+    private var exitDomainTask: Task<Void, Never>? = nil
     
     private func getDomains() async throws -> [NSFileProviderDomain] {
         try await NSFileProviderManager.domains()
     }
     
     public func initFileProviderForUser(user: DriveUser) async throws {
+        await exitDomainTask?.value
+
         do {
             self.updateStatus(newStatus: .Initializing)
             let identifier = NSFileProviderDomainIdentifier(rawValue: user.uuid)
             let domain = NSFileProviderDomain(identifier: identifier, displayName: "")
-            
+            // Remove any pre-existing domain with the same identifier
+            let existingDomains = (try? await NSFileProviderManager.domains()) ?? []
+            if let stale = existingDomains.first(where: { $0.identifier == identifier }) {
+                self.logger.info("⚠️ Stale domain found for \(identifier.rawValue), removing before re-adding")
+                try? await NSFileProviderManager.remove(stale, mode: .preserveDirtyUserData)
+            }
+
             try await NSFileProviderManager.add(domain)
                     
             self.manager = NSFileProviderManager(for: domain)
@@ -52,7 +61,17 @@ class FileProviderDomainManager: ObservableObject {
     }
     
     
+    public func scheduleExitDomain() {
+        exitDomainTask = Task {
+            await exitDomainInternal()
+        }
+    }
+
     public func exitDomain() async {
+        await exitDomainInternal()
+    }
+
+    private func exitDomainInternal() async {
         self.logger.info("🧹 Cleaning up FileProvider domain")
         do {
             let activeDomains = try await NSFileProviderManager.domains()
@@ -70,6 +89,7 @@ class FileProviderDomainManager: ObservableObject {
         }
         self.manager = nil
         self.managerDomain = nil
+        exitDomainTask = nil
     }
     
     
