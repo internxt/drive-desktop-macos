@@ -39,7 +39,7 @@ class FileProviderDomainManager: ObservableObject {
             let existingDomains = (try? await NSFileProviderManager.domains()) ?? []
             if let stale = existingDomains.first(where: { $0.identifier == identifier }) {
                 self.logger.info("⚠️ Stale domain found for \(identifier.rawValue), removing before re-adding")
-                try? await NSFileProviderManager.remove(stale)
+                try? await NSFileProviderManager.remove(stale, mode: .preserveDirtyUserData)
             }
 
             try await NSFileProviderManager.add(domain)
