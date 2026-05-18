@@ -145,14 +145,23 @@ struct CopyInternxtLinkUseCase {
     private func copyToClipboard(_ text: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
-        
-        let alert = NSAlert()
-        alert.messageText = "Link copied"
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
-        
-        NSApp.activate(ignoringOtherApps: true)
-        alert.runModal()
+
+        Task.detached {
+            var response: CFOptionFlags = 0
+            CFUserNotificationDisplayAlert(
+                4,
+                kCFUserNotificationNoteAlertLevel,
+                nil,
+                nil,
+                nil,
+                "Link copied" as CFString,
+                nil,
+                "OK" as CFString,
+                nil,
+                nil,
+                &response
+            )
+        }
     }
 }
 
