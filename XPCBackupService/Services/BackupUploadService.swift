@@ -23,6 +23,7 @@ enum BackupUploadError: Error {
     case CannotFindNodeToRealm
     case CannotFindNodeInServer
     case BackupStoppedManually
+    case FileSizeLimitExceeded
 }
 
 enum BackupDownloadError: Error {
@@ -238,6 +239,20 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             var uploadFileId: String? = nil
             var uploadSize: Int = Int(fileURL.fileSize)
             var uploadBucketId: String = self.bucketId
+            
+           
+            let maxUploadFileSizeBytes = ConfigLoader().getMaxFileSizeBytes()
+            if uploadSize > maxUploadFileSizeBytes {
+                self.logger.warning("⛔ File '\(filename)' (\(uploadSize) bytes) exceeds backup limit (\(maxUploadFileSizeBytes) bytes) — rejecting upload")
+                
+                FileSizeLimitNotifier.postExceeded(
+                    filename: filename as String,
+                    fileBytes: Int64(uploadSize),
+                    limitBytes: maxUploadFileSizeBytes
+                )
+                
+                return .failure(BackupUploadError.FileSizeLimitExceeded)
+            }
             
             if uploadSize > 0 {
                 let result = try await networkFacade.uploadFile(
