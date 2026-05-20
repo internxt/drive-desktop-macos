@@ -175,6 +175,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         } catch {
             self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
 
+            if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
+                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server . Deleting local reference from Realm")
+                try? await SyncedNodeRepository.shared.deleteSyncedNodeByRemoteIdAsync(remoteId: safeRemoteParentId)
+                return .failure(BackupUploadError.MissingParentFolder)
+            }
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
@@ -357,9 +362,21 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 }
             }
 
-            
             if encryptedContentURL != nil {
                 try? FileManager.default.removeItem(at: encryptedContentURL!)
+            }
+
+            var is404 = false
+            if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
+                is404 = true
+            } else if let startUploadError = error as? StartUploadError, let apiClientError = startUploadError.apiError, apiClientError.statusCode == 404 {
+                is404 = true
+            }
+
+            if is404 {
+                self.logger.error("❌ Folder parent \(remoteParentId) not found in server (404). Deleting local reference from Realm so it can be re-created.")
+                try? await SyncedNodeRepository.shared.deleteSyncedNodeByRemoteIdAsync(remoteId: remoteParentId)
+                return .failure(BackupUploadError.MissingParentFolder)
             }
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
