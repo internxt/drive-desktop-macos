@@ -16,6 +16,7 @@ protocol SyncedNodeRepositoryProtocol: GenericRepositoryProtocol {
     func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode?
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws
     func editSyncedNodeDateAsync(remoteUuid: String, date: Date) async throws
+    func deleteSyncedNodeByRemoteIdAsync(remoteId: Int) async throws
     func resolveSyncedNode(reference: ThreadSafeReference<SyncedNode>) -> SyncedNode?
 }
 
@@ -210,6 +211,23 @@ final class SyncedNodeRepository : SyncedNodeRepositoryProtocol {
                     
                     try realm.write {
                         node.updatedAt = date
+                    }
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: BackupUploadError.CannotEditNodeToRealm)
+                }
+            }
+        }
+    }
+    
+    func deleteSyncedNodeByRemoteIdAsync(remoteId: Int) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            realmQueue.async { [self] in
+                do {
+                    let realm = try getRealm()
+                    let nodes = realm.objects(SyncedNode.self).filter("remoteId == %@", remoteId)
+                    try realm.write {
+                        realm.delete(nodes)
                     }
                     continuation.resume()
                 } catch {

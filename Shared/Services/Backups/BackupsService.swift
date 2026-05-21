@@ -298,13 +298,13 @@ class BackupsService: ObservableObject {
                 logger.info("Added current device \(currentDeviceName)")
             }
         } catch {
-            error.reportToSentry()
+          
             guard let apiError = error as? APIClientError else {
                 return logger.error("Error adding device \(error)")
             }
             
-            if(apiError.statusCode == 409) {
-                logger.info("Device already registered, received a 409 status code from backend while registering the device")
+            if(apiError.statusCode != 409) {
+                error.reportToSentry()
             }
             
             
