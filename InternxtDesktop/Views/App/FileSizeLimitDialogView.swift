@@ -31,6 +31,10 @@ struct FileSizeLimitDialogView: View {
 
   
 
+    private var isOver100GB: Bool {
+        fileSize > 2 * 1024 * 1024 * 1024
+    }
+
     private var limitMB: String {
         formatBytes(limitBytes)
     }
@@ -48,11 +52,21 @@ struct FileSizeLimitDialogView: View {
         return String(format: mb >= 10 ? "%.0f MB" : "%.1f MB", mb)
     }
 
-    private let planTiers: [(name: String, limit: String, highlighted: Bool)] = [
-        ("Essential", "10 GB",  false),
-        ("Premium",   "50 GB",  true),
-        ("Ultimate",  "100 GB", false),
-    ]
+    private var planTiers: [(name: String, limit: String, highlighted: Bool)] {
+        let essentialLimit: Int64 = 10 * 1024 * 1024 * 1024
+        let premiumLimit:   Int64 = 50 * 1024 * 1024 * 1024
+        let ultimateLimit:  Int64 = 100 * 1024 * 1024 * 1024
+
+        let highlightEssential = fileSize <= essentialLimit
+        let highlightPremium   = fileSize > essentialLimit && fileSize <= premiumLimit
+        let highlightUltimate  = fileSize > premiumLimit && fileSize <= ultimateLimit
+
+        return [
+            ("Essential", "10 GB",  highlightEssential),
+            ("Premium",   "50 GB",  highlightPremium),
+            ("Ultimate",  "100 GB", highlightUltimate),
+        ]
+    }
 
   
 
@@ -61,7 +75,13 @@ struct FileSizeLimitDialogView: View {
 
           
             Group {
-                if isBatch {
+                if isOver100GB {
+                    if isBatch {
+                        Text("Some files exceed the size limit")
+                    } else {
+                        Text("File size exceeds limit")
+                    }
+                } else if isBatch {
                     Text("Some files are too large for your current plan")
                 } else {
                     Text("This file is too large for your current plan")
@@ -74,7 +94,13 @@ struct FileSizeLimitDialogView: View {
 
 
             Group {
-                if isBatch {
+                if isOver100GB {
+                    if isBatch {
+                        Text("The maximum file size allowed is 100 GB. Some of your files exceed this limit and cannot be uploaded.")
+                    } else {
+                        Text("The maximum file size allowed is 100 GB. This file is \(fileSizeMB) and cannot be uploaded.")
+                    }
+                } else if isBatch {
                     Text("Your plan allows uploads up to \(limitMB). Upgrade your plan to upload larger files.")
                 } else {
                     Text("Your plan allows uploads up to \(limitMB). This file is \(fileSizeMB). Upgrade your plan to upload larger files.")
@@ -86,51 +112,74 @@ struct FileSizeLimitDialogView: View {
             .padding(.bottom, 12)
 
      
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(planTiers, id: \.name) { tier in
-                    HStack(alignment: .center, spacing: 8) {
-                    
-                        Circle()
-                            .fill(tier.highlighted ? Color.DefaultTextStrong : Color.Gray40)
-                            .frame(width: 5, height: 5)
+            if isOver100GB {
+                HStack(spacing: 10) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.red)
+                        .font(.system(size: 20))
+                    Text("Files larger than 100 GB cannot be uploaded to Internxt due to infrastructure limits.")
+                        .font(.SMRegular)
+                        .foregroundColor(.Gray80)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(nil)
+                }
+                .padding(12)
+                .background(Color.red.opacity(colorScheme == .dark ? 0.15 : 0.08))
+                .cornerRadius(8)
+                .padding(.bottom, 24)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(planTiers, id: \.name) { tier in
+                        HStack(alignment: .center, spacing: 8) {
+                        
+                            Circle()
+                                .fill(tier.highlighted ? Color.DefaultTextStrong : Color.Gray40)
+                                .frame(width: 5, height: 5)
 
-                 
-                        HStack(spacing: 0) {
-                            Text(tier.name)
-                                .font(tier.highlighted ? .SMBold : .SMRegular)
-                                .foregroundColor(tier.highlighted ? .DefaultTextStrong : .Gray80)
-                            Text(" → up to \(tier.limit)")
-                                .font(tier.highlighted ? .SMBold : .SMRegular)
-                                .foregroundColor(tier.highlighted ? .DefaultTextStrong : .Gray80)
+                     
+                            HStack(spacing: 0) {
+                                Text(tier.name)
+                                    .font(tier.highlighted ? .SMBold : .SMRegular)
+                                    .foregroundColor(tier.highlighted ? .DefaultTextStrong : .Gray80)
+                                Text(" → up to \(tier.limit)")
+                                    .font(tier.highlighted ? .SMBold : .SMRegular)
+                                    .foregroundColor(tier.highlighted ? .DefaultTextStrong : .Gray80)
+                            }
                         }
                     }
                 }
+                .padding(.bottom, 24)
             }
-            .padding(.bottom, 24)
+
+            Spacer()
 
             HStack(spacing: 8) {
                 Spacer()
-                AppButton(
-                    title: "Close",
-                    onClick: { onClose() },
-                    type: .secondary,
-                    size: .MD
-                )
-                AppButton(
-                    title: "Upgrade plan",
-                    onClick: { onUpgrade() },
-                    type: .primary,
-                    size: .MD
-                )
+                if isOver100GB {
+                    AppButton(
+                        title: "Close",
+                        onClick: { onClose() },
+                        type: .primary,
+                        size: .MD
+                    )
+                } else {
+                    AppButton(
+                        title: "Close",
+                        onClick: { onClose() },
+                        type: .secondary,
+                        size: .MD
+                    )
+                    AppButton(
+                        title: "Upgrade plan",
+                        onClick: { onUpgrade() },
+                        type: .primary,
+                        size: .MD
+                    )
+                }
             }
         }
         .padding(24)
-        .background(colorScheme == .dark ? Color.Gray1 : Color.white)
-        .cornerRadius(12)
-        .frame(width: 370)
-        .frame(height: 220)
-        .shadow(color: .black.opacity(0.08), radius: 16, x: 0, y: 4)
-        .shadow(color: .black.opacity(0.04), radius:  2, x: 0, y: 1)
+        .frame(width: 420, height: 270)
     }
 }
 
@@ -143,7 +192,7 @@ struct FileSizeLimitWindowView: View {
     var body: some View {
         ZStack {
          
-            (colorScheme == .dark ? Color.Gray1 : Color.Surface)
+            (colorScheme == .dark ? Color.Gray1 : Color.white)
                 .ignoresSafeArea()
 
             FileSizeLimitDialogView(
@@ -162,7 +211,6 @@ struct FileSizeLimitWindowView: View {
                     NSApp.hide(nil)
                 }
             )
-            .padding(24)
         }
     }
 }

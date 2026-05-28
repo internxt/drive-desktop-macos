@@ -61,10 +61,10 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
             ),
             title: nil,
             id: "file-size-limit",
-            width: 300,
-            height: 150,
+            width: 420,
+            height: 270,
             fixedToFront: true,
-            backgroundColor: Color.Surface
+            backgroundColor: Color.clear
         )
     ]
     
