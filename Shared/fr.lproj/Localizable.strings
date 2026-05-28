@@ -82,6 +82,11 @@
 "BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE" = "Le téléchargement de la sauvegarde est déjà en cours";
 "BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE" = "Un téléchargement de sauvegarde est déjà en cours, veuillez patienter jusqu'à ce qu'il soit terminé" ;
 
+// Network status
+"NETWORK_CONNECTION_SLOW_TITLE" = "Connexion faible.";
+"NETWORK_CONNECTION_SLOW_SUBTITLE" = "Votre expérience peut être lente ou interrompue.";
+"NETWORK_CONNECTION_NONE_TITLE" = "Pas de connexion Internet.";
+"NETWORK_CONNECTION_NONE_SUBTITLE" = "Veuillez vérifier votre connexion et réessayer.";
 
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "Général";

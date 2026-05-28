@@ -144,6 +144,8 @@
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
 		AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */; };
+		AAAEF87D2FC78A7F006B0F24 /* NetworkStatusMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAEF87C2FC78A7F006B0F24 /* NetworkStatusMessage.swift */; };
+		AAAEF8802FC78AAA006B0F24 /* NetworkStatusChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAEF87F2FC78AAA006B0F24 /* NetworkStatusChecker.swift */; };
 		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
 		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
@@ -576,6 +578,8 @@
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAAEF87C2FC78A7F006B0F24 /* NetworkStatusMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusMessage.swift; sourceTree = "<group>"; };
+		AAAEF87F2FC78AAA006B0F24 /* NetworkStatusChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusChecker.swift; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
 		AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClamAVDatabaseService.swift; sourceTree = "<group>"; };
@@ -976,6 +980,14 @@
 			path = Workspaces;
 			sourceTree = "<group>";
 		};
+		AAAEF87E2FC78A8E006B0F24 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				AAAEF87F2FC78AAA006B0F24 /* NetworkStatusChecker.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		AAC188ED2C223183007E321A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1332,6 +1344,7 @@
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 				E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */,
+				AAAEF87C2FC78A7F006B0F24 /* NetworkStatusMessage.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -1410,6 +1423,7 @@
 		E1FB2D522A76C01B00473AE1 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				AAAEF87E2FC78A8E006B0F24 /* Network */,
 				E17AA0222A8A70C100C7EE6E /* Auth */,
 				E16310562A8E66F70072989E /* URLDictionary.swift */,
 				E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */,
@@ -1929,6 +1943,7 @@
 				E17C84B02AB225CD00A58414 /* WelcomeSlideView.swift in Sources */,
 				E1A0AC772AB8AAFE005E71D6 /* ThumbnailGenerator.swift in Sources */,
 				31DEAEC22B7514F400E76D53 /* XPCBackupServiceProtocol.swift in Sources */,
+				AAAEF8802FC78AAA006B0F24 /* NetworkStatusChecker.swift in Sources */,
 				E17C84CA2AB31E0400A58414 /* OnboardingFinishView.swift in Sources */,
 				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				AA94CA6E2E99E8CE007CEBDF /* NotificationsManager.swift in Sources */,
@@ -1952,6 +1967,7 @@
 				AA628F2A2D4BF73000421CB7 /* OnboardingSlide6View.swift in Sources */,
 				AA9B1BA12FB4094D000E582A /* FileSizeLimitDialogView.swift in Sources */,
 				AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */,
+				AAAEF87D2FC78A7F006B0F24 /* NetworkStatusMessage.swift in Sources */,
 				AA93BEBA2E720E8200F12334 /* CleaningView.swift in Sources */,
 				AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */,
 				AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */,

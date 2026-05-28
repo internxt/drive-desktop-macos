@@ -23,6 +23,8 @@ enum AppIconName: String {
     case WarningCircle = "EDBF"
     case Shield = "ECD5"
     case Cleaner = "ED2B"
+    case WifiMedium = "EDD3"
+    case WifiNone = "EDD5"
 }
 
 

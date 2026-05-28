@@ -29,7 +29,13 @@ extension AppDelegate: NSPopoverDelegate {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
+class NetworkStatusObservable: ObservableObject {
+    @Published var networkStatus: NetworkStatus = .unknown
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate, NetworkStatusCheckerDelegate, UNUserNotificationCenterDelegate {
+    let notificationsCenter = UNUserNotificationCenter.current()
+    let networkStatusChecker = NetworkStatusChecker()
     let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "App")
     let config = ConfigLoader()
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -59,6 +65,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var notificationsTimer: AnyCancellable?
     let fileSizeLimitState = FileSizeLimitState()
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
+    var networkStatusCheckTimer: Timer? = nil
+    let networkStatusCheckTestURL =  URL(string: "https://link.testfile.org/15MB")!
+    let networkStatusObservable = NetworkStatusObservable()
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let notificationsPollingInterval: TimeInterval = 30 * 60
     
@@ -68,7 +77,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     override init() {
         super.init()
+        self.notificationsCenter.delegate = self
         self.scheduledManager = ScheduledBackupManager(backupsService: backupsService)
+        self.setupNetworkStatusChecker()
         self.requestNotificationsPermissions()
     }
     
@@ -545,6 +556,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
                 .environmentObject(self.antivirusManager)
+                .environmentObject(self.networkStatusObservable)
         )
     }
     
@@ -666,7 +678,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         } else {
             display()
         }
-       
+        self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
         usageUpdateDebouncer.debounce { [weak self] in
             self?.updateUsage()
         }
@@ -761,4 +773,28 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         logger.info("========================================")
     }
 
+    func callWhileNetworkStatusChange(networkStatus: NetworkStatus) {
+         
+        if self.networkStatusObservable.networkStatus != networkStatus {
+            self.logger.info("🛜 Network status changed \(self.networkStatusObservable.networkStatus.rawValue) -> \(networkStatus.rawValue)")
+            DispatchQueue.main.async {
+                self.networkStatusObservable.networkStatus = networkStatus
+            }
+        }
+    }
+    
+    func setupNetworkStatusChecker() {
+        self.networkStatusChecker.delegate = self
+        self.logger.info("🛜 Setting up network status check test")
+        
+        self.networkStatusChecker.startTest(url:  networkStatusCheckTestURL)
+        
+        DispatchQueue.main.async {
+            self.networkStatusCheckTimer = Timer.scheduledTimer(timeInterval: 60 * 5, target: self, selector: #selector(self.runNetworkStatusTest), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func runNetworkStatusTest() {
+        self.networkStatusChecker.startTest(url: self.networkStatusCheckTestURL)
+    }
 }

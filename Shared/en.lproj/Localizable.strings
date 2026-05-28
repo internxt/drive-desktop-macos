@@ -102,6 +102,12 @@
 "BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_TITLE" = "Backup download in progress";
 "BACKUP_DOWNLOAD_IN_PROGRESS_ALERT_MESSAGE" = "A backup download is already in progress, please wait until it is finished.";
 
+// NETWORK STATUS
+"NETWORK_CONNECTION_SLOW_TITLE" = "Weak connection.";
+"NETWORK_CONNECTION_SLOW_SUBTITLE" = "Your experience may be slow or interrupted.";
+"NETWORK_CONNECTION_NONE_TITLE" = "No internet connection.";
+"NETWORK_CONNECTION_NONE_SUBTITLE" = "Please check your connection and try again.";
+
 // Settings
 "SETTINGS_TAB_GENERAL_TITLE" = "General";
 "SETTINGS_TAB_ACCOUNT_TITLE" = "Account";

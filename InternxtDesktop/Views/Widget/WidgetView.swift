@@ -18,6 +18,7 @@ struct WidgetView: View {
     @EnvironmentObject var backupsService: BackupsService
     @EnvironmentObject var domainManager: FileProviderDomainManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var networkStatusObservable: NetworkStatusObservable
     
     @State private var showBackupBanner = false
     var isEmpty: Bool = true
@@ -103,6 +104,9 @@ struct WidgetView: View {
                             WidgetContentView(activityEntries: $activityManager.activityEntries).environmentObject(backupsService)
                         }
                     }.frame(maxWidth: .infinity,maxHeight: .infinity)
+                    if self.networkStatusObservable.networkStatus != NetworkStatus.good {
+                        NetworkStatusMessage(status: self.$networkStatusObservable.networkStatus)
+                    }
                     WidgetFooterView(isSyncing: $activityManager.isSyncing)
                 } else {
                     Spacer()
@@ -111,7 +115,7 @@ struct WidgetView: View {
                 }
                 
             }
-            .frame(width: 330, height: 400)
+            .frame(width: 330, height: 440)
             .background(Color.Surface)
             .cornerRadius(10)
         }
