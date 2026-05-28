@@ -32,7 +32,7 @@ struct FileSizeLimitDialogView: View {
   
 
     private var isOver100GB: Bool {
-        fileSize > 2 * 1024 * 1024 * 1024
+        fileSize > 100 * 1024 * 1024 * 1024
     }
 
     private var limitMB: String {
