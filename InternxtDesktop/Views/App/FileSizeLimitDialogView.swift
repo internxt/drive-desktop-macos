@@ -206,7 +206,7 @@ struct FileSizeLimitWindowView: View {
                     NSApp.hide(nil)
                 },
                 onUpgrade: {
-                    URL(string: "https://internxt.com/pricing")?.open()
+                    URL(string: "https://drive.internxt.com/?preferences=open&section=account&subsection=plans")?.open()
                     state.isVisible = false
                     NSApp.hide(nil)
                 }
