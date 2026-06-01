@@ -313,7 +313,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         // Safety check: Avoid hanging the completionHandler if it is an unsupported type (such as symbolic links)
         if !shouldCreateFolder && !shouldCreateFile {
             logger.warning("⚠️ Unsupported item type: \(itemTemplate.filename), contentType: \(String(describing: itemTemplate.contentType))")
-            completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError, userInfo: [NSLocalizedDescriptionKey: "Unsupported item type"]))
+            completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue, userInfo: [NSLocalizedDescriptionKey: "Unsupported item type"]))
             return Progress()
         }
 
