@@ -310,6 +310,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let shouldCreateFolder = itemTemplate.contentType == .folder
         let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
 
+        // Safety check: Avoid hanging the completionHandler if it is an unsupported type (such as symbolic links)
+        if !shouldCreateFolder && !shouldCreateFile {
+            logger.warning("⚠️ Unsupported item type: \(itemTemplate.filename), contentType: \(String(describing: itemTemplate.contentType))")
+            completionHandler(nil, [], false, NSError(domain: NSCocoaErrorDomain, code: NSFeatureUnsupportedError, userInfo: [NSLocalizedDescriptionKey: "Unsupported item type"]))
+            return Progress()
+        }
+
         let parentId = itemTemplate.parentItemIdentifier == .rootContainer
             ? String(self.user.root_folder_id)
             : itemTemplate.parentItemIdentifier.rawValue
@@ -693,6 +700,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
                 
         logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
+        completionHandler(item, [], false, nil)
         return Progress()
     }
     
