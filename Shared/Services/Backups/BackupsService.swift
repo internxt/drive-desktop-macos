@@ -134,6 +134,8 @@ class BackupsService: ObservableObject {
                 throw BackupError.folderToBackupRealmObjectNotFound
             }
             
+            let folderUrl = folderToBackupRealmObject.url
+            
             try realm.write {
                 realm.delete(folderToBackupRealmObject)
             }
@@ -141,7 +143,7 @@ class BackupsService: ObservableObject {
             
             self.loadFoldersToBackup()
             
-            //try await self.cleanBackupLocalData(folderUrl: folderToBackupRealmObject.url, realm: realm)
+            try self.cleanBackupLocalData(folderUrl: folderUrl)
             //try await backupAPI.deleteBackupFolder(folderId: folderToBackupRealmObject.id, debug: true)
             
             await self.loadAllDevices()
@@ -366,16 +368,12 @@ class BackupsService: ObservableObject {
         return true
     }
 
-    @MainActor private func cleanBackupLocalData(folderUrl: String, realm: Realm) async throws -> Void {
-        // TODO: Make sure we clean all the RealmDB local data
-        /* guard let syncedNode = realm.objects(SyncedNode.self).first(where: { node in
-            node.url == folderUrl
-        }) else {
-            
-            return true
+    private func cleanBackupLocalData(folderUrl: String) throws -> Void {
+        let realm = getRealm()
+        let syncedNodesToDelete = realm.objects(SyncedNode.self).filter("url BEGINSWITH[c] %@", folderUrl)
+        try realm.write {
+            realm.delete(syncedNodesToDelete)
         }
-
-        return false */
     }
 
     func getDeviceFolders(deviceId: Int) async throws -> [GetFolderFoldersResult] {

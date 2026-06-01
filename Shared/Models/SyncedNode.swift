@@ -34,7 +34,7 @@ class SyncedNode: Object {
         self.remoteId = remoteId
         self.remoteUuid = remoteUuid
         self.url = url.absoluteString
-        self.rootBackupFolder = url.absoluteString
+        self.rootBackupFolder = rootBackupFolder.absoluteString
         self.parentId = parentId
         self.remoteParentId = remoteParentId
         self.createdAt = Date()

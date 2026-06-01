@@ -15,6 +15,18 @@ extension Error {
     }
     
     func getErrorDescription() -> String {
+        if let enrichedError = self as? EnrichedError {
+            var parts = ["[\(enrichedError.code.rawValue)]", "Step: \(enrichedError.step.rawValue)"]
+            if !enrichedError.context.isEmpty {
+                let contextStr = enrichedError.context.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
+                parts.append("| \(contextStr)")
+            }
+            if let cause = enrichedError.cause {
+                parts.append("| Cause: \(cause.getErrorDescription())")
+            }
+            return parts.joined(separator: " ")
+        }
+        
         if let apiClientError = self as? APIClientError {
             let parts = [
                 "APIClientError \(apiClientError.statusCode)",
