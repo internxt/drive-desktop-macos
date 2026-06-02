@@ -170,7 +170,6 @@ struct UploadFileUseCase {
                 self.logger.info("⏱️ Upload completed in \(uploadDuration) seconds")
                 self.logger.info("✅ Created file correctly with identifier \(fileProviderItem.itemIdentifier.rawValue) -  \(item.filename)")
                 
-                self.logger.info("🖼️ Processing thumbnail...")
                 
                 // Respond, then process the thumbnail so we don't block the UI
                 let thumbnailUpload = await self.generateAndUploadThumbnail(
@@ -180,12 +179,6 @@ struct UploadFileUseCase {
                     encryptedThumbnailDestination: self.encryptedThumbnailFileDestination,
                     fileUuid: createdFile.uuid
                 )
-                
-                if let thumbnailUploadUnwrapped = thumbnailUpload {
-                    self.logger.info("✅ Thumbnail uploaded with fileId \(thumbnailUploadUnwrapped.fileId)...")
-                } else {
-                    self.logger.info("❌ Thumbnail uploaded failed")
-                }
                 
                 completionHandler(fileProviderItem, [], false, nil )
                 activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished)
@@ -255,9 +248,6 @@ struct UploadFileUseCase {
             return createdThumbnail
                                  
         } catch {
-            // If the thumbnail generation fails, don't block the upload
-            // just report it, and keep processing the upload
-            error.reportToSentry()
             return nil
         }
         

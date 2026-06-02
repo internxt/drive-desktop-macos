@@ -35,14 +35,14 @@ class FileProviderDomainManager: ObservableObject {
             self.updateStatus(newStatus: .Initializing)
             let identifier = NSFileProviderDomainIdentifier(rawValue: user.uuid)
             let domain = NSFileProviderDomain(identifier: identifier, displayName: "")
-            // Remove any pre-existing domain with the same identifier
+            // Check if domain already exists before adding
             let existingDomains = (try? await NSFileProviderManager.domains()) ?? []
-            if let stale = existingDomains.first(where: { $0.identifier == identifier }) {
-                self.logger.info("⚠️ Stale domain found for \(identifier.rawValue), removing before re-adding")
-                try? await NSFileProviderManager.remove(stale, mode: .preserveDirtyUserData)
+            if existingDomains.first(where: { $0.identifier == identifier }) == nil {
+                self.logger.info("➕ Domain \(identifier.rawValue) not found, adding it")
+                try await NSFileProviderManager.add(domain)
+            } else {
+                self.logger.info("✅ Domain \(identifier.rawValue) already exists, reusing it")
             }
-
-            try await NSFileProviderManager.add(domain)
                     
             self.manager = NSFileProviderManager(for: domain)
             self.managerDomain = domain
