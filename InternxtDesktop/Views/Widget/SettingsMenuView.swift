@@ -93,7 +93,7 @@ struct SettingsMenuView: View {
     }
     
     func handleOpenReferralLink() -> Void {
-        URLDictionary.DRIVE_WEB.open()
+        URLDictionary.REFERRAL.open()
     }
     
     func handleSendFeedback() -> Void {
