@@ -25,6 +25,10 @@ struct FolderSelectorView: View {
     }
     
     func handleMissingFolderURLLocated(folderListItem: FolderListItem, newURL: URL) -> Void {
+        if newURL.path == "/" {
+            showErrorDialog(message: NSLocalizedString("BACKUP_SETTINGS_ROOT_FOLDER_ERROR", comment: ""))
+            return
+        }
 
         Task{
             do {
@@ -47,6 +51,10 @@ struct FolderSelectorView: View {
         let panelResponse = panel.runModal()
         if panelResponse == .OK {
             for url in panel.urls {
+                if url.path == "/" {
+                    showErrorDialog(message: NSLocalizedString("BACKUP_SETTINGS_ROOT_FOLDER_ERROR", comment: ""))
+                    continue
+                }
                 do {
                     let urls = backupsService.foldersToBackup.map { folderToBackup in
                         return folderToBackup.url

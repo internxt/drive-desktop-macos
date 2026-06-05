@@ -109,6 +109,9 @@ class BackupsService: ObservableObject {
     }
 
     @MainActor func addFolderToBackup(url: URL) throws {
+        guard url.path != "/" else {
+            throw BackupError.cannotAddFolder
+        }
 
         do {
             let realm = getRealm()
@@ -236,6 +239,9 @@ class BackupsService: ObservableObject {
     }
     
     func updateFolderToBackupURL(folderId: String, newURL: URL) throws {
+        guard newURL.path != "/" else {
+            return
+        }
         let realm = getRealm()
         let folderToBackupRealmObject = realm.object(ofType: FolderToBackupRealmObject.self,
                                                      forPrimaryKey: try ObjectId(string: folderId))

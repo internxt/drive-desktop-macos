@@ -110,6 +110,7 @@
 "BACKUP_SETTINGS_ONE_FOLDER" = "1 carpeta";
 "BACKUP_SETTINGS_ADD_FOLDERS" = "Haga clic en + para seleccionar las carpetas\nde las que desea hacer una copia de seguridad.";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Esta carpeta ya se encuentra seleccionada";
+"BACKUP_SETTINGS_ROOT_FOLDER_ERROR" = "No se puede seleccionar la carpeta raíz para la copia de seguridad.";
 
 // Account Settings
 
