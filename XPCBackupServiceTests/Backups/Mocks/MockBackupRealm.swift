@@ -36,21 +36,19 @@ class MockBackupRealm: SyncedNodeRepositoryProtocol {
         }
     }
     
-    func findSyncedNode(url: URL, deviceId: Int) -> ThreadSafeReference<SyncedNode>? {
-        do{
+    func addSyncedNodeAsync(_ node: SyncedNode) async throws {
+        try addSyncedNode(node)
+    }
+    
+    func findSyncedNode(url: URL, deviceId: Int) -> SyncedNode? {
+        do {
             let realm = try getRealm()
-            let syncedNode = realm?.objects(SyncedNode.self).first { syncedNode in
+            return realm?.objects(SyncedNode.self).first { syncedNode in
                 url.absoluteString == syncedNode.url && deviceId == syncedNode.deviceId
             }
-            if let syncedNode = syncedNode {
-                return ThreadSafeReference(to: syncedNode)
-            }
+        } catch {
             return nil
         }
-        catch {
-            return nil
-        }
-        
     }
     
     func editSyncedNodeDate(remoteUuid: String, date: Date) throws {
@@ -59,6 +57,17 @@ class MockBackupRealm: SyncedNodeRepositoryProtocol {
         }
         try inMemoryRealm.write {
             node.updatedAt = date
+        }
+    }
+    
+    func editSyncedNodeDateAsync(remoteUuid: String, date: Date) async throws {
+        try editSyncedNodeDate(remoteUuid: remoteUuid, date: date)
+    }
+    
+    func deleteSyncedNodeByRemoteIdAsync(remoteId: Int) async throws {
+        let nodes = inMemoryRealm.objects(SyncedNode.self).filter("remoteId == %@", remoteId)
+        try inMemoryRealm.write {
+            inMemoryRealm.delete(nodes)
         }
     }
     

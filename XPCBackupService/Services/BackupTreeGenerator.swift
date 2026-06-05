@@ -19,7 +19,7 @@ enum BackupTreeGeneratorError: Error {
 protocol BackupTreeGeneration {
     var root: URL {get set}
     var rootNode: BackupTreeNode { get }
-    func generateTree() async throws -> BackupTreeNode
+    func generateTree() async throws -> (BackupTreeNode, Int)
     
 }
 class BackupTreeGenerator: BackupTreeGeneration {
@@ -62,7 +62,7 @@ class BackupTreeGenerator: BackupTreeGeneration {
     /**
      * Generates a tree from a list of URLs of the system
      **/
-    func generateTree() async throws -> BackupTreeNode {
+    func generateTree() async throws -> (BackupTreeNode, Int) {
 
         return try await withUnsafeThrowingContinuation { continuation in
             do {
@@ -77,6 +77,8 @@ class BackupTreeGenerator: BackupTreeGeneration {
                         return
                     }
 
+                    var nodesCount = 0
+
                     for case let url as URL in enumerator {
                         do {
                             let symValues = try url.resourceValues(forKeys: [.isSymbolicLinkKey])
@@ -84,13 +86,14 @@ class BackupTreeGenerator: BackupTreeGeneration {
                                 continue
                             }
                             try self.insertInTree(url)
+                            nodesCount += 1
                         } catch {
                             // We need to decide what to do in this case, for now, at least log the error
                             logger.error("Failed to insert URL \(url) in the backup tree: \(error)")
                         }
                     }
 
-                    continuation.resume(returning: self.rootNode)
+                    continuation.resume(returning: (self.rootNode, nodesCount))
 
                 } else {
                     logger.error("Node \(self.root) is not a directory")

@@ -52,46 +52,11 @@ struct UpdateFileContentUseCase {
         self.fileUuid = fileUuid
     }
     
-   
-    
-    private func trackStart(processIdentifier: String) -> Date {
-        let filename = (item.filename as NSString)
-        let event = UploadStartedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1
-        )
-        
-
-        
-        
-        return Date()
-    }
-    
-    private func trackEnd(processIdentifier: String, startedAt: Date) {
-        let filename = (item.filename as NSString)
-        let event = UploadCompletedEvent(
-            fileName: filename.deletingPathExtension,
-            fileExtension: filename.pathExtension,
-            fileSize: item.documentSize as! Int64,
-            fileUploadId: self.fileUuid,
-            processIdentifier: processIdentifier,
-            parentFolderId: Int(getParentId()) ?? -1,
-            elapsedTimeMs: Date().timeIntervalSince(startedAt) * 1000
-        )
-        
-   
-    }
-        
     private func getParentId() -> String {
         return item.parentItemIdentifier == .rootContainer ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue
     }
     public func run() -> Progress {
         self.logger.info("Updating file")
-        let startedAt = self.trackStart(processIdentifier: trackId)
         Task {
             do {
                
@@ -154,9 +119,7 @@ struct UpdateFileContentUseCase {
                     itemType: .file,
                     size: uploadSize
                 )
-                
-                self.trackEnd(processIdentifier: trackId, startedAt: startedAt)
-                
+                                
                 completionHandler(fileProviderItem, [], false, nil )
                 
                 self.logger.info("✅ Updated file content correctly with identifier \(fileUuid)")

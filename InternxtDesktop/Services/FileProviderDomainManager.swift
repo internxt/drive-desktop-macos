@@ -22,18 +22,27 @@ class FileProviderDomainManager: ObservableObject {
     lazy var manager: NSFileProviderManager? = nil
     var managerDomain: NSFileProviderDomain? = nil
     @Published var domainStatus: FileProviderDomainStatus = .Idle
+    private var exitDomainTask: Task<Void, Never>? = nil
     
     private func getDomains() async throws -> [NSFileProviderDomain] {
         try await NSFileProviderManager.domains()
     }
     
     public func initFileProviderForUser(user: DriveUser) async throws {
+        await exitDomainTask?.value
+
         do {
             self.updateStatus(newStatus: .Initializing)
             let identifier = NSFileProviderDomainIdentifier(rawValue: user.uuid)
             let domain = NSFileProviderDomain(identifier: identifier, displayName: "")
-            
-            try await NSFileProviderManager.add(domain)
+            // Check if domain already exists before adding
+            let existingDomains = (try? await NSFileProviderManager.domains()) ?? []
+            if existingDomains.first(where: { $0.identifier == identifier }) == nil {
+                self.logger.info("➕ Domain \(identifier.rawValue) not found, adding it")
+                try await NSFileProviderManager.add(domain)
+            } else {
+                self.logger.info("✅ Domain \(identifier.rawValue) already exists, reusing it")
+            }
                     
             self.manager = NSFileProviderManager(for: domain)
             self.managerDomain = domain
@@ -52,14 +61,35 @@ class FileProviderDomainManager: ObservableObject {
     }
     
     
+    public func scheduleExitDomain() {
+        exitDomainTask = Task {
+            await exitDomainInternal()
+        }
+    }
+
     public func exitDomain() async {
+        await exitDomainInternal()
+    }
+
+    private func exitDomainInternal() async {
         self.logger.info("🧹 Cleaning up FileProvider domain")
-        if let domain = self.managerDomain {
-            try? await NSFileProviderManager.remove(domain)
+        do {
+            let activeDomains = try await NSFileProviderManager.domains()
+            for domain in activeDomains {
+                do {
+                    let preservedURL = try await NSFileProviderManager.remove(domain, mode: .preserveDirtyUserData)
+                    self.logger.info("📁 Domain '\(domain.displayName)' removed — unsynced files preserved at: \(preservedURL)")
+                } catch {
+                    self.logger.error("❌ Failed to remove domain '\(domain.displayName)'")
+                    try? await NSFileProviderManager.remove(domain)
+                }
+            }
+        } catch {
+            self.logger.error("❌ Failed to enumerate domains during exitDomain: \(error)")
         }
         self.manager = nil
         self.managerDomain = nil
-        try? await NSFileProviderManager.removeAllDomains()
+        exitDomainTask = nil
     }
     
     

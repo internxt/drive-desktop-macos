@@ -116,6 +116,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             logger.error("Failed to clean TMP directory before starting")
             error.reportToSentry()
         }
+
+        APIClient.onUnauthorized = {
+            DistributedNotificationCenter.default().postNotificationName(
+                NSNotification.Name(NOTIFICATION_UNAUTHORIZED),
+                object: nil,
+                userInfo: nil,
+                deliverImmediately: true
+            )
+        }
         
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
@@ -301,6 +310,13 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let shouldCreateFolder = itemTemplate.contentType == .folder
         let shouldCreateFile = !shouldCreateFolder && itemTemplate.contentType != .symbolicLink
 
+        // Safety check: Avoid hanging the completionHandler if it is an unsupported type (such as symbolic links)
+        if !shouldCreateFolder && !shouldCreateFile {
+            logger.warning("⚠️ Unsupported item type: \(itemTemplate.filename), contentType: \(String(describing: itemTemplate.contentType))")
+            completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue, userInfo: [NSLocalizedDescriptionKey: "Unsupported item type"]))
+            return Progress()
+        }
+
         let parentId = itemTemplate.parentItemIdentifier == .rootContainer
             ? String(self.user.root_folder_id)
             : itemTemplate.parentItemIdentifier.rawValue
@@ -378,6 +394,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         templateSize = Int64(truncating: docSize!)
                     }
                     let fileSize = attributesSize ?? templateSize ?? 0
+
+                 
+                    if !checkFileSizeLimit(
+                        filename: itemTemplate.filename,
+                        fileBytes: fileSize,
+                        config: self.config
+                    ) {
+                        completionHandler(nil, [], false, NSError.fileSizeExceededError())
+                      
+                        try? FileManager.default.removeItem(at: fileCopy)
+                        if let zipURL = zipURL {
+                            try? FileManager.default.removeItem(at: zipURL)
+                        }
+                        return
+                    }
 
                     let encryptedFileDestination = self.makeTemporaryURL("encrypted", "enc")
                     let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
@@ -578,6 +609,18 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return Progress()
             }
             let encryptedFileDestination = makeTemporaryURL("enc-\(item.itemIdentifier.rawValue)")
+
+            let contentFileSize = (try? FileManager.default
+                .attributesOfItem(atPath: newContents.path)[.size] as? Int64) ?? 0
+            if !checkFileSizeLimit(
+                filename: item.filename,
+                fileBytes: contentFileSize,
+                config: self.config
+            ) {
+                completionHandler(nil, [], false, NSError.fileSizeExceededError())
+                return Progress()
+            }
+       
             
             func completionHandlerInternal(item: NSFileProviderItem?, fields: NSFileProviderItemFields, shouldFetch: Bool, error: Error?) -> Void{
                 completionHandler(item, fields, shouldFetch, error)
@@ -657,6 +700,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
                 
         logger.info("Item modification wasn't handled if this message appear: item -> \(item.filename)")
+        completionHandler(item, [], false, nil)
         return Progress()
     }
     
@@ -744,6 +788,26 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             }
             
             return Progress()
+        }
+        
+        if actionIdentifier == FileProviderItemActionsManager.CopyInternxtLink {
+            let apiToUse: DriveAPI
+            let mnemonicToUse: String
+            
+            if isWorkspaceDomain() {
+                apiToUse = APIFactory.DriveWorkspace
+                mnemonicToUse = authManager.workspaceMnemonic ?? mnemonic
+            } else {
+                apiToUse = driveNewAPI
+                mnemonicToUse = mnemonic
+            }
+
+            return CopyInternxtLinkUseCase(
+                driveAPI: apiToUse,
+                mnemonic: mnemonicToUse,
+                itemIdentifiers: itemIdentifiers,
+                completionHandler: completionHandler
+            ).run()
         }
         
         return Progress()

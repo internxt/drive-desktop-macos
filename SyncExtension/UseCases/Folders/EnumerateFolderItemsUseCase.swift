@@ -146,7 +146,6 @@ struct EnumerateFolderItemsUseCase {
                 
                 
             } catch {
-                error.checkUnauthorizedError()
                 error.reportToSentry()
                 self.logger.error("❌ Got error fetching folder content: \(error)")
                 observer.finishEnumeratingWithError(error)

@@ -46,6 +46,7 @@ enum ConfigLoaderError: Error {
 
 
 public let INTERNXT_GROUP_NAME = "JR4S3SY396.group.internxt.desktop"
+public let NOTIFICATION_UNAUTHORIZED = "com.internxt.drive.unauthorized"
 
 public var loadedConfig: JSONConfig? = nil
 
@@ -392,6 +393,42 @@ public struct ConfigLoader {
         if removedKey == false || removedMnemonic == false {
             throw ConfigLoaderError.CannotRemoveKey
         }
+    }
+
+ 
+
+    private let kMaxFileSizeBytes    = "MaxFileSizeBytes"
+    private let kMaxFileSizeFetchedAt = "MaxFileSizeFetchedAt"
+    private let fileSizeCacheTTL: TimeInterval = 5 * 60  // 5 minutes
+
+ 
+    public func getMaxFileSizeBytes() -> Int64 {
+        let stored = UserDefaults(suiteName: SUITE_NAME)?
+            .object(forKey: kMaxFileSizeBytes) as? Int64 ?? 0
+        return stored > 0 ? stored : Int64.max
+    }
+
+ 
+    public func setMaxFileSizeBytes(_ bytes: Int64) {
+        let defaults = UserDefaults(suiteName: SUITE_NAME)
+        defaults?.set(bytes, forKey: kMaxFileSizeBytes)
+        defaults?.set(Date().timeIntervalSince1970, forKey: kMaxFileSizeFetchedAt)
+    }
+
+   
+    public func fileSizeLimitNeedsRefresh() -> Bool {
+        guard let fetchedAt = UserDefaults(suiteName: SUITE_NAME)?
+            .object(forKey: kMaxFileSizeFetchedAt) as? TimeInterval else {
+            return true
+        }
+        return Date().timeIntervalSince1970 - fetchedAt > fileSizeCacheTTL
+    }
+
+  
+    public func clearMaxFileSize() {
+        let defaults = UserDefaults(suiteName: SUITE_NAME)
+        defaults?.removeObject(forKey: kMaxFileSizeBytes)
+        defaults?.removeObject(forKey: kMaxFileSizeFetchedAt)
     }
 }
 

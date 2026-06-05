@@ -140,34 +140,49 @@ class BackupTreeNode {
            return syncedNode
        }
     
-    func syncBelowNodes(withOperationQueue: OperationQueue, dependingOfOperation: BackupTreeNodeSyncOperation? = nil, onError: @escaping (Error) -> Void) throws -> Void {
-        let operation = BackupTreeNodeSyncOperation(backupTreeNode: self)
+    func syncBelowNodes(withOperationQueue: OperationQueue, syncGroup: DispatchGroup, onError: @escaping (Error) -> Void) throws -> Void {
+        syncGroup.enter()
+        let operation = BackupTreeNodeSyncOperation(backupTreeNode: self, operationQueue: withOperationQueue, syncGroup: syncGroup)
         
         operation.onError = { error in
             onError(error)
-           
         }
-        if(dependingOfOperation != nil) {
-            operation.addDependency(dependingOfOperation!)
+        
+        operation.completionBlock = {
+            syncGroup.leave()
         }
         
         withOperationQueue.addOperation(operation)
-        
-        for child in self.childs {
-            if(self.type == .folder) {
-                try child.syncBelowNodes(withOperationQueue: withOperationQueue, dependingOfOperation: operation, onError: onError)
-            } else {
-                try child.syncBelowNodes(withOperationQueue: withOperationQueue, onError: onError)
-            }
-        }
     }
     
+    private func isRetryable(error: Error) -> Bool {
+        if error is BackupUploadError || error is BackupTreeNodeError || error is BackupError {
+            return false
+        }
+
+        if let apiClientError = error as? APIClientError {
+            if apiClientError.statusCode >= 400 && apiClientError.statusCode < 500 && apiClientError.statusCode != 429 {
+                return false
+            }
+        }
+
+        return true
+    }
    
-    @MainActor
     func syncNode() async throws -> Void {
         
         guard let nodeURL = self.url else {
+            backupTotalPogress.completedUnitCount += 1
             throw BackupTreeNodeError.cannotGetPath
+        }
+
+      
+        if self.parentId != nil {
+            let parentInfo = self.getRemoteParentInfo()
+            if parentInfo.remoteParentId == nil || parentInfo.remoteParentUuid == nil {
+                backupTotalPogress.completedUnitCount += 1
+                throw BackupUploadError.MissingParentFolder
+            }
         }
         
         let currentSyncedNode = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
@@ -207,20 +222,19 @@ class BackupTreeNode {
             
                 if case BackupUploadError.BackupStoppedManually = error {
                     // Noop, this was stopped
+                  return
+                } else if isRetryable(error: error) && syncRetries < MAX_SYNC_RETRIES {
+                    syncRetries += 1
+                    logger.info("Node sync failed, scheduling retry #\(syncRetries)")
+                    error.reportToSentry()
+                    try await Task.sleep(nanoseconds: 1_000_000_000 * syncRetries)
+                    try await self.syncNode()
+                    return
                 } else {
-                    
-                    if syncRetries >= MAX_SYNC_RETRIES {
-                        logger.info("Node sync failed, no more retries allowed")
-                    } else {
-                        syncRetries += 1
-                        logger.info("Node sync failed, scheduling retry #\(syncRetries)")
-                        error.reportToSentry()
-                        try await Task.sleep(nanoseconds: 1_000_000_000 * syncRetries)
-                        try await self.syncNode()
-                    }
+                    logger.info("Node sync failed permanently for \(self.name): \(error.localizedDescription)")
+                    backupTotalPogress.completedUnitCount += 1
+                    throw error
                 }
-                
-                return
             }
     }
 
