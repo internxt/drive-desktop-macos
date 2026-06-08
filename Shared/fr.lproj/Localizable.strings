@@ -111,6 +111,7 @@
 "BACKUP_MISSING_FOLDERS_ERROR" = "Certains dossiers sont manquants";
 "BACKUP_MISSING_FOLDER_ERROR" = "Non trouvé";
 "BACKUP_SETTINGS_ALREADY_ADDED_FOLDER" = "Ce dossier est déjà sélectionné";
+"BACKUP_SETTINGS_ROOT_FOLDER_ERROR" = "Le dossier racine ne peut pas être sélectionné pour la sauvegarde.";
 
 // Account Settings
 
