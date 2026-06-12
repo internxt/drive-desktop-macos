@@ -52,14 +52,12 @@ struct UploadFileOrUpdateContentUseCase {
         self.parentUUID = parentUuid
     }
     
-    private func fileAlreadyExistsByName() async -> GetFileInFolderByPlainNameResponse? {
+    private func fileAlreadyExistsByName() async -> GetExistenceFileInFolderResponse? {
         do {
-            guard let folderIdInt = Int(getParentId(item: self.item, user: self.user)) else {
-                return nil
-            }
-            
             let filename = (item.filename as NSString)
-            return try await self.driveNewAPI.getFileInFolderByPlainName(folderId: folderIdInt, plainName: filename.deletingPathExtension, type:filename.pathExtension)
+            let existenceFile = ExistenceFile(plainName: filename.deletingPathExtension, type: filename.pathExtension)
+            let result = try await self.driveNewAPI.getExistenceFileInFolderByPlainName(uuid: self.parentUUID, files: [existenceFile], debug: true)
+            return result.existentFiles.isEmpty ? nil : result.existentFiles.first
             
         } catch {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
