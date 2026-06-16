@@ -10,6 +10,13 @@ import RealmSwift
 import FileProvider
 import InternxtSwiftCore
 
+
+private struct APIErrorBody: Decodable {
+    let message: String
+    let error: String?
+    let statusCode: Int?
+}
+
 enum BackupUploadError: Error {
     case CannotOpenInputStream
     case MissingDocumentSize
@@ -24,6 +31,8 @@ enum BackupUploadError: Error {
     case CannotFindNodeInServer
     case BackupStoppedManually
     case FileSizeLimitExceeded
+    case EmptyFileQuotaExceeded
+    case EmptyFilePlanNotAllowed
 }
 
 enum BackupDownloadError: Error {
@@ -50,6 +59,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     private let bucketId: String
     private let newAuthToken: String
     @Published var canDoBackup = true
+    private var emptyFileRejectReason: EmptyFileLimitReason? = nil
 
 
     init(networkFacade: NetworkFacade, encryptedContentDirectory: URL, deviceId: Int, bucketId: String,newAuthToken: String, deviceUuid: String) {
@@ -59,6 +69,14 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.bucketId = bucketId
         self.newAuthToken = newAuthToken
         self.deviceUuid = deviceUuid
+    }
+
+
+    private func extractServerMessage(from apiError: APIClientError) -> String? {
+        guard !apiError.responseBody.isEmpty,
+              let decoded = try? JSONDecoder().decode(APIErrorBody.self, from: apiError.responseBody)
+        else { return nil }
+        return decoded.message
     }
 
 
@@ -275,6 +293,12 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 self.logger.info("Upload completed with id \(result.id)")
             } else {
                 self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+                if let reason = emptyFileRejectReason {
+                    self.logger.warning("⛔ Empty-file already rejected (\(reason.rawValue)) — skipping API call for \(filename)")
+                    EmptyFileLimitNotifier.post(filename: filename as String, reason: reason)
+                    let error: BackupUploadError = reason == .planNotAllowed ? .EmptyFilePlanNotAllowed : .EmptyFileQuotaExceeded
+                    return .failure(error)
+                }
             }
 
             if node.syncStatus == .NEEDS_UPDATE {
@@ -416,11 +440,28 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 }
             }
 
+            if let apiError = error as? APIClientError, apiError.statusCode == 400,
+               let serverMsg = extractServerMessage(from: apiError),
+               serverMsg.localizedCaseInsensitiveContains("empty") && serverMsg.localizedCaseInsensitiveContains("file") {
+                return handleEmptyFileLimitError(for: node, reason: .quotaExceeded)
+            }
+
+            if let apiError = error as? APIClientError, apiError.statusCode == 402 {
+                return handleEmptyFileLimitError(for: node, reason: .planNotAllowed)
+            }
+
             return .failure(error)
         }
 
     }
 
 
+    private func handleEmptyFileLimitError(for node: BackupTreeNode, reason: EmptyFileLimitReason) -> Result<BackupTreeNodeSyncResult, Error> {
+        self.logger.warning("⛔ Server rejected empty file '\(node.name)' — reason: \(reason.rawValue)")
+        self.emptyFileRejectReason = reason
+        EmptyFileLimitNotifier.post(filename: node.name, reason: reason)
+        let uploadError: BackupUploadError = reason == .planNotAllowed ? .EmptyFilePlanNotAllowed : .EmptyFileQuotaExceeded
+        return .failure(uploadError)
+    }
 }
 
