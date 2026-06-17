@@ -15,7 +15,7 @@ import Sparkle
 /// creating them
 func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager,antivirusManager : AntivirusManager ,
                     cleanerService: CleanerService,updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
-                    fileSizeLimitState: FileSizeLimitState) -> [WindowConfig] {
+                    fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState) -> [WindowConfig] {
     let windows = [
         WindowConfig(
             view: AnyView(AppSettingsManagerView{SignInWithBrowserView().environmentObject(authManager)}),
@@ -63,6 +63,18 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
             id: "file-size-limit",
             width: 420,
             height: 270,
+            fixedToFront: true,
+            backgroundColor: Color.clear
+        ),
+        WindowConfig(
+            view: AnyView(
+                EmptyFileLimitWindowView()
+                    .environmentObject(emptyFileLimitState)
+            ),
+            title: nil,
+            id: "empty-file-limit",
+            width: 420,
+            height: 200,
             fixedToFront: true,
             backgroundColor: Color.clear
         )

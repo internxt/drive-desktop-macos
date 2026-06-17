@@ -58,6 +58,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var signalEnumeratorTimer: AnyCancellable?
     var notificationsTimer: AnyCancellable?
     let fileSizeLimitState = FileSizeLimitState()
+    let emptyFileLimitState = EmptyFileLimitState()
+    private var backupAlertsCoordinator: BackupAlertsCoordinator!
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let notificationsPollingInterval: TimeInterval = 30 * 60
@@ -104,16 +106,30 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            self?.handleFileSizeExceeded(notification)
+            self?.backupAlertsCoordinator?.handleFileSizeExceeded(notification)
+        }
+
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name(NOTIFICATION_EMPTY_FILE_LIMIT),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.backupAlertsCoordinator?.handleEmptyFileLimitReached()
         }
 
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
+
+        self.backupAlertsCoordinator = BackupAlertsCoordinator(
+            fileSizeLimitState: fileSizeLimitState,
+            emptyFileLimitState: emptyFileLimitState,
+            windowsManager: windowsManager
+        )
 
         
         
@@ -602,43 +618,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
 
   
-    private let fileSizeBatchDebounceInterval: TimeInterval = 0.6
 
-  
-    private var fileSizePendingAlert: DispatchWorkItem?
-
-  
-    private var fileSizeAlertIsShowing = false
-
-    private func handleFileSizeExceeded(_ notification: Notification) {
-       
-        fileSizePendingAlert?.cancel()
-
-    
-        guard !fileSizeAlertIsShowing else { return }
-
-     
-        let work = DispatchWorkItem { [weak self] in
-            self?.presentFileSizeAlert()
-        }
-        fileSizePendingAlert = work
-        DispatchQueue.main.asyncAfter(
-            deadline: .now() + fileSizeBatchDebounceInterval,
-            execute: work
-        )
-    }
-
-    private func presentFileSizeAlert() {
-        let batch = FileSizeLimitNotifier.readAndResetBatch()
-        fileSizeLimitState.isBatch    = batch.rejectedCount > 1
-        fileSizeLimitState.filename   = batch.filename
-        fileSizeLimitState.fileSize   = batch.fileBytes
-        fileSizeLimitState.limitBytes = batch.limitBytes
-        fileSizeLimitState.isVisible  = true
-
-        windowsManager.openWindow(id: "file-size-limit")
-        fileSizeAlertIsShowing = false
-    }
 
     
     
