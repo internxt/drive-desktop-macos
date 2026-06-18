@@ -202,13 +202,16 @@ struct FileSizeLimitWindowView: View {
                 limitBytes: state.limitBytes,
                 onClose: {
                     state.isVisible = false
-                
-                    NSApp.hide(nil)
+                    if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "file-size-limit" }) {
+                        window.close()
+                    }
                 },
                 onUpgrade: {
                     URLDictionary.UPGRADE_PLAN_DEEP_LINK.open()
                     state.isVisible = false
-                    NSApp.hide(nil)
+                    if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "file-size-limit" }) {
+                        window.close()
+                    }
                 }
             )
         }

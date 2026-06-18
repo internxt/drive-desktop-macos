@@ -149,12 +149,16 @@ struct EmptyFileLimitWindowView: View {
                 reason:         state.reason,
                 onClose: {
                     state.isVisible = false
-                    NSApp.hide(nil)
+                    if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "empty-file-limit" }) {
+                        window.close()
+                    }
                 },
                 onUpgrade: {
                     URLDictionary.UPGRADE_PLAN_DEEP_LINK.open()
                     state.isVisible = false
-                    NSApp.hide(nil)
+                    if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "empty-file-limit" }) {
+                        window.close()
+                    }
                 }
             )
         }
