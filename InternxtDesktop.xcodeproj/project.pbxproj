@@ -87,6 +87,12 @@
 		AA3B497E2D4483AA00924536 /* freshclam in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497C2D44839C00924536 /* freshclam */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AA3B49812D44887600924536 /* libfreshclam.3.0.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AA3D12952FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */; };
+		AA3D12962FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */; };
+		AA3D12972FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */; };
+		AA3D12982FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */; };
+		AA3D129B2FE05921000ECA4C /* BackupAlertsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3D12992FE05921000ECA4C /* BackupAlertsCoordinator.swift */; };
+		AA3D129E2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3D129D2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift */; };
 		AA40B3BD2D3B298600FC1FC3 /* AntivirusTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */; };
 		AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */; };
 		AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */; };
@@ -537,6 +543,9 @@
 		AA2019662C53F8B700901B93 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		AA3B497C2D44839C00924536 /* freshclam */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = freshclam; sourceTree = "<group>"; };
 		AA3B497F2D44886700924536 /* libfreshclam.3.0.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libfreshclam.3.0.2.dylib; sourceTree = "<group>"; };
+		AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyFileLimitNotifier.swift; sourceTree = "<group>"; };
+		AA3D12992FE05921000ECA4C /* BackupAlertsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupAlertsCoordinator.swift; sourceTree = "<group>"; };
+		AA3D129D2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyFileLimitDialogView.swift; sourceTree = "<group>"; };
 		AA40B3BC2D3B298600FC1FC3 /* AntivirusTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusTabView.swift; sourceTree = "<group>"; };
 		AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AntivirusManager.swift; sourceTree = "<group>"; };
 		AA43956F2C174B52003AA905 /* ScheduledBackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledBackupManager.swift; sourceTree = "<group>"; };
@@ -1038,6 +1047,7 @@
 				AAED64A02C23E85000CD971B /* JWTDecoder.swift */,
 				AA2019662C53F8B700901B93 /* Debouncer.swift */,
 				AA9B1B9B2FB2D342000E582A /* FileSizeLimitNotifier.swift */,
+				AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1064,6 +1074,7 @@
 			children = (
 				E13B83962AFBBCD7009F6684 /* AppSettingsManagerView.swift */,
 				AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */,
+				AA3D129D2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -1103,6 +1114,7 @@
 				E13B83982AFBBD50009F6684 /* AppSettings.swift */,
 				E1FD8C722BA989D900C257E0 /* LogService.swift */,
 				AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */,
+				AA3D12992FE05921000ECA4C /* BackupAlertsCoordinator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1803,6 +1815,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */,
+				AA3D12962FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
 				3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */,
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E1D24AF62C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
@@ -1890,6 +1903,7 @@
 				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
 				AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */,
 				31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */,
+				AA3D12972FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
 				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
 				AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */,
@@ -1941,6 +1955,7 @@
 				AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */,
 				AA13E0362E6238FB00DD47CB /* CleanerService.swift in Sources */,
 				E1A0AC5F2AB85BF4005E71D6 /* SendFeedbackView.swift in Sources */,
+				AA3D12952FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
 				AA13E03A2E62557A00DD47CB /* CleanerRowComponents.swift in Sources */,
 				316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */,
@@ -1981,6 +1996,7 @@
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1D24AF42C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
+				AA3D129B2FE05921000ECA4C /* BackupAlertsCoordinator.swift in Sources */,
 				AA13E03C2E6255C400DD47CB /* StorageMeterView.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
 				AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */,
@@ -2026,6 +2042,7 @@
 				E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */,
 				E1880B972AA6111B001FC171 /* SettingsView.swift in Sources */,
 				E18300B02AA2395100AD023C /* FileExtension.swift in Sources */,
+				AA3D129E2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift in Sources */,
 				E17C84B62AB276C000A58414 /* OnboardingSlide3View.swift in Sources */,
 				AA93BEBE2E72128800F12334 /* LockedFeatureCleanerView.swift in Sources */,
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
@@ -2097,6 +2114,7 @@
 				AAA6F6482E5FEDB6000082ED /* Cleaner.swift in Sources */,
 				E1C56E232AE19A5100C0EC06 /* URL.swift in Sources */,
 				AA08F36F2DEE5E0C00F9D0CA /* DeletedItemsCache.swift in Sources */,
+				AA3D12982FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
 				E10B0FDA2A9411C900B97874 /* AuthManager.swift in Sources */,
 				E109717F2A81143A00ABED41 /* APIFactory.swift in Sources */,
 				E1CC520A2A97DE85009DEEAA /* DeleteFileOrFolderUseCase.swift in Sources */,
@@ -2192,7 +2210,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2205,7 +2223,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2227,7 +2245,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2239,7 +2257,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2260,7 +2278,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2272,7 +2290,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2654,7 +2672,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2678,7 +2696,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2698,7 +2716,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2713,7 +2731,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2865,7 +2883,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2888,7 +2906,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2911,7 +2929,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2934,7 +2952,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2953,7 +2971,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2968,7 +2986,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2987,7 +3005,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -3002,7 +3020,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.6;
+				MARKETING_VERSION = 2.6.7;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;

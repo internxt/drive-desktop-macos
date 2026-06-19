@@ -76,8 +76,7 @@ class GetRemoteChangesUseCase {
                 
                 observer.finishEnumeratingChanges(
                     upTo: NSFileProviderSyncAnchor(rawValue: joinedAnchor!),
-                    
-                    moreComing: true
+                    moreComing: false
                 )
                 
                 self.logger.info("✅ Changes enumerated correctly from the server")
@@ -224,7 +223,7 @@ class GetRemoteChangesUseCase {
         }
         
         if hasMoreFiles {
-            self.logger.info("There are more files, requesting them...")
+            
             try await self.obtainFileChanges(lastUpdatedAt: newFilesLastUpdatedAt, limit: self.enumeratedChangesLimit, recommendedBatchSize: recommendedBatchSize)
         } else {
             if mostRecentUpdatedAt > newFilesLastUpdatedAt {
