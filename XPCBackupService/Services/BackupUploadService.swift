@@ -33,6 +33,7 @@ enum BackupUploadError: Error {
     case FileSizeLimitExceeded
     case EmptyFileQuotaExceeded
     case EmptyFilePlanNotAllowed
+    case StorageFull
 }
 
 enum BackupDownloadError: Error {
@@ -77,6 +78,32 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
               let decoded = try? JSONDecoder().decode(APIErrorBody.self, from: apiError.responseBody)
         else { return nil }
         return decoded.message
+    }
+
+
+    private func is420StorageFull(_ error: Error) -> Bool {
+        // Direct APIClientError
+        if let apiError = error as? APIClientError, apiError.statusCode == 420 { return true }
+        
+        // EnrichedError wrapping APIClientError (single upload < 100MB)
+        if let enriched = error as? EnrichedError,
+           let apiError = enriched.cause as? APIClientError,
+           apiError.statusCode == 420 { return true }
+        
+        // EnrichedError wrapping UploadError.PartUploadFailed (multipart >= 100MB)
+        if let enriched = error as? EnrichedError,
+           let partFailed = enriched.cause as? UploadError,
+           case .PartUploadFailed(_, let innerError) = partFailed,
+           let apiError = innerError as? APIClientError,
+           apiError.statusCode == 420 { return true }
+        
+        // Direct UploadError.PartUploadFailed
+        if let partFailed = error as? UploadError,
+           case .PartUploadFailed(_, let innerError) = partFailed,
+           let apiError = innerError as? APIClientError,
+           apiError.statusCode == 420 { return true }
+        
+        return false
     }
 
 
@@ -373,17 +400,18 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
 
         } catch {
+            if is420StorageFull(error) {
+                if encryptedContentURL != nil {
+                    try? FileManager.default.removeItem(at: encryptedContentURL!)
+                }
+                return .failure(BackupUploadError.StorageFull)
+            }
 
             if let uploadError = error as? UploadError, case .PartUploadFailed(let partIndex, let innerError) = uploadError {
                 self.logger.error("❌ Part upload failed at index \(partIndex): \(uploadError.localizedDescription)")
                 self.logger.info("ℹ️ Inner error details: \(String(describing: innerError))")
             } else {
                 self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
-            }
-            if let startUploadError = error as? StartUploadError {
-                if let apiClientError = startUploadError.apiError,  apiClientError.statusCode == 420 {
-                    self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): Max space used")
-                }
             }
 
             if encryptedContentURL != nil {

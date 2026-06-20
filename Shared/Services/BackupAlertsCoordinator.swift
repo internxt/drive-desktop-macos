@@ -11,6 +11,7 @@ import Foundation
 final class BackupAlertsCoordinator {
     private let fileSizeLimitState: FileSizeLimitState
     private let emptyFileLimitState: EmptyFileLimitState
+    private let storageFullState: StorageFullState
     private let windowsManager: WindowsManager
 
     private let debounceInterval: TimeInterval = 0.6
@@ -23,9 +24,10 @@ final class BackupAlertsCoordinator {
     private var emptyFilePendingAlert: DispatchWorkItem?
     private var emptyFileAlertIsShowing = false
 
-    init(fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState, windowsManager: WindowsManager) {
+    init(fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState, storageFullState: StorageFullState, windowsManager: WindowsManager) {
         self.fileSizeLimitState = fileSizeLimitState
         self.emptyFileLimitState = emptyFileLimitState
+        self.storageFullState = storageFullState
         self.windowsManager = windowsManager
     }
 
@@ -85,5 +87,10 @@ final class BackupAlertsCoordinator {
 
         windowsManager.openWindow(id: "empty-file-limit")
         emptyFileAlertIsShowing = false
+    }
+
+    public func handleStorageFullReached() {
+        storageFullState.isVisible = true
+        windowsManager.openWindow(id: "storage-full")
     }
 }

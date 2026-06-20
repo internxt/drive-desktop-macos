@@ -220,6 +220,10 @@ class BackupTreeNode {
                 throw BackupError.storageFull
             }
             
+            else if case BackupUploadError.StorageFull = error {
+                throw BackupError.storageFull
+            }
+            
                 if case BackupUploadError.BackupStoppedManually = error {
                     // Noop, this was stopped
                   return
