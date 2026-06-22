@@ -790,9 +790,12 @@ class BackupsService: ObservableObject {
     }
     
     private func showAlert() {
-        DispatchQueue.main.async {
-            NSAlert.showStorageFullAlert()
-        }
+        DistributedNotificationCenter.default().postNotificationName(
+            .storageFull,
+            object: nil,
+            userInfo: nil,
+            deliverImmediately: true
+        )
     }
 
     @MainActor

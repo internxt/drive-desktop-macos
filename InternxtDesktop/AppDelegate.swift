@@ -59,6 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var notificationsTimer: AnyCancellable?
     let fileSizeLimitState = FileSizeLimitState()
     let emptyFileLimitState = EmptyFileLimitState()
+    let storageFullState = StorageFullState()
     private var backupAlertsCoordinator: BackupAlertsCoordinator!
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
@@ -117,10 +118,18 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self?.backupAlertsCoordinator?.handleEmptyFileLimitReached()
         }
 
+        DistributedNotificationCenter.default().addObserver(
+            forName: .storageFull,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.backupAlertsCoordinator?.handleStorageFullReached()
+        }
+
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -128,6 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         self.backupAlertsCoordinator = BackupAlertsCoordinator(
             fileSizeLimitState: fileSizeLimitState,
             emptyFileLimitState: emptyFileLimitState,
+            storageFullState: storageFullState,
             windowsManager: windowsManager
         )
 

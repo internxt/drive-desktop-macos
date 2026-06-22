@@ -58,6 +58,7 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
 		AA08F36D2DEE5DF400F9D0CA /* FolderMetaCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */; };
@@ -526,6 +527,7 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1075,6 +1077,7 @@
 				E13B83962AFBBCD7009F6684 /* AppSettingsManagerView.swift */,
 				AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */,
 				AA3D129D2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift */,
+				AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -2054,6 +2057,7 @@
 				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
 				E1880BA02AA63215001FC171 /* StartOnLaunchView.swift in Sources */,
+				AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */,
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
 				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,

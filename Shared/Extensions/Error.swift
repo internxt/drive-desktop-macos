@@ -67,4 +67,5 @@ extension NSAlert {
 
 extension Notification.Name {
     static let userDidLogout = Notification.Name("userDidLogout")
+    static let storageFull = Notification.Name("com.internxt.drive.storageFull")
 }
