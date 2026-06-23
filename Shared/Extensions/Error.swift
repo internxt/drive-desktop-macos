@@ -7,7 +7,6 @@
 
 import Foundation
 import InternxtSwiftCore
-import AppKit
 
 extension Error {
     func reportToSentry() {
@@ -48,20 +47,30 @@ extension Error {
             }
         }
     }
-}
 
-extension NSAlert {
-    static func showStorageFullAlert() {
-        let alert = NSAlert()
-        alert.messageText = NSLocalizedString("ALERT_STORAGE_TITLE", comment: "")
-        alert.informativeText = NSLocalizedString("ALERT_STORAGE_SUBTITLE", comment: "")
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("ALERT_STORAGE_BUTTON_TITLE", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("COMMON_CANCEL", comment: ""))
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            URLDictionary.UPGRADE_PLAN.open()
-        }
+    var isStorageFull: Bool {
+        // Case 1: Direct APIClientError
+        if let apiError = self as? APIClientError, apiError.statusCode == 420 { return true }
+        
+        // Case 2: EnrichedError wrapping APIClientError (single upload < 100MB)
+        if let enriched = self as? EnrichedError,
+            let apiError = enriched.cause as? APIClientError,
+            apiError.statusCode == 420 { return true }
+        
+        // Case 3: EnrichedError wrapping UploadError.PartUploadFailed (multipart >= 100MB)
+        if let enriched = self as? EnrichedError,
+            let partFailed = enriched.cause as? UploadError,
+            case .PartUploadFailed(_, let innerError) = partFailed,
+            let apiError = innerError as? APIClientError,
+            apiError.statusCode == 420 { return true }
+        
+        // Case 4: Direct UploadError.PartUploadFailed
+        if let partFailed = self as? UploadError,
+            case .PartUploadFailed(_, let innerError) = partFailed,
+            let apiError = innerError as? APIClientError,
+            apiError.statusCode == 420 { return true }
+        
+        return false
     }
 }
 

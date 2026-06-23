@@ -90,6 +90,7 @@ final class BackupAlertsCoordinator {
     }
 
     public func handleStorageFullReached() {
+        guard !storageFullState.isVisible else { return }
         storageFullState.isVisible = true
         windowsManager.openWindow(id: "storage-full")
     }

@@ -80,33 +80,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         return decoded.message
     }
 
-
-    private func is420StorageFull(_ error: Error) -> Bool {
-        // Direct APIClientError
-        if let apiError = error as? APIClientError, apiError.statusCode == 420 { return true }
-        
-        // EnrichedError wrapping APIClientError (single upload < 100MB)
-        if let enriched = error as? EnrichedError,
-           let apiError = enriched.cause as? APIClientError,
-           apiError.statusCode == 420 { return true }
-        
-        // EnrichedError wrapping UploadError.PartUploadFailed (multipart >= 100MB)
-        if let enriched = error as? EnrichedError,
-           let partFailed = enriched.cause as? UploadError,
-           case .PartUploadFailed(_, let innerError) = partFailed,
-           let apiError = innerError as? APIClientError,
-           apiError.statusCode == 420 { return true }
-        
-        // Direct UploadError.PartUploadFailed
-        if let partFailed = error as? UploadError,
-           case .PartUploadFailed(_, let innerError) = partFailed,
-           let apiError = innerError as? APIClientError,
-           apiError.statusCode == 420 { return true }
-        
-        return false
-    }
-
-
     private var backupNewAPI: BackupAPI {
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
@@ -400,7 +373,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
 
         } catch {
-            if is420StorageFull(error) {
+            if error.isStorageFull {
                 if encryptedContentURL != nil {
                     try? FileManager.default.removeItem(at: encryptedContentURL!)
                 }
