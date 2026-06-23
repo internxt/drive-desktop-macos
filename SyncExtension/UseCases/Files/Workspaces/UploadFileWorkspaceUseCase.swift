@@ -236,7 +236,16 @@ struct UploadFileWorkspaceUseCase {
                 activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
                 
-                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
+                if error.isStorageFull {
+                    self.logger.error("❌ Cannot synchronize file: destination storage is full (420)")
+                    DistributedNotificationCenter.default().postNotificationName(
+                        .storageFull,
+                        object: nil,
+                        userInfo: nil,
+                        deliverImmediately: true
+                    )
+                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.insufficientQuota.rawValue))
+                } else if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
                     self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
                     completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
                 } else {
