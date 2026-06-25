@@ -326,8 +326,15 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         
         
         if itemTemplate.parentItemIdentifier == .trashContainer {
-            logger.info("parent deleted, not creating item")
-            let error = NSError.fileProviderErrorForNonExistentItem(withIdentifier: itemTemplate.itemIdentifier)
+            logger.info("Parent is trashContainer, skipping item creation and signaling cannotSynchronize")
+            let error = NSError(
+                domain: NSFileProviderErrorDomain,
+                code: NSFileProviderError.cannotSynchronize.rawValue,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "Item parent is in trash, skipping creation",
+                    NSFileProviderErrorItemKey: itemTemplate.itemIdentifier.rawValue
+                ]
+            )
             completionHandler(nil, [], false, error)
             return Progress()
         }
