@@ -132,6 +132,9 @@ struct GetFileOrFolderMetaUseCase {
                     }
                 }
                 throw GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound
+            } catch GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound {
+                self.logger.info("Item \(identifier.rawValue) was not found on the server, signaling nonExistentItem to stop retries")
+                completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: identifier))
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to get item meta for \(identifier.rawValue): \(error.getErrorDescription())")
