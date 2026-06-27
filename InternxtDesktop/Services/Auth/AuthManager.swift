@@ -24,7 +24,7 @@ class AuthManager: ObservableObject {
 
     public let config = ConfigLoader()
     public let cryptoUtils = CryptoUtils()
-    private let REFRESH_TOKEN_DEADLINE = 5
+    private let REFRESH_TOKEN_DEADLINE_SECONDS = 14400
     init() {
         self.isLoggedIn = checkIsLoggedIn()
         self.user = config.getUser()
@@ -220,22 +220,18 @@ class AuthManager: ObservableObject {
         let authTokenExpirationDate = Date(timeIntervalSince1970: TimeInterval(authTokenExpirationTimestamp))
         let authTokenCreationDate = Date(timeIntervalSince1970: TimeInterval(authTokenCreationTimestamp))
 
+        let currentTimestamp = Int(Date().timeIntervalSince1970)
+        let secondsUntilExpiration = authTokenExpirationTimestamp - currentTimestamp
+        let elapsedTime = currentTimestamp - authTokenCreationTimestamp
+        
+        let needsRefresh = elapsedTime >= REFRESH_TOKEN_DEADLINE_SECONDS || secondsUntilExpiration <= REFRESH_TOKEN_DEADLINE_SECONDS
         
         let daysUntilAuthTokenExpires = Date().daysUntil(authTokenExpirationDate) ?? 1
         
-        if daysUntilAuthTokenExpires <= REFRESH_TOKEN_DEADLINE {
-            return NeedsTokenRefreshResult(
-                needsRefresh: true,
-                authTokenCreationDate: authTokenCreationDate,
-                authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
-            )
-        }
-        
-
         return NeedsTokenRefreshResult(
-            needsRefresh: false,
+            needsRefresh: needsRefresh,
             authTokenCreationDate: authTokenCreationDate,
-            authTokenDaysUntilExpiration: daysUntilAuthTokenExpires,
+            authTokenDaysUntilExpiration: daysUntilAuthTokenExpires
         )
     }
     

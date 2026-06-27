@@ -364,6 +364,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     private func startTokensRefreshing() {
+        self.refreshTokensTimer?.cancel()
         self.refreshTokensTimer =  Timer.publish(every: 30, on:.main, in: .common).autoconnect().sink(
             receiveValue: {_ in
                 self.checkRefreshToken()
