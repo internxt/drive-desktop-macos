@@ -8,16 +8,20 @@
 import Foundation
 class AsyncOperation: Operation {
     
-    private let lockQueue = DispatchQueue(label: "com.internxt.AsyncOperation", attributes: .concurrent)
+    private let stateLock = NSRecursiveLock()
     
     private var _isExecuting: Bool = false
     override var isExecuting: Bool {
         get {
-            return lockQueue.sync { _isExecuting }
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            return _isExecuting
         }
         set {
             willChangeValue(forKey: "isExecuting")
-            lockQueue.sync(flags: .barrier) { _isExecuting = newValue }
+            stateLock.lock()
+            _isExecuting = newValue
+            stateLock.unlock()
             didChangeValue(forKey: "isExecuting")
         }
     }
@@ -25,11 +29,15 @@ class AsyncOperation: Operation {
     private var _isFinished: Bool = false
     override var isFinished: Bool {
         get {
-            return lockQueue.sync { _isFinished }
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            return _isFinished
         }
         set {
             willChangeValue(forKey: "isFinished")
-            lockQueue.sync(flags: .barrier) { _isFinished = newValue }
+            stateLock.lock()
+            _isFinished = newValue
+            stateLock.unlock()
             didChangeValue(forKey: "isFinished")
         }
     }
@@ -40,6 +48,7 @@ class AsyncOperation: Operation {
     
     override func start() {
         if isCancelled {
+            isExecuting = false
             isFinished = true
             return
         }
