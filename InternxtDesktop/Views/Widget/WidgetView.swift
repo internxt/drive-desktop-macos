@@ -67,7 +67,7 @@ struct WidgetView: View {
                 if authManager.user != nil {
                     
                     WidgetHeaderView(
-                        user: authManager.user!,
+                        user: authManager.user,
                         openFileProviderRoot: self.openFileProvider,
                         openSendFeedback: self.openSendFeedback
                     )
