@@ -88,6 +88,66 @@ struct UploadFileUseCase {
             activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
             
             do {
+                var isPackage = FileProviderItem.isPackage(filename: item.filename)
+
+                if !isPackage, let resourceValues = try? fileContent.resourceValues(forKeys: [.isPackageKey]) {
+                    isPackage = resourceValues.isPackage == true
+                }
+                
+                if isPackage {
+                    self.logger.info("📦 Starting upload of package: \(item.filename)")
+                    
+                    var createdFolderId: String
+                    var createdFolderUuid: String
+                    
+                    do {
+                        let createdFolder = try await driveNewAPI.createFolderNew(
+                            parentFolderUuid: parentUUID,
+                            folderName: item.filename,
+                            debug: true
+                        )
+                        createdFolderId = String(createdFolder.id)
+                        createdFolderUuid = createdFolder.uuid
+                        self.logger.info("📦 Created package folder on cloud \(item.filename)")
+                    } catch {
+                        if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                            let existences = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentUUID, folderName: item.filename)
+                            if let folder = existences.existentFolders.first(where: {
+                                $0.plainName == item.filename && $0.removed == false
+                            }) {
+                                createdFolderId = String(folder.id)
+                                createdFolderUuid = folder.uuid
+                            } else {
+                                throw error
+                            }
+                        } else {
+                            self.logger.error("📦 error uploading package  \(error.getErrorDescription())")
+                            throw error
+                        }
+                    }
+                    
+                    try await uploadDirectoryRecursively(
+                        localURL: fileContent,
+                        parentFolderId: createdFolderId,
+                        parentFolderUuid: createdFolderUuid
+                    )
+                    
+                    let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
+                    let fileProviderItem = FileProviderItem(
+                        identifier: NSFileProviderItemIdentifier(rawValue: createdFolderId),
+                        filename: item.filename,
+                        parentId: parentIdIsRootFolder ? .rootContainer : item.parentItemIdentifier,
+                        createdAt: Date(),
+                        updatedAt: Date(),
+                        itemExtension: (item.filename as NSString).pathExtension,
+                        itemType: .file,
+                        size: 0
+                    )
+                    completionHandler(fileProviderItem, [], false, nil)
+                    activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .finished)
+                    return
+                }
+
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
 
                 let startedAt = self.trackStart(processIdentifier: trackId)
@@ -260,6 +320,153 @@ struct UploadFileUseCase {
             return nil
         }
         
+    }
+    
+    private func uploadDirectoryRecursively(localURL: URL, parentFolderId: String, parentFolderUuid: String) async throws {
+        let fileManager = FileManager.default
+        let contents = try fileManager.contentsOfDirectory(at: localURL, includingPropertiesForKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey], options: [])
+        
+        for itemURL in contents {
+            let name = itemURL.lastPathComponent
+            let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey])
+            let isDirectory = resourceValues.isDirectory ?? false
+            let isSymbolicLink = resourceValues.isSymbolicLink ?? false
+            let fileSize = resourceValues.fileSize ?? 0
+            
+            if isSymbolicLink {
+                continue
+            }
+            
+            if isDirectory {
+                let folderInfo = try await resolveOrCreateFolder(name: name, parentFolderUuid: parentFolderUuid)
+                
+                try await uploadDirectoryRecursively(
+                    localURL: itemURL,
+                    parentFolderId: folderInfo.id,
+                    parentFolderUuid: folderInfo.uuid
+                )
+            } else {
+                do {
+                    try await uploadPackageFile(
+                        localURL: itemURL,
+                        filename: name,
+                        fileSize: fileSize,
+                        parentFolderId: parentFolderId,
+                        parentFolderUuid: parentFolderUuid
+                    )
+                } catch {
+                    self.logger.error("❌ Failed to upload internal package file \(name): \(error.getErrorDescription())")
+                }
+            }
+        }
+    }
+    
+    private func resolveOrCreateFolder(name: String, parentFolderUuid: String) async throws -> (id: String, uuid: String) {
+        do {
+            let createdFolder = try await driveNewAPI.createFolderNew(
+                parentFolderUuid: parentFolderUuid,
+                folderName: name,
+                debug: true
+            )
+            return (String(createdFolder.id), createdFolder.uuid)
+        } catch {
+            guard let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 else {
+                throw error
+            }
+            
+            let existences = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentFolderUuid, folderName: name)
+            if let folder = existences.existentFolders.first(where: {
+                $0.plainName == name && $0.removed == false
+            }) {
+                return (String(folder.id), folder.uuid)
+            } else {
+                throw error
+            }
+        }
+    }
+    
+    private func fetchExistingFileUuid(filename: String, parentFolderUuid: String) async -> String? {
+        let plainName = (filename as NSString).deletingPathExtension
+        let ext = (filename as NSString).pathExtension
+        let existenceFile = ExistenceFile(plainName: plainName, type: ext)
+        
+        do {
+            let checkResult = try await driveNewAPI.getExistenceFileInFolderByPlainName(
+                uuid: parentFolderUuid,
+                files: [existenceFile],
+                debug: true
+            )
+            if let foundFile = checkResult.existentFiles.first(where: {
+                $0.plainName == plainName && $0.type == ext
+            }) {
+                return foundFile.uuid
+            }
+        } catch {
+            
+        }
+        return nil
+    }
+    
+    private func uploadPackageFile(localURL: URL, filename: String, fileSize: Int, parentFolderId: String, parentFolderUuid: String) async throws {
+        let plainName = (filename as NSString).deletingPathExtension
+        let ext = (filename as NSString).pathExtension
+        
+      
+        let existingFileUuid = await fetchExistingFileUuid(filename: filename, parentFolderUuid: parentFolderUuid)
+        
+        guard let inputStream = InputStream(url: localURL) else {
+            throw UploadFileUseCaseError.CannotOpenInputStream
+        }
+        
+        let encryptedFileDestination = fileContent.deletingLastPathComponent().appendingPathComponent("enc-package-\(UUID().uuidString).enc")
+        
+        defer {
+            try? FileManager.default.removeItem(at: encryptedFileDestination)
+        }
+        
+        var uploadFileId: String? = nil
+        var uploadSize: Int = fileSize
+        var uploadBucket: String = user.bucket
+        
+        if fileSize > 0 {
+            let result = try await networkFacade.uploadFile(
+                input: inputStream,
+                encryptedOutput: encryptedFileDestination,
+                fileSize: fileSize,
+                bucketId: uploadBucket,
+                progressHandler: { _ in },
+                debug: true
+            )
+            uploadFileId = result.id
+            uploadSize = result.size
+            uploadBucket = result.bucket
+        }
+        
+        if let fileUuid = existingFileUuid {
+          
+            _ = try await driveNewAPI.replaceFileId(fileUuid: fileUuid, newFileId: uploadFileId, newSize: uploadSize)
+        } else {
+      
+            let encryptedFilename = try encrypt.encrypt(
+                string: plainName,
+                password: "\(config.CRYPTO_SECRET2)-\(parentFolderId)",
+                salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
+                iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
+            )
+            
+            _ = try await driveNewAPI.createFileNew(createFile: CreateFileDataNew(
+                    fileId: uploadFileId,
+                    type: ext,
+                    bucket: uploadBucket,
+                    size: uploadSize,
+                    folderId: 0,
+                    name: encryptedFilename.base64EncodedString(),
+                    plainName: plainName,
+                    folderUuid: parentFolderUuid
+                ),
+                debug: true
+            )
+        }
     }
 }
 

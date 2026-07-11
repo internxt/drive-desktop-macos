@@ -146,7 +146,52 @@ struct DownloadFileUseCase {
                     progress.completedUnitCount = Int64(progressPercentage)
                 }
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
-                let file = try await getFileMetaWithRetry(uuid: itemIdentifier.rawValue, maxRetries: maxRetries)
+                
+                let idString = itemIdentifier.rawValue
+                let isUUID = UUID(uuidString: idString) != nil
+                
+                if !isUUID {
+            
+                    let folder = try await driveNewAPI.getFolderMetaById(id: idString)
+                    let folderName = folder.plainName ?? folder.name ?? ""
+                    
+                    if let trackingObjectId = trackingObjectId {
+                        activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .inProgress)
+                    }
+                    
+                    try await downloadFolderRecursively(
+                        folderUuid: folder.uuid!,
+                        localFolderURL: destinationURL
+                    )
+                    
+                    let parentId: NSFileProviderItemIdentifier = folder.parentId != nil ? NSFileProviderItemIdentifier(String(folder.parentId!)) : .rootContainer
+                    
+                    let fileProviderItem = FileProviderItem(
+                        identifier: itemIdentifier,
+                        filename: folderName,
+                        parentId: parentId,
+                        createdAt: Time.dateFromISOString(folder.createdAt) ?? Date(),
+                        updatedAt: Time.dateFromISOString(folder.updatedAt) ?? Date(),
+                        itemExtension: (folderName as NSString).pathExtension,
+                        itemType: .file,
+                        size: 0
+                    )
+                    
+                    completionHandler(destinationURL, fileProviderItem, nil)
+                    progressHandler(completedProgress: 1)
+                    
+                    if let trackingObjectId = trackingObjectId {
+                        activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .finished)
+                    }
+                    
+                    return
+                }
+                
+                let file = try await getFileMetaWithRetry(uuid: idString, maxRetries: maxRetries)
+                
+                guard let file = Optional.some(file) else {
+                    throw DownloadFileUseCaseError.DriveFileMissing
+                }
                 
                 let currentFilename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
                 if let trackingObjectId = trackingObjectId {
@@ -246,5 +291,69 @@ struct DownloadFileUseCase {
         }
         
         return progress
+    }
+    
+    private func downloadFolderRecursively(folderUuid: String, localFolderURL: URL) async throws {
+        try FileManager.default.createDirectory(at: localFolderURL, withIntermediateDirectories: true)
+        try await downloadFilesInDirectory(folderUuid: folderUuid, localFolderURL: localFolderURL)
+        try await downloadSubdirectoriesInDirectory(folderUuid: folderUuid, localFolderURL: localFolderURL)
+    }
+    
+    private func downloadFilesInDirectory(folderUuid: String, localFolderURL: URL) async throws {
+        var fileOffset = 0
+        let limit = 50
+        var hasMoreFiles = true
+        
+        while hasMoreFiles {
+            let filesResponse = try await driveNewAPI.getFolderFilesV2(folderUuid: folderUuid, offset: fileOffset, limit: limit)
+            
+            for file in filesResponse.files {
+                let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name ?? "", itemExtension: file.type)
+                let localFileURL = localFolderURL.appendingPathComponent(filename)
+                
+                let encryptedFileDestination = localFolderURL.appendingPathComponent("enc-\(UUID().uuidString).enc")
+                
+                defer {
+                    try? FileManager.default.removeItem(at: encryptedFileDestination)
+                }
+                
+                _ = try await networkFacade.downloadFile(
+                    bucketId: file.bucket,
+                    fileId: file.fileId ?? "",
+                    encryptedFileDestination: encryptedFileDestination,
+                    destinationURL: localFileURL,
+                    progressHandler: { _ in },
+                    debug: true
+                )
+            }
+            
+            if filesResponse.files.count < limit {
+                hasMoreFiles = false
+            } else {
+                fileOffset += limit
+            }
+        }
+    }
+    
+    private func downloadSubdirectoriesInDirectory(folderUuid: String, localFolderURL: URL) async throws {
+        var folderOffset = 0
+        let limit = 50
+        var hasMoreFolders = true
+        
+        while hasMoreFolders {
+            let foldersResponse = try await driveNewAPI.getFolderFolders(folderUuid: folderUuid, offset: folderOffset, limit: limit)
+            
+            for subFolder in foldersResponse.folders {
+                let name = subFolder.plainName ?? subFolder.name
+                let localSubFolderURL = localFolderURL.appendingPathComponent(name)
+                try await downloadFolderRecursively(folderUuid: subFolder.uuid ?? "", localFolderURL: localSubFolderURL)
+            }
+            
+            if foldersResponse.folders.count < limit {
+                hasMoreFolders = false
+            } else {
+                folderOffset += limit
+            }
+        }
     }
 }
