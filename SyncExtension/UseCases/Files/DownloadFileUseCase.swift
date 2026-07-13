@@ -159,8 +159,8 @@ struct DownloadFileUseCase {
                         activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .inProgress)
                     }
                     
-                    try await downloadFolderRecursively(
-                        folderUuid: folder.uuid!,
+                    try await downloadFolderIteratively(
+                        initialFolderUuid: folder.uuid!,
                         localFolderURL: destinationURL
                     )
                     
@@ -293,11 +293,7 @@ struct DownloadFileUseCase {
         return progress
     }
     
-    private func downloadFolderRecursively(folderUuid: String, localFolderURL: URL) async throws {
-        try FileManager.default.createDirectory(at: localFolderURL, withIntermediateDirectories: true)
-        try await downloadFilesInDirectory(folderUuid: folderUuid, localFolderURL: localFolderURL)
-        try await downloadSubdirectoriesInDirectory(folderUuid: folderUuid, localFolderURL: localFolderURL)
-    }
+
     
     private func downloadFilesInDirectory(folderUuid: String, localFolderURL: URL) async throws {
         var fileOffset = 0
@@ -335,24 +331,39 @@ struct DownloadFileUseCase {
         }
     }
     
-    private func downloadSubdirectoriesInDirectory(folderUuid: String, localFolderURL: URL) async throws {
-        var folderOffset = 0
-        let limit = 50
-        var hasMoreFolders = true
+    private func downloadFolderIteratively(initialFolderUuid: String, localFolderURL: URL) async throws {
+        struct FolderDownloadTask {
+            let uuid: String
+            let localURL: URL
+        }
         
-        while hasMoreFolders {
-            let foldersResponse = try await driveNewAPI.getFolderFolders(folderUuid: folderUuid, offset: folderOffset, limit: limit)
+        var queue: [FolderDownloadTask] = [FolderDownloadTask(uuid: initialFolderUuid, localURL: localFolderURL)]
+        
+        while !queue.isEmpty {
+            let currentTask = queue.removeFirst()
+            try FileManager.default.createDirectory(at: currentTask.localURL, withIntermediateDirectories: true)
             
-            for subFolder in foldersResponse.folders {
-                let name = subFolder.plainName ?? subFolder.name
-                let localSubFolderURL = localFolderURL.appendingPathComponent(name)
-                try await downloadFolderRecursively(folderUuid: subFolder.uuid ?? "", localFolderURL: localSubFolderURL)
-            }
+        
+            try await downloadFilesInDirectory(folderUuid: currentTask.uuid, localFolderURL: currentTask.localURL)
             
-            if foldersResponse.folders.count < limit {
-                hasMoreFolders = false
-            } else {
-                folderOffset += limit
+            var folderOffset = 0
+            let limit = 50
+            var hasMoreFolders = true
+            
+            while hasMoreFolders {
+                let foldersResponse = try await driveNewAPI.getFolderFolders(folderUuid: currentTask.uuid, offset: folderOffset, limit: limit)
+                
+                for subFolder in foldersResponse.folders {
+                    let name = subFolder.plainName ?? subFolder.name
+                    let localSubFolderURL = currentTask.localURL.appendingPathComponent(name)
+                    queue.append(FolderDownloadTask(uuid: subFolder.uuid ?? "", localURL: localSubFolderURL))
+                }
+                
+                if foldersResponse.folders.count < limit {
+                    hasMoreFolders = false
+                } else {
+                    folderOffset += limit
+                }
             }
         }
     }

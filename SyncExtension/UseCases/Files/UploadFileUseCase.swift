@@ -126,7 +126,7 @@ struct UploadFileUseCase {
                         }
                     }
                     
-                    try await uploadDirectoryRecursively(
+                    try await uploadDirectoryIteratively(
                         localURL: fileContent,
                         parentFolderId: createdFolderId,
                         parentFolderUuid: createdFolderUuid
@@ -322,40 +322,60 @@ struct UploadFileUseCase {
         
     }
     
-    private func uploadDirectoryRecursively(localURL: URL, parentFolderId: String, parentFolderUuid: String) async throws {
-        let fileManager = FileManager.default
-        let contents = try fileManager.contentsOfDirectory(at: localURL, includingPropertiesForKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey], options: [])
+    private func uploadDirectoryIteratively(localURL: URL, parentFolderId: String, parentFolderUuid: String) async throws {
+        struct FolderUploadTask {
+            let localURL: URL
+            let cloudFolderId: String
+            let cloudFolderUuid: String
+        }
         
-        for itemURL in contents {
-            let name = itemURL.lastPathComponent
-            let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey])
-            let isDirectory = resourceValues.isDirectory ?? false
-            let isSymbolicLink = resourceValues.isSymbolicLink ?? false
-            let fileSize = resourceValues.fileSize ?? 0
+        var queue: [FolderUploadTask] = [FolderUploadTask(
+            localURL: localURL,
+            cloudFolderId: parentFolderId,
+            cloudFolderUuid: parentFolderUuid
+        )]
+        
+        let fileManager = FileManager.default
+        
+        while !queue.isEmpty {
+            let currentTask = queue.removeFirst()
+            let contents = try fileManager.contentsOfDirectory(
+                at: currentTask.localURL,
+                includingPropertiesForKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey],
+                options: []
+            )
             
-            if isSymbolicLink {
-                continue
-            }
-            
-            if isDirectory {
-                let folderInfo = try await resolveOrCreateFolder(name: name, parentFolderUuid: parentFolderUuid)
+            for itemURL in contents {
+                let name = itemURL.lastPathComponent
+                let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey])
+                let isDirectory = resourceValues.isDirectory ?? false
+                let isSymbolicLink = resourceValues.isSymbolicLink ?? false
+                let fileSize = resourceValues.fileSize ?? 0
                 
-                try await uploadDirectoryRecursively(
-                    localURL: itemURL,
-                    parentFolderId: folderInfo.id,
-                    parentFolderUuid: folderInfo.uuid
-                )
-            } else {
-                do {
-                    try await uploadPackageFile(
+                if isSymbolicLink {
+                    continue
+                }
+                
+                if isDirectory {
+                    let folderInfo = try await resolveOrCreateFolder(name: name, parentFolderUuid: currentTask.cloudFolderUuid)
+                    
+                    queue.append(FolderUploadTask(
                         localURL: itemURL,
-                        filename: name,
-                        fileSize: fileSize,
-                        parentFolderId: parentFolderId,
-                        parentFolderUuid: parentFolderUuid
-                    )
-                } catch {
-                    self.logger.error("❌ Failed to upload internal package file \(name): \(error.getErrorDescription())")
+                        cloudFolderId: folderInfo.id,
+                        cloudFolderUuid: folderInfo.uuid
+                    ))
+                } else {
+                    do {
+                        try await uploadPackageFile(
+                            localURL: itemURL,
+                            filename: name,
+                            fileSize: fileSize,
+                            parentFolderId: currentTask.cloudFolderId,
+                            parentFolderUuid: currentTask.cloudFolderUuid
+                        )
+                    } catch {
+                        self.logger.error("❌ Failed to upload internal package file \(name): \(error.getErrorDescription())")
+                    }
                 }
             }
         }
