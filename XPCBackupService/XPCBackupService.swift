@@ -33,7 +33,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) -> Void {
         let backupRealm = SyncedNodeRepository.shared
-        self.uploadOperationQueue.maxConcurrentOperationCount = 10
+        self.uploadOperationQueue.maxConcurrentOperationCount = 5
         logger.info("Going to backup folders: \(backupURLs)")
         self.backupUploadStatus = .InProgress
         self.backupUploadProgress = Progress()
@@ -131,8 +131,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
                 do {
                     logger.info("Adding nodes sync operations")
-                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue, syncGroup: syncGroup) { error in
-                        
+                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue, syncGroup: syncGroup) { [weak self] error in
+                        guard let self = self else { return }
                         
                         if let backupUploadError = error as? BackupError, backupUploadError == .storageFull {
                             logger.error("Storage is full, cannot continue with the backup.")
@@ -154,7 +154,8 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
             }
             
-            syncGroup.notify(queue: .global()) {
+            syncGroup.notify(queue: .global()) { [weak self] in
+                guard let self = self else { return }
                 logger.info("Sync nodes operations completed")
                 
                 let successCount = totalNodesCount - failedNodesCount
@@ -170,6 +171,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 }
                 
                 self.trees = []
+                self.backupUploadService = nil
+                URLCache.shared.removeAllCachedResponses()
+                
                 reply("synced all nodes for all trees", nil)
             }
 
