@@ -24,13 +24,17 @@ struct DeleteFileUseCase {
     }
     
     public func run( ) -> Progress {
-        self.logger.info("Deleting file with fileId \(identifier.rawValue)")
-       
-        // File deleting is not allowed from the Internxt Desktop app, so we just let it pass for now
-        
-        self.logger.info("✅ File with id \(identifier.rawValue) deleted correctly")
-        completionHandler(nil)
-        
+        Task {
+            do {
+                self.logger.info("Deleting file with id \(identifier.rawValue)")
+                let _ = try await DriveFileService.shared.trashFile(uuid: identifier.rawValue)
+                self.logger.info("✅ File with id \(identifier.rawValue) deleted correctly")
+                completionHandler(nil)
+            } catch {
+                self.logger.error("❌ Failed to delete file: \(error.getErrorDescription())")
+                completionHandler(NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
+            }
+        }
         return Progress()
     }
 }
