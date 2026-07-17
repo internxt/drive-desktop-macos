@@ -80,14 +80,19 @@ struct EnumerateFolderItemsUseCase {
                     }
                     
                     
+                    let folderName = FileProviderItem.getFilename(name: folder.plainName ?? folder.name, itemExtension: nil)
+                    let isPkg = FileProviderItem.isPackage(filename: folderName)
+                    let ext = isPkg ? (folderName as NSString).pathExtension : nil
+                    let itemType = isPkg ? RemoteItemType.file : RemoteItemType.folder
+                    
                     let item = FileProviderItem(
                         identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
-                        filename: FileProviderItem.getFilename(name: folder.plainName ?? folder.name , itemExtension: nil),
+                        filename: folderName,
                         parentId: self.enumeratedItemIdentifier,
                         createdAt: createdAt,
                         updatedAt: updatedAt,
-                        itemExtension: nil,
-                        itemType: .folder
+                        itemExtension: ext,
+                        itemType: itemType
                     )
                     items.append(item)
                 }

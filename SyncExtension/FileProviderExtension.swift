@@ -387,10 +387,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         return
                     }
 
-                    let filename = NSString(string: itemTemplate.filename)
-                    let realPackageName = filename.deletingPathExtension
-                    let (processedURL, isZippedPackage, zipURL) = try self.packageHandler.handlePackageFileIfNeeded(url: contentUrl, realFilename: realPackageName)
-                    let finalExtension = isZippedPackage ? "zip" : filename.pathExtension
+                    let isPackage = FileProviderItem.isPackage(contentType: itemTemplate.contentType)
+                    var processedURL = contentUrl
+                    var isZippedPackage = false
+                    var zipURL: URL? = nil
+                    
+                    if !isPackage {
+                        let filename = NSString(string: itemTemplate.filename)
+                        let realPackageName = filename.deletingPathExtension
+                        let (pURL, isZip, zURL) = try self.packageHandler.handlePackageFileIfNeeded(url: contentUrl, realFilename: realPackageName)
+                        processedURL = pURL
+                        isZippedPackage = isZip
+                        zipURL = zURL
+                    }
+                    
+                    let finalExtension = isZippedPackage ? "zip" : (itemTemplate.filename as NSString).pathExtension
                     let fileCopy = self.makeTemporaryURL("plain", finalExtension)
                     
                     try FileManager.default.copyItem(at: processedURL, to: fileCopy)
@@ -400,7 +411,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     if let docSize = itemTemplate.documentSize {
                         templateSize = Int64(truncating: docSize!)
                     }
-                    let fileSize = attributesSize ?? templateSize ?? 0
+                    let fileSize = (isPackage ? templateSize : attributesSize) ?? templateSize ?? 0
 
                  
                     if !checkFileSizeLimit(
@@ -420,7 +431,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                     let encryptedFileDestination = self.makeTemporaryURL("encrypted", "enc")
                     let thumbnailFileDestination = self.makeTemporaryURL("thumbnail", "jpg")
                     let encryptedThumbnailFileDestination = self.makeTemporaryURL("encrypted_thumbnail", "enc")
-                    let modifiedFilename = isZippedPackage ? "\(filename.deletingPathExtension).zip" : itemTemplate.filename
+                    let modifiedFilename = isZippedPackage ? "\(NSString(string: itemTemplate.filename).deletingPathExtension).zip" : itemTemplate.filename
                     
 
                   
