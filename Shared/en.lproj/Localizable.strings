@@ -62,6 +62,7 @@
 "CLEANER_ERROR_OPERATION_NOT_FOUND" = "Operation not found";
 "CLEANER_ERROR_INVALID_DATA" = "Invalid data received";
 "CLEANER_ERROR_CONNECTION_TIMEOUT" = "Connection timeout";
+"CLEANER_ERROR_HELPER_REGISTRATION_FAILED" = "Background service installation failed: %@";
 
 // Cleaner Error Messages
 "CLEANER_ERROR_PERMISSION_DENIED" = "Permission denied for: %@";
