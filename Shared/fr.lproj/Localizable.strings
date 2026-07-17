@@ -239,6 +239,7 @@
 "CLEANER_ERROR_OPERATION_NOT_FOUND" = "Opération introuvable";
 "CLEANER_ERROR_INVALID_DATA" = "Données invalides reçues";
 "CLEANER_ERROR_CONNECTION_TIMEOUT" = "Délai de connexion expiré";
+"CLEANER_ERROR_HELPER_REGISTRATION_FAILED" = "Échec de l'installation du service d'arrière-plan : %@";
 
 // Cleaner Error Messages
 "CLEANER_ERROR_PERMISSION_DENIED" = "Permission refusée pour: %@";

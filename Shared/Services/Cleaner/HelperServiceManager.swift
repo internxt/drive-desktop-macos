@@ -69,26 +69,26 @@ class HelperManagementService: ObservableObject {
         )
     }
     
-    func ensureHelperIsRegistered() async -> Bool {
+    func ensureHelperIsRegistered() async throws {
         cleanerLogger.info("Checking helper status...")
         await updateStatus()
         
         switch status {
         case .enabled:
             cleanerLogger.info("Helper is already enabled and running")
-            return true
+            return
             
         case .requiresApproval:
             cleanerLogger.warning("Helper requires user approval in System Settings")
-            return true
+            return
             
         case .notRegistered, .notFound:
             cleanerLogger.info("Helper not registered, attempting registration...")
-            return await tryRegisterHelper()
+            try await tryRegisterHelper()
             
         case .unknown(let code):
             cleanerLogger.warning("Unknown helper status: \(code), attempting registration...")
-            return await tryRegisterHelper()
+            try await tryRegisterHelper()
         }
     }
     
@@ -103,7 +103,7 @@ class HelperManagementService: ObservableObject {
         }
     }
     
-    func tryRegisterHelper() async -> Bool {
+    func tryRegisterHelper() async throws {
         cleanerLogger.info("Attempting to register helper...")
         
         do {
@@ -114,19 +114,18 @@ class HelperManagementService: ObservableObject {
             let isSuccessful = status == .enabled || status == .requiresApproval
             
             if isSuccessful {
-                cleanerLogger.info("Helper registration successful, status:")
+                cleanerLogger.info("Helper registration successful")
             } else {
-                cleanerLogger.warning("Helper registration failed, status: ")
+                cleanerLogger.warning("Helper registration finished but status is not enabled or requires approval")
+                throw CleanerServiceError.helperNotAvailable
             }
-            
-            return isSuccessful
         } catch {
             cleanerLogger.error("Failed to register helper: \(error.localizedDescription)")
-            return false
+            throw CleanerServiceError.helperRegistrationFailed(underlying: error)
         }
     }
     
-    func reinstallHelper() async {
+    func reinstallHelper() async throws {
         cleanerLogger.info("Reinstalling helper daemon...")
         
         do {
@@ -147,7 +146,8 @@ class HelperManagementService: ObservableObject {
             await updateStatus()
             cleanerLogger.info("Helper re-registered successfully with status: \(status.userMessage)")
         } catch {
-            cleanerLogger.error("Helper registration failed: \(error.localizedDescription)")
+            cleanerLogger.error("Helper registration failed during reinstall: \(error.localizedDescription)")
+            throw CleanerServiceError.helperRegistrationFailed(underlying: error)
         }
     }
     
