@@ -271,6 +271,13 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     func application(_ application: NSApplication, open urls: [URL]) {
         if let url = urls.first {
+            if url.host == "session-expired" {
+                self.logger.info("🔴 Received session-expired deeplink, performing logout")
+                NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                NSApp.activate(ignoringOtherApps: true)
+                return
+            }
+            
             do {
                 let success = try authManager.handleSignInDeeplink(url: url)
                 

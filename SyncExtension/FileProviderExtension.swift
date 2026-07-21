@@ -117,13 +117,9 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             error.reportToSentry()
         }
 
-        APIClient.onUnauthorized = {
-            DistributedNotificationCenter.default().postNotificationName(
-                NSNotification.Name(NOTIFICATION_UNAUTHORIZED),
-                object: nil,
-                userInfo: nil,
-                deliverImmediately: true
-            )
+        APIClient.onUnauthorized = { [weak self] in
+            APIClient.onUnauthorized = nil
+            self?.handleSessionExpired()
         }
         
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
@@ -161,6 +157,37 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func invalidate() {
         fileProviderItemActions.clean()
+    }
+    
+    private func handleSessionExpired() {
+        
+        DispatchQueue.main.async {
+            if let url = URL(string: "internxt://session-expired") {
+                NSWorkspace.shared.open(url)
+            }
+        }
+        
+        do {
+            try authManager.signOut()
+           
+        } catch {
+            logger.error("❌ Failed to clear credentials: \(error)")
+        }
+        
+        Task {
+            do {
+                for domain in try await NSFileProviderManager.domains() {
+                    do {
+                        try await NSFileProviderManager.remove(domain, mode: .preserveDirtyUserData)
+                    } catch {
+                        try? await NSFileProviderManager.remove(domain)
+                    }
+                    logger.info("✅ Domain '\(domain.displayName)' removed")
+                }
+            } catch {
+                logger.error("❌ Failed to remove domains: \(error)")
+            }
+        }
     }
     
     func refreshAuthTokensIfNeeded() -> Void {
