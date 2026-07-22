@@ -371,7 +371,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
                 }
-                self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name)")
 
 
                 try await addSyncedNodeSafely(
