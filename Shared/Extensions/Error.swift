@@ -35,6 +35,30 @@ extension Error {
             
             return parts.joined(separator: " | ")
         }
+        
+        if let uploadError = self as? UploadError {
+            switch uploadError {
+            case .InvalidIndex:
+                return "UploadError: InvalidIndex"
+            case .CannotGenerateFileHash:
+                return "UploadError: CannotGenerateFileHash"
+            case .FailedToFinishUpload:
+                return "UploadError: FailedToFinishUpload"
+            case .MissingUploadUrl:
+                return "UploadError: MissingUploadUrl"
+            case .UploadNotSuccessful:
+                return "UploadError: UploadNotSuccessful"
+            case .UploadedSizeNotMatching:
+                return "UploadError: UploadedSizeNotMatching"
+            case .MissingEtag:
+                return "UploadError: MissingEtag"
+            case .MissingChunk:
+                return "UploadError: MissingChunk"
+            case .PartUploadFailed(let partIndex, let innerError):
+                return "UploadError: PartUploadFailed (part \(partIndex)) | error: \(innerError.getErrorDescription())"
+            }
+        }
+        
         return self.localizedDescription
     }
     

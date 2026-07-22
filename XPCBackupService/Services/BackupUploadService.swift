@@ -371,7 +371,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
                 }
-                self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name)")
 
 
                 try await addSyncedNodeSafely(
@@ -447,6 +447,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
                 
                     guard let file = matchingFile else {
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(nodePlainName)' server returned: \(result.existentFiles.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
