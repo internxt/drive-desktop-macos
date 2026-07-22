@@ -447,6 +447,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
                 
                     guard let file = matchingFile else {
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(nodePlainName)' server returned: \(result.existentFiles.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
