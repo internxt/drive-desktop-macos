@@ -730,14 +730,11 @@ class BackupsService: ObservableObject {
             
             self.logger.info(["Backup status update received", backupStatus.totalSyncs, backupStatus.status])
             
-            if(backupStatus.totalSyncs == 0) {
-                return
-            }
-            
             DispatchQueue.main.async {
-                
                 self.backupUploadStatus = backupStatus.status
-                self.backupUploadProgress = backupStatus.progress
+                if backupStatus.totalSyncs > 0 {
+                    self.backupUploadProgress = backupStatus.progress
+                }
                 self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.backupUploadProgress * 100)% synced"])
             }
             
