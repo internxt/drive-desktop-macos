@@ -129,9 +129,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     }
 
     func stopSync() {
-        DispatchQueue.main.async {
-            self.canDoBackup = false
-        }
+        self.canDoBackup = false
     }
     
 // MARK: - Thread-Safe  Operations
