@@ -125,6 +125,18 @@
 		AA9B1B9F2FB2D342000E582A /* FileSizeLimitNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9B1B9B2FB2D342000E582A /* FileSizeLimitNotifier.swift */; };
 		AA9B1BA12FB4094D000E582A /* FileSizeLimitDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */; };
 		AA9DF5452EDF6B2E00D1FE52 /* PackageFileHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */; };
+		AAA2F8E43017FB2100F5452C /* BackupUploadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */; };
+		AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E53017FEEF00F5452C /* Realm */; };
+		AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E73017FF0100F5452C /* RealmSwift */; };
+		AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E93017FF0700F5452C /* CocoaLumberjack */; };
+		AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */; };
+		AAA2F8ED301802C600F5452C /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AAA2F8EE3018030E00F5452C /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
+		AAA2F8EF301803A300F5452C /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
+		AAA2F8F0301803B300F5452C /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
+		AAA2F8F1301803BA00F5452C /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C32AB2FEF500A58414 /* ActivityManager.swift */; };
+		AAA2F8F2301803DF00F5452C /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
+		AAA2F8F3301803E600F5452C /* UsageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0432AA7367800D95694 /* UsageManager.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
 		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
@@ -570,6 +582,7 @@
 		AA9B1B9B2FB2D342000E582A /* FileSizeLimitNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSizeLimitNotifier.swift; sourceTree = "<group>"; };
 		AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSizeLimitDialogView.swift; sourceTree = "<group>"; };
 		AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageFileHandle.swift; sourceTree = "<group>"; };
+		AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupUploadServiceTests.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
 		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
@@ -777,7 +790,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */,
+				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
+				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
 				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
+				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1221,6 +1238,7 @@
 			isa = PBXGroup;
 			children = (
 				E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */,
+				AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1590,6 +1608,10 @@
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
 				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
+				AAA2F8E53017FEEF00F5452C /* Realm */,
+				AAA2F8E73017FF0100F5452C /* RealmSwift */,
+				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
+				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
 			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
@@ -1904,18 +1926,26 @@
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
 				E1D24AF72C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
+				AAA2F8EF301803A300F5452C /* Device.swift in Sources */,
+				AAA2F8F2301803DF00F5452C /* BackupsDeviceService.swift in Sources */,
 				AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */,
 				31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */,
 				AA3D12972FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
+				AAA2F8F0301803B300F5452C /* FeaturesService.swift in Sources */,
 				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
+				AAA2F8EE3018030E00F5452C /* BackupsService.swift in Sources */,
+				AAA2F8ED301802C600F5452C /* BackupConfigurationManager.swift in Sources */,
 				AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */,
 				31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */,
 				AA9B1B9E2FB2D342000E582A /* FileSizeLimitNotifier.swift in Sources */,
 				AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */,
+				AAA2F8E43017FB2100F5452C /* BackupUploadServiceTests.swift in Sources */,
 				E1D24AFA2C0DA4100009EC83 /* SyncedNode.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */,
+				AAA2F8F3301803E600F5452C /* UsageManager.swift in Sources */,
+				AAA2F8F1301803BA00F5452C /* ActivityManager.swift in Sources */,
 				AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */,
@@ -3220,6 +3250,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
 			productName = ObjectivePGP;
+		};
+		AAA2F8E53017FEEF00F5452C /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		AAA2F8E73017FF0100F5452C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		AAA2F8E93017FF0700F5452C /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
 		};
 		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
