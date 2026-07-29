@@ -46,13 +46,34 @@ struct WidgetSyncEntryView: View {
     var EntryStatusSubtitle: some View {
         switch self.operationKind {
         case .backupDownload:
-            AppText(status == .inProgress ? "SYNC_ENTRY_KIND_DOWNLOADING" : "SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            switch status {
+            case .inProgress:
+                AppText("SYNC_ENTRY_KIND_DOWNLOADING").font(.XSMedium).foregroundColor(.Gray50)
+            case .finished:
+                AppText("SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            case .failed:
+                AppText("SYNC_ENTRY_KIND_FAILED").font(.XSMedium).foregroundColor(.Red)
+            }
         case .trash:
             AppText("SYNC_ENTRY_KIND_TRASHED").font(.XSMedium).foregroundColor(.Gray50)
         case .download:
-            AppText(status == .inProgress ? "SYNC_ENTRY_KIND_DOWNLOADING" : "SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            switch status {
+            case .inProgress:
+                AppText("SYNC_ENTRY_KIND_DOWNLOADING").font(.XSMedium).foregroundColor(.Gray50)
+            case .finished:
+                AppText("SYNC_ENTRY_KIND_DOWNLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            case .failed:
+                AppText("SYNC_ENTRY_KIND_FAILED").font(.XSMedium).foregroundColor(.Red)
+            }
         case .upload:
-            AppText(status == .inProgress ? "SYNC_ENTRY_KIND_UPLOADING" : "SYNC_ENTRY_KIND_UPLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            switch status {
+            case .inProgress:
+                AppText("SYNC_ENTRY_KIND_UPLOADING").font(.XSMedium).foregroundColor(.Gray50)
+            case .finished:
+                AppText("SYNC_ENTRY_KIND_UPLOADED").font(.XSMedium).foregroundColor(.Gray50)
+            case .failed:
+                AppText("SYNC_ENTRY_KIND_FAILED").font(.XSMedium).foregroundColor(.Red)
+            }
         default:
             EmptyView()
         }
@@ -67,8 +88,8 @@ struct WidgetSyncEntryView: View {
             ProgressView()
                 .scaleEffect(0.7)
                 .frame(width: 24, height: 24)
-        default:
-            EmptyView()
+        case .failed:
+            AppIcon(iconName: .WarningCircle, size: 24, color: .Red)
         }
     }
 }

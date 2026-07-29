@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FileProvider
 import InternxtSwiftCore
 
 extension Error {
@@ -95,6 +96,24 @@ extension Error {
             apiError.statusCode == 420 { return true }
         
         return false
+    }
+
+    func toFileProviderError() -> NSError {
+        if self.isStorageFull {
+            syncExtensionLogger.error("❌ Cannot synchronize file: destination storage is full (420)")
+            DistributedNotificationCenter.default().postNotificationName(
+                .storageFull,
+                object: nil,
+                userInfo: nil,
+                deliverImmediately: true
+            )
+            return NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue)
+        } else if let apiClientError = self as? APIClientError, apiClientError.statusCode == 402 {
+            syncExtensionLogger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
+            return NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue)
+        } else {
+            return NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue)
+        }
     }
 }
 
