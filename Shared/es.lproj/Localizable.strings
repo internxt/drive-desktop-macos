@@ -40,6 +40,7 @@
 "SYNC_ENTRY_KIND_UPLOADED" = "Subido";
 "SYNC_ENTRY_KIND_DOWNLOADING" = "Descargando...";
 "SYNC_ENTRY_KIND_UPLOADING" = "Subiendo...";
+"SYNC_ENTRY_KIND_FAILED" = "Error al subir";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";

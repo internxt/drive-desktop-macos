@@ -40,6 +40,7 @@
 "SYNC_ENTRY_KIND_UPLOADED" = "Téléchargé";
 "SYNC_ENTRY_KIND_DOWNLOADING" = "Téléchargement...";
 "SYNC_ENTRY_KIND_UPLOADING" = "Téléversement...";
+"SYNC_ENTRY_KIND_FAILED" = "Échec du téléversement";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";

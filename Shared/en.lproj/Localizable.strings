@@ -39,6 +39,7 @@
 "SYNC_ENTRY_KIND_UPLOADED" = "Uploaded";
 "SYNC_ENTRY_KIND_DOWNLOADING" = "Downloading...";
 "SYNC_ENTRY_KIND_UPLOADING" = "Uploading...";
+"SYNC_ENTRY_KIND_FAILED" = "Upload failed";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";
