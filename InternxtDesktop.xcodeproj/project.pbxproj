@@ -180,6 +180,7 @@
 		AAE87A7B2E69FF4300FD9708 /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A792E69FF4300FD9708 /* FileOperations.swift */; };
 		AAE87A7D2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */; };
 		AAE87A7E2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */; };
+		AAE9D014301D914400631C84 /* PackageUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE9D013301D914400631C84 /* PackageUploadService.swift */; };
 		AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEC163F2D485083009B66BE /* BookmarkManager.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
@@ -609,6 +610,7 @@
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAE87A792E69FF4300FD9708 /* FileOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperations.swift; sourceTree = "<group>"; };
 		AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupEngine.swift; sourceTree = "<group>"; };
+		AAE9D013301D914400631C84 /* PackageUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageUploadService.swift; sourceTree = "<group>"; };
 		AAEC163F2D485083009B66BE /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -1508,6 +1510,7 @@
 				E198D7DD2AA9EA0A00107753 /* Utils.swift */,
 				E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */,
 				AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */,
+				AAE9D013301D914400631C84 /* PackageUploadService.swift */,
 			);
 			path = SyncExtension;
 			sourceTree = "<group>";
@@ -2168,6 +2171,7 @@
 				AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
+				AAE9D014301D914400631C84 /* PackageUploadService.swift in Sources */,
 				AAFF86C42FAB8895008466D1 /* CopyInternxtLinkUseCase.swift in Sources */,
 				AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */,
 				316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */,
