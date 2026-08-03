@@ -164,7 +164,8 @@ struct DownloadFileUseCase {
                         localFolderURL: destinationURL
                     )
                     
-                    let parentId: NSFileProviderItemIdentifier = folder.parentId != nil ? NSFileProviderItemIdentifier(String(folder.parentId!)) : .rootContainer
+                    let parentIsRootFolder = folder.parentId == nil || folder.parentId == user.root_folder_id
+                    let parentId: NSFileProviderItemIdentifier = parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(String(folder.parentId!))
                     
                     let fileProviderItem = FileProviderItem(
                         identifier: itemIdentifier,

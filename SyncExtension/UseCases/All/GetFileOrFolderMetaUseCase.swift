@@ -114,7 +114,8 @@ struct GetFileOrFolderMetaUseCase {
                             throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                         }
 
-                        let parentId = folderMeta.parentId.map { NSFileProviderItemIdentifier(String($0)) } ?? .rootContainer
+                        let parentIsRootFolder = folderMeta.parentId == nil || folderMeta.parentId == user.root_folder_id
+                        let parentId: NSFileProviderItemIdentifier = parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(String(folderMeta.parentId!))
 
                         let folderName = (folderMeta.plainName ?? folderMeta.name) ?? ""
                         let isPkg = FileProviderItem.isPackage(filename: folderName)
