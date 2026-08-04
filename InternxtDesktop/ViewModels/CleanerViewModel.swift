@@ -381,7 +381,6 @@ class CleanupViewModel: ObservableObject {
             resetAfterCleanup()
         } catch {
             cleanerLogger.error("Failed to perform cleanup: \(error.localizedDescription)")
-            cleanerService.setViewState(.scanning)
             throw error
         }
     }

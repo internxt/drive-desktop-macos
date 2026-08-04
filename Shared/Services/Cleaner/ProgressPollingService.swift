@@ -36,9 +36,6 @@ class ProgressPollingService {
         var isCompleted = false
         var lastActivityTime = Date()
         let maxInactivityDuration: TimeInterval = 180 
-        var lastProcessedFiles = -1
-        var lastFreedSpace: UInt64 = 0
-        var lastCurrentFile = ""
         
         cleanerLogger.info("Starting progress polling for operation: \(operationId)")
         
@@ -52,17 +49,7 @@ class ProgressPollingService {
             do {
                 // Check progress
                 if let progress = try await fetchProgress(operationId: operationId) {
-                    let hasActivityChanged = progress.processedFiles != lastProcessedFiles
-                                          || progress.freedSpace != lastFreedSpace
-                                          || progress.currentFile != lastCurrentFile
-                    
-                    if hasActivityChanged {
-                        lastActivityTime = Date()
-                      
-                        lastProcessedFiles = progress.processedFiles
-                        lastFreedSpace = progress.freedSpace
-                        lastCurrentFile = progress.currentFile
-                    }
+                    lastActivityTime = Date()
                     
                     await progressHandler(progress)
                     cleanerLogger.debug("Progress: \(progress.percentage)% - \(progress.currentFile)")

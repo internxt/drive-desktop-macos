@@ -114,10 +114,6 @@ final class CleanupEngine {
                      baseFreedSpace: UInt64 = 0,
                      progressHandler: @escaping @Sendable (CleanupProgress) async -> Void) async throws -> CleanupResult {
         
-        var errors: [String] = []
-        var processedFiles = 0
-        var freedSpace: UInt64 = 0
-        
         guard !files.isEmpty else {
             return CleanupResult(
                 categoryId: categoryId,
@@ -166,27 +162,24 @@ final class CleanupEngine {
         try await processBatch(validFiles, batchSize: optimizedBatchSize) { file in
             try Task.checkCancellation()
             
-            let (shouldUpdate, currentProcessed) = await tracker.increment()
-            let overallProcessed = baseProcessedCount + currentProcessed
-            let currentTotalFreed = baseFreedSpace + freedSpace
-            let overallPercentage = categorySize > 0 ? min(Double(currentTotalFreed) / Double(categorySize) * 100.0, 99.0) : (pathTotal > 0 ? min(Double(overallProcessed) / Double(pathTotal) * 100.0, 99.0) : 0.0)
-            
-            if shouldUpdate || file.size > 20_000_000 {
-                await progressHandler(CleanupProgress(
-                    categoryId: categoryId,
-                    categoryName: categoryName,
-                    currentFile: file.name,
-                    processedFiles: overallProcessed,
-                    totalFiles: pathTotal,
-                    freedSpace: currentTotalFreed,
-                    percentage: overallPercentage
-                ))
-            }
-            
             if options.dryRun {
                 self.logger.debug("DRY RUN: Would delete \(file.name) - \(ByteCountFormatter.string(fromByteCount: Int64(file.size), countStyle: .file))")
-                processedFiles += 1
-                freedSpace += file.size
+                let (shouldUpdate, currentProcessed, currentTotalFreed) = await tracker.recordDeleted(size: file.size)
+                let overallProcessed = baseProcessedCount + currentProcessed
+                let overallFreed = baseFreedSpace + currentTotalFreed
+                let overallPercentage = categorySize > 0 ? min(Double(overallFreed) / Double(categorySize) * 100.0, 99.0) : (pathTotal > 0 ? min(Double(overallProcessed) / Double(pathTotal) * 100.0, 99.0) : 0.0)
+                
+                if shouldUpdate || file.size > 20_000_000 {
+                    await progressHandler(CleanupProgress(
+                        categoryId: categoryId,
+                        categoryName: categoryName,
+                        currentFile: file.name,
+                        processedFiles: overallProcessed,
+                        totalFiles: pathTotal,
+                        freedSpace: overallFreed,
+                        percentage: overallPercentage
+                    ))
+                }
                 return
             }
             
@@ -197,20 +190,35 @@ final class CleanupEngine {
                 }
                 
                 let deletedSize = try await self.fileOperations.deleteFile(at: file.path)
-                freedSpace += deletedSize
-                processedFiles += 1
+                let (shouldUpdate, currentProcessed, currentTotalFreed) = await tracker.recordDeleted(size: deletedSize)
+                let overallProcessed = baseProcessedCount + currentProcessed
+                let overallFreed = baseFreedSpace + currentTotalFreed
+                let overallPercentage = categorySize > 0 ? min(Double(overallFreed) / Double(categorySize) * 100.0, 99.0) : (pathTotal > 0 ? min(Double(overallProcessed) / Double(pathTotal) * 100.0, 99.0) : 0.0)
+                
+                if shouldUpdate || file.size > 20_000_000 {
+                    await progressHandler(CleanupProgress(
+                        categoryId: categoryId,
+                        categoryName: categoryName,
+                        currentFile: file.name,
+                        processedFiles: overallProcessed,
+                        totalFiles: pathTotal,
+                        freedSpace: overallFreed,
+                        percentage: overallPercentage
+                    ))
+                }
                 
             } catch CocoaError.fileWriteFileExists, CocoaError.fileNoSuchFile {
                 self.logger.debug("File already deleted or moved: \(file.name)")
             } catch {
                 let errorMessage = "Failed to delete \(file.name): \(error.localizedDescription)"
-                errors.append(errorMessage)
+                await tracker.addError(errorMessage)
                 self.logger.warning("❌ \(errorMessage)")
             }
         }
         
-        let finalOverallProcessed = baseProcessedCount + processedFiles
-        let finalFreedTotal = baseFreedSpace + freedSpace
+        let stats = await tracker.getStats()
+        let finalOverallProcessed = baseProcessedCount + stats.processedFiles
+        let finalFreedTotal = baseFreedSpace + stats.freedSpace
         let batchPercentage = categorySize > 0 ? min(Double(finalFreedTotal) / Double(categorySize) * 100.0, 99.0) : (pathTotal > 0 ? min(Double(finalOverallProcessed) / Double(pathTotal) * 100.0, 99.0) : 0.0)
         await progressHandler(CleanupProgress(
             categoryId: categoryId,
@@ -222,16 +230,16 @@ final class CleanupEngine {
             percentage: batchPercentage
         ))
         
-        logger.info("Cleanup completed - Processed: \(processedFiles), Freed: \(ByteCountFormatter.string(fromByteCount: Int64(freedSpace), countStyle: .file))")
+        logger.info("Cleanup completed - Processed: \(stats.processedFiles), Freed: \(ByteCountFormatter.string(fromByteCount: Int64(stats.freedSpace), countStyle: .file))")
         
         return CleanupResult(
             categoryId: categoryId,
             categoryName: categoryName,
-            success: errors.isEmpty && processedFiles > 0,
-            freedSpace: freedSpace,
-            errors: errors,
-            processedFiles: processedFiles,
-            skippedFiles: validFiles.count - processedFiles
+            success: stats.errors.isEmpty && stats.processedFiles > 0,
+            freedSpace: stats.freedSpace,
+            errors: stats.errors,
+            processedFiles: stats.processedFiles,
+            skippedFiles: validFiles.count - stats.processedFiles
         )
     }
     
