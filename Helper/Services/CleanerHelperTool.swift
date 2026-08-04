@@ -378,8 +378,7 @@ extension Array {
 // MARK: - Progress Tracking Protocol
 
 protocol ProgressTrackable: Actor {
-    func increment() -> (shouldUpdate: Bool, percentage: Double, processed: Int)
-    func getCurrentStats() -> (processed: Int, percentage: Double)
+    func recordDeleted(size: UInt64) -> (shouldUpdate: Bool, currentProcessed: Int, currentFreed: UInt64)
 }
 
 // MARK: - Cache Protocol
@@ -429,7 +428,9 @@ actor AsyncSemaphore {
 }
 
 actor ProgressTracker: ProgressTrackable {
-    private var processed = 0
+    private(set) var processedFiles = 0
+    private(set) var freedSpace: UInt64 = 0
+    private var errors: [String] = []
     private let total: Int
     private let updateFrequency: Int
     
@@ -438,16 +439,19 @@ actor ProgressTracker: ProgressTrackable {
         self.updateFrequency = max(1, total / 50)
     }
     
-    func increment() -> (shouldUpdate: Bool, percentage: Double, processed: Int) {
-        processed += 1
-        let shouldUpdate = processed % updateFrequency == 0 || processed == total
-        let percentage = total > 0 ? Double(processed) / Double(total) * 100 : 100
-        return (shouldUpdate, percentage, processed)
+    func recordDeleted(size: UInt64) -> (shouldUpdate: Bool, currentProcessed: Int, currentFreed: UInt64) {
+        processedFiles += 1
+        freedSpace += size
+        let shouldUpdate = processedFiles % updateFrequency == 0 || processedFiles == total
+        return (shouldUpdate, processedFiles, freedSpace)
     }
     
-    func getCurrentStats() -> (processed: Int, percentage: Double) {
-        let percentage = total > 0 ? Double(processed) / Double(total) * 100 : 100
-        return (processed, percentage)
+    func addError(_ error: String) {
+        errors.append(error)
+    }
+    
+    func getStats() -> (processedFiles: Int, freedSpace: UInt64, errors: [String]) {
+        return (processedFiles, freedSpace, errors)
     }
 }
 

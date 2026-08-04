@@ -59,6 +59,13 @@ class CleanupOperationService {
         
         let results = try await getCleanupResults(helper: helper, operationId: operationId)
         cleanerLogger.info("Cleanup completed with \(results.count) results")
+        for result in results {
+            let freedFormatted = ByteCountFormatter.string(fromByteCount: Int64(result.freedSpace), countStyle: .file)
+            cleanerLogger.info("📊 Results for '\(result.categoryName)': Freed \(freedFormatted) | Processed: \(result.processedFiles) files | Skipped: \(result.skippedFiles) files | Errors: \(result.errors.count)")
+            for error in result.errors {
+                cleanerLogger.warning("  ❌ Error in '\(result.categoryName)': \(error)")
+            }
+        }
         
         return results
     }
