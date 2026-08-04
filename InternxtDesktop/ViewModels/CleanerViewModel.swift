@@ -351,33 +351,39 @@ class CleanupViewModel: ObservableObject {
     func performCleanup() async throws {
         let cleanupData = prepareCleanupData()
 
-        switch cleanupData.type {
-        case .categoriesOnly(let categories):
-            let categoriesToClean = categories.map { category in
-                var mutableCategory = category
-                mutableCategory.isSelected = true
-                return mutableCategory
+        do {
+            switch cleanupData.type {
+            case .categoriesOnly(let categories):
+                let categoriesToClean = categories.map { category in
+                    var mutableCategory = category
+                    mutableCategory.isSelected = true
+                    return mutableCategory
+                }
+                
+                _ = try await cleanerService.cleanupCategories(categoriesToClean) { progress in
+                    await MainActor.run {
+                    }
+                }
+
+            case .filesOnly(_):
+                _ = try await cleanerService.cleanupSpecificFiles(cleanupData) { progress in
+                    await MainActor.run {
+                    }
+                }
+
+            case .hybrid(_, _):
+                _ = try await cleanerService.cleanupSpecificFiles(cleanupData) { progress in
+                    await MainActor.run {
+                    }
+                }
             }
             
-            _ = try await cleanerService.cleanupCategories(categoriesToClean) { progress in
-                await MainActor.run {
-                }
-            }
-
-        case .filesOnly(_):
-            _ = try await cleanerService.cleanupSpecificFiles(cleanupData) { progress in
-                await MainActor.run {
-                }
-            }
-
-        case .hybrid(_, _):
-            _ = try await cleanerService.cleanupSpecificFiles(cleanupData) { progress in
-                await MainActor.run {
-                }
-            }
+            resetAfterCleanup()
+        } catch {
+            cleanerLogger.error("Failed to perform cleanup: \(error.localizedDescription)")
+            cleanerService.setViewState(.scanning)
+            throw error
         }
-        
-        resetAfterCleanup()
     }
     
     private func prepareCleanupData() -> CleanupData {

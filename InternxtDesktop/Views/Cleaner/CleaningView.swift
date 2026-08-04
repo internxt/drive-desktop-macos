@@ -27,12 +27,12 @@ struct CleaningView: View {
                  .frame(height: 40)
             
             VStack(spacing: 8) {
-                ProgressView(value: Double(progress?.processedFiles ?? 0) / Double(max(progress?.totalFiles ?? 1, 1)))
+                ProgressView(value: min(max((progress?.percentage ?? 0.0) / 100.0, 0.0), 1.0))
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
                     .scaleEffect(x: 1, y: 2, anchor: .center)
-                    .animation(.easeInOut, value: progress?.processedFiles)
+                    .animation(.easeInOut, value: progress?.percentage)
                 
-                AppText("\(Int((Double(progress?.processedFiles ?? 0) / Double(max(progress?.totalFiles ?? 1, 1))) * 100))%")
+                AppText("\(Int(min(max(progress?.percentage ?? 0.0, 0.0), 100.0)))%")
                     .font(.SMRegular)
                     .foregroundColor(.Gray80)
             }

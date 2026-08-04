@@ -307,6 +307,7 @@ class CleanerService: ObservableObject {
         state = newState
     }
     
+    @MainActor
     private func handleError(_ error: Error) async {
         let errorMessage: String
         
@@ -317,7 +318,11 @@ class CleanerService: ObservableObject {
             errorMessage = error.localizedDescription
         }
         
-        await updateState(.error(errorMessage))
+        state = .error(errorMessage)
+        currentCleaningProgress = nil
+        if viewState == .cleaning {
+            viewState = .scanning
+        }
     }
 }
 

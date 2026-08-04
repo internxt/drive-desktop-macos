@@ -378,8 +378,7 @@ extension Array {
 // MARK: - Progress Tracking Protocol
 
 protocol ProgressTrackable: Actor {
-    func increment() -> (shouldUpdate: Bool, percentage: Double, processed: Int)
-    func getCurrentStats() -> (processed: Int, percentage: Double)
+    func increment() -> (shouldUpdate: Bool, processed: Int)
 }
 
 // MARK: - Cache Protocol
@@ -438,16 +437,10 @@ actor ProgressTracker: ProgressTrackable {
         self.updateFrequency = max(1, total / 50)
     }
     
-    func increment() -> (shouldUpdate: Bool, percentage: Double, processed: Int) {
+    func increment() -> (shouldUpdate: Bool, processed: Int) {
         processed += 1
         let shouldUpdate = processed % updateFrequency == 0 || processed == total
-        let percentage = total > 0 ? Double(processed) / Double(total) * 100 : 100
-        return (shouldUpdate, percentage, processed)
-    }
-    
-    func getCurrentStats() -> (processed: Int, percentage: Double) {
-        let percentage = total > 0 ? Double(processed) / Double(total) * 100 : 100
-        return (processed, percentage)
+        return (shouldUpdate, processed)
     }
 }
 
