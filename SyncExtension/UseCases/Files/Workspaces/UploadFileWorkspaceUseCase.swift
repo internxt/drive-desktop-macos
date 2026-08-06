@@ -235,13 +235,7 @@ struct UploadFileWorkspaceUseCase {
                 error.reportToSentry()
                 activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
-                
-                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
-                    self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
-                } else {
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
-                }
+                completionHandler(nil, [], false, error.toFileProviderError())
             }
         }
         

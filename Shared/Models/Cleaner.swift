@@ -310,6 +310,7 @@ enum CleanerServiceError: LocalizedError {
     case operationNotFound
     case invalidData
     case connectionTimeout
+    case helperRegistrationFailed(underlying: Error)
     
     var errorDescription: String? {
         switch self {
@@ -327,6 +328,8 @@ enum CleanerServiceError: LocalizedError {
             return NSLocalizedString("CLEANER_ERROR_INVALID_DATA", comment: "Error message for invalid data")
         case .connectionTimeout:
             return NSLocalizedString("CLEANER_ERROR_CONNECTION_TIMEOUT", comment: "Error message for connection timeout")
+        case .helperRegistrationFailed(let error):
+            return String(format: NSLocalizedString("CLEANER_ERROR_HELPER_REGISTRATION_FAILED", comment: "Error message for helper registration failed"), error.localizedDescription)
         }
     }
 }

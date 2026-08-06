@@ -13,7 +13,6 @@ class ProgressPollingService {
     // MARK: - Configuration
     private enum Constants {
         static let pollInterval: UInt64 = 500_000_000
-        static let maxPollRetries = 20
         static let completionWaitTime: UInt64 = 2_000_000_000
         static let errorRetryDelay: UInt64 = 1_000_000_000
     }
@@ -35,33 +34,27 @@ class ProgressPollingService {
         progressHandler: @escaping @Sendable (CleanupProgress) async -> Void
     ) async {
         var isCompleted = false
-        var lastProgressPercentage: Double = -1
-        var consecutiveNoProgress = 0
+        var lastActivityTime = Date()
+        let maxInactivityDuration: TimeInterval = 180 
         
         cleanerLogger.info("Starting progress polling for operation: \(operationId)")
         
-        while !isCompleted && consecutiveNoProgress < Constants.maxPollRetries {
+        while !isCompleted {
+            let inactiveTime = Date().timeIntervalSince(lastActivityTime)
+            if inactiveTime > maxInactivityDuration {
+                cleanerLogger.warning("Operation \(operationId) timed out due to \(maxInactivityDuration)s of inactivity (no scanning or deleting progress)")
+                break
+            }
+            
             do {
                 // Check progress
                 if let progress = try await fetchProgress(operationId: operationId) {
+                    lastActivityTime = Date()
+                    
                     await progressHandler(progress)
                     cleanerLogger.debug("Progress: \(progress.percentage)% - \(progress.currentFile)")
-                    
-                    if progress.percentage != lastProgressPercentage {
-                        consecutiveNoProgress = 0
-                        lastProgressPercentage = progress.percentage
-                    } else {
-                        consecutiveNoProgress += 1
-                    }
-                    
-                    if progress.percentage >= 100.0 {
-                        cleanerLogger.info("Progress reached 100%, waiting for final results...")
-                        try await Task.sleep(nanoseconds: Constants.completionWaitTime)
-                        break
-                    }
                 } else {
                     cleanerLogger.debug("No progress data available yet...")
-                    consecutiveNoProgress += 1
                 }
                 
                 // Check if operation is completed
@@ -84,10 +77,6 @@ class ProgressPollingService {
                 
                 try? await Task.sleep(nanoseconds: Constants.errorRetryDelay)
             }
-        }
-        
-        if consecutiveNoProgress >= Constants.maxPollRetries {
-            cleanerLogger.warning("No progress for too long, assuming completion...")
         }
         
         cleanerLogger.info("Polling completed for operation: \(operationId)")

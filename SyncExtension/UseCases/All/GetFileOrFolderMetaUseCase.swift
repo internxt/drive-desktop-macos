@@ -114,16 +114,22 @@ struct GetFileOrFolderMetaUseCase {
                             throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                         }
 
-                        let parentId = folderMeta.parentId.map { NSFileProviderItemIdentifier(String($0)) } ?? .rootContainer
+                        let parentIsRootFolder = folderMeta.parentId == nil || folderMeta.parentId == user.root_folder_id
+                        let parentId: NSFileProviderItemIdentifier = parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(String(folderMeta.parentId!))
+
+                        let folderName = (folderMeta.plainName ?? folderMeta.name) ?? ""
+                        let isPkg = FileProviderItem.isPackage(filename: folderName)
+                        let ext = isPkg ? (folderName as NSString).pathExtension : nil
+                        let itemType = isPkg ? RemoteItemType.file : RemoteItemType.folder
 
                         let folderItem = FileProviderItem(
                             identifier: self.identifier,
-                            filename: (folderMeta.plainName ?? folderMeta.name) ?? "",
+                            filename: folderName,
                             parentId: parentId,
                             createdAt: createdAt,
                             updatedAt: updatedAt,
-                            itemExtension: nil,
-                            itemType: .folder
+                            itemExtension: ext,
+                            itemType: itemType
                         )
 
                         completionHandler(folderItem, nil)
@@ -132,6 +138,9 @@ struct GetFileOrFolderMetaUseCase {
                     }
                 }
                 throw GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound
+            } catch GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound {
+                self.logger.info("Item \(identifier.rawValue) was not found on the server, signaling nonExistentItem to stop retries")
+                completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: identifier))
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to get item meta for \(identifier.rawValue): \(error.getErrorDescription())")

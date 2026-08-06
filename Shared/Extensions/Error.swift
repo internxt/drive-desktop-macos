@@ -6,8 +6,8 @@
 //
 
 import Foundation
+import FileProvider
 import InternxtSwiftCore
-import AppKit
 
 extension Error {
     func reportToSentry() {
@@ -36,6 +36,30 @@ extension Error {
             
             return parts.joined(separator: " | ")
         }
+        
+        if let uploadError = self as? UploadError {
+            switch uploadError {
+            case .InvalidIndex:
+                return "UploadError: InvalidIndex"
+            case .CannotGenerateFileHash:
+                return "UploadError: CannotGenerateFileHash"
+            case .FailedToFinishUpload:
+                return "UploadError: FailedToFinishUpload"
+            case .MissingUploadUrl:
+                return "UploadError: MissingUploadUrl"
+            case .UploadNotSuccessful:
+                return "UploadError: UploadNotSuccessful"
+            case .UploadedSizeNotMatching:
+                return "UploadError: UploadedSizeNotMatching"
+            case .MissingEtag:
+                return "UploadError: MissingEtag"
+            case .MissingChunk:
+                return "UploadError: MissingChunk"
+            case .PartUploadFailed(let partIndex, let innerError):
+                return "UploadError: PartUploadFailed (part \(partIndex)) | error: \(innerError.getErrorDescription())"
+            }
+        }
+        
         return self.localizedDescription
     }
     
@@ -48,23 +72,52 @@ extension Error {
             }
         }
     }
-}
 
-extension NSAlert {
-    static func showStorageFullAlert() {
-        let alert = NSAlert()
-        alert.messageText = NSLocalizedString("ALERT_STORAGE_TITLE", comment: "")
-        alert.informativeText = NSLocalizedString("ALERT_STORAGE_SUBTITLE", comment: "")
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("ALERT_STORAGE_BUTTON_TITLE", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("COMMON_CANCEL", comment: ""))
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            URLDictionary.UPGRADE_PLAN.open()
+    var isStorageFull: Bool {
+        // Case 1: Direct APIClientError
+        if let apiError = self as? APIClientError, apiError.statusCode == 420 { return true }
+        
+        // Case 2: EnrichedError wrapping APIClientError (single upload < 100MB)
+        if let enriched = self as? EnrichedError,
+            let apiError = enriched.cause as? APIClientError,
+            apiError.statusCode == 420 { return true }
+        
+        // Case 3: EnrichedError wrapping UploadError.PartUploadFailed (multipart >= 100MB)
+        if let enriched = self as? EnrichedError,
+            let partFailed = enriched.cause as? UploadError,
+            case .PartUploadFailed(_, let innerError) = partFailed,
+            let apiError = innerError as? APIClientError,
+            apiError.statusCode == 420 { return true }
+        
+        // Case 4: Direct UploadError.PartUploadFailed
+        if let partFailed = self as? UploadError,
+            case .PartUploadFailed(_, let innerError) = partFailed,
+            let apiError = innerError as? APIClientError,
+            apiError.statusCode == 420 { return true }
+        
+        return false
+    }
+
+    func toFileProviderError() -> NSError {
+        if self.isStorageFull {
+            syncExtensionLogger.error("❌ Cannot synchronize file: destination storage is full (420)")
+            DistributedNotificationCenter.default().postNotificationName(
+                .storageFull,
+                object: nil,
+                userInfo: nil,
+                deliverImmediately: true
+            )
+            return NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue)
+        } else if let apiClientError = self as? APIClientError, apiClientError.statusCode == 402 {
+            syncExtensionLogger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
+            return NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue)
+        } else {
+            return NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue)
         }
     }
 }
 
 extension Notification.Name {
     static let userDidLogout = Notification.Name("userDidLogout")
+    static let storageFull = Notification.Name("com.internxt.drive.storageFull")
 }

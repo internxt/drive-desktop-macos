@@ -226,13 +226,13 @@ class CleanerService: ObservableObject {
     
     func ensureHelperInstalled() async {
         await executeOperation(newState: .connecting) {
-            let _ = await helperService.ensureHelperIsRegistered()
+            try await helperService.ensureHelperIsRegistered()
         }
     }
     
     func reinstallHelper() async {
         await executeOperation(newState: .connecting) {
-            await helperService.reinstallHelper()
+            try await helperService.reinstallHelper()
             
             if await getHelperStatus() == .enabled {
                 try await Task.sleep(nanoseconds: 2_000_000_000)
@@ -254,7 +254,13 @@ class CleanerService: ObservableObject {
     }
     
     func tryRegisterHelper() async -> Bool {
-        return await helperService.tryRegisterHelper()
+        do {
+            try await helperService.tryRegisterHelper()
+            return true
+        } catch {
+            await handleError(error)
+            return false
+        }
     }
     
     func openSystemSettings() {
@@ -301,6 +307,7 @@ class CleanerService: ObservableObject {
         state = newState
     }
     
+    @MainActor
     private func handleError(_ error: Error) async {
         let errorMessage: String
         
@@ -311,7 +318,11 @@ class CleanerService: ObservableObject {
             errorMessage = error.localizedDescription
         }
         
-        await updateState(.error(errorMessage))
+        state = .error(errorMessage)
+        currentCleaningProgress = nil
+        if viewState == .cleaning {
+            viewState = .scanning
+        }
     }
 }
 

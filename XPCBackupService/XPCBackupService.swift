@@ -15,6 +15,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private var backupUploadService: BackupUploadService? = nil
     private var trees: [BackupTreeNode] = []
     
+    private var currentBackupSessionId: UUID? = nil
+    private let backupSessionLock = NSLock()
+    
     private var backupUploadProgress: Progress = Progress()
     private var backupDownloadProgress: Progress = Progress()
     private var uploadOperationQueue = OperationQueue()
@@ -33,7 +36,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) -> Void {
         let backupRealm = SyncedNodeRepository.shared
-        self.uploadOperationQueue.maxConcurrentOperationCount = 10
+        let sessionBackupId = UUID()
+        backupSessionLock.lock()
+        self.currentBackupSessionId = sessionBackupId
+        backupSessionLock.unlock()
+
+        self.trees = []
+        self.uploadOperationQueue = OperationQueue()
+        self.uploadOperationQueue.maxConcurrentOperationCount = 5
         logger.info("Going to backup folders: \(backupURLs)")
         self.backupUploadStatus = .InProgress
         self.backupUploadProgress = Progress()
@@ -121,25 +131,34 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupUploadProgress.totalUnitCount = Int64(totalNodesCount)
             logger.info("Total progress to backup \(totalNodesCount)")
 
-            logger.info("⏱️ About to start node sync process for \(trees.count) BackupTrees...")
             var hasErrorOccurred = false
             let syncGroup = DispatchGroup()
-            
+            var hasReplied = false
+            let replyLock = NSLock()
+            let sendReply: (_ result: String?, _ error: String?) -> Void = { result, error in
+                replyLock.lock()
+                defer { replyLock.unlock() }
+                if !hasReplied {
+                    hasReplied = true
+                    reply(result, error)
+                }
+            }
+
             for backupTree in trees {
                 if hasErrorOccurred {
                     break
                 }
                 do {
                     logger.info("Adding nodes sync operations")
-                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue, syncGroup: syncGroup) { error in
-                        
+                    try backupTree.syncBelowNodes(withOperationQueue: self.uploadOperationQueue, syncGroup: syncGroup) { [weak self] error in
+                        guard let self = self else { return }
                         
                         if let backupUploadError = error as? BackupError, backupUploadError == .storageFull {
                             logger.error("Storage is full, cannot continue with the backup.")
                             self.backupUploadStatus = .Failed
                             self.uploadOperationQueue.cancelAllOperations()
                             hasErrorOccurred = true
-                            reply(nil, "storageFull")
+                            sendReply(nil, "storageFull")
                         } else {
                             logger.error("Error backing up device \(error)")
                             failureLock.lock()
@@ -150,27 +169,43 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                     }
                 } catch {
                     logger.error("Error setting up sync operations \(error)")
-                    reply(nil, error.localizedDescription)
+                    sendReply(nil, error.localizedDescription)
                 }
             }
             
-            syncGroup.notify(queue: .global()) {
+            syncGroup.notify(queue: .global()) { [weak self] in
+                guard let self = self else { return }
+                
+                self.backupSessionLock.lock()
+                let isCurrentSession = (self.currentBackupSessionId == sessionBackupId)
+                self.backupSessionLock.unlock()
+
+                guard isCurrentSession else {
+                    return
+                }
+
                 logger.info("Sync nodes operations completed")
                 
                 let successCount = totalNodesCount - failedNodesCount
                 if failedNodesCount > 0 {
                     logger.warning("⚠️ BACKUP SUMMARY: Finished with ERRORS. \(successCount) nodes synced successfully, \(failedNodesCount) nodes FAILED.")
+                    if self.backupUploadStatus != .Stopped {
+                        self.backupUploadStatus = .Failed
+                    }
+                    self.trees = []
+                    self.backupUploadService = nil
+                    URLCache.shared.removeAllCachedResponses()
+                    sendReply(nil, "Backup completed with \(failedNodesCount) errors")
                 } else {
                     logger.info("✅ BACKUP SUMMARY: All \(totalNodesCount) nodes synced successfully.")
+                    if self.backupUploadStatus != .Stopped {
+                        self.backupUploadStatus = .Done
+                    }
+                    self.trees = []
+                    self.backupUploadService = nil
+                    URLCache.shared.removeAllCachedResponses()
+                    sendReply("synced all nodes for all trees", nil)
                 }
-
-                // If the backup failed, don't set the status to Done
-                if self.backupUploadStatus != .Failed {
-                    self.backupUploadStatus = .Done
-                }
-                
-                self.trees = []
-                reply("synced all nodes for all trees", nil)
             }
 
             logger.info("Backups scheduled in OperationQueue")
@@ -287,6 +322,10 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
     @objc func stopBackupUpload() {
         logger.debug("STOP BACKUP UPLOAD")
+        backupSessionLock.lock()
+        self.currentBackupSessionId = nil
+        backupSessionLock.unlock()
+        
         trees = []
         
         self.backupUploadStatus = .Stopped

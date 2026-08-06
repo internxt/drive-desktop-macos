@@ -33,6 +33,7 @@ enum BackupUploadError: Error {
     case FileSizeLimitExceeded
     case EmptyFileQuotaExceeded
     case EmptyFilePlanNotAllowed
+    case StorageFull
 }
 
 enum BackupDownloadError: Error {
@@ -80,11 +81,26 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     }
 
 
-    private var backupNewAPI: BackupAPI {
-        return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    private lazy var backupNewAPI: BackupAPI = {
+        BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }()
+
+
+    private let apiSemaphore = AsyncSemaphore(maxConcurrent: 6)
+    private let networkUploadSemaphore = AsyncSemaphore(maxConcurrent: 2)
+
+    private func withAPIThrottle<T>(_ work: () async throws -> T) async rethrows -> T {
+        await apiSemaphore.wait()
+        defer { Task { await apiSemaphore.signal() } }
+        return try await work()
     }
 
-    
+    private func withNetworkUploadThrottle<T>(_ work: () async throws -> T) async rethrows -> T {
+        await networkUploadSemaphore.wait()
+        defer { Task { await networkUploadSemaphore.signal() } }
+        return try await work()
+    }
+
 
     private func getEncryptedContentURL(node: BackupTreeNode) -> URL? {
         let url = encryptedContentDirectory.appendingPathComponent(node.id)
@@ -113,9 +129,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     }
 
     func stopSync() {
-        DispatchQueue.main.async {
-            self.canDoBackup = false
-        }
+        self.canDoBackup = false
     }
     
 // MARK: - Thread-Safe  Operations
@@ -170,10 +184,12 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         self.logger.info("Parent id \(safeRemoteParentId)")
 
         do {
-            let createdFolder = try await backupNewAPI.createBackupFolder(
-                parentFolderUuid: safeRemoteParentUuid,
-                folderName: foldername
-            )
+            let createdFolder = try await withAPIThrottle {
+                try await self.backupNewAPI.createBackupFolder(
+                    parentFolderUuid: safeRemoteParentUuid,
+                    folderName: foldername
+                )
+            }
 
             self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
 
@@ -202,7 +218,9 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
                 do {
-                    let parentChilds = try await backupNewAPI.getBackupChilds(folderUuid: "\(safeRemoteParentUuid)")
+                    let parentChilds = try await withAPIThrottle {
+                        try await self.backupNewAPI.getBackupChilds(folderUuid: "\(safeRemoteParentUuid)")
+                    }
 
                     let folder = parentChilds.folders.first { currentFolder in
                         currentFolder.plainName == foldername && currentFolder.removed == false
@@ -278,13 +296,15 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
             
             if uploadSize > 0 {
-                let result = try await networkFacade.uploadFile(
-                    input: inputStream,
-                    encryptedOutput: safeEncryptedContentURL,
-                    fileSize: uploadSize,
-                    bucketId: self.bucketId,
-                    progressHandler: { _ in }
-                )
+                let result = try await withNetworkUploadThrottle {
+                    try await self.networkFacade.uploadFile(
+                        input: inputStream,
+                        encryptedOutput: safeEncryptedContentURL,
+                        fileSize: uploadSize,
+                        bucketId: self.bucketId,
+                        progressHandler: { _ in }
+                    )
+                }
                 
                 uploadFileId = result.id
                 uploadSize = result.size
@@ -306,11 +326,13 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     return .failure(BackupUploadError.MissingRemoteId)
                 }
 
-                let updatedFile = try await backupNewAPI.replaceFileId(
-                    fileUuid: remoteUuid,
-                    newFileId: uploadFileId,
-                    newSize: uploadSize
-                )
+                let updatedFile = try await withAPIThrottle {
+                    try await self.backupNewAPI.replaceFileId(
+                        fileUuid: remoteUuid,
+                        newFileId: uploadFileId,
+                        newSize: uploadSize
+                    )
+                }
 
                 self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
 
@@ -333,19 +355,21 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
                 )
            
-                let createdFile = try await backupNewAPI.createBackupFileNew(
-                    createFileData: CreateFileDataNew(
-                        fileId: uploadFileId,
-                        type: filename.pathExtension,
-                        bucket: uploadBucketId,
-                        size: uploadSize,
-                        folderId: remoteParentId,
-                        name: encryptedFilename.base64EncodedString(),
-                        plainName: filename.deletingPathExtension,
-                        folderUuid: remoteParentUuid
+                let createdFile = try await withAPIThrottle {
+                    try await self.backupNewAPI.createBackupFileNew(
+                        createFileData: CreateFileDataNew(
+                            fileId: uploadFileId,
+                            type: filename.pathExtension,
+                            bucket: uploadBucketId,
+                            size: uploadSize,
+                            folderId: remoteParentId,
+                            name: encryptedFilename.base64EncodedString(),
+                            plainName: filename.deletingPathExtension,
+                            folderUuid: remoteParentUuid
+                        )
                     )
-                )
-                self.logger.info("✅ Created file correctly with identifier \(createdFile.id)")
+                }
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name)")
 
 
                 try await addSyncedNodeSafely(
@@ -373,17 +397,18 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
 
         } catch {
+            if error.isStorageFull {
+                if encryptedContentURL != nil {
+                    try? FileManager.default.removeItem(at: encryptedContentURL!)
+                }
+                return .failure(BackupUploadError.StorageFull)
+            }
 
             if let uploadError = error as? UploadError, case .PartUploadFailed(let partIndex, let innerError) = uploadError {
                 self.logger.error("❌ Part upload failed at index \(partIndex): \(uploadError.localizedDescription)")
                 self.logger.info("ℹ️ Inner error details: \(String(describing: innerError))")
             } else {
                 self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
-            }
-            if let startUploadError = error as? StartUploadError {
-                if let apiClientError = startUploadError.apiError,  apiClientError.statusCode == 420 {
-                    self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): Max space used")
-                }
             }
 
             if encryptedContentURL != nil {
@@ -409,7 +434,9 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     let existenceFile = ExistenceFile(plainName: filename.deletingPathExtension, type: filename.pathExtension)
 
                     
-                    let result = try await backupNewAPI.getExistenceFileInFolderByPlainName(uuid: remoteParentUuid, files: [existenceFile])
+                    let result = try await withAPIThrottle {
+                        try await self.backupNewAPI.getExistenceFileInFolderByPlainName(uuid: remoteParentUuid, files: [existenceFile])
+                    }
                     
                     let nodePlainName = (node.name as NSString).deletingPathExtension
   
@@ -418,6 +445,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
                 
                     guard let file = matchingFile else {
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(nodePlainName)' server returned: \(result.existentFiles.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
@@ -465,3 +493,37 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     }
 }
 
+
+
+
+actor AsyncSemaphore {
+    private var availableSlots: Int
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+
+    init(maxConcurrent: Int) {
+        precondition(maxConcurrent > 0, "AsyncSemaphore requires at least 1 concurrent slot")
+        self.availableSlots = maxConcurrent
+    }
+
+    func wait() async {
+        if availableSlots > 0 {
+            availableSlots -= 1
+            return
+        }
+       
+        await withCheckedContinuation { continuation in
+            waiters.append(continuation)
+        }
+    }
+
+   
+    func signal() {
+        if waiters.isEmpty {
+            availableSlots += 1
+        } else {
+            let next = waiters.removeFirst()
+            next.resume()
+        }
+    }
+}

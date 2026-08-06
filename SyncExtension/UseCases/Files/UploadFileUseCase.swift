@@ -88,6 +88,71 @@ struct UploadFileUseCase {
             activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
             
             do {
+                var isPackage = FileProviderItem.isPackage(filename: item.filename)
+
+                if !isPackage, let resourceValues = try? fileContent.resourceValues(forKeys: [.isPackageKey]) {
+                    isPackage = resourceValues.isPackage == true
+                }
+                
+                if isPackage {
+                    self.logger.info("📦 Starting upload of package: \(item.filename)")
+                    
+                    var createdFolderId: String
+                    var createdFolderUuid: String
+                    
+                    do {
+                        let createdFolder = try await driveNewAPI.createFolderNew(
+                            parentFolderUuid: parentUUID,
+                            folderName: item.filename,
+                            debug: true
+                        )
+                        createdFolderId = String(createdFolder.id)
+                        createdFolderUuid = createdFolder.uuid
+                        self.logger.info("📦 Created package folder on cloud \(item.filename)")
+                    } catch {
+                        if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
+                            let existences = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentUUID, folderName: item.filename)
+                            if let folder = existences.existentFolders.first(where: {
+                                $0.plainName == item.filename && $0.removed == false
+                            }) {
+                                createdFolderId = String(folder.id)
+                                createdFolderUuid = folder.uuid
+                            } else {
+                                throw error
+                            }
+                        } else {
+                            self.logger.error("📦 error uploading package  \(error.getErrorDescription())")
+                            throw error
+                        }
+                    }
+                    
+                    let packageService = PackageUploadService(
+                        networkFacade: networkFacade,
+                        user: user,
+                        encryptedFileDestination: encryptedFileDestination
+                    )
+                    try await packageService.uploadDirectoryIteratively(
+                        localURL: fileContent,
+                        parentFolderId: createdFolderId,
+                        parentFolderUuid: createdFolderUuid
+                    )
+                    
+                    let parentIdIsRootFolder = item.parentItemIdentifier == .rootContainer || item.parentItemIdentifier.rawValue == String(user.root_folder_id)
+                    let fileProviderItem = FileProviderItem(
+                        identifier: NSFileProviderItemIdentifier(rawValue: createdFolderId),
+                        filename: item.filename,
+                        parentId: parentIdIsRootFolder ? .rootContainer : item.parentItemIdentifier,
+                        createdAt: Date(),
+                        updatedAt: Date(),
+                        itemExtension: (item.filename as NSString).pathExtension,
+                        itemType: .file,
+                        size: 0
+                    )
+                    completionHandler(fileProviderItem, [], false, nil)
+                    activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .finished)
+                    return
+                }
+
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
 
                 let startedAt = self.trackStart(processIdentifier: trackId)
@@ -188,14 +253,7 @@ struct UploadFileUseCase {
                 error.reportToSentry()
                 activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
                 self.logger.error("❌ Failed to create file \(item.filename) : \(error.getErrorDescription())")
-                
-               
-                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
-                    self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
-                } else {
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
-                }
+                completionHandler(nil, [], false, error.toFileProviderError())
             }
         }
         

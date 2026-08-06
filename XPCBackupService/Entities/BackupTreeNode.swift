@@ -220,6 +220,10 @@ class BackupTreeNode {
                 throw BackupError.storageFull
             }
             
+            else if case BackupUploadError.StorageFull = error {
+                throw BackupError.storageFull
+            }
+            
                 if case BackupUploadError.BackupStoppedManually = error {
                     // Noop, this was stopped
                   return
@@ -227,7 +231,12 @@ class BackupTreeNode {
                     syncRetries += 1
                     logger.info("Node sync failed, scheduling retry #\(syncRetries)")
                     error.reportToSentry()
-                    try await Task.sleep(nanoseconds: 1_000_000_000 * syncRetries)
+                    let baseDelay = pow(2.0, Double(syncRetries))
+                    let jitter = Double.random(in: 0.0...baseDelay * 0.25)
+                    let delaySeconds = baseDelay + jitter
+                    let delayNanoseconds = UInt64(delaySeconds * 1_000_000_000)
+                    logger.info("Retry #\(syncRetries) — waiting \(String(format: "%.2f", delaySeconds))s (base=\(Int(baseDelay))s + jitter=\(String(format: "%.2f", jitter))s)")
+                    try await Task.sleep(nanoseconds: delayNanoseconds)
                     try await self.syncNode()
                     return
                 } else {

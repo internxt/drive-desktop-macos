@@ -40,6 +40,7 @@
 "SYNC_ENTRY_KIND_UPLOADED" = "Subido";
 "SYNC_ENTRY_KIND_DOWNLOADING" = "Descargando...";
 "SYNC_ENTRY_KIND_UPLOADING" = "Subiendo...";
+"SYNC_ENTRY_KIND_FAILED" = "Error al subir";
 
 // Widget backup banner
 "INTERNXT_BACKUPS" = "INTERNXT BACKUPS";
@@ -240,6 +241,7 @@
 "CLEANER_ERROR_OPERATION_NOT_FOUND" = "Operación no encontrada";
 "CLEANER_ERROR_INVALID_DATA" = "Datos inválidos recibidos";
 "CLEANER_ERROR_CONNECTION_TIMEOUT" = "Tiempo de espera agotado";
+"CLEANER_ERROR_HELPER_REGISTRATION_FAILED" = "Error al instalar el servicio en segundo plano: %@";
 
 // Cleaner Error Messages
 "CLEANER_ERROR_PERMISSION_DENIED" = "Permiso denegado para: %@";

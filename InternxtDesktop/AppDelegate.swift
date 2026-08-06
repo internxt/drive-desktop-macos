@@ -59,6 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var notificationsTimer: AnyCancellable?
     let fileSizeLimitState = FileSizeLimitState()
     let emptyFileLimitState = EmptyFileLimitState()
+    let storageFullState = StorageFullState()
     private var backupAlertsCoordinator: BackupAlertsCoordinator!
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
@@ -117,10 +118,18 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self?.backupAlertsCoordinator?.handleEmptyFileLimitReached()
         }
 
+        DistributedNotificationCenter.default().addObserver(
+            forName: .storageFull,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.backupAlertsCoordinator?.handleStorageFullReached()
+        }
+
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -128,6 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         self.backupAlertsCoordinator = BackupAlertsCoordinator(
             fileSizeLimitState: fileSizeLimitState,
             emptyFileLimitState: emptyFileLimitState,
+            storageFullState: storageFullState,
             windowsManager: windowsManager
         )
 
@@ -261,6 +271,13 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     func application(_ application: NSApplication, open urls: [URL]) {
         if let url = urls.first {
+            if url.host == "session-expired" {
+                self.logger.info("🔴 Received session-expired deeplink, performing logout")
+                NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                NSApp.activate(ignoringOtherApps: true)
+                return
+            }
+            
             do {
                 let success = try authManager.handleSignInDeeplink(url: url)
                 
@@ -354,6 +371,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     private func startTokensRefreshing() {
+        self.refreshTokensTimer?.cancel()
         self.refreshTokensTimer =  Timer.publish(every: 30, on:.main, in: .common).autoconnect().sink(
             receiveValue: {_ in
                 self.checkRefreshToken()

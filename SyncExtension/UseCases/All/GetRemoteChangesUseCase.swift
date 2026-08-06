@@ -145,14 +145,19 @@ class GetRemoteChangesUseCase {
                 
                 let parentIsRoot = folder.parentId == nil || folder.parentId == user.root_folder_id
 
+                let folderName = FileProviderItem.getFilename(name: folder.plainName ?? folder.name, itemExtension: nil)
+                let isPkg = FileProviderItem.isPackage(filename: folderName)
+                let ext = isPkg ? (folderName as NSString).pathExtension : nil
+                let itemType = isPkg ? RemoteItemType.file : RemoteItemType.folder
+
                 let item = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
-                    filename: FileProviderItem.getFilename(name: folder.plainName ?? folder.name , itemExtension: nil),
+                    filename: folderName,
                     parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folder.parentId!.toString()),
                     createdAt: createdAt,
                     updatedAt: updatedAt,
-                    itemExtension: nil,
-                    itemType: .folder
+                    itemExtension: ext,
+                    itemType: itemType
                 )
                 
                 updatedFileProviderItems.append(item)

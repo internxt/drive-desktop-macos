@@ -58,6 +58,7 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
 		AA08F36D2DEE5DF400F9D0CA /* FolderMetaCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08F36C2DEE5DF400F9D0CA /* FolderMetaCache.swift */; };
@@ -124,6 +125,18 @@
 		AA9B1B9F2FB2D342000E582A /* FileSizeLimitNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9B1B9B2FB2D342000E582A /* FileSizeLimitNotifier.swift */; };
 		AA9B1BA12FB4094D000E582A /* FileSizeLimitDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */; };
 		AA9DF5452EDF6B2E00D1FE52 /* PackageFileHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */; };
+		AAA2F8E43017FB2100F5452C /* BackupUploadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */; };
+		AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E53017FEEF00F5452C /* Realm */; };
+		AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E73017FF0100F5452C /* RealmSwift */; };
+		AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E93017FF0700F5452C /* CocoaLumberjack */; };
+		AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */; };
+		AAA2F8ED301802C600F5452C /* BackupConfigurationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */; };
+		AAA2F8EE3018030E00F5452C /* BackupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316D24792B4D9997007DE91A /* BackupsService.swift */; };
+		AAA2F8EF301803A300F5452C /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3185496E2B698AAC00D559E1 /* Device.swift */; };
+		AAA2F8F0301803B300F5452C /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
+		AAA2F8F1301803BA00F5452C /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17C84C32AB2FEF500A58414 /* ActivityManager.swift */; };
+		AAA2F8F2301803DF00F5452C /* BackupsDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DC7EA2B597BD000FDC746 /* BackupsDeviceService.swift */; };
+		AAA2F8F3301803E600F5452C /* UsageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0432AA7367800D95694 /* UsageManager.swift */; };
 		AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFFBE282C50AC4F00C76528 /* GenericRepository.swift */; };
 		AAA666682D402F2900C2B9DF /* CustomModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666672D402F2900C2B9DF /* CustomModalView.swift */; };
 		AAA6666A2D40380800C2B9DF /* FileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA666692D40380800C2B9DF /* FileSelectionView.swift */; };
@@ -167,6 +180,7 @@
 		AAE87A7B2E69FF4300FD9708 /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A792E69FF4300FD9708 /* FileOperations.swift */; };
 		AAE87A7D2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */; };
 		AAE87A7E2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */; };
+		AAE9D014301D914400631C84 /* PackageUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE9D013301D914400631C84 /* PackageUploadService.swift */; };
 		AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEC163F2D485083009B66BE /* BookmarkManager.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
@@ -526,6 +540,7 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
 		AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InternxtDesktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -568,6 +583,7 @@
 		AA9B1B9B2FB2D342000E582A /* FileSizeLimitNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSizeLimitNotifier.swift; sourceTree = "<group>"; };
 		AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSizeLimitDialogView.swift; sourceTree = "<group>"; };
 		AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageFileHandle.swift; sourceTree = "<group>"; };
+		AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupUploadServiceTests.swift; sourceTree = "<group>"; };
 		AAA666672D402F2900C2B9DF /* CustomModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalView.swift; sourceTree = "<group>"; };
 		AAA666692D40380800C2B9DF /* FileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectionView.swift; sourceTree = "<group>"; };
 		AAA6666D2D40684500C2B9DF /* libjson-c.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libjson-c.5.dylib"; sourceTree = "<group>"; };
@@ -594,6 +610,7 @@
 		AAE717DB2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAE87A792E69FF4300FD9708 /* FileOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperations.swift; sourceTree = "<group>"; };
 		AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupEngine.swift; sourceTree = "<group>"; };
+		AAE9D013301D914400631C84 /* PackageUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageUploadService.swift; sourceTree = "<group>"; };
 		AAEC163F2D485083009B66BE /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -775,7 +792,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */,
+				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
+				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
 				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
+				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1075,6 +1096,7 @@
 				E13B83962AFBBCD7009F6684 /* AppSettingsManagerView.swift */,
 				AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */,
 				AA3D129D2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift */,
+				AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -1218,6 +1240,7 @@
 			isa = PBXGroup;
 			children = (
 				E15F8C342B762BAF00C60EFA /* BackupTreeGeneratorTests.swift */,
+				AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1487,6 +1510,7 @@
 				E198D7DD2AA9EA0A00107753 /* Utils.swift */,
 				E190AC4A2AB0BDEC00F7B69C /* FileProviderItemActionsManager.swift */,
 				AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */,
+				AAE9D013301D914400631C84 /* PackageUploadService.swift */,
 			);
 			path = SyncExtension;
 			sourceTree = "<group>";
@@ -1587,6 +1611,10 @@
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
 				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
+				AAA2F8E53017FEEF00F5452C /* Realm */,
+				AAA2F8E73017FF0100F5452C /* RealmSwift */,
+				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
+				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
 			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
@@ -1901,18 +1929,26 @@
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
 				E1D24AF72C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
+				AAA2F8EF301803A300F5452C /* Device.swift in Sources */,
+				AAA2F8F2301803DF00F5452C /* BackupsDeviceService.swift in Sources */,
 				AAA424962C51FFC100EEFD69 /* GenericRepository.swift in Sources */,
 				31F9EF2A2B867DFE007DAD86 /* BackupUploadService.swift in Sources */,
 				AA3D12972FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
+				AAA2F8F0301803B300F5452C /* FeaturesService.swift in Sources */,
 				31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */,
 				31F9EF2B2B867E16007DAD86 /* ConfigLoader.swift in Sources */,
+				AAA2F8EE3018030E00F5452C /* BackupsService.swift in Sources */,
+				AAA2F8ED301802C600F5452C /* BackupConfigurationManager.swift in Sources */,
 				AAC188F12C2231E7007E321A /* MockBackupUploadService.swift in Sources */,
 				31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */,
 				AA9B1B9E2FB2D342000E582A /* FileSizeLimitNotifier.swift in Sources */,
 				AA0B47AB2C24D9E90036FE1A /* BackupDownloadItemOperation.swift in Sources */,
+				AAA2F8E43017FB2100F5452C /* BackupUploadServiceTests.swift in Sources */,
 				E1D24AFA2C0DA4100009EC83 /* SyncedNode.swift in Sources */,
 				E15F8C352B762BAF00C60EFA /* BackupTreeGeneratorTests.swift in Sources */,
 				E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */,
+				AAA2F8F3301803E600F5452C /* UsageManager.swift in Sources */,
+				AAA2F8F1301803BA00F5452C /* ActivityManager.swift in Sources */,
 				AAC188EF2C2231B1007E321A /* MockBackupRealm.swift in Sources */,
 				E15F8C422B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				AAC188EC2C222F3A007E321A /* BackupProgressUpdate.swift in Sources */,
@@ -2054,6 +2090,7 @@
 				315BC68D2B3DDE4E004C85D8 /* BackupsTabView.swift in Sources */,
 				E18300AE2AA230A600AD023C /* WidgetSyncEntryView.swift in Sources */,
 				E1880BA02AA63215001FC171 /* StartOnLaunchView.swift in Sources */,
+				AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */,
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
 				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
@@ -2134,6 +2171,7 @@
 				AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */,
 				E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */,
 				E19136992AA108D200CAF0FA /* View.swift in Sources */,
+				AAE9D014301D914400631C84 /* PackageUploadService.swift in Sources */,
 				AAFF86C42FAB8895008466D1 /* CopyInternxtLinkUseCase.swift in Sources */,
 				AAE717DC2CE05DD70023E9A4 /* TrashFolderWorkspaceUseCase.swift in Sources */,
 				316DC7EB2B597BD000FDC746 /* BackupsDeviceService.swift in Sources */,
@@ -2210,7 +2248,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2223,7 +2261,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2245,7 +2283,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2257,7 +2295,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2278,7 +2316,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2290,7 +2328,7 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2672,7 +2710,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2696,7 +2734,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2716,7 +2754,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2731,7 +2769,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -2883,7 +2921,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2906,7 +2944,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2929,7 +2967,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -2952,7 +2990,7 @@
 					"$(PROJECT_DIR)/InternxtDesktop/ClamAVResources/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
@@ -2971,7 +3009,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -2986,7 +3024,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3005,7 +3043,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 86;
+				CURRENT_PROJECT_VERSION = 87;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
@@ -3020,7 +3058,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.6.7;
+				MARKETING_VERSION = 2.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
@@ -3216,6 +3254,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
 			productName = ObjectivePGP;
+		};
+		AAA2F8E53017FEEF00F5452C /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		AAA2F8E73017FF0100F5452C /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		AAA2F8E93017FF0700F5452C /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
 		};
 		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -59,6 +59,47 @@ struct UpdateFileContentUseCase {
         self.logger.info("Updating file")
         Task {
             do {
+                var isPackage = FileProviderItem.isPackage(filename: item.filename)
+
+                if !isPackage, let resourceValues = try? fileContent.resourceValues(forKeys: [.isPackageKey]) {
+                    isPackage = resourceValues.isPackage == true
+                }
+
+                if isPackage {
+                    self.logger.info("📦 Starting package update for file \(item.filename)")
+                    let folderMeta = try await driveNewAPI.getFolderMetaById(id: self.fileUuid)
+
+                    guard let folderUuid = folderMeta.uuid else {
+                        throw UploadFileUseCaseError.InvalidParentUUID
+                    }
+
+                    let packageService = PackageUploadService(
+                        networkFacade: networkFacade,
+                        user: user,
+                        encryptedFileDestination: encryptedFileDestination
+                    )
+                    try await packageService.uploadDirectoryIteratively(
+                        localURL: fileContent,
+                        parentFolderId: String(folderMeta.id),
+                        parentFolderUuid: folderUuid
+                    )
+
+                    let parentIsRootFolder = folderMeta.parentId == nil || folderMeta.parentId == user.root_folder_id
+                    let fileProviderItem = FileProviderItem(
+                        identifier: item.itemIdentifier,
+                        filename: item.filename,
+                        parentId: parentIsRootFolder ? .rootContainer : item.parentItemIdentifier,
+                        createdAt: Time.dateFromISOString(folderMeta.createdAt) ?? Date(),
+                        updatedAt: Time.dateFromISOString(folderMeta.updatedAt) ?? Date(),
+                        itemExtension: (item.filename as NSString).pathExtension,
+                        itemType: .file,
+                        size: 0
+                    )
+
+                    completionHandler(fileProviderItem, [], false, nil)
+                    self.logger.info("✅ Updated package content correctly with identifier \(self.fileUuid)")
+                    return
+                }
                
                 guard let inputStream = InputStream(url: fileContent) else {
                     throw UploadFileUseCaseError.CannotOpenInputStream
@@ -129,13 +170,7 @@ struct UpdateFileContentUseCase {
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to update file content: \(error.getErrorDescription())")
-                
-                if let apiClientError = error as? APIClientError, apiClientError.statusCode == 402 {
-                    self.logger.error("❌ Cannot synchronize file due to payment/quota issue (402)")
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
-                } else {
-                    completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
-                }
+                completionHandler(nil, [], false, error.toFileProviderError())
             }
         }
         

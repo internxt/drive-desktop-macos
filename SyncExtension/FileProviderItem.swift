@@ -21,6 +21,39 @@ struct RemoteItem {
 }
 
 class FileProviderItem: NSObject, NSFileProviderItemProtocol, NSFileProviderItemDecorating {
+ 
+ 
+    public static func isPackage(contentType: UTType?) -> Bool {
+        guard let contentType else { return false }
+        if contentType == .folder { return false }
+        return contentType.conforms(to: .package) && !contentType.conforms(to: .bundle)
+    }
+
+    public static func isPackage(filename: String) -> Bool {
+        let ext = (filename as NSString).pathExtension.lowercased()
+        guard !ext.isEmpty else { return false }
+        
+        if let type = UTType(filenameExtension: ext), !type.isDynamic {
+            if type == .folder { return false }
+            return type.conforms(to: .package) && !type.conforms(to: .bundle)
+        }
+    
+        let knownIdentifiers: [String] = [
+            "com.apple.\(ext)",
+            "com.apple.dt.document.\(ext)",
+            "com.apple.iwork.\(ext).\(ext)"
+        ]
+        for id in knownIdentifiers {
+            if let type = UTType(id) {
+                if type == .folder { continue }
+                if type.conforms(to: .package) && !type.conforms(to: .bundle) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
     private let fileProviderItemActions = FileProviderItemActionsManager()
     private let identifier: NSFileProviderItemIdentifier
     private let parentIdentifier: NSFileProviderItemIdentifier

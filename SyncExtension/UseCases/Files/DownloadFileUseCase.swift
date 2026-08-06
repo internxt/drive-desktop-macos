@@ -146,7 +146,53 @@ struct DownloadFileUseCase {
                     progress.completedUnitCount = Int64(progressPercentage)
                 }
                 self.logger.info("⬇️ Fetching file \(itemIdentifier.rawValue)")
-                let file = try await getFileMetaWithRetry(uuid: itemIdentifier.rawValue, maxRetries: maxRetries)
+                
+                let idString = itemIdentifier.rawValue
+                let isUUID = UUID(uuidString: idString) != nil
+                
+                if !isUUID {
+            
+                    let folder = try await driveNewAPI.getFolderMetaById(id: idString)
+                    let folderName = folder.plainName ?? folder.name ?? ""
+                    
+                    if let trackingObjectId = trackingObjectId {
+                        activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .inProgress)
+                    }
+                    
+                    try await downloadFolderIteratively(
+                        initialFolderUuid: folder.uuid!,
+                        localFolderURL: destinationURL
+                    )
+                    
+                    let parentIsRootFolder = folder.parentId == nil || folder.parentId == user.root_folder_id
+                    let parentId: NSFileProviderItemIdentifier = parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(String(folder.parentId!))
+                    
+                    let fileProviderItem = FileProviderItem(
+                        identifier: itemIdentifier,
+                        filename: folderName,
+                        parentId: parentId,
+                        createdAt: Time.dateFromISOString(folder.createdAt) ?? Date(),
+                        updatedAt: Time.dateFromISOString(folder.updatedAt) ?? Date(),
+                        itemExtension: (folderName as NSString).pathExtension,
+                        itemType: .file,
+                        size: 0
+                    )
+                    
+                    completionHandler(destinationURL, fileProviderItem, nil)
+                    progressHandler(completedProgress: 1)
+                    
+                    if let trackingObjectId = trackingObjectId {
+                        activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .finished)
+                    }
+                    
+                    return
+                }
+                
+                let file = try await getFileMetaWithRetry(uuid: idString, maxRetries: maxRetries)
+                
+                guard let file = Optional.some(file) else {
+                    throw DownloadFileUseCaseError.DriveFileMissing
+                }
                 
                 let currentFilename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
                 if let trackingObjectId = trackingObjectId {
@@ -246,5 +292,80 @@ struct DownloadFileUseCase {
         }
         
         return progress
+    }
+    
+
+    
+    private func downloadFilesInDirectory(folderUuid: String, localFolderURL: URL) async throws {
+        var fileOffset = 0
+        let limit = 50
+        var hasMoreFiles = true
+        
+        while hasMoreFiles {
+            let filesResponse = try await driveNewAPI.getFolderFilesV2(folderUuid: folderUuid, offset: fileOffset, limit: limit)
+            
+            for file in filesResponse.files {
+                let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name ?? "", itemExtension: file.type)
+                let localFileURL = localFolderURL.appendingPathComponent(filename)
+                
+                let encryptedFileDestination = localFolderURL.appendingPathComponent("enc-\(UUID().uuidString).enc")
+                
+                defer {
+                    try? FileManager.default.removeItem(at: encryptedFileDestination)
+                }
+                
+                _ = try await networkFacade.downloadFile(
+                    bucketId: file.bucket,
+                    fileId: file.fileId ?? "",
+                    encryptedFileDestination: encryptedFileDestination,
+                    destinationURL: localFileURL,
+                    progressHandler: { _ in },
+                    debug: true
+                )
+            }
+            
+            if filesResponse.files.count < limit {
+                hasMoreFiles = false
+            } else {
+                fileOffset += limit
+            }
+        }
+    }
+    
+    private func downloadFolderIteratively(initialFolderUuid: String, localFolderURL: URL) async throws {
+        struct FolderDownloadTask {
+            let uuid: String
+            let localURL: URL
+        }
+        
+        var queue: [FolderDownloadTask] = [FolderDownloadTask(uuid: initialFolderUuid, localURL: localFolderURL)]
+        
+        while !queue.isEmpty {
+            let currentTask = queue.removeFirst()
+            try FileManager.default.createDirectory(at: currentTask.localURL, withIntermediateDirectories: true)
+            
+        
+            try await downloadFilesInDirectory(folderUuid: currentTask.uuid, localFolderURL: currentTask.localURL)
+            
+            var folderOffset = 0
+            let limit = 50
+            var hasMoreFolders = true
+            
+            while hasMoreFolders {
+                let foldersResponse = try await driveNewAPI.getFolderFolders(folderUuid: currentTask.uuid, offset: folderOffset, limit: limit)
+                
+                for subFolder in foldersResponse.folders {
+                    let name = subFolder.plainName ?? subFolder.name
+                    let localSubFolderURL = currentTask.localURL.appendingPathComponent(name)
+                    queue.append(FolderDownloadTask(uuid: subFolder.uuid ?? "", localURL: localSubFolderURL))
+                }
+                
+                if foldersResponse.folders.count < limit {
+                    hasMoreFolders = false
+                } else {
+                    folderOffset += limit
+                }
+            }
+        }
     }
 }
