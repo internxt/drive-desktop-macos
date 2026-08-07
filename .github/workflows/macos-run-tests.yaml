@@ -2,8 +2,6 @@ name: Test Internxt Desktop MacOS App
 
 on:
   push:
-    branches:
-      - 'fix/**'
   workflow_dispatch:
 
 # This envs are available for all the steps
