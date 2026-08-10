@@ -107,6 +107,13 @@
 		AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */ = {isa = PBXBuildFile; productRef = AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */; };
 		AA7FC5A42E450CAA0018C333 /* CleanerTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */; };
 		AA825F982CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */; };
+		AA8B5F5E302A238C00F28F39 /* Issue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F5D302A238C00F28F39 /* Issue.swift */; };
+		AA8B5F5F302A238C00F28F39 /* Issue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F5D302A238C00F28F39 /* Issue.swift */; };
+		AA8B5F60302A238C00F28F39 /* Issue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F5D302A238C00F28F39 /* Issue.swift */; };
+		AA8B5F62302A23AB00F28F39 /* IssuesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F61302A23AB00F28F39 /* IssuesManager.swift */; };
+		AA8B5F65302A2E1700F28F39 /* IssuesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F64302A2E1700F28F39 /* IssuesView.swift */; };
+		AA8B5F67302A2E2600F28F39 /* IssueRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F66302A2E2600F28F39 /* IssueRowView.swift */; };
+		AA8B5F69302A2E4700F28F39 /* IssuesEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8B5F68302A2E4700F28F39 /* IssuesEmptyStateView.swift */; };
 		AA8D9AEF2E7CC2370068B333 /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
 		AA8D9AF02E7CC2370068B333 /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
 		AA8D9AF12E7CC3300068B333 /* FeaturesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */; };
@@ -570,6 +577,11 @@
 		AA642CAD2C62B26B0015BBB9 /* BackupConfigurationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupConfigurationManager.swift; sourceTree = "<group>"; };
 		AA7FC5A32E450CAA0018C333 /* CleanerTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanerTabView.swift; sourceTree = "<group>"; };
 		AA825F972CF9049E0058B30A /* GetRemoteChangesUseCaseWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRemoteChangesUseCaseWorkspace.swift; sourceTree = "<group>"; };
+		AA8B5F5D302A238C00F28F39 /* Issue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Issue.swift; sourceTree = "<group>"; };
+		AA8B5F61302A23AB00F28F39 /* IssuesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuesManager.swift; sourceTree = "<group>"; };
+		AA8B5F64302A2E1700F28F39 /* IssuesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuesView.swift; sourceTree = "<group>"; };
+		AA8B5F66302A2E2600F28F39 /* IssueRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRowView.swift; sourceTree = "<group>"; };
+		AA8B5F68302A2E4700F28F39 /* IssuesEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuesEmptyStateView.swift; sourceTree = "<group>"; };
 		AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesService.swift; sourceTree = "<group>"; };
 		AA919D752E4FCC0600287FAE /* CleanupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupView.swift; sourceTree = "<group>"; };
 		AA93BEB92E720E8200F12334 /* CleaningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleaningView.swift; sourceTree = "<group>"; };
@@ -962,6 +974,16 @@
 			path = Cleaner;
 			sourceTree = "<group>";
 		};
+		AA8B5F63302A23BE00F28F39 /* Issues */ = {
+			isa = PBXGroup;
+			children = (
+				AA8B5F64302A2E1700F28F39 /* IssuesView.swift */,
+				AA8B5F66302A2E2600F28F39 /* IssueRowView.swift */,
+				AA8B5F68302A2E4700F28F39 /* IssuesEmptyStateView.swift */,
+			);
+			path = Issues;
+			sourceTree = "<group>";
+		};
 		AAA6666B2D40680700C2B9DF /* ClamAVResources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1110,6 +1132,7 @@
 				3185496E2B698AAC00D559E1 /* Device.swift */,
 				31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */,
 				AAA6F6472E5FEDB6000082ED /* Cleaner.swift */,
+				AA8B5F5D302A238C00F28F39 /* Issue.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1457,6 +1480,7 @@
 				AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */,
 				AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */,
 				AA9B1B992FB2D327000E582A /* FileLimitsService.swift */,
+				AA8B5F61302A23AB00F28F39 /* IssuesManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1473,6 +1497,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AA8B5F63302A23BE00F28F39 /* Issues */,
 				AA7FC5A22E450C2A0018C333 /* Cleaner */,
 				AA40B3BB2D3B296E00FC1FC3 /* Antivirus */,
 				3104526A2B4B1C3A00984716 /* Backups */,
@@ -1859,6 +1884,7 @@
 				AA642CAE2C62B26B0015BBB9 /* BackupConfigurationManager.swift in Sources */,
 				31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */,
 				E1D24AF02C0467710009EC83 /* BackupTreeNodeSyncOperation.swift in Sources */,
+				AA8B5F5E302A238C00F28F39 /* Issue.swift in Sources */,
 				3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */,
 				31ABDEA12BA9FC5300EEA7F5 /* SyncedNode.swift in Sources */,
 				E1E56C232BC0423A00DBA0BF /* BackupProgressUpdate.swift in Sources */,
@@ -2008,6 +2034,7 @@
 				AA919D762E4FCC0600287FAE /* CleanupView.swift in Sources */,
 				E1EEB5912C21963400370D77 /* WidgetBackupDownloadEntryView.swift in Sources */,
 				E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */,
+				AA8B5F65302A2E1700F28F39 /* IssuesView.swift in Sources */,
 				E17C84B22AB22C1400A58414 /* OnboardingSlide2View.swift in Sources */,
 				E17DB70C2C53F4600031B465 /* AppBreadcrumbs.swift in Sources */,
 				E1A0AC612AB8639C005E71D6 /* AppTextArea.swift in Sources */,
@@ -2029,6 +2056,7 @@
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */,
+				AA8B5F67302A2E2600F28F39 /* IssueRowView.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
 				E1D24AF42C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
@@ -2039,6 +2067,7 @@
 				AA13E0312E620B0000DD47CB /* XPCCleanerConnectionManager.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */,
+				AA8B5F69302A2E4700F28F39 /* IssuesEmptyStateView.swift in Sources */,
 				E16D3E8A2AF141540026C504 /* NetworkAnalyticsEvents.swift in Sources */,
 				E1A0AC4B2AB3590E005E71D6 /* AppCachedAsyncImage.swift in Sources */,
 				E16310572A8E66F70072989E /* URLDictionary.swift in Sources */,
@@ -2072,6 +2101,7 @@
 				3104526E2B4B1C5C00984716 /* StopBackupDialogView.swift in Sources */,
 				E1DB29612A7D6B80009036B8 /* WidgetContentView.swift in Sources */,
 				E1A0AC562AB48B7F005E71D6 /* WindowsManager.swift in Sources */,
+				AA8B5F5F302A238C00F28F39 /* Issue.swift in Sources */,
 				AA9B1B9A2FB2D327000E582A /* FileLimitsService.swift in Sources */,
 				E1581DCF2A9629620051DD46 /* Generic.swift in Sources */,
 				E145E16C2A82A21500B07E0B /* Time.swift in Sources */,
@@ -2083,6 +2113,7 @@
 				AA93BEBE2E72128800F12334 /* LockedFeatureCleanerView.swift in Sources */,
 				E16310952A8FAD3C0072989E /* APIFactory.swift in Sources */,
 				E10B0FDD2A94143F00B97874 /* Int.swift in Sources */,
+				AA8B5F62302A23AB00F28F39 /* IssuesManager.swift in Sources */,
 				AA93BEC42E72328900F12334 /* CleanupOperationService.swift in Sources */,
 				E1CC521A2AA0A695009DEEAA /* AppIcon.swift in Sources */,
 				AA8D9AF02E7CC2370068B333 /* FeaturesService.swift in Sources */,
@@ -2196,6 +2227,7 @@
 				E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */,
 				AA9DF5452EDF6B2E00D1FE52 /* PackageFileHandle.swift in Sources */,
 				E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */,
+				AA8B5F60302A238C00F28F39 /* Issue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
