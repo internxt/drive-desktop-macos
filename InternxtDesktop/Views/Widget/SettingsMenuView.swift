@@ -13,6 +13,7 @@ struct SettingsMenuView: View {
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var issuesManager: IssuesManager
 
     var openSendFeedback: () -> Void
     var isPreview: Bool = false;
@@ -27,6 +28,8 @@ struct SettingsMenuView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: settingsHandler(for: .General))
                         .accessibilityIdentifier("menuItemPreferences")
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_ISSUES_OPTION", badgeCount: issuesManager.totalIssueCount, onPress: handleOpenIssues)
+                        .accessibilityIdentifier("menuItemIssues")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
                         .accessibilityIdentifier("menuItemSupport")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", onPress: settingsHandler(for: .Antivirus))
@@ -75,6 +78,10 @@ struct SettingsMenuView: View {
     }
 
     
+    func handleOpenIssues() {
+        NSApp.sendAction(#selector(AppDelegate.openIssuesWindow), to: nil, from: nil)
+    }
+
     func handleLogout() {
         Task {
             
@@ -113,10 +120,12 @@ struct SettingsMenuOption: View {
     public var onPress: () -> Void
     @State private var isHovering: Bool = false
     public var showNew: Bool = false
+    public var badgeCount: Int = 0
     
-    init(label: String, showNew: Bool = false, onPress: @escaping () -> Void) {
+    init(label: String, showNew: Bool = false, badgeCount: Int = 0, onPress: @escaping () -> Void) {
         self.label = label
         self.showNew = showNew
+        self.badgeCount = badgeCount
         self.onPress = onPress
     }
     
@@ -129,7 +138,15 @@ struct SettingsMenuOption: View {
             
             Spacer()
             
-            if showNew {
+            if badgeCount > 0 {
+                Text("\(min(badgeCount, 99))")
+                    .font(.XXSMedium)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Capsule().fill(Color.Red))
+                    .padding(.trailing, 8)
+            } else if showNew {
                 AppText("WIDGET_SETTINGS_NEW_OPTION")
                     .font(.XXSMedium)
                     .foregroundColor(.blue)

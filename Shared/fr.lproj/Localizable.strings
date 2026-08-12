@@ -25,10 +25,30 @@
 "WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
 "WIDGET_SETTINGS_CLEANER_OPTION" = "Cleaner";
 "WIDGET_SETTINGS_REFERRAL_OPTION" = "Parrainez et gagnez";
-
+"WIDGET_SETTINGS_ISSUES_OPTION" = "Problèmes";
 
 // Widget new option
 "WIDGET_SETTINGS_NEW_OPTION" = "Nouveau";
+
+// Issues window — tabs
+"ISSUES_TAB_SYNC"    = "Synchronisation";
+"ISSUES_TAB_BACKUPS" = "Sauvegardes";
+
+// Issues window — empty state
+"ISSUES_EMPTY_TITLE"    = "Aucun problème trouvé";
+"ISSUES_EMPTY_SUBTITLE" = "Les opérations de fichier échouées apparaîtront ici.";
+
+// Issues window — actions
+"ISSUES_CLEAR_ALL" = "Tout effacer";
+
+// Issues — operation labels
+"ISSUE_OP_UPLOAD"   = "Échec du téléversement";
+"ISSUE_OP_DOWNLOAD" = "Échec du téléchargement";
+"ISSUE_OP_DELETE"   = "Échec de la suppression";
+"ISSUE_OP_MOVE"     = "Échec du déplacement";
+"ISSUE_OP_CREATE"   = "Échec de la création";
+"ISSUE_OP_TRASH"    = "Échec du déplacement vers la corbeille";
+
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Tout est à jour";
