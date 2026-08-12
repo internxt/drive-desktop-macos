@@ -25,9 +25,30 @@
 "WIDGET_SETTINGS_ANTIVIRUS_OPTION" = "Antivirus";
 "WIDGET_SETTINGS_CLEANER_OPTION" = "Cleaner";
 "WIDGET_SETTINGS_REFERRAL_OPTION" = "Refer and Earn";
+"WIDGET_SETTINGS_ISSUES_OPTION" = "Issues";
 
 // Widget new option
 "WIDGET_SETTINGS_NEW_OPTION" = "New";
+
+// Issues window — tabs
+"ISSUES_TAB_SYNC"    = "Sync";
+"ISSUES_TAB_BACKUPS" = "Backups";
+
+// Issues window — empty state
+"ISSUES_EMPTY_TITLE"    = "No issues found";
+"ISSUES_EMPTY_SUBTITLE" = "Any failed file operations will appear here.";
+
+// Issues window — actions
+"ISSUES_CLEAR_ALL" = "Clear all";
+
+// Issues — operation labels
+"ISSUE_OP_UPLOAD"   = "Upload failed";
+"ISSUE_OP_DOWNLOAD" = "Download failed";
+"ISSUE_OP_DELETE"   = "Delete failed";
+"ISSUE_OP_MOVE"     = "Move failed";
+"ISSUE_OP_CREATE"   = "Create failed";
+"ISSUE_OP_TRASH"    = "Trash failed";
+
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Everything is up to date";

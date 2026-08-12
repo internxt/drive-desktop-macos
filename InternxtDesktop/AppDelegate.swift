@@ -50,6 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let antivirusManager = AntivirusManager()
     let cleanerService = CleanerService()
     let notificationsManager = NotificationsManager.shared
+    let issuesManager = IssuesManager()
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
@@ -129,10 +130,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
+        self.issuesManager.startObserving()
 
         self.backupAlertsCoordinator = BackupAlertsCoordinator(
             fileSizeLimitState: fileSizeLimitState,
@@ -525,6 +527,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     @objc func openSettingsWindow() {
         self.windowsManager.openWindow(id: "settings")
     }
+
+    @objc func openIssuesWindow() {
+        self.windowsManager.openWindow(id: "issues")
+    }
     
     @objc func openOnboardingWindow() {
         self.windowsManager.openWindow(id: "onboarding")
@@ -579,6 +585,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
                 .environmentObject(self.antivirusManager)
+                .environmentObject(self.issuesManager)
         )
     }
     

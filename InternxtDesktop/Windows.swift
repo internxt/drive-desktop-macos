@@ -13,8 +13,8 @@ import Sparkle
 /// Return the default windows config, this
 /// windows will be available without needing to explicitly
 /// creating them
-func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager,antivirusManager : AntivirusManager ,
-                    cleanerService: CleanerService,updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
+func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager, antivirusManager: AntivirusManager,
+                    cleanerService: CleanerService, issuesManager: IssuesManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
                     fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState, storageFullState: StorageFullState) -> [WindowConfig] {
     let windows = [
         WindowConfig(
@@ -53,6 +53,20 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
             id: "send-feedback",
             width: 380,
             height: 320
+        ),
+        WindowConfig(
+            view: AnyView(
+                AppSettingsManagerView {
+                    IssuesView()
+                        .environmentObject(issuesManager)
+                }
+            ),
+            title: "Issues",
+            id: "issues",
+            width: 540,
+            height: 440,
+            fixedToFront: true,
+            backgroundColor: Color.Surface
         ),
         WindowConfig(
             view: AnyView(
