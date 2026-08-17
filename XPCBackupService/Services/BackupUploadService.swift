@@ -85,6 +85,10 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }()
 
+    private lazy var driveAPI: DriveAPI = {
+        DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }()
+
 
     private let apiSemaphore = AsyncSemaphore(maxConcurrent: 6)
     private let networkUploadSemaphore = AsyncSemaphore(maxConcurrent: 2)
@@ -218,15 +222,19 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
                 do {
-                    let parentChilds = try await withAPIThrottle {
-                        try await self.backupNewAPI.getBackupChilds(folderUuid: "\(safeRemoteParentUuid)")
+                    let existencesResponse = try await withAPIThrottle {
+                        try await self.driveAPI.getFolderExistencesInFolder(
+                            folderParentUuid: safeRemoteParentUuid, 
+                            folderName: foldername
+                        )
                     }
 
-                    let folder = parentChilds.folders.first { currentFolder in
+                    let folder = existencesResponse.existentFolders.first { currentFolder in
                         currentFolder.plainName == foldername && currentFolder.removed == false
                     }
 
                     guard let folder = folder else {
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(foldername)' server returned: \(existencesResponse.existentFolders.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
