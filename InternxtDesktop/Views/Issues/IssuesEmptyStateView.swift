@@ -13,10 +13,10 @@ struct IssuesEmptyStateView: View {
             AppIcon(iconName: .CheckCircle, size: 36, color: .Gray40)
             AppText("ISSUES_EMPTY_TITLE")
                 .font(.SMMedium)
-                .foregroundColor(.Gray60)
+                .foregroundColor(.Gray100)
             AppText("ISSUES_EMPTY_SUBTITLE")
                 .font(.XSRegular)
-                .foregroundColor(.Gray40)
+                .foregroundColor(.Gray60)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

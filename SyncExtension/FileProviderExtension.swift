@@ -603,7 +603,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             if isWorkspaceDomain(){
                return TrashFolderWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
             }
-            return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return TrashFolderUseCase(item: item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if folderHasBeenRenamed {
@@ -616,14 +616,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return MoveFolderWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
             }
             
-            return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenTrashed {
             if isWorkspaceDomain(){
                 return TrashFileWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
             }
-            return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return TrashFileUseCase(item: item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenRenamed  {
@@ -644,7 +644,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             if isWorkspaceDomain(){
                 return MoveFileWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
             }
-            return MoveFileUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return MoveFileUseCase(user: user, item:item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if contentHasChanged {

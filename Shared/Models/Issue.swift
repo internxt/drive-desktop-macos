@@ -96,13 +96,15 @@ extension Issue {
         case .move:           operation = .move
         case .trash:          operation = .trash
         case .backupDownload: operation = .download
+        case .backupUpload:   operation = .upload
         }
 
         return Issue(
             id: stableID,
-            category: entry.kind == .backupDownload ? .backups : .sync,
+            category: (entry.kind == .backupDownload || entry.kind == .backupUpload) ? .backups : .sync,
             filename: entry.filename,
             operation: operation,
+            errorDescription: entry.errorMessage,
             date: entry.createdAt
         )
     }

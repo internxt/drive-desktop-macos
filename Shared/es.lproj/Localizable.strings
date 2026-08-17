@@ -35,7 +35,7 @@
 "ISSUES_TAB_BACKUPS" = "Copias de seguridad";
 
 // Issues window — empty state
-"ISSUES_EMPTY_TITLE"    = "No se encontraron problemas";
+"ISSUES_EMPTY_TITLE"    = "No hay problemas";
 "ISSUES_EMPTY_SUBTITLE" = "Las operaciones de archivo fallidas aparecerán aquí.";
 
 // Issues window — actions

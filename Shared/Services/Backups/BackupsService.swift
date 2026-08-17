@@ -396,6 +396,9 @@ class BackupsService: ObservableObject {
 
     private func propagateError(errorMessage: String) {
         logger.info("Error backing up device")
+        let deviceName = currentDevice?.name ?? "Backup"
+        let entry = ActivityEntry(filename: deviceName, kind: .backupUpload, status: .failed, errorMessage: errorMessage)
+        activityManager.saveActivityEntry(entry: entry)
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
             self?.backupUploadStatus = .Failed
@@ -764,6 +767,11 @@ class BackupsService: ObservableObject {
             
             if(backupDownloadStatus.status == .Done || backupDownloadStatus.status == .Failed) {
                 self.backupDownloadProgressTimer?.cancel()
+                if backupDownloadStatus.status == .Failed {
+                    let deviceName = self.deviceDownloading?.plainName ?? "Backup"
+                    let entry = ActivityEntry(filename: deviceName, kind: .backupDownload, status: .failed, errorMessage: "Backup download failed")
+                    self.activityManager.saveActivityEntry(entry: entry)
+                }
             }
         }
     }

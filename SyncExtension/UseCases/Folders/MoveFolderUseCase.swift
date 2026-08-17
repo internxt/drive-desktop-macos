@@ -8,6 +8,7 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
+import RealmSwift
 
 
 struct MoveFolderUseCase {
@@ -17,23 +18,34 @@ struct MoveFolderUseCase {
     let changedFields: NSFileProviderItemFields
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
-    init(user: DriveUser,item: NSFileProviderItem, changedFields:  NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    private let activityManager: ActivityManager
+
+    init(
+        user: DriveUser,
+        item: NSFileProviderItem,
+        changedFields: NSFileProviderItemFields,
+        activityManager: ActivityManager,
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+    ) {
         self.user = user
         self.item = item
         self.completionHandler = completionHandler
         self.changedFields = changedFields
+        self.activityManager = activityManager
     }
     
     
     func run() -> Progress {
+        let trackingId = ObjectId.generate()
         Task {
             self.logger.info("Moving folder with id \(item.itemIdentifier.rawValue)")
-            
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingId, filename: item.filename, kind: .move, status: .inProgress))
+
             do {
                 let newParentIsRootFolder: Bool = item.parentItemIdentifier == .rootContainer
                 
                 let folder = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
-                let folderDestination =  try await driveNewAPI.getFolderMetaById(id: newParentIsRootFolder == true ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue)
+                let folderDestination = try await driveNewAPI.getFolderMetaById(id: newParentIsRootFolder == true ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue)
                 
                 guard let parentUuid = folder.uuid  else {
                     throw UploadFileUseCaseError.InvalidParentUUID
@@ -56,11 +68,13 @@ struct MoveFolderUseCase {
                     itemType: .folder
                 )
                 
+                activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .finished)
                 completionHandler(newItem, [], false, nil)
                 self.logger.info("✅ Folder moved successfully")
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to move folder: \(error.localizedDescription)")
+                activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 
             }

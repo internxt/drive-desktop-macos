@@ -8,6 +8,7 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
+import RealmSwift
 
 enum TrashFolderUseCaseError: Error {
     case InvalidItemId
@@ -29,20 +30,31 @@ struct TrashFolderUseCase {
     private let item: NSFileProviderItem
     private let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     private let changedFields: NSFileProviderItemFields
-    init(item: NSFileProviderItem, changedFields: NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    private let activityManager: ActivityManager
+
+    init(
+        item: NSFileProviderItem,
+        changedFields: NSFileProviderItemFields,
+        activityManager: ActivityManager,
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+    ) {
         self.item = item
         self.completionHandler = completionHandler
         self.changedFields = changedFields
+        self.activityManager = activityManager
     }
     
     public func run() -> Progress {
         self.logger.info("Moving item to trash")
+        let trackingId = ObjectId.generate()
         Task {
             do {
                
                 guard let id = Int(item.itemIdentifier.rawValue) else {
                     throw TrashFolderUseCaseError.InvalidItemId
                 }
+
+                activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingId, filename: item.filename, kind: .trash, status: .inProgress))
                
                 let trashed: Bool = try await trashAPI.trashFolders(itemsToTrash: [FolderToTrash(id: id)])
                 self.logger.info("Trashed item result is: \(trashed)")
@@ -58,6 +70,7 @@ struct TrashFolderUseCase {
                         itemType: .folder
                     )
                     self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) trashed correctly")
+                    activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .trash, status: .finished)
                     DeletedFolderCache.shared.markFolderAsDeleted(String(id))
                     completionHandler(newItem, changedFields.removing(.parentItemIdentifier), false, nil)
                 } else {
@@ -67,6 +80,7 @@ struct TrashFolderUseCase {
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to trash folder: \(error.localizedDescription)")
+                activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .trash, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }
         }

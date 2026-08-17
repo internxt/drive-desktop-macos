@@ -8,6 +8,7 @@
 import Foundation
 import FileProvider
 import InternxtSwiftCore
+import RealmSwift
 
 
 struct MoveFileUseCase {
@@ -17,20 +18,30 @@ struct MoveFileUseCase {
     let changedFields: NSFileProviderItemFields
     let completionHandler: (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     let user: DriveUser
-    init(user: DriveUser,item: NSFileProviderItem, changedFields:  NSFileProviderItemFields, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) {
+    private let activityManager: ActivityManager
+
+    init(
+        user: DriveUser,
+        item: NSFileProviderItem,
+        changedFields: NSFileProviderItemFields,
+        activityManager: ActivityManager,
+        completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
+    ) {
         self.user = user
         self.item = item
         self.completionHandler = completionHandler
         self.changedFields = changedFields
+        self.activityManager = activityManager
     }
     
     
     func run() -> Progress {
+        let trackingId = ObjectId.generate()
         Task {
             self.logger.info("Moving file with uuid \(item.itemIdentifier.rawValue)")
-            
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingId, filename: item.filename, kind: .move, status: .inProgress))
+
             do {
-                
                 
                 var parentFolderId = item.parentItemIdentifier.rawValue
                 
@@ -60,11 +71,13 @@ struct MoveFileUseCase {
                 
                 
                 self.logger.info("Moving \(newItem.itemIdentifier.rawValue) to \(item.parentItemIdentifier.rawValue)")
+                activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .finished)
                 completionHandler(newItem, [], false, nil)
                 self.logger.info("✅ File moved successfully")
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to move file: \(error.localizedDescription)")
+                activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 
             }
