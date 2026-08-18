@@ -42,16 +42,20 @@ class ActivityManager: ObservableObject {
     }
     
     func saveActivityEntry(entry: ActivityEntry) {
-        
+        saveActivityEntries(entries: [entry])
+    }
+    
+    func saveActivityEntries(entries: [ActivityEntry]) {
         do {
-            let realm = getRealm()
-            try realm?.write {
-                realm?.add(entry, update: .modified)
+            guard let realm = getRealm() else { return }
+            try realm.write {
+                for entry in entries {
+                    realm.add(entry, update: .modified)
+                }
             }
         } catch {
             error.reportToSentry()
         }
-
     }
     
     func updateActivityEntryStatus(

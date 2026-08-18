@@ -45,6 +45,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.uploadOperationQueue = OperationQueue()
         self.uploadOperationQueue.maxConcurrentOperationCount = 5
         logger.info("Going to backup folders: \(backupURLs)")
+        BackupErrorFileQueue.shared.startNewSession()
         self.backupUploadStatus = .InProgress
         self.backupUploadProgress = Progress()
         

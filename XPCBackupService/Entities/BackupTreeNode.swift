@@ -185,6 +185,15 @@ class BackupTreeNode {
             }
         }
         
+        // Check for SF_DATALESS to prevent backing up undownloaded iCloud/Cloud files
+        var fileStat = stat()
+        if stat(nodeURL.path, &fileStat) == 0 {
+            if (fileStat.st_flags & UInt32(SF_DATALESS)) != 0 {
+                backupTotalPogress.completedUnitCount += 1
+                throw BackupUploadError.fileNotDownloadedFromCloud
+            }
+        }
+        
         let currentSyncedNode = try self.nodeIsSynced(url: nodeURL, deviceId: self.deviceId)
         if let currentSyncedNodeUnwrapped = currentSyncedNode {
             try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNodeUnwrapped.remoteId, syncedNoteRemoteUuid: currentSyncedNodeUnwrapped.remoteUuid)
