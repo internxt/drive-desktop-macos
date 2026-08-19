@@ -181,7 +181,6 @@
 		AAE87A7D2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */; };
 		AAE87A7E2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */; };
 		AAE9D014301D914400631C84 /* PackageUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE9D013301D914400631C84 /* PackageUploadService.swift */; };
-		AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEC163F2D485083009B66BE /* BookmarkManager.swift */; };
 		AAED64A12C23E85000CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A22C23E93300CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
 		AAED64A32C23E93400CD971B /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAED64A02C23E85000CD971B /* JWTDecoder.swift */; };
@@ -611,7 +610,6 @@
 		AAE87A792E69FF4300FD9708 /* FileOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperations.swift; sourceTree = "<group>"; };
 		AAE87A7C2E6A00EF00FD9708 /* CleanupEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanupEngine.swift; sourceTree = "<group>"; };
 		AAE9D013301D914400631C84 /* PackageUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageUploadService.swift; sourceTree = "<group>"; };
-		AAEC163F2D485083009B66BE /* BookmarkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
 		AAED64A02C23E85000CD971B /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
 		AAF71A632CDEAA1600476000 /* EnumerateFolderItemsWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumerateFolderItemsWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAF71A662CDF114500476000 /* CreateFolderWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFolderWorkspaceUseCase.swift; sourceTree = "<group>"; };
@@ -1465,7 +1463,6 @@
 			isa = PBXGroup;
 			children = (
 				E18300AF2AA2395100AD023C /* FileExtension.swift */,
-				AAEC163F2D485083009B66BE /* BookmarkManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2035,7 +2032,6 @@
 				AA3D129B2FE05921000ECA4C /* BackupAlertsCoordinator.swift in Sources */,
 				AA13E03C2E6255C400DD47CB /* StorageMeterView.swift in Sources */,
 				E1F616092A8D7E6F008C9E62 /* AppButton.swift in Sources */,
-				AAEC16402D485083009B66BE /* BookmarkManager.swift in Sources */,
 				AA13E0312E620B0000DD47CB /* XPCCleanerConnectionManager.swift in Sources */,
 				E106D4622AB9FD6300E3BF7A /* URL.swift in Sources */,
 				316D247A2B4D9997007DE91A /* BackupsService.swift in Sources */,

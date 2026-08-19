@@ -97,9 +97,7 @@ class AntivirusManager: ObservableObject {
                     self.isCalculatingTotal = false
                     self.progress = 100.0
                     self.currentState = .results(noThreats: (self.detectedFiles == 0))
-                    if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
-                        BookmarkManager.shared.stopAccessing(url: resolvedURL)
-                    }
+
                 }
             }
         )
@@ -110,9 +108,7 @@ class AntivirusManager: ObservableObject {
         isCancelled = true
         scanner.cancelAll()
         self.currentState = isLocked ? .locked : .results(noThreats: (self.detectedFiles == 0))
-        if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
-            BookmarkManager.shared.stopAccessing(url: resolvedURL)
-        }
+
     }
     
     func downloadDatabases() {

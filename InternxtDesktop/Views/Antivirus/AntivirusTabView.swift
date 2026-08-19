@@ -130,14 +130,10 @@ struct AntivirusTabView: View {
         VStack(spacing: 15) {
             
             scanOptionRow(title: "ANTIVIRUS_SYSTEM_SCAN", buttonTitle: "ANTIVIRUS_START_SCAN") {
-                if let url = BookmarkManager.shared.resolveBookmark() {
-                    self.selectedPath = url.path
-                    viewModel.selectedPath = url.path
-                    viewModel.startScan(path: url.path)
-                } else {
-                    showUserDirectory()
-                }
-                
+                let userHomeDirectory = "/Users/\(NSUserName())"
+                self.selectedPath = userHomeDirectory
+                viewModel.selectedPath = userHomeDirectory
+                viewModel.startScan(path: userHomeDirectory)
             }
             scanOptionRow(title: "ANTIVIRUS_CUSTOM_SCAN", buttonTitle: "ANTIVIRUS_CHOOSE_FILES") {
                 selectFileOrFolder { url in
@@ -192,7 +188,7 @@ struct AntivirusTabView: View {
             if viewModel.isCalculatingTotal {
                 ProgressView()
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
-                    .scaleEffect(x: 1, y: 2, anchor: .center)
+                    .controlSize(.large)
                     .padding(.top, 4)
                 
                 AppText("Calculating files...")
@@ -201,7 +197,7 @@ struct AntivirusTabView: View {
             } else {
                 ProgressView(value: min(viewModel.progress, 100) / 100.0)
                     .progressViewStyle(LinearProgressViewStyle(tint: Color.blue))
-                    .scaleEffect(x: 1, y: 2, anchor: .center)
+                    .controlSize(.large)
                     .animation(.easeInOut, value: viewModel.progress)
            
                 AppText("\(Int(viewModel.progress))%")
@@ -341,58 +337,6 @@ struct AntivirusTabView: View {
         alert.alertStyle = style
         alert.addButton(withTitle: buttonTitle)
         alert.runModal()
-    }
-    
-
-
-    func selectUserFolder(completion: @escaping (URL?) -> Void) {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Select Your User Folder"
-        openPanel.prompt = "Select"
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
-        openPanel.allowsMultipleSelection = false
-        openPanel.directoryURL = URL(fileURLWithPath: "/Users/\(NSUserName())")
-        openPanel.level = .modalPanel
-        
-        openPanel.begin { result in
-            if result == .OK {
-                completion(openPanel.url)
-            } else {
-                completion(nil)
-            }
-        }
-    }
-
-    func showUserDirectory() {
-        selectUserFolder { url in
-            guard let url = url else {
-                appLogger.info("No folder selected.")
-                return
-            }
-            
-            let userHomeDirectory = "/Users/\(NSUserName())"
-            
-            if url.path == userHomeDirectory {
-                do {
-                    try BookmarkManager.shared.saveBookmark(url: url)
-                    appLogger.info("Bookmark saved.")
-                    selectedPath = url.path
-                    viewModel.selectedPath = url.path
-                    if let resolvedURL = BookmarkManager.shared.resolveBookmark() {
-                        viewModel.startScan(path: resolvedURL.path)
-                    } else {
-                        appLogger.error("cannot get url")
-                    }
-                } catch {
-                    appLogger.error("Error saving bookmark: \(error)")
-                }
-            } else {
-                appLogger.error("Incorrect folder selected: \(url.path)")
-                self.showAlert(message: "You must select your user folder \(NSUserName())")
-                showUserDirectory()
-            }
-        }
     }
 
 
