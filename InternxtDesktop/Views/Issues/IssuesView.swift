@@ -15,10 +15,15 @@ struct IssuesView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
 
-            categoryPicker
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 12)
+            Picker("", selection: $selectedCategory) {
+                ForEach(IssueCategory.allCases) { category in
+                    Text(category.localizedTitle).tag(category)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(width: 220)
+            .padding(.vertical, 14)
 
             Divider()
                 .frame(maxWidth: .infinity, maxHeight: 1)
@@ -48,53 +53,6 @@ struct IssuesView: View {
         }
         .frame(width: 540, height: 440)
         .background(Color.Surface)
-    }
-
-  
-
-    private var categoryPicker: some View {
-        HStack(spacing: 4) {
-            ForEach(IssueCategory.allCases) { category in
-                categoryTab(for: category)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private func categoryTab(for category: IssueCategory) -> some View {
-        let isSelected = selectedCategory == category
-        let count = issuesManager.issues(for: category).count
-
-        return Button {
-            withAnimation(.easeInOut(duration: 0.15)) {
-                selectedCategory = category
-            }
-        } label: {
-            HStack(spacing: 6) {
-                AppText(category.localizedTitle)
-                    .font(isSelected ? .SMMedium : .SMRegular)
-                    .foregroundColor(isSelected ? .Gray100 : .Gray60)
-
-                if count > 0 {
-                    Text("\(count)")
-                        .font(.XXSMedium)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(
-                            Capsule().fill(Color.Red)
-                        )
-                }
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 7)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(isSelected ? Color.Gray10 : Color.clear)
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("issuesTab_\(category.rawValue)")
     }
 
     private var issuesFooter: some View {

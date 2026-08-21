@@ -285,7 +285,7 @@ struct DownloadFileUseCase {
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
                 if let trackingObjectId = trackingObjectId {
-                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .failed)
+                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .failed, errorMessage: error.getErrorDescription())
                 }
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
             }

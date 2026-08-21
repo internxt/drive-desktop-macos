@@ -251,7 +251,7 @@ struct UploadFileUseCase {
                 
             } catch {
                 error.reportToSentry()
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed, errorMessage: error.getErrorDescription())
                 self.logger.error("❌ Failed to create file \(item.filename) : \(error.getErrorDescription())")
                 completionHandler(nil, [], false, error.toFileProviderError())
             }

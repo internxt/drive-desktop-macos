@@ -42,31 +42,42 @@ class ActivityManager: ObservableObject {
     }
     
     func saveActivityEntry(entry: ActivityEntry) {
-        
+        saveActivityEntries(entries: [entry])
+    }
+    
+    func saveActivityEntries(entries: [ActivityEntry]) {
         do {
-            let realm = getRealm()
-            try realm?.write {
-                realm?.add(entry, update: .modified)
+            guard let realm = getRealm() else { return }
+            try realm.write {
+                for entry in entries {
+                    realm.add(entry, update: .modified)
+                }
             }
         } catch {
             error.reportToSentry()
         }
-
     }
     
-    func updateActivityEntryStatus(id: ObjectId, filename: String, kind: ActivityEntryOperationKind, status: ActivityEntryStatus) {
+    func updateActivityEntryStatus(
+        id: ObjectId,
+        filename: String,
+        kind: ActivityEntryOperationKind,
+        status: ActivityEntryStatus,
+        errorMessage: String? = nil
+    ) {
         guard let realm = getRealm() else { return }
         if let existing = realm.object(ofType: ActivityEntry.self, forPrimaryKey: id) {
             do {
                 try realm.write {
                     existing.filename = filename
                     existing.status = status
+                    if let msg = errorMessage { existing.errorMessage = msg }
                 }
             } catch {
                 error.reportToSentry()
             }
         } else {
-            saveActivityEntry(entry: ActivityEntry(_id: id, filename: filename, kind: kind, status: status))
+            saveActivityEntry(entry: ActivityEntry(_id: id, filename: filename, kind: kind, status: status, errorMessage: errorMessage))
         }
     }
 
@@ -126,12 +137,14 @@ class ActivityEntry: Object {
     @Persisted var createdAt: Date
     @Persisted var kind: ActivityEntryOperationKind
     @Persisted var status: ActivityEntryStatus
-    
+    @Persisted var errorMessage: String?
+
     convenience init(
         _id: ObjectId? = nil,
         filename: String,
         kind: ActivityEntryOperationKind,
-        status: ActivityEntryStatus
+        status: ActivityEntryStatus,
+        errorMessage: String? = nil
     ) {
         self.init()
         self._id = _id ?? ObjectId.generate()
@@ -139,6 +152,7 @@ class ActivityEntry: Object {
         self.createdAt = Date()
         self.kind = kind
         self.status = status
+        self.errorMessage = errorMessage
     }
 }
 
@@ -155,6 +169,7 @@ enum ActivityEntryOperationKind: String, PersistableEnum {
     case upload
     case move
     case backupDownload
+    case backupUpload
 }
 
 enum ActivityEntryStatus: String, PersistableEnum {

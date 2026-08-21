@@ -38,6 +38,10 @@ class BackupTreeNodeSyncOperation: AsyncOperation {
             //    (Files in a failed folder cannot be synced anyway).
             // 2. Fatal errors (e.g. storageFull) will trigger cancelAllOperations() at the XPC layer.
             // 3. Non-fatal errors are counted as failures, but sibling branches will continue processing.
+            BackupErrorFileQueue.shared.append(
+                filename: self.backupTreeNode.name,
+                errorMessage: error.localizedDescription
+            )
             onError?(error)
             throw error
         }

@@ -34,6 +34,20 @@ enum BackupUploadError: Error {
     case EmptyFileQuotaExceeded
     case EmptyFilePlanNotAllowed
     case StorageFull
+    case fileNotDownloadedFromCloud
+}
+
+extension BackupUploadError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .fileNotDownloadedFromCloud:
+            return "This file is currently in the cloud and not on your Mac. Please download it first to back it up."
+        case .StorageFull:
+            return "Storage is full."
+        default:
+            return "An unexpected backup error occurred (\(self))."
+        }
+    }
 }
 
 enum BackupDownloadError: Error {
