@@ -24,6 +24,24 @@ class AntivirusManager: ObservableObject {
     private let database = ClamAVDatabaseService.shared
     
     private var isCancelled = false
+    private var observationTask: Task<Void, Never>?
+    
+    init() {
+        observationTask = Task { @MainActor [weak self] in
+            for await isEnabled in FeaturesService.shared.$antivirusEnabled.values {
+                guard let self else { return }
+                if isEnabled && self.currentState == .locked {
+                    self.currentState = FeaturesService.shared.antivirusState
+                } else if !isEnabled && self.currentState != .locked {
+                    self.cancelScan(isLocked: true)
+                }
+            }
+        }
+    }
+    
+    deinit {
+        observationTask?.cancel()
+    }
     
     @MainActor
     func fetchAntivirusStatus() async {
