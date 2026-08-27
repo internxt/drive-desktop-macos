@@ -29,8 +29,6 @@ class IssuesManager: ObservableObject {
     private var dismissedKeys: Set<String> = []
     private var dismissedIssueIDs: Set<UUID> = []
 
-    private var lastClearedAt: Date? = nil
-
    
 
     init() {}
@@ -61,7 +59,6 @@ class IssuesManager: ObservableObject {
 
 
     func clearAll() {
-        lastClearedAt = Date()
         dismissedIssueIDs = Set(allIssues.map { $0.id })
         dismissedKeys = Set(allIssues.map { "\($0.category.rawValue)_\($0.filename)_\($0.operation.rawValue)" })
         DispatchQueue.main.async {

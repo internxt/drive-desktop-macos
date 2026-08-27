@@ -12,9 +12,7 @@ import SwiftUI
 import FileProvider
 import InternxtSwiftCore
 import Combine
-import ServiceManagement
 import Sparkle
-import RealmSwift
 import PushKit
 import UserNotifications
 
@@ -35,7 +33,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    private let AUTH_TOKEN_KEY = "AuthToken"
     
     // Managers
     var windowsManager: WindowsManager! = nil
@@ -56,7 +53,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
-    var signalEnumeratorTimer: AnyCancellable?
     var notificationsTimer: AnyCancellable?
     let fileSizeLimitState = FileSizeLimitState()
     let emptyFileLimitState = EmptyFileLimitState()

@@ -110,10 +110,6 @@ struct UploadStartedEvent: UploadAnalyticsEventPayload {
     var fileUploadId: String
     var processIdentifier: String
     var parentFolderId: Int
-    
-    internal func getMergedProperties() -> [String : Any] {
-        return [:]
-    }
 }
 
 struct UploadCompletedEvent: UploadAnalyticsEventPayload {

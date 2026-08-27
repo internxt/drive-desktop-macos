@@ -11,7 +11,6 @@ import SocketIO
 class RealtimeService: ObservableObject {
     private let manager: SocketManager
     private let socket: SocketIOClient
-    private var webSocketTask: URLSessionWebSocketTask?
     private var token: String
     private let onConnect: () -> Void
     private let onDisconnect: () -> Void

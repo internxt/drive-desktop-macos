@@ -15,7 +15,6 @@ struct URLDictionary {
     public static var UPGRADE_PLAN = URL(string:"https://drive.internxt.com/preferences?tab=plans")!
     public static var UPGRADE_PLAN_DEEP_LINK = URL(string: "https://drive.internxt.com/?preferences=open&section=account&subsection=plans")!
     public static var HELP_CENTER = URL(string:"https://help.internxt.com")!
-    public static var BACKUPS_WEB = URL(string: "https://drive.internxt.com/backups")!
     public static var DRIVE_WEB_FILE = "https://drive.internxt.com/file/"
     public static var DRIVE_WEB_FOLDER = "https://drive.internxt.com/folder/"
     public static var REFERRAL = URL(string: "https://drive.internxt.com/?referral=open")!

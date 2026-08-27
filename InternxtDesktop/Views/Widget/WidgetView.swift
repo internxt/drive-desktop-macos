@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FileProvider
 import RealmSwift
 
 struct WidgetView: View {
@@ -21,7 +20,6 @@ struct WidgetView: View {
     @EnvironmentObject var issuesManager: IssuesManager
     
     @State private var showBackupBanner = false
-    var isEmpty: Bool = true
     var openFileProviderRoot: () -> Void
     var openSendFeedback: () -> Void
     let configLoader = ConfigLoader()
