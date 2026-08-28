@@ -283,7 +283,7 @@ class BackupsService: ObservableObject {
                     self.selectedDevice = currentDevice 
                 }
                 
-                self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt) ")
+                self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt ?? "unknown") ")
                 self.currentDevice = currentDevice
                 self.devicesFetchingStatus = .Ready
             }
@@ -511,7 +511,7 @@ class BackupsService: ObservableObject {
     func downloadBackup(device: Device, downloadAt: URL) async throws {
         self.deviceDownloading = device
         logger.info("Preparint backup for download")
-        logger.info("Device to download is \(device.plainName) with ID \(device.id)")
+        logger.info("Device to download is \(device.plainName ?? "unknown") with ID \(device.id)")
         
         DispatchQueue.main.sync {
             self.backupDownloadStatus = .InProgress

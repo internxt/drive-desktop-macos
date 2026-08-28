@@ -8,7 +8,7 @@
 import Foundation
 import InternxtSwiftCore
 let MAX_DOWNLOAD_ATTEMPTS = 3
-class BackupDownloadItemOperation: AsyncOperation {
+class BackupDownloadItemOperation: AsyncOperation, @unchecked Sendable {
     
     let networkFacade: NetworkFacade
     let bucketId: String

@@ -237,7 +237,7 @@ struct UploadFileUseCase {
                 
                 
                 // Respond, then process the thumbnail so we don't block the UI
-                let thumbnailUpload = await self.generateAndUploadThumbnail(
+                _ = await self.generateAndUploadThumbnail(
                     driveItemId: createdFile.id,
                     fileURL: self.fileContent,
                     destinationURL: self.thumbnailFileDestination,
