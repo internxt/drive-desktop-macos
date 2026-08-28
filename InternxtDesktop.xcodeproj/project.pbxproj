@@ -356,7 +356,6 @@
 		E1D24AFA2C0DA4100009EC83 /* SyncedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ABDE9F2BA9FC2E00EEA7F5 /* SyncedNode.swift */; };
 		E1D24AFB2C0DA4210009EC83 /* BackupTreeNodeSyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D24AEF2C0467710009EC83 /* BackupTreeNodeSyncOperation.swift */; };
 		E1D24AFC2C0DA4270009EC83 /* BackupTreeNodeSyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3194368F2B9B81BD006F4600 /* BackupTreeNodeSyncResult.swift */; };
-		E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29532A7D56C4009036B8 /* AppTextInput.swift */; };
 		E1DB29562A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
 		E1DB29572A7D5CD5009036B8 /* env.local.json in Resources */ = {isa = PBXBuildFile; fileRef = E1DB29552A7D5CD5009036B8 /* env.local.json */; };
 		E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
@@ -734,7 +733,6 @@
 		E1D0D4162AF55C1500CF1F7F /* AnalyticsEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEvents.swift; sourceTree = "<group>"; };
 		E1D24AEF2C0467710009EC83 /* BackupTreeNodeSyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTreeNodeSyncOperation.swift; sourceTree = "<group>"; };
 		E1D24AF32C0468AF0009EC83 /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
-		E1DB29532A7D56C4009036B8 /* AppTextInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTextInput.swift; sourceTree = "<group>"; };
 		E1DB29552A7D5CD5009036B8 /* env.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = env.local.json; sourceTree = "<group>"; };
 		E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigLoader.swift; sourceTree = "<group>"; };
 		E1DB295C2A7D64AB009036B8 /* WidgetHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHeaderView.swift; sourceTree = "<group>"; };
@@ -1360,7 +1358,6 @@
 		E1DB29522A7D5695009036B8 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				E1DB29532A7D56C4009036B8 /* AppTextInput.swift */,
 				E1F616082A8D7E6F008C9E62 /* AppButton.swift */,
 				E163105B2A8E6C830072989E /* AppText.swift */,
 				E1CC52192AA0A695009DEEAA /* AppIcon.swift */,
@@ -2098,7 +2095,6 @@
 				AA9B1B9A2FB2D327000E582A /* FileLimitsService.swift in Sources */,
 				E1581DCF2A9629620051DD46 /* Generic.swift in Sources */,
 				E145E16C2A82A21500B07E0B /* Time.swift in Sources */,
-				E1DB29542A7D56C4009036B8 /* AppTextInput.swift in Sources */,
 				E1880B972AA6111B001FC171 /* SettingsView.swift in Sources */,
 				E18300B02AA2395100AD023C /* FileExtension.swift in Sources */,
 				AA3D129E2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift in Sources */,
