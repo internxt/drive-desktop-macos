@@ -37,7 +37,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    private let AUTH_TOKEN_KEY = "AuthToken"
     let domain: NSFileProviderDomain
     var workspace: [AvailableWorkspace]
     var workspaceCredentials: WorkspaceCredentialsResponse?

@@ -51,6 +51,10 @@ public let NOTIFICATION_UNAUTHORIZED = "com.internxt.drive.unauthorized"
 public var loadedConfig: JSONConfig? = nil
 
 public struct ConfigLoader {
+    public static let AUTH_TOKEN_KEY = "AuthToken"
+    public static let LEGACY_TOKEN_KEY = "LegacyAuthToken"
+    public static let MNEMONIC_TOKEN_KEY = "Mnemonic"
+
     static let shared: ConfigLoader = ConfigLoader()
     
     
@@ -100,7 +104,7 @@ public struct ConfigLoader {
     
     
     public func getAuthToken() -> String? {
-        return self.getFromUserDefaults(key: "AuthToken")
+        return self.getFromUserDefaults(key: ConfigLoader.AUTH_TOKEN_KEY)
     }
     
     public func getReduceBandwidth() -> Bool {
@@ -108,7 +112,7 @@ public struct ConfigLoader {
     }
     
     public func getMnemonic() -> String? {
-        return self.getFromUserDefaults(key: "Mnemonic")
+        return self.getFromUserDefaults(key: ConfigLoader.MNEMONIC_TOKEN_KEY)
     }
 
     public func getNetworkAuth() -> String? {
@@ -167,12 +171,12 @@ public struct ConfigLoader {
 
     
     public func removeLegacyAuthToken() -> Void  {
-        _ = self.removeFromUserDefaults(key: "LegacyAuthToken")
+        _ = self.removeFromUserDefaults(key: ConfigLoader.LEGACY_TOKEN_KEY)
         //keep to remove value
     }
     
     public func setMnemonic(mnemonic: String) throws -> Void {
-        let saved = self.saveToUserDefaults(key: "Mnemonic", value: mnemonic)
+        let saved = self.saveToUserDefaults(key: ConfigLoader.MNEMONIC_TOKEN_KEY, value: mnemonic)
         
         if saved == false {
             throw ConfigLoaderError.CannotSaveMnemonic
@@ -180,7 +184,7 @@ public struct ConfigLoader {
     }
     
     public func removeMnemonic() throws -> Void  {
-        let removed = self.removeFromUserDefaults(key: "Mnemonic")
+        let removed = self.removeFromUserDefaults(key: ConfigLoader.MNEMONIC_TOKEN_KEY)
         
         if removed == false {
             throw ConfigLoaderError.CannotRemoveKey
@@ -188,7 +192,7 @@ public struct ConfigLoader {
     }
     
     public func setAuthToken(authToken: String) throws -> Void {
-        let saved = self.saveToUserDefaults(key: "AuthToken", value: authToken)
+        let saved = self.saveToUserDefaults(key: ConfigLoader.AUTH_TOKEN_KEY, value: authToken)
         
         if saved == false {
             throw ConfigLoaderError.CannotSaveAuthToken
@@ -196,7 +200,7 @@ public struct ConfigLoader {
     }
     
     public func removeAuthToken() throws -> Void  {
-        let removed = self.removeFromUserDefaults(key: "AuthToken")
+        let removed = self.removeFromUserDefaults(key: ConfigLoader.AUTH_TOKEN_KEY)
         
         if removed == false {
             throw ConfigLoaderError.CannotRemoveKey

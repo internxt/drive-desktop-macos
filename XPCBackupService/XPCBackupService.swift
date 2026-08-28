@@ -24,9 +24,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private var downloadOperationQueue = OperationQueue()
     private var backupUploadStatus: BackupStatus = .Idle
     private var backupDownloadStatus: BackupStatus = .Idle
-    private let AUTH_TOKEN_KEY = "AuthToken"
-    private let LEGACY_TOKEN_KEY = "LegacyAuthToken"
-    private let MNEMONIC_TOKEN_KEY = "Mnemonic"
     @objc func uploadDeviceBackup(
         backupAt backupURLs: [String],
         networkAuth: String?,
@@ -65,13 +62,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
 
             
-            guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+            guard let newAuthToken = sharedDefaults.string(forKey: ConfigLoader.AUTH_TOKEN_KEY) else{
                 logger.error("Cannot get AuthToken")
                 reply(nil, "Cannot get AuthToken")
                 return
             }
             
-            guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else{
+            guard let mnemonic = sharedDefaults.string(forKey: ConfigLoader.MNEMONIC_TOKEN_KEY) else{
                 logger.error("Cannot get mnemonic")
                 reply(nil, "Cannot get mnemonic")
                 return
