@@ -226,7 +226,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 logger.info(["📍 Push device token \(deviceTokenString) registered", result])
                 
             }catch{
-                logger.error(["Cannot sync token", error])
+                error.reportToSentry()
             }
         }
     }
