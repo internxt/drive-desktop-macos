@@ -256,7 +256,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         SyncedNode(
                             remoteId: folder.id,
                             deviceId: node.deviceId,
-                            remoteUuid: folder.uuid ?? "",
+                            remoteUuid: folder.uuid,
                             url: nodeURL,
                             rootBackupFolder: node.rootBackupFolder,
                             parentId: node.parentId,
@@ -356,7 +356,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     )
                 }
 
-                self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
+                self.logger.info("✅ Updated file correctly with identifier \(String(describing: updatedFile.fileId))")
 
 
                 // Edit date in synced database

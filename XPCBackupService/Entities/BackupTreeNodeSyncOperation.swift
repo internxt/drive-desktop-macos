@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BackupTreeNodeSyncOperation: AsyncOperation {
+class BackupTreeNodeSyncOperation: AsyncOperation, @unchecked Sendable {
     private let backupTreeNode: BackupTreeNode
     private let operationQueue: OperationQueue
     private let syncGroup: DispatchGroup

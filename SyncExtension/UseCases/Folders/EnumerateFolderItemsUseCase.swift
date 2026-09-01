@@ -103,12 +103,12 @@ struct EnumerateFolderItemsUseCase {
                     }
                     
                     guard let createdAt = Time.dateFromISOString(file.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for item \(file.fileId) with value \(file.createdAt)")
+                        self.logger.error("Cannot create createdAt date for item \(file.fileId ?? "unknown") with value \(file.createdAt)")
                         return
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for item \(file.fileId) with value \(file.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for item \(file.fileId ?? "unknown") with value \(file.updatedAt)")
                         return
                     }
                     

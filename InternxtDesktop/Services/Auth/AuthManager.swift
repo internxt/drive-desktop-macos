@@ -124,7 +124,7 @@ class AuthManager: ObservableObject {
     func signOut() throws {
         
         try config.removeAuthToken()
-        try config.removeLegacyAuthToken()
+        config.removeLegacyAuthToken()
         try config.removeMnemonic()
         try config.removeWorkspaces()
         try config.removeWorkspaceCredentials()

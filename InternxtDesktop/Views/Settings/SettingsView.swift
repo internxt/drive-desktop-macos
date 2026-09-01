@@ -71,7 +71,7 @@ struct SettingsView: View {
             if showBackupContentNavigator {
                 if let device = self.selectedDevice,
                     self.showBackupContentNavigator,
-                    let bucketId = device.bucket {
+                    device.bucket != nil {
                     BackupContentNavigator(
                         device: device,
                         onClose: {
