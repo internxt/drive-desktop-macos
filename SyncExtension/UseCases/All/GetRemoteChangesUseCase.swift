@@ -20,6 +20,7 @@ class GetRemoteChangesUseCase {
     private let anchor: NSFileProviderSyncAnchor
     private let user: DriveUser
     private let enumeratedChangesLimit: Int = 50
+    private let deletedStatuses: Set<String> = ["REMOVED", "TRASHED", "DELETED"]
     private var updatedFileProviderItems: [FileProviderItem] = []
     private var deletedItemsIdentifiers: [NSFileProviderItemIdentifier] = []
     private var newFilesLastUpdatedAt: Date = Date()
@@ -122,7 +123,7 @@ class GetRemoteChangesUseCase {
             }
             
             
-            if folder.status == "REMOVED" || folder.status == "TRASHED" {
+            if deletedStatuses.contains(folder.status) {
                 deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(folder.id)))
                 DeletedFolderCache.shared.markFolderAsDeleted(String(folder.id))
                 if updatedAt > lastUpdatedAt {
@@ -194,7 +195,7 @@ class GetRemoteChangesUseCase {
                 mostRecentUpdatedAt = updatedAt
             }
 
-            if file.status == "REMOVED" || file.status == "TRASHED" {
+            if deletedStatuses.contains(file.status) {
                 deletedItemsIdentifiers.append(NSFileProviderItemIdentifier(rawValue: String(file.uuid)))
                 return
             }
