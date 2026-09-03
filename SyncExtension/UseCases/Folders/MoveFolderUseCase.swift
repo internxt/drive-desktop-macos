@@ -38,7 +38,7 @@ struct MoveFolderUseCase {
     func run() -> Progress {
         let trackingId = ObjectId.generate()
         Task {
-            self.logger.info("Moving folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)) to \(item.parentItemIdentifier.rawValue)")
+            self.logger.info("Moving folder (id: \(item.itemIdentifier.rawValue), name: '\(item.filename)') to destination id \(item.parentItemIdentifier.rawValue)")
             activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingId, filename: item.filename, kind: .move, status: .inProgress))
 
             do {
@@ -71,10 +71,10 @@ struct MoveFolderUseCase {
                 
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .finished)
                 completionHandler(newItem, [], false, nil)
-                self.logger.info("✅ Folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)) moved successfully to '\(destinationName)' (\(item.parentItemIdentifier.rawValue))")
+                self.logger.info("✅ Folder (id: \(item.itemIdentifier.rawValue), name: '\(item.filename)') moved successfully to destination (id: \(item.parentItemIdentifier.rawValue), name: '\(destinationName)')")
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to move folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)): \(error.localizedDescription)")
+                self.logger.error("❌ Failed to move folder (id: \(item.itemIdentifier.rawValue), name: '\(item.filename)') to destination id \(item.parentItemIdentifier.rawValue): \(error.localizedDescription)")
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 
