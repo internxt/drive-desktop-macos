@@ -45,7 +45,7 @@ struct TrashFolderUseCase {
     }
     
     public func run() -> Progress {
-        self.logger.info("Moving item to trash")
+        self.logger.info("Moving folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)) to trash")
         let trackingId = ObjectId.generate()
         Task {
             do {
@@ -69,7 +69,7 @@ struct TrashFolderUseCase {
                         itemExtension: nil,
                         itemType: .folder
                     )
-                    self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) trashed correctly")
+                    self.logger.info("✅ Folder '\(item.filename)' with id \(item.itemIdentifier.rawValue) trashed correctly")
                     activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .trash, status: .finished)
                     DeletedFolderCache.shared.markFolderAsDeleted(String(id))
                     completionHandler(newItem, changedFields.removing(.parentItemIdentifier), false, nil)
@@ -79,7 +79,7 @@ struct TrashFolderUseCase {
                 
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to trash folder: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to trash folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)): \(error.localizedDescription)")
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .trash, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }

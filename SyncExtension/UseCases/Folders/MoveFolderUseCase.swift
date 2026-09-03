@@ -38,7 +38,7 @@ struct MoveFolderUseCase {
     func run() -> Progress {
         let trackingId = ObjectId.generate()
         Task {
-            self.logger.info("Moving folder with id \(item.itemIdentifier.rawValue)")
+            self.logger.info("Moving folder (id: \(item.itemIdentifier.rawValue), name: '\(item.filename)') to destination id \(item.parentItemIdentifier.rawValue)")
             activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingId, filename: item.filename, kind: .move, status: .inProgress))
 
             do {
@@ -46,6 +46,7 @@ struct MoveFolderUseCase {
                 
                 let folder = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
                 let folderDestination = try await driveNewAPI.getFolderMetaById(id: newParentIsRootFolder == true ? String(user.root_folder_id) : item.parentItemIdentifier.rawValue)
+                let destinationName = folderDestination.plainName ?? folderDestination.name ?? item.parentItemIdentifier.rawValue
                 
                 guard let parentUuid = folder.uuid  else {
                     throw UploadFileUseCaseError.InvalidParentUUID
@@ -70,10 +71,10 @@ struct MoveFolderUseCase {
                 
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .finished)
                 completionHandler(newItem, [], false, nil)
-                self.logger.info("✅ Folder moved successfully")
+                self.logger.info("✅ Folder (id: \(item.itemIdentifier.rawValue), name: '\(item.filename)') moved successfully to destination (id: \(item.parentItemIdentifier.rawValue), name: '\(destinationName)')")
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to move folder: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to move folder (id: \(item.itemIdentifier.rawValue), name: '\(item.filename)') to destination id \(item.parentItemIdentifier.rawValue): \(error.localizedDescription)")
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .move, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 
