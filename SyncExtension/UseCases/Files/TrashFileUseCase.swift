@@ -43,16 +43,16 @@ struct TrashFileUseCase {
         let trackingId = ObjectId.generate()
         Task {
             do {
-                self.logger.info("Trashing file with id \(item.itemIdentifier.rawValue)")
+                self.logger.info("Trashing file '\(item.filename)' with id \(item.itemIdentifier.rawValue)")
                 activityManager.saveActivityEntry(entry: ActivityEntry(_id: trackingId, filename: item.filename, kind: .trash, status: .inProgress))
                 let driveFileTrashed = try await DriveFileService.shared.trashFile(uuid: item.itemIdentifier.rawValue)
-                self.logger.info("✅ File with id \(item.itemIdentifier.rawValue) trashed correctly")
+                self.logger.info("✅ File '\(item.filename)' with id \(item.itemIdentifier.rawValue) trashed correctly")
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .trash, status: .finished)
                 completionHandler(driveFileTrashed.fileProviderItem, changedFields.removing(.parentItemIdentifier), false, nil)
                 
             } catch {
                 error.reportToSentry()
-                self.logger.error("❌ Failed to trash file: \(error.localizedDescription)")
+                self.logger.error("❌ Failed to trash file '\(item.filename)' (id: \(item.itemIdentifier.rawValue)): \(error.localizedDescription)")
                 activityManager.updateActivityEntryStatus(id: trackingId, filename: item.filename, kind: .trash, status: .failed, errorMessage: error.getErrorDescription())
                 completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
             }

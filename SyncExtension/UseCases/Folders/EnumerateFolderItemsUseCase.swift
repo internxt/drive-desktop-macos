@@ -44,13 +44,13 @@ struct EnumerateFolderItemsUseCase {
     public func run(limit: Int = 50) -> Void {
         Task {
             do {
-                self.logger.info("Fetching folder content: \(self.enumeratedItemIdentifier.rawValue)")
-                
                 let folderId = self.enumeratedItemIdentifier == .rootContainer ? user.root_folder_id.toString() : self.enumeratedItemIdentifier.rawValue
                 var items: Array<NSFileProviderItem> = Array()
                 
                 
                 let folderMeta = try await driveAPI.getFolderMetaById(id: folderId)
+                let currentFolderName = folderMeta.plainName ?? folderMeta.name ?? (self.enumeratedItemIdentifier == .rootContainer ? "Root" : self.enumeratedItemIdentifier.rawValue)
+                self.logger.info("Fetching folder content for '\(currentFolderName)' (id: \(self.enumeratedItemIdentifier.rawValue))")
 
                 guard let folderUuid = folderMeta.uuid  else {
                     throw UploadFileUseCaseError.InvalidParentUUID
@@ -137,7 +137,7 @@ struct EnumerateFolderItemsUseCase {
                 
                 
                 self.observer.didEnumerate(items)
-                self.logger.info("✅ Enumerated items correctly for container \(self.enumeratedItemIdentifier.rawValue)")
+                self.logger.info("✅ Enumerated \(items.count) items correctly for container '\(currentFolderName)' (\(self.enumeratedItemIdentifier.rawValue))")
 
                 if hasMoreFiles || hasMoreFolders {
                     let nextOffset = limit + getOffset()

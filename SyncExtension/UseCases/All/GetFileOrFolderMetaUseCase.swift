@@ -94,7 +94,8 @@ struct GetFileOrFolderMetaUseCase {
                         if let parentFolderId = folderMeta.parentId  {
                             
                             if DeletedFolderCache.shared.isFolderDeleted(String(parentFolderId)) {
-                                self.logger.info("❌ Parent was deleted, returning error for item \(folderMeta.plainName ?? "")")
+                                let itemDisplayName = folderMeta.plainName ?? folderMeta.name ?? identifierRaw
+                                self.logger.info("❌ Parent was deleted, returning error for folder '\(itemDisplayName)' (id: \(identifierRaw))")
                                 DeletedFolderCache.shared.markFolderAsDeleted(String(folderMeta.id)) // mark this folder as deleted
                                 completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                                 return
@@ -133,7 +134,7 @@ struct GetFileOrFolderMetaUseCase {
                         )
 
                         completionHandler(folderItem, nil)
-                        self.logger.info("✅ Got metadata for folder with name \(folderItem.filename)")
+                        self.logger.info("✅ Got metadata for folder with name '\(folderItem.filename)' and id \(identifierRaw)")
                         return
                     }
                 }

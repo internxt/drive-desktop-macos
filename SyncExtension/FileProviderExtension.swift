@@ -594,7 +594,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
         let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
         
-        logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
+        logger.info("Modification request for item '\(item.filename)' (\(item.itemIdentifier.rawValue)) [\(item.contentType == .folder ? "folder" : "file")]")
         
         
         if folderHasBeenTrashed {
