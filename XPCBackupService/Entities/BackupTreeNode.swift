@@ -249,7 +249,7 @@ class BackupTreeNode {
                     try await self.syncNode()
                     return
                 } else {
-                    logger.info("Node sync failed permanently for \(self.name): \(error.localizedDescription)")
+                    logger.info("Node sync failed permanently for \(self.name): \(error.getErrorDescription())")
                     backupTotalPogress.completedUnitCount += 1
                     throw error
                 }

@@ -40,7 +40,7 @@ class BackupTreeNodeSyncOperation: AsyncOperation, @unchecked Sendable {
             // 3. Non-fatal errors are counted as failures, but sibling branches will continue processing.
             BackupErrorFileQueue.shared.append(
                 filename: self.backupTreeNode.name,
-                errorMessage: error.localizedDescription
+                errorMessage: error.getErrorDescription()
             )
             onError?(error)
             throw error
