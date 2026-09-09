@@ -41,6 +41,11 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
                
                 if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: self.identifier.rawValue) {
+                    if fileMeta.status != "EXISTS" || fileMeta.deleted == true || fileMeta.removed == true  {
+                        self.logger.info("❌ Workspace File (id: \(self.identifier.rawValue)) is \(fileMeta.status) / deleted, returning nonExistentItem")
+                        completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                        return
+                    }
                     
                     guard let folderUuid = fileMeta.folderUuid else {
                         
@@ -84,6 +89,13 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 
                 self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a folder")
                 if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: self.identifier.rawValue) {
+                    if folderMeta.deleted == true || folderMeta.removed == true  {
+                        let itemDisplayName = folderMeta.plainName ?? folderMeta.name ?? self.identifier.rawValue
+                        self.logger.info("❌ Workspace Folder (id: \(self.identifier.rawValue), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
+                        completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                        return
+                    }
+
                     guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
                         self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
@@ -120,6 +132,9 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 if (itemFound == true){ return }
                 // If we reached this, there was no way to found the file/folder
                 throw GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound
+            } catch GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound {
+                self.logger.info("Item \(identifier.rawValue) was not found on the server, signaling nonExistentItem to stop retries")
+                completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: identifier))
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to get folder meta for \(identifier.rawValue): \(error.getErrorDescription())")
