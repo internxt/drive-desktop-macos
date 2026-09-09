@@ -41,8 +41,8 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
                
                 if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: self.identifier.rawValue) {
-                    if fileMeta.status != "EXISTS" || fileMeta.deleted == true || fileMeta.removed == true  {
-                        self.logger.info("❌ Workspace File (id: \(self.identifier.rawValue)) is \(fileMeta.status) / deleted, returning nonExistentItem")
+                    if fileMeta.status != "EXISTS" {
+                        self.logger.info("❌ Workspace File (id: \(self.identifier.rawValue)) is \(fileMeta.status), returning nonExistentItem")
                         completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                         return
                     }

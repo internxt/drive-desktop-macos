@@ -41,8 +41,8 @@ struct GetFileOrFolderMetaUseCase {
                     // File
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a file")
                     if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
-                        if fileMeta.status != "EXISTS" || fileMeta.deleted == true || fileMeta.removed == true  {
-                            self.logger.info("❌ File \(fileMeta.plainName ?? fileMeta.name) (id: \(identifierRaw)) is \(fileMeta.status) / deleted, returning nonExistentItem")
+                        if fileMeta.status != "EXISTS" {
+                            self.logger.info("❌ File \(fileMeta.plainName ?? fileMeta.name) (id: \(identifierRaw)) is \(fileMeta.status), returning nonExistentItem")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
                         }
