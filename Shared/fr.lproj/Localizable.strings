@@ -49,6 +49,24 @@
 "ISSUE_OP_CREATE"   = "Échec de la création";
 "ISSUE_OP_TRASH"    = "Échec du déplacement vers la corbeille";
 
+// Issues — friendly error descriptions
+"ISSUE_ERROR_NETWORK"         = "Erreur de connexion réseau";
+"ISSUE_ERROR_NO_INTERNET"     = "Pas de connexion internet";
+"ISSUE_ERROR_CONNECTION_LOST" = "Connexion perdue";
+"ISSUE_ERROR_TIMEOUT"         = "Délai de connexion dépassé";
+"ISSUE_ERROR_STORAGE_FULL"    = "Limite de stockage atteinte";
+"ISSUE_ERROR_SESSION_EXPIRED" = "Session expirée";
+"ISSUE_ERROR_PLAN_LIMIT"      = "Limite du forfait atteinte";
+"ISSUE_ERROR_NOT_FOUND"       = "Élément introuvable";
+"ISSUE_ERROR_ALREADY_EXISTS"  = "L'élément existe déjà";
+"ISSUE_ERROR_SERVER"          = "Erreur du serveur";
+"ISSUE_ERROR_ENCRYPTION"      = "Erreur de chiffrement";
+"ISSUE_ERROR_DECRYPTION"      = "Erreur de déchiffrement";
+"ISSUE_ERROR_INTEGRITY"       = "Échec de vérification du fichier";
+"ISSUE_ERROR_SIZE_MISMATCH"   = "Taille du fichier non concordante";
+"ISSUE_ERROR_GENERIC_UPLOAD"  = "Erreur de téléversement";
+"ISSUE_ERROR_GENERIC_DOWNLOAD"= "Erreur de téléchargement";
+
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Tout est à jour";

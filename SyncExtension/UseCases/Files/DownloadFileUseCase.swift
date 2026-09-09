@@ -138,6 +138,7 @@ struct DownloadFileUseCase {
             let uuidString = itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
             let trackingObjectId = try? ObjectId(string: String(uuidString))
             
+            var resolvedFilename: String = itemIdentifier.rawValue
             var driveFile: DriveFile? = nil
             do {
                 
@@ -154,6 +155,7 @@ struct DownloadFileUseCase {
             
                     let folder = try await driveNewAPI.getFolderMetaById(id: idString)
                     let folderName = folder.plainName ?? folder.name ?? ""
+                    resolvedFilename = folderName
                     
                     if let trackingObjectId = trackingObjectId {
                         activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .inProgress)
@@ -195,6 +197,7 @@ struct DownloadFileUseCase {
                 }
                 
                 let currentFilename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                resolvedFilename = currentFilename
                 if let trackingObjectId = trackingObjectId {
                     activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: currentFilename, kind: .download, status: .inProgress)
                 }
@@ -285,7 +288,7 @@ struct DownloadFileUseCase {
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
                 if let trackingObjectId = trackingObjectId {
-                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .failed, errorMessage: error.getErrorDescription())
+                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: resolvedFilename, kind: .download, status: .failed, errorMessage: error.getErrorDescription())
                 }
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
             }

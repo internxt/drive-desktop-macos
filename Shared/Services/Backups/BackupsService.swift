@@ -426,7 +426,8 @@ class BackupsService: ObservableObject {
                     filename: fileError.filename,
                     kind: .backupDownload,
                     status: .failed,
-                    errorMessage: fileError.error
+                    errorMessage: fileError.error,
+                    relativePath: fileError.relativePath
                 )
             }
             activityManager.saveActivityEntries(entries: entries)

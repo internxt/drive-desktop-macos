@@ -49,6 +49,24 @@
 "ISSUE_OP_CREATE"   = "Create failed";
 "ISSUE_OP_TRASH"    = "Trash failed";
 
+// Issues — friendly error descriptions
+"ISSUE_ERROR_NETWORK"         = "Network connectivity error";
+"ISSUE_ERROR_NO_INTERNET"     = "No internet connection";
+"ISSUE_ERROR_CONNECTION_LOST" = "Connection lost";
+"ISSUE_ERROR_TIMEOUT"         = "Connection timed out";
+"ISSUE_ERROR_STORAGE_FULL"    = "Storage limit reached";
+"ISSUE_ERROR_SESSION_EXPIRED" = "Session expired";
+"ISSUE_ERROR_PLAN_LIMIT"      = "Storage plan limit reached";
+"ISSUE_ERROR_NOT_FOUND"       = "Item not found";
+"ISSUE_ERROR_ALREADY_EXISTS"  = "Item already exists";
+"ISSUE_ERROR_SERVER"          = "Server error";
+"ISSUE_ERROR_ENCRYPTION"      = "Encryption error";
+"ISSUE_ERROR_DECRYPTION"      = "Decryption error";
+"ISSUE_ERROR_INTEGRITY"       = "File integrity check failed";
+"ISSUE_ERROR_SIZE_MISMATCH"   = "File size mismatch";
+"ISSUE_ERROR_GENERIC_UPLOAD"  = "Upload error";
+"ISSUE_ERROR_GENERIC_DOWNLOAD"= "Download error";
+
 
 // Widget sync status
 "SYNC_STATUS_UP_TO_DATE" = "Everything is up to date";

@@ -63,7 +63,8 @@ class ActivityManager: ObservableObject {
         filename: String,
         kind: ActivityEntryOperationKind,
         status: ActivityEntryStatus,
-        errorMessage: String? = nil
+        errorMessage: String? = nil,
+        relativePath: String? = nil
     ) {
         guard let realm = getRealm() else { return }
         if let existing = realm.object(ofType: ActivityEntry.self, forPrimaryKey: id) {
@@ -72,12 +73,13 @@ class ActivityManager: ObservableObject {
                     existing.filename = filename
                     existing.status = status
                     if let msg = errorMessage { existing.errorMessage = msg }
+                    if let path = relativePath { existing.relativePath = path }
                 }
             } catch {
                 error.reportToSentry()
             }
         } else {
-            saveActivityEntry(entry: ActivityEntry(_id: id, filename: filename, kind: kind, status: status, errorMessage: errorMessage))
+            saveActivityEntry(entry: ActivityEntry(_id: id, filename: filename, kind: kind, status: status, errorMessage: errorMessage, relativePath: relativePath))
         }
     }
 
@@ -138,13 +140,15 @@ class ActivityEntry: Object {
     @Persisted var kind: ActivityEntryOperationKind
     @Persisted var status: ActivityEntryStatus
     @Persisted var errorMessage: String?
+    @Persisted var relativePath: String?
 
     convenience init(
         _id: ObjectId? = nil,
         filename: String,
         kind: ActivityEntryOperationKind,
         status: ActivityEntryStatus,
-        errorMessage: String? = nil
+        errorMessage: String? = nil,
+        relativePath: String? = nil
     ) {
         self.init()
         self._id = _id ?? ObjectId.generate()
@@ -153,6 +157,7 @@ class ActivityEntry: Object {
         self.kind = kind
         self.status = status
         self.errorMessage = errorMessage
+        self.relativePath = relativePath
     }
 }
 

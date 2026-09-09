@@ -52,9 +52,12 @@ class BackupDownloadItemOperation: AsyncOperation, @unchecked Sendable {
         } catch {
             if downloadAttempts >= MAX_DOWNLOAD_ATTEMPTS {
                 logger.error("❌ Failed to download file at \(downloadAt.path): \(error.getErrorDescription())")
+                let parentFolderName = downloadAt.deletingLastPathComponent().lastPathComponent
+                let relativePath = parentFolderName.isEmpty ? downloadAt.lastPathComponent : "\(parentFolderName)/\(downloadAt.lastPathComponent)"
                 BackupErrorFileQueue.shared.append(
                     filename: downloadAt.lastPathComponent,
-                    errorMessage: error.getErrorDescription()
+                    errorMessage: error.getErrorDescription(),
+                    relativePath: relativePath
                 )
             } else {
                 logger.error("🔄 Retrying file download, attempt #\(downloadAttempts) for file at \(downloadAt.path)")

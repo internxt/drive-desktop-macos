@@ -26,6 +26,7 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
     private let activityManager: ActivityManager
     private let workspace: [AvailableWorkspace]
     private let workspaceCredentials: WorkspaceCredentialsResponse
+    private let relativePath: String?
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -37,7 +38,8 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
         workspace: [AvailableWorkspace],
-        workspaceCredentials: WorkspaceCredentialsResponse
+        workspaceCredentials: WorkspaceCredentialsResponse,
+        relativePath: String? = nil
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -50,6 +52,7 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
         self.user = user
         self.workspace = workspace
         self.workspaceCredentials = workspaceCredentials
+        self.relativePath = relativePath
     }
     
     private func fileAlreadyExistsByName() async -> GetExistenceFileInFolderResponse? {
@@ -94,7 +97,8 @@ struct UploadFileOrUpdateContentWorkspaceUseCase {
                     thumbnailFileDestination: self.thumbnailFileDestination,
                     encryptedThumbnailFileDestination: self.encryptedThumbnailFileDestination,
                     completionHandler: self.completionHandler,
-                    progress: progress, workspace: self.workspace, workspaceCredentials: workspaceCredentials
+                    progress: progress, workspace: self.workspace, workspaceCredentials: workspaceCredentials,
+                    relativePath: self.relativePath
                 ).run()
             }
             
