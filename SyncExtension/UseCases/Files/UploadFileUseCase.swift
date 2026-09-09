@@ -37,6 +37,7 @@ struct UploadFileUseCase {
     private let trackId = UUID().uuidString
     private let progress: Progress
     private let parentUUID: String
+    private let relativePath: String?
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -48,7 +49,8 @@ struct UploadFileUseCase {
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
         progress: Progress,
-        parentUuid: String
+        parentUuid: String,
+        relativePath: String? = nil
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -61,6 +63,7 @@ struct UploadFileUseCase {
         self.user = user
         self.progress = progress
         self.parentUUID = parentUuid
+        self.relativePath = relativePath
     }
     
    
@@ -85,7 +88,7 @@ struct UploadFileUseCase {
         Task {
           
             let inProgressId = ObjectId.generate()
-            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress, relativePath: self.relativePath))
             
             do {
                 var isPackage = FileProviderItem.isPackage(filename: item.filename)
@@ -149,7 +152,7 @@ struct UploadFileUseCase {
                         size: 0
                     )
                     completionHandler(fileProviderItem, [], false, nil)
-                    activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .finished)
+                    activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .finished, relativePath: self.relativePath)
                     return
                 }
 
@@ -246,12 +249,12 @@ struct UploadFileUseCase {
                 )
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished, relativePath: self.relativePath)
 
                 
             } catch {
                 error.reportToSentry()
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed, errorMessage: error.getErrorDescription())
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed, errorMessage: error.getErrorDescription(), relativePath: self.relativePath)
                 self.logger.error("❌ Failed to create file \(item.filename) : \(error.getErrorDescription())")
                 completionHandler(nil, [], false, error.toFileProviderError())
             }

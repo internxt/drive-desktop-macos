@@ -487,6 +487,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         }
                     }
 
+                    let relativePath = await self.resolveRelativePath(for: modifiedFilename, parentIdentifier: itemTemplate.parentItemIdentifier)
                     let useCaseProgress: Progress
 
                     if self.isWorkspaceDomain() {
@@ -519,7 +520,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
                             completionHandler: completionHandlerInternal,
                             workspace: self.workspace,
-                            workspaceCredentials: credentials
+                            workspaceCredentials: credentials,
+                            relativePath: relativePath
                         )
 
                         useCaseProgress = useCase.run()
@@ -542,7 +544,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             thumbnailFileDestination: thumbnailFileDestination,
                             encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
                             completionHandler: completionHandlerInternal,
-                            parentUuid: parentUuid
+                            parentUuid: parentUuid,
+                            relativePath: relativePath
                         )
 
                         useCaseProgress = useCase.run()
@@ -880,6 +883,35 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
     }
 
-            
+    private func resolveRelativePath(for itemFilename: String, parentIdentifier: NSFileProviderItemIdentifier) async -> String {
+        let rootDriveName = "InternxtDrive"
+        if parentIdentifier == .rootContainer {
+            return "\(rootDriveName)/\(itemFilename)"
+        }
+
+        do {
+            let parentURL = try await self.manager.getUserVisibleURL(for: parentIdentifier)
+            let rootURL = try await self.manager.getUserVisibleURL(for: .rootContainer)
+            let parentPath = parentURL.path
+            let rootPath = rootURL.path
+            if parentPath.hasPrefix(rootPath) {
+                let subPath = String(parentPath.dropFirst(rootPath.count)).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+                if !subPath.isEmpty {
+                    return "\(rootDriveName)/\(subPath)/\(itemFilename)"
+                }
+            }
+        } catch {
+            logger.warning("Could not get visible URL for parentIdentifier: \(error.getErrorDescription())")
+        }
+
+        let parentId = parentIdentifier.rawValue
+        if let folderMeta = try? await self.driveNewAPI.getFolderMetaById(id: parentId, debug: false),
+           let plainName = folderMeta.plainName, !plainName.isEmpty {
+            return "\(rootDriveName)/\(plainName)/\(itemFilename)"
+        }
+
+        return "\(rootDriveName)/\(itemFilename)"
+    }
+
 }
 

@@ -28,10 +28,15 @@ class BackupDownloadItemOperation: AsyncOperation, @unchecked Sendable {
     
     
     override func performAsyncTask() async throws -> Void {
+        let encryptedFileURL = self.encryptedContentURL.appendingPathComponent(UUID().uuidString)
+        defer {
+            logger.info("🧹 Cleaning up encrypted file...")
+            try? FileManager.default.removeItem(at: encryptedFileURL)
+        }
+
         do {
             self.downloadAttempts += 1
             logger.info("⬇️ Downloading file at \(downloadAt.path) with fileID \(fileId)")
-            let encryptedFileURL = self.encryptedContentURL.appendingPathComponent(UUID().uuidString)
            
             let _ = try await networkFacade.downloadFile(
                 bucketId: bucketId,
@@ -43,16 +48,17 @@ class BackupDownloadItemOperation: AsyncOperation, @unchecked Sendable {
             )
             
             backupDownloadProgress.completedUnitCount += 1
-            
-            defer {
-                logger.info("🧹 Cleaning up encrypted file...")
-                try? FileManager.default.removeItem(at: encryptedContentURL)
-            }
-            
             logger.info("✅ File downloaded at \(downloadAt.path)")
         } catch {
-            if downloadAttempts == MAX_DOWNLOAD_ATTEMPTS {
-                logger.error("❌ Failed to download file at \(downloadAt.path)")
+            if downloadAttempts >= MAX_DOWNLOAD_ATTEMPTS {
+                logger.error("❌ Failed to download file at \(downloadAt.path): \(error.getErrorDescription())")
+                let parentFolderName = downloadAt.deletingLastPathComponent().lastPathComponent
+                let relativePath = parentFolderName.isEmpty ? downloadAt.lastPathComponent : "\(parentFolderName)/\(downloadAt.lastPathComponent)"
+                BackupErrorFileQueue.shared.append(
+                    filename: downloadAt.lastPathComponent,
+                    errorMessage: error.getErrorDescription(),
+                    relativePath: relativePath
+                )
             } else {
                 logger.error("🔄 Retrying file download, attempt #\(downloadAttempts) for file at \(downloadAt.path)")
                 try? await self.performAsyncTask()

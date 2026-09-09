@@ -25,8 +25,12 @@ final class BackupErrorFileQueue {
         try? FileManager.default.removeItem(at: fileURL)
     }
 
-    func append(filename: String, errorMessage: String) {
-        guard let data = "{\"filename\":\(jsonEscape(filename)),\"error\":\(jsonEscape(errorMessage))}\n".data(using: .utf8) else { return }
+    func append(filename: String, errorMessage: String, relativePath: String? = nil) {
+        var dict: [String: String] = ["filename": filename, "error": errorMessage]
+        if let path = relativePath { dict["relativePath"] = path }
+        guard let data = try? JSONSerialization.data(withJSONObject: dict),
+              let jsonString = String(data: data, encoding: .utf8),
+              let lineData = (jsonString + "\n").data(using: .utf8) else { return }
         
         writeLock.lock()
         defer { writeLock.unlock() }
@@ -34,16 +38,16 @@ final class BackupErrorFileQueue {
         if FileManager.default.fileExists(atPath: fileURL.path) {
             if let handle = try? FileHandle(forWritingTo: fileURL) {
                 handle.seekToEndOfFile()
-                handle.write(data)
+                handle.write(lineData)
                 handle.closeFile()
             }
         } else {
-            try? data.write(to: fileURL)
+            try? lineData.write(to: fileURL)
         }
     }
 
 
-    func readAndClear() -> [(filename: String, error: String)] {
+    func readAndClear() -> [(filename: String, error: String, relativePath: String?)] {
         writeLock.lock()
         defer {
             try? FileManager.default.removeItem(at: fileURL)
@@ -54,12 +58,12 @@ final class BackupErrorFileQueue {
         
         return content
             .split(separator: "\n", omittingEmptySubsequences: true)
-            .compactMap { line -> (String, String)? in
+            .compactMap { line -> (String, String, String?)? in
                 guard let data = line.data(using: .utf8),
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: String],
                       let filename = json["filename"],
                       let error = json["error"] else { return nil }
-                return (filename, error)
+                return (filename, error, json["relativePath"])
             }
     }
 

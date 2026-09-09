@@ -31,14 +31,23 @@ struct IssueRowView: View {
                         .font(.SMMedium)
                         .foregroundColor(.Gray100)
                         .lineLimit(1)
-                        .help(issue.filename)
+                        .help(issue.fullHelpText)
+
+                    if let path = issue.relativePath, !path.isEmpty, path != issue.filename {
+                        Text(verbatim: path)
+                            .font(.XXSRegular)
+                            .foregroundColor(.Gray50)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .help(path)
+                    }
 
                     HStack(spacing: 4) {
                         AppText(issue.operation.localizedLabel)
                             .font(.XSRegular)
                             .foregroundColor(.Gray50)
 
-                        if let desc = issue.errorDescription {
+                        if let desc = issue.userFriendlyErrorDescription {
                             Text("·")
                                 .font(.XSRegular)
                                 .foregroundColor(.Gray40)
@@ -46,7 +55,7 @@ struct IssueRowView: View {
                                 .font(.XSRegular)
                                 .foregroundColor(.Gray50)
                                 .lineLimit(1)
-                                .help(desc)
+                                .help(issue.fullHelpText)
                         }
                     }
                 }

@@ -223,6 +223,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        BackupErrorFileQueue.shared.startNewSession()
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
@@ -274,7 +275,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
-        
+        BackupErrorFileQueue.shared.startNewSession()
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
@@ -348,8 +349,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     }
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
-        
-
+        BackupErrorFileQueue.shared.startNewSession()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
@@ -377,7 +377,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 logger.info("Download operations completed")
                 reply(nil, nil)
             }
-            reply(nil,nil)
         }
     }
     

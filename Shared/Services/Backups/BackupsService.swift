@@ -417,6 +417,42 @@ class BackupsService: ObservableObject {
         }
     }
 
+    private func propagateDownloadErrors(fallbackFilename: String, error: String?, onSuccess: (() -> Void)? = nil) {
+        let individualErrors = BackupErrorFileQueue.shared.readAndClear()
+
+        if !individualErrors.isEmpty {
+            let entries = individualErrors.map { fileError in
+                ActivityEntry(
+                    filename: fileError.filename,
+                    kind: .backupDownload,
+                    status: .failed,
+                    errorMessage: fileError.error,
+                    relativePath: fileError.relativePath
+                )
+            }
+            activityManager.saveActivityEntries(entries: entries)
+            DispatchQueue.main.async { [weak self] in
+                self?.backupDownloadStatus = .Failed
+            }
+        } else if let error = error {
+            let entry = ActivityEntry(
+                filename: fallbackFilename,
+                kind: .backupDownload,
+                status: .failed,
+                errorMessage: error
+            )
+            activityManager.saveActivityEntry(entry: entry)
+            DispatchQueue.main.async { [weak self] in
+                self?.backupDownloadStatus = .Failed
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.backupDownloadStatus = .Done
+            }
+            onSuccess?()
+        }
+    }
+
     private func propagateUploadSuccess() {
         logger.info("Device backed up successfully, tracking backup success event")
         UserDefaults.standard.set(Date(), forKey: LAST_BACKUP_TIME_KEY)
@@ -549,15 +585,14 @@ class BackupsService: ObservableObject {
             deviceUuid:device.uuid,
             bucketId: deviceBucketId,
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.backupDownloadStatus = .Done
+                self.backupDownloadProgressTimer?.cancel()
+                self.propagateDownloadErrors(
+                    fallbackFilename: device.plainName ?? "Backup",
+                    error: error,
+                    onSuccess: {
+                        self.completeBackupDownload()
                     }
-                    
-                    self.completeBackupDownload()
-                } else {
-                    self.backupDownloadStatus = .Failed
-                }
+                )
                 self.logger.info(["Received backup download response", result, error])
             }
         )
@@ -612,15 +647,18 @@ class BackupsService: ObservableObject {
             folderId:folderId,
             bucketId: deviceBucketId, folderName: folderName ?? "",
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.removeItem(item: itemBackup)
-                        self.backupDownloadStatus = .Done
-                    }
-                    self.logger.info("Backup Folder downloaded✅")
-                } else {
+                self.backupDownloadProgressTimer?.cancel()
+                DispatchQueue.main.async {
                     self.removeItem(item: itemBackup)
                 }
+                let fallback = (folderName?.isEmpty == false) ? folderName! : (device.plainName ?? "Backup Folder")
+                self.propagateDownloadErrors(
+                    fallbackFilename: fallback,
+                    error: error,
+                    onSuccess: {
+                        self.logger.info("Backup Folder downloaded✅")
+                    }
+                )
                 self.logger.info(["Received backup download response", result, error])
             }
         )
@@ -671,17 +709,16 @@ class BackupsService: ObservableObject {
             fileId:fileId,
             bucketId: deviceBucketId,
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.removeItem(item: itemBackup)
-                        
-                    }
-                    self.logger.info("Backup file downloaded✅")
-                    
-                } else {
+                DispatchQueue.main.async {
                     self.removeItem(item: itemBackup)
-                    self.logger.info("Error to download file \(error ?? "Unknown Error")")
                 }
+                self.propagateDownloadErrors(
+                    fallbackFilename: downloadAt.lastPathComponent,
+                    error: error,
+                    onSuccess: {
+                        self.logger.info("Backup file downloaded✅")
+                    }
+                )
             }
         )
     }
@@ -779,11 +816,6 @@ class BackupsService: ObservableObject {
             
             if(backupDownloadStatus.status == .Done || backupDownloadStatus.status == .Failed) {
                 self.backupDownloadProgressTimer?.cancel()
-                if backupDownloadStatus.status == .Failed {
-                    let deviceName = self.deviceDownloading?.plainName ?? "Backup"
-                    let entry = ActivityEntry(filename: deviceName, kind: .backupDownload, status: .failed, errorMessage: "Backup download failed")
-                    self.activityManager.saveActivityEntry(entry: entry)
-                }
             }
         }
     }
