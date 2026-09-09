@@ -41,6 +41,12 @@ struct GetFileOrFolderMetaUseCase {
                     // File
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a file")
                     if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
+                        if fileMeta.status != "EXISTS" {
+                            self.logger.info("❌ File \(fileMeta.plainName ?? fileMeta.name) (id: \(identifierRaw)) is \(fileMeta.status), returning nonExistentItem")
+                            completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                            return
+                        }
+
                         let parentFolderId = String(fileMeta.folderId)
                         
                         self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.id)")
@@ -86,8 +92,9 @@ struct GetFileOrFolderMetaUseCase {
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a folder")
                     if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: identifierRaw) {
 
-                        
-                        if folderMeta.deleted == true {
+                        if folderMeta.deleted == true || folderMeta.removed == true {
+                            let itemDisplayName = folderMeta.plainName ?? folderMeta.name ?? identifierRaw
+                            self.logger.info("❌ Folder (id: \(identifierRaw), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
                         }
