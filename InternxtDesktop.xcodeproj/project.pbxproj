@@ -12,7 +12,6 @@
 		3104526E2B4B1C5C00984716 /* StopBackupDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialogView.swift */; };
 		311612A02B47873D003C8EE8 /* FolderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* FolderListView.swift */; };
 		3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */; };
-		3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */; };
 		3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
 		3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
@@ -45,7 +44,6 @@
 		31DEAEB12B75139400E76D53 /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		31DEAEB32B75139400E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
 		31DEAEB52B75139400E76D53 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB42B75139400E76D53 /* main.swift */; };
-		31DEAEBA2B75139400E76D53 /* XPCBackupService.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		31DEAEC12B75143F00E76D53 /* XPCBackupServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */; };
 		31DEAEC22B7514F400E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
 		31DEAEC32B7514F500E76D53 /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
@@ -58,6 +56,17 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3733052AED600DAD486 /* InternxtSwiftCore */; };
+		4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D37F3052B07400DAD486 /* InternxtSwiftCore */; };
+		4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3813052B07D00DAD486 /* InternxtSwiftCore */; };
+		4778D3843052B08500DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3833052B08500DAD486 /* InternxtSwiftCore */; };
+		4792C7C23050555B0098B744 /* MailBridgeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7C1305055550098B744 /* MailBridgeTabView.swift */; };
+		4792C7D0025055470098B744 /* MailBridgeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0015055470098B744 /* MailBridgeComponents.swift */; };
+		4792C7D0045055470098B744 /* MailBridgeLockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0035055470098B744 /* MailBridgeLockedView.swift */; };
+		4792C7D0065055470098B744 /* MailBridgeInactiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0055055470098B744 /* MailBridgeInactiveView.swift */; };
+		4792C7D0085055470098B744 /* MailBridgeActiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0075055470098B744 /* MailBridgeActiveView.swift */; };
+		4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */; };
+		4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0115055470098B744 /* MailBridgeService.swift */; };
 		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
@@ -174,7 +183,6 @@
 		AABD3E833033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E843033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E853033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
-		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
 		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		AAC188EB2C222F35007E321A /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
@@ -218,7 +226,6 @@
 		E10B0FDD2A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
-		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B83962AFBBCD7009F6684 /* AppSettingsManagerView.swift */; };
 		E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B83982AFBBD50009F6684 /* AppSettings.swift */; };
 		E13B839A2AFBBD50009F6684 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B83982AFBBD50009F6684 /* AppSettings.swift */; };
@@ -240,7 +247,6 @@
 		E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */; };
 		E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
 		E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */; };
-		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
 		E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
 		E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
 		E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */; };
@@ -378,7 +384,6 @@
 		E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D842A76C48600473AE1 /* FileProviderExtension.swift */; };
 		E1FB2D872A76C48600473AE1 /* FileProviderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D862A76C48600473AE1 /* FileProviderItem.swift */; };
 		E1FB2D892A76C48600473AE1 /* FileProviderEnumerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D882A76C48600473AE1 /* FileProviderEnumerator.swift */; };
-		E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E1FB2D932A76C6EE00473AE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FB2D922A76C6EE00473AE1 /* AppDelegate.swift */; };
 		E1FD8C732BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
 		E1FD8C742BA989D900C257E0 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FD8C722BA989D900C257E0 /* LogService.swift */; };
@@ -387,7 +392,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		31DEAEB82B75139400E76D53 /* PBXContainerItemProxy */ = {
+		4778D3753052AFF900DAD486 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E1FB2D802A76C48600473AE1;
+			remoteInfo = SyncExtension;
+		};
+		4778D37A3052AFF900DAD486 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
 			proxyType = 1;
@@ -408,27 +420,9 @@
 			remoteGlobalIDString = E1FB2D232A76BF0200473AE1;
 			remoteInfo = InternxtDesktop;
 		};
-		E1FB2D8C2A76C48600473AE1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E1FB2D802A76C48600473AE1;
-			remoteInfo = SyncExtension;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		31DEAEBF2B75139400E76D53 /* Embed XPC Services */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
-			dstSubfolderSpec = 16;
-			files = (
-				31DEAEBA2B75139400E76D53 /* XPCBackupService.xpc in Embed XPC Services */,
-			);
-			name = "Embed XPC Services";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AAA6667A2D4068E100C2B9DF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -504,17 +498,6 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				E1FB2D8E2A76C48600473AE1 /* SyncExtension.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -545,6 +528,13 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		4792C7C1305055550098B744 /* MailBridgeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeTabView.swift; sourceTree = "<group>"; };
+		4792C7D0015055470098B744 /* MailBridgeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeComponents.swift; sourceTree = "<group>"; };
+		4792C7D0035055470098B744 /* MailBridgeLockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeLockedView.swift; sourceTree = "<group>"; };
+		4792C7D0055055470098B744 /* MailBridgeInactiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeInactiveView.swift; sourceTree = "<group>"; };
+		4792C7D0075055470098B744 /* MailBridgeActiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeActiveView.swift; sourceTree = "<group>"; };
+		4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeSettingsDialogView.swift; sourceTree = "<group>"; };
+		4792C7D0115055470098B744 /* MailBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeService.swift; sourceTree = "<group>"; };
 		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
@@ -768,10 +758,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				AA16C5D02E303B8100E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
 				AA16C5CE2E303B8100E1C295 /* CocoaLumberjack in Frameworks */,
+				4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,8 +792,8 @@
 			files = (
 				AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */,
 				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
+				4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */,
 				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
-				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
 				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -815,13 +805,13 @@
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
 				AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
-				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
 				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */,
 				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
@@ -834,9 +824,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
+				4778D3843052B08500DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
-				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
 				AA16C5CA2E303B7700E1C295 /* CocoaLumberjack in Frameworks */,
 				E19639602C63CA14009EDAFB /* Realm in Frameworks */,
 			);
@@ -886,6 +876,19 @@
 				31DEAEB72B75139400E76D53 /* XPCBackupService.entitlements */,
 			);
 			path = XPCBackupService;
+			sourceTree = "<group>";
+		};
+		4792C7C0305055470098B744 /* MailBridge */ = {
+			isa = PBXGroup;
+			children = (
+				4792C7C1305055550098B744 /* MailBridgeTabView.swift */,
+				4792C7D0015055470098B744 /* MailBridgeComponents.swift */,
+				4792C7D0035055470098B744 /* MailBridgeLockedView.swift */,
+				4792C7D0055055470098B744 /* MailBridgeInactiveView.swift */,
+				4792C7D0075055470098B744 /* MailBridgeActiveView.swift */,
+				4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */,
+			);
+			path = MailBridge;
 			sourceTree = "<group>";
 		};
 		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
@@ -1469,6 +1472,7 @@
 				E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */,
 				317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */,
 				AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */,
+				4792C7D0115055470098B744 /* MailBridgeService.swift */,
 				AA94CA6D2E99E8CE007CEBDF /* NotificationsManager.swift */,
 				AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */,
 				AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */,
@@ -1489,6 +1493,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4792C7C0305055470098B744 /* MailBridge */,
 				AA8B5F63302A23BE00F28F39 /* Issues */,
 				AA7FC5A22E450C2A0018C333 /* Cleaner */,
 				AA40B3BB2D3B296E00FC1FC3 /* Antivirus */,
@@ -1550,10 +1555,10 @@
 			);
 			name = XPCBackupService;
 			packageProductDependencies = (
-				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				E19639612C63CA20009EDAFB /* RealmSwift */,
 				AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */,
 				AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */,
+				4778D37F3052B07400DAD486 /* InternxtSwiftCore */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1627,11 +1632,11 @@
 			);
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
-				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
 				AAA2F8E53017FEEF00F5452C /* Realm */,
 				AAA2F8E73017FF0100F5452C /* RealmSwift */,
 				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
 				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
+				4778D3813052B07D00DAD486 /* InternxtSwiftCore */,
 			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
@@ -1644,9 +1649,7 @@
 				E1FB2D202A76BF0200473AE1 /* Sources */,
 				E1FB2D212A76BF0200473AE1 /* Frameworks */,
 				E1FB2D222A76BF0200473AE1 /* Resources */,
-				E1FB2D652A76C2AE00473AE1 /* Embed Foundation Extensions */,
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
-				31DEAEBF2B75139400E76D53 /* Embed XPC Services */,
 				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
 				AAA6667A2D4068E100C2B9DF /* CopyFiles */,
 				AAA6667D2D4068FE00C2B9DF /* CopyFiles */,
@@ -1656,12 +1659,11 @@
 			);
 			dependencies = (
 				AAA6F6412E5F9DE1000082ED /* PBXTargetDependency */,
-				E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */,
-				31DEAEB92B75139400E76D53 /* PBXTargetDependency */,
+				4778D3763052AFF900DAD486 /* PBXTargetDependency */,
+				4778D37B3052AFF900DAD486 /* PBXTargetDependency */,
 			);
 			name = InternxtDesktop;
 			packageProductDependencies = (
-				E150884D2A7C55F20089BD57 /* InternxtSwiftCore */,
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
 				E19639592C63B46C009EDAFB /* Realm */,
@@ -1669,6 +1671,7 @@
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
 				AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */,
+				4778D3733052AED600DAD486 /* InternxtSwiftCore */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1689,11 +1692,11 @@
 			);
 			name = SyncExtension;
 			packageProductDependencies = (
-				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
 				E196395F2C63CA14009EDAFB /* Realm */,
 				AA16C5C92E303B7700E1C295 /* CocoaLumberjack */,
 				AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */,
+				4778D3833052B08500DAD486 /* InternxtSwiftCore */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -1745,12 +1748,12 @@
 			);
 			mainGroup = E1FB2D1B2A76BF0200473AE1;
 			packageReferences = (
-				E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+				4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -2113,6 +2116,13 @@
 				AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */,
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
 				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
+				4792C7C23050555B0098B744 /* MailBridgeTabView.swift in Sources */,
+				4792C7D0025055470098B744 /* MailBridgeComponents.swift in Sources */,
+				4792C7D0045055470098B744 /* MailBridgeLockedView.swift in Sources */,
+				4792C7D0065055470098B744 /* MailBridgeInactiveView.swift in Sources */,
+				4792C7D0085055470098B744 /* MailBridgeActiveView.swift in Sources */,
+				4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */,
+				4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				AA13E02C2E61071E00DD47CB /* CleanerHelperTool.swift in Sources */,
@@ -2223,10 +2233,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		31DEAEB92B75139400E76D53 /* PBXTargetDependency */ = {
+		4778D3763052AFF900DAD486 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E1FB2D802A76C48600473AE1 /* SyncExtension */;
+			targetProxy = 4778D3753052AFF900DAD486 /* PBXContainerItemProxy */;
+		};
+		4778D37B3052AFF900DAD486 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 31DEAEAD2B75139400E76D53 /* XPCBackupService */;
-			targetProxy = 31DEAEB82B75139400E76D53 /* PBXContainerItemProxy */;
+			targetProxy = 4778D37A3052AFF900DAD486 /* PBXContainerItemProxy */;
 		};
 		AAA6F6412E5F9DE1000082ED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2237,11 +2252,6 @@
 			isa = PBXTargetDependency;
 			target = E1FB2D232A76BF0200473AE1 /* InternxtDesktop */;
 			targetProxy = E15F8C292B762B0400C60EFA /* PBXContainerItemProxy */;
-		};
-		E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E1FB2D802A76C48600473AE1 /* SyncExtension */;
-			targetProxy = E1FB2D8C2A76C48600473AE1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2266,13 +2276,11 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupServiceDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2286,7 +2294,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2301,12 +2308,10 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2320,7 +2325,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2334,12 +2338,10 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = XPCBackupService/XPCBackupService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2353,7 +2355,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.internxt.XPCBackupService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct com.internxt.XPCBackupService macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2504,12 +2505,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2529,11 +2529,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2553,11 +2552,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2728,14 +2726,12 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2761,7 +2757,6 @@
 				PRODUCT_NAME = "Internxt Drive";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -2773,12 +2768,10 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SyncExtension/Info.plist;
@@ -2795,7 +2788,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop.sync macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2939,14 +2931,12 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktopDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2969,9 +2959,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop;
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
-				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
+				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -2985,14 +2974,12 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = InternxtDesktop/InternxtDesktop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"InternxtDesktop/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3016,7 +3003,6 @@
 				PRODUCT_MODULE_NAME = Internxt;
 				PRODUCT_NAME = "Internxt Drive";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop macos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -3028,12 +3014,10 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
+				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SyncExtension/Info.plist;
@@ -3049,7 +3033,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = internxt.InternxtDesktop.sync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop.sync macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -3062,12 +3045,10 @@
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = SyncExtension/SyncExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SyncExtension/Info.plist;
@@ -3084,7 +3065,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = internxt_desktop_ci_profile;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Direct internxt.InternxtDesktop.sync macos";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -3177,6 +3157,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/internxt/swift-core";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
@@ -3201,14 +3189,6 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/internxt/swift-core";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -3228,9 +3208,24 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */ = {
+		4778D3733052AED600DAD486 /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		4778D37F3052B07400DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		4778D3813052B07D00DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		4778D3833052B08500DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
 			productName = InternxtSwiftCore;
 		};
 		AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */ = {
@@ -3288,25 +3283,10 @@
 			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;
 		};
-		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
-		};
-		E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
-		E150884D2A7C55F20089BD57 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
 		};
 		E19639592C63B46C009EDAFB /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;

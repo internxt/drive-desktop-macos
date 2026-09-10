@@ -36,6 +36,8 @@ struct SettingsMenuView: View {
                         .accessibilityIdentifier("menuItemAntivirus")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", showNew: true, onPress:settingsHandler(for: .Cleaner))
                         .accessibilityIdentifier("menuItemCleaner")
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION", showNew: true, onPress: settingsHandler(for: .MailBridge))
+                        .accessibilityIdentifier("menuItemMailBridge")
                     
                     SettingsMenuOption(label: "WIDGET_SETTINGS_REFERRAL_OPTION", onPress: handleOpenReferralLink)
                         .accessibilityIdentifier("menuItemRefer")

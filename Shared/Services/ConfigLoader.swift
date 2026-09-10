@@ -41,6 +41,7 @@ enum ConfigLoaderError: Error {
     case CannotSaveWorkspaces
     case CannotSaveWorkspacesCredentials
     case CannotSavePrivateKey
+    case CannotSaveMailBridgePassword
     case CannotSaveWorkspaceMnemonic
 }
 
@@ -54,6 +55,7 @@ public struct ConfigLoader {
     public static let AUTH_TOKEN_KEY = "AuthToken"
     public static let LEGACY_TOKEN_KEY = "LegacyAuthToken"
     public static let MNEMONIC_TOKEN_KEY = "Mnemonic"
+    public static let MAIL_BRIDGE_PASSWORD_KEY = "MailBridgePassword"
 
     static let shared: ConfigLoader = ConfigLoader()
     
@@ -191,6 +193,26 @@ public struct ConfigLoader {
         }
     }
     
+    public func getMailBridgePassword() -> String? {
+        return self.getFromUserDefaults(key: ConfigLoader.MAIL_BRIDGE_PASSWORD_KEY)
+    }
+
+    public func setMailBridgePassword(password: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: ConfigLoader.MAIL_BRIDGE_PASSWORD_KEY, value: password)
+
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveMailBridgePassword
+        }
+    }
+
+    public func removeMailBridgePassword() throws -> Void {
+        let removed = self.removeFromUserDefaults(key: ConfigLoader.MAIL_BRIDGE_PASSWORD_KEY)
+
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+
     public func setAuthToken(authToken: String) throws -> Void {
         let saved = self.saveToUserDefaults(key: ConfigLoader.AUTH_TOKEN_KEY, value: authToken)
         
