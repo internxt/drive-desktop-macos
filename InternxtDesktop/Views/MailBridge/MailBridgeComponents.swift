@@ -100,8 +100,11 @@ struct MailBridgeClientChip: View {
 
 struct MailBridgeCredentialRow: View {
     let row: CredentialRow
+    let isRevealed: Bool
     let isCopied: Bool
     let onCopy: () -> Void
+
+    private var isHidden: Bool { row.isSecret && !isRevealed }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -114,11 +117,14 @@ struct MailBridgeCredentialRow: View {
                     .minimumScaleFactor(0.85)
                     .frame(width: 76, alignment: .leading)
 
-                Text(row.displayValue)
+                Text(row.value)
                     .font(.MailBridgeMono)
                     .foregroundColor(.Gray100)
                     .lineLimit(1)
                     .truncationMode(.middle)
+                    .blur(radius: isHidden ? 3.5 : 0)
+                    .animation(.easeOut(duration: 0.15), value: isHidden)
+                    .accessibilityValue(isHidden ? Text("MAIL_BRIDGE_HIDDEN_VALUE") : Text(row.value))
 
                 Spacer(minLength: 0)
 

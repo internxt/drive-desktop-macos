@@ -355,6 +355,7 @@
 "MAIL_BRIDGE_COPY_ALL" = "Copiar todo";
 "MAIL_BRIDGE_COPIED" = "Copiado";
 "MAIL_BRIDGE_COPY_HELP" = "Copiar al portapapeles";
+"MAIL_BRIDGE_HIDDEN_VALUE" = "Oculto";
 "MAIL_BRIDGE_HOSTNAME" = "Servidor";
 "MAIL_BRIDGE_PORT" = "Puerto";
 "MAIL_BRIDGE_USERNAME" = "Usuario";

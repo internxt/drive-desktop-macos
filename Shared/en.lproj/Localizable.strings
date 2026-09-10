@@ -354,6 +354,7 @@
 "MAIL_BRIDGE_COPY_ALL" = "Copy all";
 "MAIL_BRIDGE_COPIED" = "Copied";
 "MAIL_BRIDGE_COPY_HELP" = "Copy to clipboard";
+"MAIL_BRIDGE_HIDDEN_VALUE" = "Hidden";
 "MAIL_BRIDGE_HOSTNAME" = "Hostname";
 "MAIL_BRIDGE_PORT" = "Port";
 "MAIL_BRIDGE_USERNAME" = "Username";

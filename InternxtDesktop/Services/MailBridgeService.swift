@@ -55,8 +55,8 @@ enum ProtocolKind: String, Identifiable {
 struct CredentialRow: Identifiable {
     let kind: ProtocolKind
     let labelKey: String
-    let displayValue: String
-    let clipboardValue: String
+    let value: String
+    var isSecret: Bool = false
 
     var id: String { "\(kind.rawValue).\(labelKey)" }
 }
@@ -70,8 +70,6 @@ struct MailboxCredentials {
     var password = ""
     var imapSecurity = "STARTTLS"
     var smtpSecurity = "SSL"
-
-    static let maskedPassword = "••••••••••••"
 
     /// 43 alphanumeric characters (~256 bits), e.g. `gowTRkFX2jJEqepXCCLJsH7LvxRd8NCE1sibSnNBrDQ`.
     static func generatePassword() -> String {
@@ -93,21 +91,16 @@ struct MailboxCredentials {
         return password
     }
 
-    func rows(for protocolKind: ProtocolKind, revealPassword: Bool) -> [CredentialRow] {
+    func rows(for protocolKind: ProtocolKind) -> [CredentialRow] {
         let port = String(protocolKind == .imap ? imapPort : smtpPort)
         let security = protocolKind == .imap ? imapSecurity : smtpSecurity
 
         return [
-            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_HOSTNAME", displayValue: host, clipboardValue: host),
-            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_PORT", displayValue: port, clipboardValue: port),
-            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_USERNAME", displayValue: username, clipboardValue: username),
-            CredentialRow(
-                kind: protocolKind,
-                labelKey: "MAIL_BRIDGE_PASSWORD",
-                displayValue: revealPassword ? password : Self.maskedPassword,
-                clipboardValue: password
-            ),
-            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_SECURITY", displayValue: security, clipboardValue: security)
+            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_HOSTNAME", value: host),
+            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_PORT", value: port),
+            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_USERNAME", value: username),
+            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_PASSWORD", value: password, isSecret: true),
+            CredentialRow(kind: protocolKind, labelKey: "MAIL_BRIDGE_SECURITY", value: security)
         ]
     }
 

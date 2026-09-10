@@ -52,7 +52,7 @@ struct MailBridgeActiveView: View {
     // MARK: - Clipboard
 
     private func copy(_ row: CredentialRow) {
-        setClipboard(row.clipboardValue)
+        setClipboard(row.value)
         copiedRowID = row.id
         Task {
             try? await Task.sleep(nanoseconds: 1_400_000_000)
@@ -262,9 +262,10 @@ struct MailBridgeActiveView: View {
             }
             .padding(.bottom, 6)
 
-            ForEach(service.credentials.rows(for: kind, revealPassword: revealPassword)) { row in
+            ForEach(service.credentials.rows(for: kind)) { row in
                 MailBridgeCredentialRow(
                     row: row,
+                    isRevealed: revealPassword,
                     isCopied: copiedRowID == row.id,
                     onCopy: { copy(row) }
                 )
