@@ -162,7 +162,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     
 
 
-    private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
+    private func syncNodeFolder(node: BackupTreeNode, retryCount: Int = 0) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating folder")
 
         guard let nodeURL = node.url else {
@@ -228,7 +228,21 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
-                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server . Deleting local reference from Realm")
+                if retryCount < 3 && self.canDoBackup && !Task.isCancelled {
+                    let delaySeconds = pow(2.0, Double(retryCount)) * 0.5
+                    self.logger.warning("⏳ Folder parent \(safeRemoteParentId) not found yet (404), retrying in \(delaySeconds)s (attempt \(retryCount + 1)/3)...")
+                    do {
+                        try await Task.sleep(nanoseconds: UInt64(delaySeconds * 1_000_000_000))
+                    } catch {
+                        return .failure(BackupUploadError.BackupStoppedManually)
+                    }
+                    guard self.canDoBackup && !Task.isCancelled else {
+                        return .failure(BackupUploadError.BackupStoppedManually)
+                    }
+                    return await self.syncNodeFolder(node: node, retryCount: retryCount + 1)
+                }
+
+                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server after \(retryCount) retries. Deleting local reference from Realm")
                 try? await SyncedNodeRepository.shared.deleteSyncedNodeByRemoteIdAsync(remoteId: safeRemoteParentId)
                 return .failure(BackupUploadError.MissingParentFolder)
             }
