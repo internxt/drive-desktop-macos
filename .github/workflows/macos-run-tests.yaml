@@ -22,6 +22,30 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      # TEMPORARY — remove both steps once the daemon publishes releases.
+      #
+      # The mail-bridge daemon lives in a separate Go repo and is not vendored here,
+      # so today the build compiles it from source via
+      # scripts/fetch-mail-bridge.sh --from-local, which needs the checkout and a Go
+      # toolchain. Tracking main is deliberate while there is nothing to pin.
+      #
+      # When the daemon cuts its first release (it also needs darwin-amd64 adding to
+      # its release matrix, it only builds darwin-arm64 today), switch the Xcode run
+      # script to --from-release <pinned version>, add mail-bridge.pin.json with the
+      # per-arch sha256, and delete these two steps plus the MAIL_BRIDGE_LOCAL_REPO
+      # env below: the script downloads and verifies the tarball on its own, with no
+      # checkout and no Go needed. The daemon repo is public, so no token either.
+      - name: Checkout mail-bridge daemon
+        run: |
+          git clone --depth 1 git@github.com:internxt/mail-bridge-desktop.git \
+            "${{ github.workspace }}/mail-bridge-desktop"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: mail-bridge-desktop/go.mod
+          cache: false
+
       - name: Prepare Xcode cache
         uses: irgaly/xcode-cache@v1
         with:
@@ -45,6 +69,8 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+        env:
+          MAIL_BRIDGE_LOCAL_REPO: ${{ github.workspace }}/mail-bridge-desktop
 
       - name: Archive logs
         uses: actions/upload-artifact@v4

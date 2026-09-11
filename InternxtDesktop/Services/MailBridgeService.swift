@@ -125,7 +125,7 @@ final class MailBridgeService: ObservableObject {
 
     private enum DefaultPorts {
         static let imap = 1143
-        static let smtp = 1025
+        static let smtp = 2025
     }
 
     private static let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridge")
@@ -149,6 +149,8 @@ final class MailBridgeService: ObservableObject {
     }
 
     @Published var credentials = MailboxCredentials()
+
+    private let bridgeProcess = MailBridgeProcess()
 
     @Published var syncedMessages: Int = 0
     @Published var totalMessages: Int = 0
@@ -216,14 +218,23 @@ final class MailBridgeService: ObservableObject {
     // MARK: - Actions
 
     func activate() {
-        credentials.imapPort = imapPort
-        credentials.smtpPort = smtpPort
+
+        do {
+            try bridgeProcess.start()
+        } catch {
+            // TODO: surface this in the UI once the control handshake tells us whether
+            // the bridge actually came up.
+            Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
+        }
+
         withAnimation(.easeOut(duration: 0.18)) { viewState = .active }
     }
 
     func deactivate() {
+        bridgeProcess.stop()
         withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
     }
+
 
     func resync() {
         // TODO: Resync through the Bridge Daemon connection

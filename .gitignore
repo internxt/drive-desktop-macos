@@ -9,3 +9,6 @@ report.xml
 *.xcuserstate
 xcschememanagement.plist
 .DS_Store
+
+# Mail Bridge daemon (fetched/built by scripts/fetch-mail-bridge.sh)
+InternxtDesktop/MailBridgeResources/
