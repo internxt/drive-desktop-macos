@@ -152,7 +152,11 @@ final class MailBridgeService: ObservableObject {
     @Published var credentials = MailboxCredentials()
 
     private let bridgeProcess = MailBridgeProcess()
+    private lazy var controlServer = MailBridgeControlServer(socketURL: MailBridgeProcess.controlSocketURL)
     private var entitlementObserver: Task<Void, Never>?
+
+    @Published private(set) var isActivatingMailBridge: Bool = false
+    @Published private(set) var lastError: String?
 
     @Published var syncedMessages: Int = 0
     @Published var totalMessages: Int = 0
@@ -238,46 +242,105 @@ final class MailBridgeService: ObservableObject {
     }
 
     // MARK: - Actions
-
-    func activate() {
+    func activate() async {
         guard FeaturesService.shared.mailEnabled else {
             Self.logger.warning("Refusing to start Mail Bridge: the plan does not include it")
             viewState = .locked
             return
         }
+        guard !isActivatingMailBridge, viewState != .active else { return }
+
+        isActivatingMailBridge = true
+        lastError = nil
+        defer { isActivatingMailBridge = false }
+
+        do {
+            let session = try await createSession()
+
+            // Order matters:
+            // 1. Create the socket
+            try controlServer.listen()
+        
+            // 2. Start the process (Mail Bridge daemon)
+            try bridgeProcess.start()
+
+            let daemonConfig = try await controlServer.handshake(session: session)
+            applyBridgePorts(daemonConfig)
+
+            Self.logger.info("Mail Bridge is ready on \(daemonConfig.imapAddress)")
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .active }
+        } catch {
+            Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
+            lastError = error.localizedDescription
+            bridgeProcess.stop()
+            controlServer.stop()
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+        }
+    }
+
+    private func createSession() async throws -> MailBridgeSession {
+        guard let mnemonic = config.getMnemonic(), !mnemonic.isEmpty,
+              let token = config.getAuthToken(), !token.isEmpty else {
+            throw MailBridgeServiceError.notSignedIn
+        }
+
+        let keys = try await APIFactory.Mail.getMailAccountKeys()
+        let privateKey = try MailKeystore.openEncryptionKeystore(
+            address: keys.address,
+            publicKey: keys.publicKey,
+            encryptedPrivateKey: keys.encryptionPrivateKey,
+            mnemonic: mnemonic
+        )
 
         if credentials.password.isEmpty {
             credentials.password = loadOrCreatePassword()
         }
+        accountEmail = keys.address
 
-        do {
-            try bridgeProcess.start()
-        } catch {
-            Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
-            withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
-            return
+        return MailBridgeSession(
+            accountId: keys.address,
+            addresses: [keys.address],
+            backendSession: .init(
+                token: token,
+                encryptionPrivateKey: Data(privateKey).base64EncodedString(),
+                encryptionPublicKey: keys.publicKey
+            ),
+            mailClient: .init(username: keys.address, password: credentials.password)
+        )
+    }
+
+    private func applyBridgePorts(_ ready: MailBridgeReady) {
+        if let port = Int(ready.imapAddress.split(separator: ":").last ?? "") {
+            imapPort = port
+            credentials.imapPort = port
         }
-
-        withAnimation(.easeOut(duration: 0.18)) { viewState = .active }
+        if let port = Int(ready.smtpAddress.split(separator: ":").last ?? "") {
+            smtpPort = port
+            credentials.smtpPort = port
+        }
+        credentials.imapSecurity = ready.startTLS ? "STARTTLS" : "None"
+        credentials.smtpSecurity = ready.startTLS ? "STARTTLS" : "None"
     }
 
     func deactivate() {
         bridgeProcess.stop()
+        controlServer.stop()
         activateAtLaunch = false
         withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
     }
 
-    func startIfNeeded() {
+    func startIfNeeded() async {
         guard activateAtLaunch else {
             Self.logger.info("Mail Bridge autostart is off")
             return
         }
         Self.logger.info("Mail Bridge autostart is on, starting the daemon")
-        activate()
+        await activate()
     }
 
     func reset() {
         bridgeProcess.stop()
+        controlServer.stop()
         activateAtLaunch = false
         imapPort = DefaultPorts.imap
         smtpPort = DefaultPorts.smtp
@@ -302,5 +365,15 @@ final class MailBridgeService: ObservableObject {
         smtpPort = smtp
         credentials.imapPort = imap
         credentials.smtpPort = smtp
+    }
+}
+
+enum MailBridgeServiceError: Error, LocalizedError {
+    case notSignedIn
+
+    var errorDescription: String? {
+        switch self {
+        case .notSignedIn: return "Sign in to Internxt before starting Mail Bridge"
+        }
     }
 }

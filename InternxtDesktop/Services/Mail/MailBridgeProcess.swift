@@ -51,6 +51,10 @@ final class MailBridgeProcess: NSObject {
         return base.appendingPathComponent("Internxt/mail-bridge", isDirectory: true)
     }
 
+    static var controlSocketURL: URL {
+        stateDirectory.appendingPathComponent("control.sock")
+    }
+
     var isRunning: Bool {
         queue.sync { process?.isRunning ?? false }
     }
@@ -82,7 +86,7 @@ final class MailBridgeProcess: NSObject {
             task.currentDirectoryURL = stateDirectory
             task.arguments = [
                 "-state-dir", stateDirectory.path,
-                "-control-endpoint", stateDirectory.appendingPathComponent("control.sock").path
+                "-control-endpoint", Self.controlSocketURL.path
             ]
             task.environment = childEnvironment(config: config)
 

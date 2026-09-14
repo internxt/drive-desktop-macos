@@ -331,6 +331,7 @@
 "MAIL_BRIDGE_OFF_DESCRIPTION_%@" = "Actívalo e Internxt abrirá un puente IMAP/SMTP local para %@, la cuenta con la que ya has iniciado sesión. No hay nada más que configurar ni otro inicio de sesión.";
 "MAIL_BRIDGE_ACTIVATE_TITLE" = "Activar Mail Bridge";
 "MAIL_BRIDGE_ACTIVATE_SUBTITLE" = "Inicia el puente local y empieza a descifrar tu buzón.";
+"MAIL_BRIDGE_ACTIVATING" = "Iniciando…";
 "MAIL_BRIDGE_ACTIVATE" = "Activar";
 "MAIL_BRIDGE_AUTOSTART_TITLE" = "Activar Mail Bridge al iniciar Internxt";
 "MAIL_BRIDGE_AUTOSTART_NOTE" = "Desactivado por defecto: Bridge permanece inactivo hasta que lo enciendas, así que no se ejecuta ningún proceso en segundo plano si no quieres.";

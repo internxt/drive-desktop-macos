@@ -71,12 +71,34 @@ struct MailBridgeActivationCard: View {
                     }
                     Spacer(minLength: 0)
 
-                    AppButton(
-                        title: "MAIL_BRIDGE_ACTIVATE",
-                        onClick: { service.activate() },
-                        size: .MD,
-                        isEnabled: isEnabled
-                    )
+                    if service.isActivating {
+                        HStack(spacing: 8) {
+                            ProgressView().controlSize(.small)
+                            AppText("MAIL_BRIDGE_ACTIVATING")
+                                .font(.XSRegular)
+                                .foregroundColor(.Gray50)
+                        }
+                    } else {
+                        AppButton(
+                            title: "MAIL_BRIDGE_ACTIVATE",
+                            onClick: { Task { await service.activate() } },
+                            size: .MD,
+                            isEnabled: isEnabled
+                        )
+                    }
+                }
+
+                if let failure = service.lastError {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.circle")
+                            .font(.system(size: 13))
+                            .foregroundColor(.TextRed)
+                        Text(failure)
+                            .font(.XSRegular)
+                            .foregroundColor(.TextRed)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.top, 10)
                 }
 
                 MailBridgeDivider().padding(.vertical, 15)
