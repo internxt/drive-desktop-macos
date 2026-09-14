@@ -25,6 +25,7 @@ struct SettingsView: View {
     @EnvironmentObject var scheduleManager: ScheduledBackupManager
     @EnvironmentObject var antivirusManager: AntivirusManager
     @EnvironmentObject var cleanerService: CleanerService
+    @EnvironmentObject var mailBridgeService: MailBridgeService
     public var updater: SPUUpdater? = nil
     @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
@@ -33,7 +34,6 @@ struct SettingsView: View {
     @State private var isEditingSelectedFolders: Bool = false
     @State private var showBackupContentNavigator: Bool = false
     @State private var showMailBridgeSettings: Bool = false
-    @StateObject private var mailBridgeService = MailBridgeService()
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -129,10 +129,6 @@ struct SettingsView: View {
             }
         }
         .frame(width: 630)
-        .onAppear { mailBridgeService.accountEmail = authManager.user?.email ?? "" }
-        .onChange(of: authManager.user?.email) { email in
-            mailBridgeService.accountEmail = email ?? ""
-        }
         .onChange(of: scheduleManager.backupError) { error in
             if !error.isEmpty {
                 showErrorDialog(message: error)

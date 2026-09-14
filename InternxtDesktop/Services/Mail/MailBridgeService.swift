@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Security
+import InternxtSwiftCore
 
 enum MailBridgeViewState: Equatable {
     case locked
@@ -151,6 +152,7 @@ final class MailBridgeService: ObservableObject {
     @Published var credentials = MailboxCredentials()
 
     private let bridgeProcess = MailBridgeProcess()
+    private var entitlementObserver: Task<Void, Never>?
 
     @Published var syncedMessages: Int = 0
     @Published var totalMessages: Int = 0
@@ -169,12 +171,32 @@ final class MailBridgeService: ObservableObject {
         self.credentials.imapPort = self.imapPort
         self.credentials.smtpPort = self.smtpPort
         self.credentials.username = accountEmail
-        self.credentials.password = Self.loadOrCreatePassword(config: config)
+        self.credentials.password = config.getMailBridgePassword() ?? ""
+
+        observeEntitlement()
+    }
+
+    deinit {
+        entitlementObserver?.cancel()
+    }
+
+    private func observeEntitlement() {
+        entitlementObserver = Task { @MainActor [weak self] in
+            for await isEnabled in FeaturesService.shared.$mailEnabled.values {
+                guard let self else { return }
+                if !isEnabled {
+                    if self.viewState == .active { self.deactivate() }
+                    self.viewState = .locked
+                } else if self.viewState == .locked {
+                    self.viewState = .inactive
+                }
+            }
+        }
     }
 
     /// The bridge password is generated once and then reused: the daemon has to
     /// authenticate clients with the same value the user copied into their mail app.
-    private static func loadOrCreatePassword(config: ConfigLoader) -> String {
+    private func loadOrCreatePassword() -> String {
         if let stored = config.getMailBridgePassword(), !stored.isEmpty {
             return stored
         }
@@ -183,7 +205,7 @@ final class MailBridgeService: ObservableObject {
         do {
             try config.setMailBridgePassword(password: generated)
         } catch {
-            logger.error("Could not persist the Mail Bridge password: \(error)")
+            Self.logger.error("Could not persist the Mail Bridge password: \(error)")
         }
         return generated
     }
@@ -218,13 +240,22 @@ final class MailBridgeService: ObservableObject {
     // MARK: - Actions
 
     func activate() {
+        guard FeaturesService.shared.mailEnabled else {
+            Self.logger.warning("Refusing to start Mail Bridge: the plan does not include it")
+            viewState = .locked
+            return
+        }
+
+        if credentials.password.isEmpty {
+            credentials.password = loadOrCreatePassword()
+        }
 
         do {
             try bridgeProcess.start()
         } catch {
-            // TODO: surface this in the UI once the control handshake tells us whether
-            // the bridge actually came up.
             Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+            return
         }
 
         withAnimation(.easeOut(duration: 0.18)) { viewState = .active }
@@ -232,7 +263,29 @@ final class MailBridgeService: ObservableObject {
 
     func deactivate() {
         bridgeProcess.stop()
+        activateAtLaunch = false
         withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+    }
+
+    func startIfNeeded() {
+        guard activateAtLaunch else {
+            Self.logger.info("Mail Bridge autostart is off")
+            return
+        }
+        Self.logger.info("Mail Bridge autostart is on, starting the daemon")
+        activate()
+    }
+
+    func reset() {
+        bridgeProcess.stop()
+        activateAtLaunch = false
+        imapPort = DefaultPorts.imap
+        smtpPort = DefaultPorts.smtp
+        accountEmail = ""
+        credentials = MailboxCredentials()
+        credentials.imapPort = imapPort
+        credentials.smtpPort = smtpPort
+        viewState = .locked
     }
 
 

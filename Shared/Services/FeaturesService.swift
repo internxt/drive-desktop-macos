@@ -79,6 +79,10 @@ class FeaturesService: ObservableObject {
     var cleanerState: CleanerFeatureState {
         return cleanerEnabled ? .active : .locked
     }
+
+    var mailState: MailFeatureState {
+        return mailEnabled ? .active : .locked
+    }
     
     private func loadCachedFeatures() {
         let defaults = UserDefaults.standard
@@ -121,6 +125,11 @@ enum BackupState: Equatable {
 }
 
 enum CleanerFeatureState: Equatable {
+    case locked
+    case active
+}
+
+enum MailFeatureState: Equatable {
     case locked
     case active
 }
