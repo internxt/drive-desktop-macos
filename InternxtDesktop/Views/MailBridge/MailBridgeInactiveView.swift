@@ -71,7 +71,7 @@ struct MailBridgeActivationCard: View {
                     }
                     Spacer(minLength: 0)
 
-                    if service.isActivating {
+                    if service.isActivatingMailBridge {
                         HStack(spacing: 8) {
                             ProgressView().controlSize(.small)
                             AppText("MAIL_BRIDGE_ACTIVATING")
