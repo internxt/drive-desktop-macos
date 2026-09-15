@@ -353,7 +353,11 @@ final class MailBridgeService: ObservableObject {
 
 
     func resync() {
-        // TODO: Resync through the Bridge Daemon connection
+        do {
+            try controlServer.resync()
+        } catch {
+            Self.logger.error("Error resynchronizing Mail Bridge: \(error)")
+        }
     }
 
     func configureAutomatically(_ client: MailClient) {

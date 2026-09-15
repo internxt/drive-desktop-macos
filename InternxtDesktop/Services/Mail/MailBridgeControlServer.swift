@@ -172,6 +172,10 @@ final class MailBridgeControlServer {
             return ready
         }
     }
+    
+    func resync() throws {
+        try self.performResync()
+    }
 
     func stop() {
         queue.sync {
@@ -225,12 +229,28 @@ final class MailBridgeControlServer {
 
         return ready
     }
+    
+    // MARK: - Performing the resync
+    
+    
+    private func performResync() throws {
+        try queue.sync {
+            guard let connection = connectionDescriptor else {
+                throw MailBridgeControlError.connectionClosed
+            }
+            try writeFrame(ResyncMessage(), to: connection)
+        }
+    }
 
     // MARK: - Framing: 4-byte big-endian length, then one JSON value
 
     private struct StartSessionMessage: Encodable {
         let type = "start_session"
         let session: MailBridgeSession
+    }
+    
+    private struct ResyncMessage: Encodable {
+        let type = "resync"
     }
 
     private struct ControlReply: Decodable {
