@@ -16,6 +16,12 @@ enum MailBridgeViewState: Equatable {
     case active
 }
 
+enum MailBridgeSyncState: Equatable {
+    case upToDate
+    case syncing(downloaded: Int, total: Int, percent: Int)
+    case interrupted(downloaded: Int, total: Int)
+}
+
 enum MailClient: String, CaseIterable, Identifiable {
     case appleMail = "Apple Mail"
     case outlook = "Outlook"
@@ -158,9 +164,7 @@ final class MailBridgeService: ObservableObject {
     @Published private(set) var isActivatingMailBridge: Bool = false
     @Published private(set) var lastError: String?
 
-    @Published var syncedMessages: Int = 0
-    @Published var totalMessages: Int = 0
-    @Published var estimatedRemaining: String = ""
+    @Published private(set) var syncState: MailBridgeSyncState = .upToDate
 
     init(defaults: UserDefaults = .standard, config: ConfigLoader = ConfigLoader()) {
         self.defaults = defaults
@@ -178,10 +182,41 @@ final class MailBridgeService: ObservableObject {
         self.credentials.password = config.getMailBridgePassword() ?? ""
 
         observeEntitlement()
+        observeSyncEvents()
     }
 
     deinit {
         entitlementObserver?.cancel()
+    }
+
+    private func observeSyncEvents() {
+        controlServer.onEvent = { [weak self] event in
+            Task { @MainActor [weak self] in
+                self?.onSyncChanges(event)
+            }
+        }
+    }
+
+    private func onSyncChanges(_ event: MailBridgeEvent) {
+        switch event {
+        case .syncStarted(let total):
+            Self.logger.info("Mail Bridge sync started: \(total) new messages to download")
+            syncState = .syncing(downloaded: 0, total: total, percent: 0)
+
+        case .syncProgress(let downloaded, let total, let percent):
+            Self.logger.info("Mail Bridge sync progress: \(downloaded)/\(total) (\(percent)%)")
+            syncState = .syncing(downloaded: downloaded, total: total, percent: percent)
+
+        case .syncFinished(let downloaded, let total, let code):
+            // An empty code means the sync did everything it set out to do.
+            if let code, !code.isEmpty {
+                Self.logger.warning("Mail Bridge sync stopped early (\(code)) at \(downloaded)/\(total)")
+                syncState = .interrupted(downloaded: downloaded, total: total)
+            } else {
+                Self.logger.info("Mail Bridge sync finished: \(downloaded)/\(total)")
+                syncState = .upToDate
+            }
+        }
     }
 
     private func observeEntitlement() {
@@ -215,11 +250,15 @@ final class MailBridgeService: ObservableObject {
     }
 
     var progress: Double {
-        guard totalMessages > 0 else { return 0 }
-        return Double(syncedMessages) / Double(totalMessages)
+        switch syncState {
+        case .upToDate:
+            return 1
+        case .syncing(_, _, let percent):
+            return Double(percent) / 100
+        case .interrupted(let downloaded, let total):
+            return total > 0 ? Double(downloaded) / Double(total) : 0
+        }
     }
-
-    var progressPercent: Int { Int((progress * 100).rounded()) }
 
     var endpointSummary: String {
         "\(accountEmail) · \(credentials.host) · IMAP \(imapPort) · SMTP \(smtpPort)"
@@ -233,12 +272,25 @@ final class MailBridgeService: ObservableObject {
     }
 
     var progressSummary: String {
-        String(
-            format: NSLocalizedString("MAIL_BRIDGE_DECRYPTING_%d_%@_%@", comment: "Mailbox decryption progress"),
-            progressPercent,
-            syncedMessages.formatted(),
-            totalMessages.formatted()
-        )
+        switch syncState {
+        case .upToDate:
+            return NSLocalizedString("MAIL_BRIDGE_UP_TO_DATE", comment: "Nothing left to sync")
+
+        case .syncing(let downloaded, let total, let percent):
+            return String(
+                format: NSLocalizedString("MAIL_BRIDGE_SYNCING_%d_%@_%@", comment: "Mailbox sync progress"),
+                percent,
+                downloaded.formatted(),
+                total.formatted()
+            )
+
+        case .interrupted(let downloaded, let total):
+            return String(
+                format: NSLocalizedString("MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@", comment: "A sync gave up partway"),
+                downloaded.formatted(),
+                total.formatted()
+            )
+        }
     }
 
     // MARK: - Actions
@@ -326,6 +378,7 @@ final class MailBridgeService: ObservableObject {
         bridgeProcess.stop()
         controlServer.stop()
         activateAtLaunch = false
+        syncState = .upToDate
         withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
     }
 
@@ -348,15 +401,18 @@ final class MailBridgeService: ObservableObject {
         credentials = MailboxCredentials()
         credentials.imapPort = imapPort
         credentials.smtpPort = smtpPort
+        syncState = .upToDate
         viewState = .locked
     }
 
 
-    func resync() {
+    func resyncMailManually() {
+        lastError = nil
         do {
-            try controlServer.resync()
+            try controlServer.resyncMailManually()
         } catch {
-            Self.logger.error("Error resynchronizing Mail Bridge: \(error)")
+            Self.logger.error("Could not ask Mail Bridge to resync: \(error)")
+            lastError = error.localizedDescription
         }
     }
 
@@ -364,12 +420,6 @@ final class MailBridgeService: ObservableObject {
         // TODO: Write the mail client profile for the given client
     }
 
-    func applyPorts(imap: Int, smtp: Int) {
-        imapPort = imap
-        smtpPort = smtp
-        credentials.imapPort = imap
-        credentials.smtpPort = smtp
-    }
 }
 
 enum MailBridgeServiceError: Error, LocalizedError {

@@ -342,7 +342,6 @@
 "MAIL_BRIDGE_RUNNING" = "Mail Bridge está en marcha";
 "MAIL_BRIDGE_RESYNC" = "Resincronizar";
 "MAIL_BRIDGE_TURN_OFF" = "Apagar";
-"MAIL_BRIDGE_DECRYPTING_%d_%@_%@" = "Descifrando tu buzón — %d %% · %@ de %@ mensajes";
 "MAIL_BRIDGE_CONNECT_CLIENT_TITLE" = "Conecta un cliente de correo";
 "MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE" = "Elige tu aplicación e Internxt configurará la cuenta por ti.";
 "MAIL_BRIDGE_CLIENT_OTHER" = "Otro";
@@ -362,13 +361,11 @@
 "MAIL_BRIDGE_USERNAME" = "Usuario";
 "MAIL_BRIDGE_PASSWORD" = "Contraseña";
 "MAIL_BRIDGE_SECURITY" = "Seguridad";
-"MAIL_BRIDGE_IMAP" = "IMAP";
-"MAIL_BRIDGE_SMTP" = "SMTP";
 "MAIL_BRIDGE_IMAP_CAPTION" = "entrante";
 "MAIL_BRIDGE_SMTP_CAPTION" = "saliente";
 "MAIL_BRIDGE_SETTINGS_TITLE" = "Ajustes de Mail Bridge";
 "MAIL_BRIDGE_SETTINGS_SUBTITLE_%@" = "Se aplican a %@ en este dispositivo.";
-"MAIL_BRIDGE_LOCAL_PORTS" = "Puertos locales";
-"MAIL_BRIDGE_LOCAL_PORTS_NOTE" = "Cámbialos solo si otra aplicación ya los usa.";
-"MAIL_BRIDGE_RESTART_NOTE" = "Bridge se reinicia y los clientes conectados se reconectan solos.";
 "MAIL_BRIDGE_SAVE_CHANGES" = "Guardar cambios";
+"MAIL_BRIDGE_UP_TO_DATE" = "Todo sincronizado";
+"MAIL_BRIDGE_SYNCING_%d_%@_%@" = "Sincronizando tu buzón — %d %% · %@ de %@ mensajes nuevos";
+"MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@" = "Sincronización interrumpida — %@ de %@ mensajes nuevos descargados";
