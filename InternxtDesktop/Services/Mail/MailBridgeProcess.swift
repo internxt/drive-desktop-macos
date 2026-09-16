@@ -23,7 +23,7 @@ enum MailBridgeProcessError: Error, LocalizedError {
 /// Owns the lifetime of the embedded `mail-bridge` daemon process.
 final class MailBridgeProcess: NSObject {
 
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridge")
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeProcess")
 
     private let queue = DispatchQueue(label: "com.internxt.mailbridge.process")
     private var process: Process?

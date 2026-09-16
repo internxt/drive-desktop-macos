@@ -129,7 +129,7 @@ final class MailBridgeService: ObservableObject {
         static let smtp = 2025
     }
 
-    private static let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridge")
+    private static let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeService")
 
     private let defaults: UserDefaults
     private let config: ConfigLoader
