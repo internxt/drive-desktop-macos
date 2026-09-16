@@ -26,7 +26,7 @@ public struct JSONConfig: Codable {
     public let AUTH_TOKEN: String?
     public let GATEWAY_API_URL: String
     public let HEADER_KEY_GATEWAY: String
-    public let MAIL_API_URL: String?
+    public let MAIL_API_URL: String
     public let MAIL_SERVER_PUBLIC_KEY: String?
 }
 
