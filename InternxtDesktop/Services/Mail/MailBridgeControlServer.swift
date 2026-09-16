@@ -52,6 +52,12 @@ struct MailBridgeReady: Decodable {
     }
 }
 
+enum MailBridgeEvent {
+    case syncStarted(total: Int)
+    case syncProgress(downloaded: Int, total: Int, percent: Int)
+    case syncFinished(downloaded: Int, total: Int, code: String?)
+}
+
 enum MailBridgeControlError: Error, LocalizedError {
     case socketFailed(String)
     case pathTooLong(Int)
@@ -84,12 +90,18 @@ final class MailBridgeControlServer {
     private static let handshakeTimeout: Duration = .seconds(60)
     private static let maxFrameSize = 1 << 20
 
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridge")
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeControlServer")
     private let queue = DispatchQueue(label: "com.internxt.mailbridge.control")
+
+    /// Separate from `queue` on purpose: the read loop blocks for as long as the daemon
+    /// stays quiet, and `queue` is what `listen()`, `stop()` and `resync()` wait on.
+    private let readerQueue = DispatchQueue(label: "com.internxt.mailbridge.control.reader")
 
     private let socketURL: URL
     private var listenerDescriptor: Int32?
     private var connectionDescriptor: Int32?
+    private var isStopping = false
+    var onIncomingEvent: ((MailBridgeEvent) -> Void)?
 
     init(socketURL: URL) {
         self.socketURL = socketURL
@@ -173,12 +185,18 @@ final class MailBridgeControlServer {
         }
     }
     
-    func resync() throws {
-        try self.performResync()
+    func resyncMailManually() throws {
+        try queue.sync {
+            guard let connection = connectionDescriptor else {
+                throw MailBridgeControlError.connectionClosed
+            }
+            try writeFrame(ResyncMessage(), to: connection)
+        }
     }
 
     func stop() {
         queue.sync {
+            isStopping = true
             if let connection = connectionDescriptor { close(connection) }
             if let listener = listenerDescriptor { close(listener) }
             connectionDescriptor = nil
@@ -227,22 +245,35 @@ final class MailBridgeControlServer {
             throw MailBridgeControlError.malformedFrame("expected ready, got \(reply.type)")
         }
 
+        startListeningOnBridgeEvents(on: connection)
+
         return ready
     }
-    
-    // MARK: - Performing the resync
-    
-    
-    private func performResync() throws {
-        try queue.sync {
-            guard let connection = connectionDescriptor else {
-                throw MailBridgeControlError.connectionClosed
+
+    // MARK: - Reading what the daemon reports on its own
+
+    private func startListeningOnBridgeEvents(on descriptor: Int32) {
+        readerQueue.async { [weak self] in
+            while true {
+                guard let self else { return }
+                do {
+                    let frame = try self.readFrame(from: descriptor)
+                    if let event = frame.event { self.onIncomingEvent?(event) }
+                } catch {
+                    let stopping = self.queue.sync { self.isStopping }
+                    if !stopping {
+                        self.logger.error("Stopped reading the Mail Bridge control channel: \(error)")
+                    }
+                    return
+                }
             }
-            try writeFrame(ResyncMessage(), to: connection)
         }
     }
-
+    
+    
+    
     // MARK: - Framing: 4-byte big-endian length, then one JSON value
+
 
     private struct StartSessionMessage: Encodable {
         let type = "start_session"
@@ -257,8 +288,41 @@ final class MailBridgeControlServer {
         let type: String
         let ready: MailBridgeReady?
         let error: ControlErrorPayload?
+        let started: SyncStartedPayload?
+        let progress: SyncProgressPayload?
+        let finished: SyncFinishedPayload?
 
         struct ControlErrorPayload: Decodable { let code: String }
+        struct SyncStartedPayload: Decodable { let total: Int }
+
+        struct SyncProgressPayload: Decodable {
+            let downloaded: Int
+            let total: Int
+            let percent: Int
+        }
+
+        struct SyncFinishedPayload: Decodable {
+            let downloaded: Int
+            let total: Int
+            let code: String?
+        }
+
+        var event: MailBridgeEvent? {
+            switch type {
+            case "sync_started":
+                return started.map { .syncStarted(total: $0.total) }
+            case "sync_progress":
+                return progress.map {
+                    .syncProgress(downloaded: $0.downloaded, total: $0.total, percent: $0.percent)
+                }
+            case "sync_finished":
+                return finished.map {
+                    .syncFinished(downloaded: $0.downloaded, total: $0.total, code: $0.code)
+                }
+            default:
+                return nil
+            }
+        }
     }
 
     private func writeFrame(_ message: some Encodable, to descriptor: Int32) throws {
