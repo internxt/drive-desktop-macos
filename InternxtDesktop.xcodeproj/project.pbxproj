@@ -930,6 +930,15 @@
 			path = MailBridge;
 			sourceTree = "<group>";
 		};
+		4792C7EE005055470098B744 /* Mail */ = {
+			isa = PBXGroup;
+			children = (
+				4792C7D0115055470098B744 /* MailBridgeService.swift */,
+				4792C7E1015055470098B744 /* MailBridgeProcess.swift */,
+			);
+			path = Mail;
+			sourceTree = "<group>";
+		};
 		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1505,6 +1514,7 @@
 			isa = PBXGroup;
 			children = (
 				E17AA0222A8A70C100C7EE6E /* Auth */,
+				4792C7EE005055470098B744 /* Mail */,
 				E16310562A8E66F70072989E /* URLDictionary.swift */,
 				E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */,
 				E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */,
@@ -1512,8 +1522,6 @@
 				E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */,
 				317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */,
 				AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */,
-				4792C7D0115055470098B744 /* MailBridgeService.swift */,
-				4792C7E1015055470098B744 /* MailBridgeProcess.swift */,
 				AA94CA6D2E99E8CE007CEBDF /* NotificationsManager.swift */,
 				AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */,
 				AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */,

@@ -104,15 +104,6 @@ struct APIFactory {
 
         return BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
-    
-    static var Mail: MailAPI {
-        let configLoader = ConfigLoader()
-
-        let config = configLoader.get()
-        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
-
-        return MailAPI(baseUrl: config.MAIL_API_URL ?? "MISSING_MAIL_API_URL", authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
-    }
 
     static var Payment: DriveAPI {
         let configLoader = ConfigLoader()
