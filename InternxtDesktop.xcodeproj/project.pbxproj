@@ -57,6 +57,7 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */; };
 		4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3733052AED600DAD486 /* InternxtSwiftCore */; };
 		4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D37F3052B07400DAD486 /* InternxtSwiftCore */; };
 		4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3813052B07D00DAD486 /* InternxtSwiftCore */; };
@@ -565,6 +566,7 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeControlServer.swift; sourceTree = "<group>"; };
 		4792C7C1305055550098B744 /* MailBridgeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeTabView.swift; sourceTree = "<group>"; };
 		4792C7D0015055470098B744 /* MailBridgeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeComponents.swift; sourceTree = "<group>"; };
 		4792C7D0035055470098B744 /* MailBridgeLockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeLockedView.swift; sourceTree = "<group>"; };
@@ -933,6 +935,7 @@
 		4792C7EE005055470098B744 /* Mail */ = {
 			isa = PBXGroup;
 			children = (
+				475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */,
 				4792C7D0115055470098B744 /* MailBridgeService.swift */,
 				4792C7E1015055470098B744 /* MailBridgeProcess.swift */,
 			);
@@ -2123,6 +2126,7 @@
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */,
+				475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */,
 				AA8B5F67302A2E2600F28F39 /* IssueRowView.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
