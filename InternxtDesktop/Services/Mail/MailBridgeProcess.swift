@@ -27,6 +27,8 @@ final class MailBridgeProcess: NSObject {
 
     private let queue = DispatchQueue(label: "com.internxt.mailbridge.process")
     private var process: Process?
+    private var isStopping = false
+    var onUnexpectedExit: ((Int32) -> Void)?
 
     override init() {
         super.init()
@@ -94,20 +96,30 @@ final class MailBridgeProcess: NSObject {
             task.standardError = pipe(scope: "stderr")
 
             task.terminationHandler = { [weak self] finished in
-                self?.logger.info(
+                guard let self else { return }
+                self.logger.info(
                     "mail-bridge exited — reason: \(finished.terminationReason.rawValue), status: \(finished.terminationStatus)"
                 )
-                self?.queue.async { self?.process = nil }
+                self.queue.async {
+                    self.process = nil
+                    let wasDeliberate = self.isStopping
+                    if !wasDeliberate {
+                        self.logger.error("mail-bridge died on its own (status \(finished.terminationStatus))")
+                        self.onUnexpectedExit?(finished.terminationStatus)
+                    }
+                }
             }
 
             try task.run()
             process = task
+            isStopping = false
             logger.info("mail-bridge started (pid \(task.processIdentifier))")
         }
     }
 
     func stop() {
         queue.sync {
+            isStopping = true
             guard let running = process, running.isRunning else { return }
             logger.info("stopping mail-bridge (pid \(running.processIdentifier))")
             running.terminate()

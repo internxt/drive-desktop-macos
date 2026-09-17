@@ -12,6 +12,8 @@ import InternxtSwiftCore
 
 enum MailBridgeViewState: Equatable {
     case locked
+    case identitySetup
+    case failed
     case inactive
     case active
 }
@@ -190,11 +192,34 @@ final class MailBridgeService: ObservableObject {
     }
 
     private func observeSyncEvents() {
-        controlServer.onEvent = { [weak self] event in
+        controlServer.onIncomingEvent = { [weak self] event in
             Task { @MainActor [weak self] in
                 self?.onSyncChanges(event)
             }
         }
+
+        controlServer.onChannelLost = { [weak self] in
+            Task { @MainActor [weak self] in
+                self?.handleBridgeError("the daemon closed the control channel")
+            }
+        }
+
+        bridgeProcess.onUnexpectedExit = { [weak self] status in
+            Task { @MainActor [weak self] in
+                self?.handleBridgeError("the daemon exited with status \(status)")
+            }
+        }
+    }
+
+    private func handleBridgeError(_ reason: String) {
+        guard viewState == .active || isActivatingMailBridge else { return }
+
+        Self.logger.error("Mail Bridge stopped unexpectedly: \(reason)")
+        bridgeProcess.stop()
+        controlServer.stop()
+        syncState = .upToDate
+        lastError = reason
+        withAnimation(.easeOut(duration: 0.18)) { viewState = .failed }
     }
 
     private func onSyncChanges(_ event: MailBridgeEvent) {
@@ -323,10 +348,16 @@ final class MailBridgeService: ObservableObject {
             withAnimation(.easeOut(duration: 0.18)) { viewState = .active }
         } catch {
             Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
-            lastError = error.localizedDescription
             bridgeProcess.stop()
             controlServer.stop()
-            withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+
+            if case MailBridgeServiceError.mailboxNotCreated = error {
+                lastError = nil
+                withAnimation(.easeOut(duration: 0.18)) { viewState = .identitySetup }
+            } else {
+                lastError = error.localizedDescription
+                withAnimation(.easeOut(duration: 0.18)) { viewState = .failed }
+            }
         }
     }
 
@@ -336,7 +367,13 @@ final class MailBridgeService: ObservableObject {
             throw MailBridgeServiceError.notSignedIn
         }
 
-        let keys = try await APIFactory.Mail.getMailAccountKeys()
+        let keys: MailAccountKeysResponse
+        do {
+            keys = try await APIFactory.Mail.getMailAccountKeys()
+        } catch let apiError as APIClientError where apiError.isMailNotSetUp {
+            throw MailBridgeServiceError.mailboxNotCreated
+        }
+
         let privateKey = try MailKeystore.openEncryptionKeystore(
             address: keys.address,
             publicKey: keys.publicKey,
@@ -405,6 +442,17 @@ final class MailBridgeService: ObservableObject {
         viewState = .locked
     }
 
+    func recheckUserIdentitySetup() async {
+        guard viewState == .identitySetup else { return }
+        viewState = .inactive
+        await activate()
+    }
+
+    func dismissFailure() {
+        guard viewState == .failed else { return }
+        lastError = nil
+        withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+    }
 
     func resyncMailManually() {
         lastError = nil
@@ -424,10 +472,12 @@ final class MailBridgeService: ObservableObject {
 
 enum MailBridgeServiceError: Error, LocalizedError {
     case notSignedIn
+    case mailboxNotCreated
 
     var errorDescription: String? {
         switch self {
         case .notSignedIn: return "Sign in to Internxt before starting Mail Bridge"
+        case .mailboxNotCreated: return "This account has no Internxt Mail address yet"
         }
     }
 }

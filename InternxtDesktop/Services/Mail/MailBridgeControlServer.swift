@@ -102,6 +102,7 @@ final class MailBridgeControlServer {
     private var connectionDescriptor: Int32?
     private var isStopping = false
     var onIncomingEvent: ((MailBridgeEvent) -> Void)?
+    var onChannelLost: (() -> Void)?
 
     init(socketURL: URL) {
         self.socketURL = socketURL
@@ -110,6 +111,7 @@ final class MailBridgeControlServer {
     func listen() throws {
         try queue.sync {
             guard listenerDescriptor == nil else { return }
+            isStopping = false
 
             let path = socketURL.path
             let pathBytes = Array(path.utf8)
@@ -262,7 +264,8 @@ final class MailBridgeControlServer {
                 } catch {
                     let stopping = self.queue.sync { self.isStopping }
                     if !stopping {
-                        self.logger.error("Stopped reading the Mail Bridge control channel: \(error)")
+                        self.logger.error("Lost the Mail Bridge control channel: \(error)")
+                        self.onChannelLost?()
                     }
                     return
                 }

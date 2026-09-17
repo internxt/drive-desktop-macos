@@ -20,6 +20,10 @@ struct MailBridgeTabView: View {
                 switch service.viewState {
                 case .locked:
                     MailBridgeLockedView(service: service)
+                case .identitySetup:
+                    MailBridgeIdentitySetupView(service: service)
+                case .failed:
+                    MailBridgeErrorView(service: service)
                 case .inactive:
                     MailBridgeInactiveView(service: service)
                 case .active:
