@@ -61,7 +61,7 @@ struct MailBridgeActiveView: View {
     }
 
     private func copyAll() {
-        setClipboard(service.credentials.clipboardSummary())
+        setClipboard(service.credentials.clipboardSummary(username: service.accountEmail))
         copiedAll = true
         Task {
             try? await Task.sleep(nanoseconds: 1_600_000_000)
@@ -91,7 +91,7 @@ struct MailBridgeActiveView: View {
 
                     Spacer(minLength: 8)
 
-                    Button(action: { service.resync() }) {
+                    Button(action: { service.resyncMailManually() }) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.triangle.2.circlepath")
                                 .font(.system(size: 11))
@@ -125,21 +125,43 @@ struct MailBridgeActiveView: View {
                 MailBridgeDivider(color: Color.Primary.opacity(0.3))
                     .padding(.top, 13)
 
-                HStack(alignment: .bottom, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(service.progressSummary)
-                            .font(.XSRegular)
-                            .foregroundColor(.Gray60)
-                        MailBridgeProgressBar(value: service.progress)
-                    }
-                    Text(service.estimatedRemaining)
-                        .font(.XSRegular)
-                        .foregroundColor(.Gray50)
-                        .fixedSize()
-                }
-                .padding(.top, 12)
+                syncStatus
+                    .padding(.top, 12)
             }
             .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
+        }
+    }
+
+
+    @ViewBuilder
+    private var syncStatus: some View {
+        switch service.syncState {
+        case .syncing:
+            VStack(alignment: .leading, spacing: 6) {
+                Text(service.progressSummary)
+                    .font(.XSRegular)
+                    .foregroundColor(.Gray60)
+                MailBridgeProgressBar(value: service.progress)
+            }
+
+        case .upToDate:
+            syncBadge("checkmark.circle.fill", tint: .GreenDark, text: .Gray60)
+
+        case .interrupted:
+            syncBadge("exclamationmark.triangle.fill", tint: .Orange, text: .TextRed)
+        }
+    }
+
+    private func syncBadge(_ symbol: String, tint: Color, text: Color) -> some View {
+        HStack(spacing: 7) {
+            Image(systemName: symbol)
+                .font(.system(size: 12))
+                .foregroundColor(tint)
+            Text(service.progressSummary)
+                .font(.XSRegular)
+                .foregroundColor(text)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
         }
     }
 
@@ -262,7 +284,7 @@ struct MailBridgeActiveView: View {
             }
             .padding(.bottom, 6)
 
-            ForEach(service.credentials.rows(for: kind)) { row in
+            ForEach(service.credentials.rows(for: kind, username: service.accountEmail)) { row in
                 MailBridgeCredentialRow(
                     row: row,
                     isRevealed: revealPassword,

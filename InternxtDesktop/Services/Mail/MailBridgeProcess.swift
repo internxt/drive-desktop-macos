@@ -65,6 +65,10 @@ final class MailBridgeProcess: NSObject {
         return base.appendingPathComponent("Internxt/mail-bridge", isDirectory: true)
     }
 
+    static var controlSocketURL: URL {
+        stateDirectory.appendingPathComponent("control.sock")
+    }
+
     var isRunning: Bool {
         queue.sync { process?.isRunning ?? false }
     }
@@ -96,7 +100,7 @@ final class MailBridgeProcess: NSObject {
             task.currentDirectoryURL = stateDirectory
             task.arguments = [
                 "-state-dir", stateDirectory.path,
-                "-control-endpoint", stateDirectory.appendingPathComponent("control.sock").path
+                "-control-endpoint", Self.controlSocketURL.path
             ]
             task.environment = childEnvironment(config: config)
 
@@ -176,8 +180,8 @@ final class MailBridgeProcess: NSObject {
         var environment = ProcessInfo.processInfo.environment
         let loaded = config.get()
 
-        if let mailAPIURL = loaded.MAIL_API_URL, !mailAPIURL.isEmpty {
-            environment["MAIL_API_URL"] = mailAPIURL
+        if !loaded.MAIL_API_URL.isEmpty {
+            environment["MAIL_API_URL"] = loaded.MAIL_API_URL
         } else {
             logger.warning("MAIL_API_URL is not set — the daemon will serve fixture mail")
         }
