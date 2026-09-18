@@ -63,6 +63,7 @@ enum MailBridgeEvent {
     case syncStarted(total: Int)
     case syncProgress(downloaded: Int, total: Int, percent: Int)
     case syncFinished(downloaded: Int, total: Int, code: String?)
+    case daemonFailed(code: String)
 }
 
 struct MailBridgeControlReply: Decodable {
@@ -104,6 +105,8 @@ struct MailBridgeControlReply: Decodable {
             return finished.map {
                 .syncFinished(downloaded: $0.downloaded, total: $0.total, code: $0.code)
             }
+        case "error":
+            return error.map { .daemonFailed(code: $0.code) }
         default:
             return nil
         }
@@ -269,6 +272,13 @@ final class MailBridgeControlServer {
         sendAndForget(ResyncMessage(), over: connection)
     }
 
+    func updateSession(_ backendSession: MailBridgeSession.BackendSession) throws {
+        guard let connection, connection.isActive else {
+            throw MailBridgeControlError.connectionClosed
+        }
+        sendAndForget(SessionUpdateMessage(update: .init(backendSession: backendSession)), over: connection)
+    }
+
     func stop() {
         shared.withLockedValue { $0.isStopping = true }
         finishHandshake()
@@ -315,15 +325,17 @@ final class MailBridgeControlServer {
     }
 
 
-    private static func receive(_ reply: Result<MailBridgeControlReply, Error>,
-                                using shared: NIOLockedValueBox<Shared>) {
+    private static func receive(_ reply: Result<MailBridgeControlReply, Error>, using shared: NIOLockedValueBox<Shared>) {
         let state = shared.withLockedValue { $0 }
 
         state.ready.map { Self.settleHandshake(with: reply, on: $0) }
 
         switch reply {
         case .success(let frame):
-            frame.event.map { state.onIncomingEvent?($0) }
+            guard let event = frame.event else { break }
+
+            if case .daemonFailed = event, state.ready != nil { break }
+            state.onIncomingEvent?(event)
 
         case .failure:
             if state.ready == nil, !state.isStopping { state.onChannelLost?() }
@@ -378,6 +390,19 @@ final class MailBridgeControlServer {
 
     private struct ResyncMessage: Encodable {
         let type = "resync"
+    }
+
+    private struct SessionUpdateMessage: Encodable {
+        let type = "session_updated"
+        let update: Update
+
+        struct Update: Encodable {
+            let backendSession: MailBridgeSession.BackendSession
+
+            enum CodingKeys: String, CodingKey {
+                case backendSession = "backend_session"
+            }
+        }
     }
 
     private func send(_ message: some Encodable, over channel: Channel) async throws {
