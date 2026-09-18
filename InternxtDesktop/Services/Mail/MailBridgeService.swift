@@ -200,10 +200,9 @@ final class MailBridgeService: ObservableObject {
             }
         }
 
-        bridgeProcess.onUnexpectedExit = { [weak self] status in
-            Task { @MainActor [weak self] in
-                self?.handleBridgeError("the daemon exited with status \(status)")
-            }
+        bridgeProcess.onTermination = { [weak self] reason in
+            guard case .unexpected(let status) = reason else { return }
+            self?.handleBridgeError("the daemon exited with status \(status)")
         }
     }
 
