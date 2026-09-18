@@ -75,7 +75,6 @@ struct MailboxCredentials {
     var host = "127.0.0.1"
     var imapPort = 1143
     var smtpPort = 1025
-    var username = ""
     var password = ""
     var imapSecurity = "STARTTLS"
     var smtpSecurity = "SSL"
@@ -100,7 +99,7 @@ struct MailboxCredentials {
         return password
     }
 
-    func rows(for protocolKind: ProtocolKind) -> [CredentialRow] {
+    func rows(for protocolKind: ProtocolKind, username: String) -> [CredentialRow] {
         let port = String(protocolKind == .imap ? imapPort : smtpPort)
         let security = protocolKind == .imap ? imapSecurity : smtpSecurity
 
@@ -113,7 +112,7 @@ struct MailboxCredentials {
         ]
     }
 
-    func clipboardSummary() -> String {
+    func clipboardSummary(username: String) -> String {
         """
         IMAP  \(host):\(imapPort)  \(imapSecurity)
         SMTP  \(host):\(smtpPort)  \(smtpSecurity)
@@ -142,10 +141,7 @@ final class MailBridgeService: ObservableObject {
     private let defaults: UserDefaults
     private let config: ConfigLoader
 
-    /// Also the username clients authenticate with — Bridge never asks for a second login.
-    @Published var accountEmail: String = "" {
-        didSet { credentials.username = accountEmail }
-    }
+    @Published var accountEmail: String = ""
     @Published var viewState: MailBridgeViewState = .locked
     @Published var activateAtLaunch: Bool {
         didSet { defaults.set(activateAtLaunch, forKey: DefaultsKeys.activateAtLaunch) }
@@ -180,11 +176,11 @@ final class MailBridgeService: ObservableObject {
 
         self.credentials.imapPort = self.imapPort
         self.credentials.smtpPort = self.smtpPort
-        self.credentials.username = accountEmail
         self.credentials.password = config.getMailBridgePassword() ?? ""
 
         observeEntitlement()
         observeSyncEvents()
+        observeDaemonExit()
     }
 
     deinit {
@@ -241,6 +237,19 @@ final class MailBridgeService: ObservableObject {
                 Self.logger.info("Mail Bridge sync finished: \(downloaded)/\(total)")
                 syncState = .upToDate
             }
+        }
+    }
+
+    /// The daemon can die without anyone asking it to. When that happens the UI has to
+    /// stop claiming Bridge is active, otherwise the user copies credentials that lead nowhere.
+    private func observeDaemonExit() {
+        bridgeProcess.onTermination = { [weak self] reason in
+            guard let self else { return }
+            guard case .unexpected(let status) = reason else { return }
+
+            Self.logger.error("The Mail Bridge daemon stopped unexpectedly (status \(status))")
+            guard self.viewState == .active else { return }
+            withAnimation(.easeOut(duration: 0.18)) { self.viewState = .inactive }
         }
     }
 
@@ -336,7 +345,7 @@ final class MailBridgeService: ObservableObject {
 
             // Order matters:
             // 1. Create the socket
-            try controlServer.listen()
+            try await controlServer.listen()
         
             // 2. Start the process (Mail Bridge daemon)
             try bridgeProcess.start()
@@ -362,8 +371,8 @@ final class MailBridgeService: ObservableObject {
     }
 
     private func createSession() async throws -> MailBridgeSession {
-        guard let mnemonic = config.getMnemonic(), !mnemonic.isEmpty,
-              let token = config.getAuthToken(), !token.isEmpty else {
+        let mnemonic = try config.getValidMnemonic()
+        guard let token = config.getAuthToken(), !token.isEmpty else {
             throw MailBridgeServiceError.notSignedIn
         }
 
@@ -424,6 +433,7 @@ final class MailBridgeService: ObservableObject {
             Self.logger.info("Mail Bridge autostart is off")
             return
         }
+
         Self.logger.info("Mail Bridge autostart is on, starting the daemon")
         await activate()
     }
@@ -457,7 +467,7 @@ final class MailBridgeService: ObservableObject {
     func resyncMailManually() {
         lastError = nil
         do {
-            try controlServer.resyncMailManually()
+            try controlServer.resync()
         } catch {
             Self.logger.error("Could not ask Mail Bridge to resync: \(error)")
             lastError = error.localizedDescription
