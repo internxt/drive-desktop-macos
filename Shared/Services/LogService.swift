@@ -15,6 +15,7 @@ enum LogSubSystem: String {
     case Errors = "com.internxt.errors"
     case SyncExtensionWorkspace = "com.internxt.SyncExtension.Workspace"
     case Cleaner = "com.internxt.cleaner"
+    case Mail = "com.internxt.mail"
 }
 
 class DDLoggerWrapper {

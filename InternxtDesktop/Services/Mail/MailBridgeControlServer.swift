@@ -190,7 +190,7 @@ enum MailBridgeControlPipeline {
 
 final class MailBridgeControlServer {
     private static let handshakeTimeout: TimeAmount = .seconds(60)
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeControlServer")
+    private let logger = LogService.shared.createLogger(subsystem: .Mail, category: "MailBridgeControlServer")
     private let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     private let socketURL: URL
     private var serverChannel: Channel?
