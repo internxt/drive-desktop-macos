@@ -61,7 +61,7 @@ struct MailBridgeActiveView: View {
     }
 
     private func copyAll() {
-        setClipboard(service.credentials.clipboardSummary())
+        setClipboard(service.credentials.clipboardSummary(username: service.accountEmail))
         copiedAll = true
         Task {
             try? await Task.sleep(nanoseconds: 1_600_000_000)
@@ -284,7 +284,7 @@ struct MailBridgeActiveView: View {
             }
             .padding(.bottom, 6)
 
-            ForEach(service.credentials.rows(for: kind)) { row in
+            ForEach(service.credentials.rows(for: kind, username: service.accountEmail)) { row in
                 MailBridgeCredentialRow(
                     row: row,
                     isRevealed: revealPassword,

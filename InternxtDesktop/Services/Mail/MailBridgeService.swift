@@ -73,7 +73,6 @@ struct MailboxCredentials {
     var host = "127.0.0.1"
     var imapPort = 1143
     var smtpPort = 1025
-    var username = ""
     var password = ""
     var imapSecurity = "STARTTLS"
     var smtpSecurity = "SSL"
@@ -98,7 +97,7 @@ struct MailboxCredentials {
         return password
     }
 
-    func rows(for protocolKind: ProtocolKind) -> [CredentialRow] {
+    func rows(for protocolKind: ProtocolKind, username: String) -> [CredentialRow] {
         let port = String(protocolKind == .imap ? imapPort : smtpPort)
         let security = protocolKind == .imap ? imapSecurity : smtpSecurity
 
@@ -111,7 +110,7 @@ struct MailboxCredentials {
         ]
     }
 
-    func clipboardSummary() -> String {
+    func clipboardSummary(username: String) -> String {
         """
         IMAP  \(host):\(imapPort)  \(imapSecurity)
         SMTP  \(host):\(smtpPort)  \(smtpSecurity)
@@ -140,16 +139,7 @@ final class MailBridgeService: ObservableObject {
     private let defaults: UserDefaults
     private let config: ConfigLoader
 
-    /// Also the username clients authenticate with — Bridge never asks for a second login.
-    @Published var accountEmail: String = "" {
-           didSet {
-               credentials.username = accountEmail
-               if autostartPending && !accountEmail.isEmpty {
-                   autostartPending = false
-                   startIfNeeded()
-               }
-           }
-       }
+    @Published var accountEmail: String = ""
     @Published var viewState: MailBridgeViewState = .locked
     @Published var activateAtLaunch: Bool {
         didSet { defaults.set(activateAtLaunch, forKey: DefaultsKeys.activateAtLaunch) }
@@ -166,7 +156,6 @@ final class MailBridgeService: ObservableObject {
     private let bridgeProcess = MailBridgeProcess()
     private lazy var controlServer = MailBridgeControlServer(socketURL: MailBridgeProcess.controlSocketURL)
     private var entitlementObserver: Task<Void, Never>?
-    private var autostartPending = false
 
     @Published private(set) var isActivatingMailBridge: Bool = false
     @Published private(set) var lastError: String?
@@ -185,7 +174,6 @@ final class MailBridgeService: ObservableObject {
 
         self.credentials.imapPort = self.imapPort
         self.credentials.smtpPort = self.smtpPort
-        self.credentials.username = accountEmail
         self.credentials.password = config.getMailBridgePassword() ?? ""
 
         observeEntitlement()
@@ -400,25 +388,18 @@ final class MailBridgeService: ObservableObject {
         controlServer.stop()
         activateAtLaunch = false
         syncState = .upToDate
-        autostartPending = false
         withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
     }
 
     func startIfNeeded() async {
-            guard activateAtLaunch else {
-                Self.logger.info("Mail Bridge autostart is off")
-                return
-            }
-
-            guard !accountEmail.isEmpty else {
-                autostartPending = true
-                Self.logger.info("Mail Bridge autostart deferred until the account is known")
-                return
-            }
-
-            Self.logger.info("Mail Bridge autostart is on, starting the daemon")
-            await activate()
+        guard activateAtLaunch else {
+            Self.logger.info("Mail Bridge autostart is off")
+            return
         }
+
+        Self.logger.info("Mail Bridge autostart is on, starting the daemon")
+        await activate()
+    }
 
     func reset() {
         bridgeProcess.stop()
@@ -432,14 +413,13 @@ final class MailBridgeService: ObservableObject {
         credentials.smtpPort = smtpPort
         syncState = .upToDate
         viewState = .locked
-        autostartPending = false
     }
 
 
     func resyncMailManually() {
         lastError = nil
         do {
-            try controlServer.resyncMailManually()
+            try controlServer.resync()
         } catch {
             Self.logger.error("Could not ask Mail Bridge to resync: \(error)")
             lastError = error.localizedDescription
