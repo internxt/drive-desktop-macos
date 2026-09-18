@@ -228,4 +228,5 @@ public struct ErrorFormatter {
 extension Notification.Name {
     static let userDidLogout = Notification.Name("userDidLogout")
     static let storageFull = Notification.Name("com.internxt.drive.storageFull")
+    static let authTokenDidChange = Notification.Name("com.internxt.drive.authTokenDidChange")
 }
