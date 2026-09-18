@@ -18,6 +18,11 @@
 
 set -euo pipefail
 
+# Xcode gives run script phases a minimal PATH that excludes Homebrew, which is where
+# Go normally lives. Without this the build fails with "go is not installed" even
+# though `go` works fine from a terminal.
+PATH="$PATH:/opt/homebrew/bin:/usr/local/bin:/usr/local/go/bin:${HOME}/go/bin"
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST_DIR="$REPO_ROOT/InternxtDesktop/MailBridgeResources"
 # Created when we pin the first release: the daemon requires an exact version and
@@ -60,7 +65,8 @@ sha256_of() { shasum -a 256 "$1" | awk '{print $1}'; }
 # Command Line Tools both slices build fine.
 build_universal() {
     local repo="$1" out="$2" work
-    command -v go >/dev/null || fail "go is not installed (needed by --from-local)"
+    command -v go >/dev/null \
+        || fail "go not found on PATH (looked in $PATH) — needed by --from-local"
     [ -d "$repo/cmd/bridge" ] || fail "$repo does not look like mail-bridge-desktop"
 
     work="$(mktemp -d)"

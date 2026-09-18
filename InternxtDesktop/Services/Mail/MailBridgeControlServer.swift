@@ -55,12 +55,58 @@ struct MailBridgeReady: Decodable {
     }
 }
 
+/// What the daemon reports on its own once the handshake is done. It brackets every sync
+/// that has work in it with a `syncStarted` and a `syncFinished`, so a cycle that finds
+/// nothing new sends none of the three.
+enum MailBridgeEvent {
+    case syncStarted(total: Int)
+    case syncProgress(downloaded: Int, total: Int, percent: Int)
+    case syncFinished(downloaded: Int, total: Int, code: String?)
+}
+
 struct MailBridgeControlReply: Decodable {
     let type: String
     let ready: MailBridgeReady?
     let error: ControlErrorPayload?
+    let started: SyncStartedPayload?
+    let progress: SyncProgressPayload?
+    let finished: SyncFinishedPayload?
 
     struct ControlErrorPayload: Decodable { let code: String }
+    struct SyncStartedPayload: Decodable { let total: Int }
+
+    struct SyncProgressPayload: Decodable {
+        let downloaded: Int
+        let total: Int
+        /// The daemon computes it so every consumer shows the same number.
+        let percent: Int
+    }
+
+    struct SyncFinishedPayload: Decodable {
+        let downloaded: Int
+        let total: Int
+        /// Absent when the sync did all the work it set out to do.
+        let code: String?
+    }
+
+    /// The sync events, and only those: `ready` is the handshake's business and an unknown
+    /// type is ignored rather than treated as a failure.
+    var event: MailBridgeEvent? {
+        switch type {
+        case "sync_started":
+            return started.map { .syncStarted(total: $0.total) }
+        case "sync_progress":
+            return progress.map {
+                .syncProgress(downloaded: $0.downloaded, total: $0.total, percent: $0.percent)
+            }
+        case "sync_finished":
+            return finished.map {
+                .syncFinished(downloaded: $0.downloaded, total: $0.total, code: $0.code)
+            }
+        default:
+            return nil
+        }
+    }
 }
 
 enum MailBridgeControlError: Error, LocalizedError {
@@ -149,6 +195,10 @@ final class MailBridgeControlServer {
     private var ready: EventLoopPromise<MailBridgeReady>?
     private var timeout: Scheduled<Void>?
 
+    /// The daemon's own reports once the handshake is done. Called from the event loop,
+    /// so whoever sets this hops to the actor it needs.
+    var onIncomingEvent: ((MailBridgeEvent) -> Void)?
+
     init(socketURL: URL) {
         self.socketURL = socketURL
     }
@@ -227,19 +277,29 @@ final class MailBridgeControlServer {
 
     private func bindListener() async throws -> Channel {
         let connected = self.connected
-        let ready = self.ready
 
         return try await ServerBootstrap(group: group)
             .serverChannelOption(ChannelOptions.backlog, value: 1)
-            .childChannelInitializer { channel in
+            .childChannelInitializer { [weak self] channel in
                 channel.pipeline
-                    .addHandlers(MailBridgeControlPipeline.handlers { reply in
-                        ready.map { Self.settleHandshake(with: reply, on: $0) }
+                    .addHandlers(MailBridgeControlPipeline.handlers { [weak self] reply in
+                        self?.receive(reply)
                     })
                     .map { connected?.succeed(channel) }
             }
             .bind(unixDomainSocketPath: socketURL.path, cleanupExistingSocketFile: true)
             .get()
+    }
+
+    /// Every frame lands here. The first one answers the handshake; the rest are the
+    /// daemon reporting on its own. Once `ready` is released the first half stops applying,
+    /// which is what lets the sync events flow past untouched.
+    private func receive(_ reply: Result<MailBridgeControlReply, Error>) {
+        ready.map { Self.settleHandshake(with: reply, on: $0) }
+
+        if case .success(let frame) = reply, let event = frame.event {
+            onIncomingEvent?(event)
+        }
     }
 
     // MARK: - Tearing it down

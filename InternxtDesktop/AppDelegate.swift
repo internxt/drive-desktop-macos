@@ -409,8 +409,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     throw AuthError.noUserFound
                 }
 
-                await MainActor.run { self.mailBridgeService.accountEmail = user.email }
-
                 try await domainManager.initFileProviderForUser(user:user)
 
                 

@@ -12,3 +12,6 @@ xcschememanagement.plist
 
 # Mail Bridge daemon (fetched/built by scripts/fetch-mail-bridge.sh)
 InternxtDesktop/MailBridgeResources/
+
+# Xcode per-user state
+xcuserdata/

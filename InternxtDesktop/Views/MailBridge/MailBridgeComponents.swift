@@ -143,37 +143,6 @@ struct MailBridgeCredentialRow: View {
     }
 }
 
-struct MailBridgePortField: View {
-    let titleKey: String
-    @Binding var text: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            AppText(titleKey)
-                .font(.XSMedium)
-                .foregroundColor(.Gray50)
-            TextField("", text: $text)
-                .textFieldStyle(.plain)
-                .font(.MailBridgeMono)
-                .foregroundColor(.Gray100)
-                .padding(.horizontal, 10)
-                .frame(width: 108, height: 32)
-                .background(
-                    RoundedRectangle(cornerRadius: MailBridgeMetrics.controlRadius, style: .continuous)
-                        .fill(Color.Secondary)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: MailBridgeMetrics.controlRadius, style: .continuous)
-                        .strokeBorder(Color.Gray10, lineWidth: 1)
-                )
-                .onChange(of: text) { newValue in
-                    let digits = newValue.filter(\.isNumber)
-                    if digits != newValue { text = String(digits.prefix(5)) }
-                }
-        }
-    }
-}
-
 struct MailBridgeGlyph: View {
     let systemName: String
     var tint: Color = .Gray50
