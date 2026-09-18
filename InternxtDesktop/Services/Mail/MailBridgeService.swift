@@ -142,8 +142,14 @@ final class MailBridgeService: ObservableObject {
 
     /// Also the username clients authenticate with — Bridge never asks for a second login.
     @Published var accountEmail: String = "" {
-        didSet { credentials.username = accountEmail }
-    }
+           didSet {
+               credentials.username = accountEmail
+               if autostartPending && !accountEmail.isEmpty {
+                   autostartPending = false
+                   startIfNeeded()
+               }
+           }
+       }
     @Published var viewState: MailBridgeViewState = .locked
     @Published var activateAtLaunch: Bool {
         didSet { defaults.set(activateAtLaunch, forKey: DefaultsKeys.activateAtLaunch) }
@@ -160,6 +166,7 @@ final class MailBridgeService: ObservableObject {
     private let bridgeProcess = MailBridgeProcess()
     private lazy var controlServer = MailBridgeControlServer(socketURL: MailBridgeProcess.controlSocketURL)
     private var entitlementObserver: Task<Void, Never>?
+    private var autostartPending = false
 
     @Published private(set) var isActivatingMailBridge: Bool = false
     @Published private(set) var lastError: String?
@@ -183,6 +190,7 @@ final class MailBridgeService: ObservableObject {
 
         observeEntitlement()
         observeSyncEvents()
+        observeDaemonExit()
     }
 
     deinit {
@@ -190,7 +198,7 @@ final class MailBridgeService: ObservableObject {
     }
 
     private func observeSyncEvents() {
-        controlServer.onEvent = { [weak self] event in
+        controlServer.onIncomingEvent = { [weak self] event in
             Task { @MainActor [weak self] in
                 self?.onSyncChanges(event)
             }
@@ -216,6 +224,19 @@ final class MailBridgeService: ObservableObject {
                 Self.logger.info("Mail Bridge sync finished: \(downloaded)/\(total)")
                 syncState = .upToDate
             }
+        }
+    }
+
+    /// The daemon can die without anyone asking it to. When that happens the UI has to
+    /// stop claiming Bridge is active, otherwise the user copies credentials that lead nowhere.
+    private func observeDaemonExit() {
+        bridgeProcess.onTermination = { [weak self] reason in
+            guard let self else { return }
+            guard case .unexpected(let status) = reason else { return }
+
+            Self.logger.error("The Mail Bridge daemon stopped unexpectedly (status \(status))")
+            guard self.viewState == .active else { return }
+            withAnimation(.easeOut(duration: 0.18)) { self.viewState = .inactive }
         }
     }
 
@@ -311,7 +332,7 @@ final class MailBridgeService: ObservableObject {
 
             // Order matters:
             // 1. Create the socket
-            try controlServer.listen()
+            try await controlServer.listen()
         
             // 2. Start the process (Mail Bridge daemon)
             try bridgeProcess.start()
@@ -331,8 +352,8 @@ final class MailBridgeService: ObservableObject {
     }
 
     private func createSession() async throws -> MailBridgeSession {
-        guard let mnemonic = config.getMnemonic(), !mnemonic.isEmpty,
-              let token = config.getAuthToken(), !token.isEmpty else {
+        let mnemonic = try config.getValidMnemonic()
+        guard let token = config.getAuthToken(), !token.isEmpty else {
             throw MailBridgeServiceError.notSignedIn
         }
 
@@ -379,17 +400,25 @@ final class MailBridgeService: ObservableObject {
         controlServer.stop()
         activateAtLaunch = false
         syncState = .upToDate
+        autostartPending = false
         withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
     }
 
     func startIfNeeded() async {
-        guard activateAtLaunch else {
-            Self.logger.info("Mail Bridge autostart is off")
-            return
+            guard activateAtLaunch else {
+                Self.logger.info("Mail Bridge autostart is off")
+                return
+            }
+
+            guard !accountEmail.isEmpty else {
+                autostartPending = true
+                Self.logger.info("Mail Bridge autostart deferred until the account is known")
+                return
+            }
+
+            Self.logger.info("Mail Bridge autostart is on, starting the daemon")
+            await activate()
         }
-        Self.logger.info("Mail Bridge autostart is on, starting the daemon")
-        await activate()
-    }
 
     func reset() {
         bridgeProcess.stop()
@@ -403,6 +432,7 @@ final class MailBridgeService: ObservableObject {
         credentials.smtpPort = smtpPort
         syncState = .upToDate
         viewState = .locked
+        autostartPending = false
     }
 
 

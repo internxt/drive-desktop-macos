@@ -45,6 +45,21 @@ enum ConfigLoaderError: Error {
     case CannotSavePrivateKey
     case CannotSaveMailBridgePassword
     case CannotSaveWorkspaceMnemonic
+    case MnemonicNotFound
+    case MalformedMnemonic(BIP39Error)
+}
+
+extension ConfigLoaderError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .MnemonicNotFound:
+            return "This device has no mnemonic stored — sign in again"
+        case .MalformedMnemonic(let reason):
+            return "The stored mnemonic is not usable: \(reason.localizedDescription)"
+        default:
+            return "\(self)"
+        }
+    }
 }
 
 
@@ -117,6 +132,21 @@ public struct ConfigLoader {
     
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: ConfigLoader.MNEMONIC_TOKEN_KEY)
+    }
+
+    public func getValidMnemonic() throws -> String {
+        guard let mnemonic = getMnemonic()?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !mnemonic.isEmpty else {
+            throw ConfigLoaderError.MnemonicNotFound
+        }
+
+        do {
+            _ = try CryptoUtils().mnemonicToEntropy(mnemonic)
+        } catch let reason as BIP39Error {
+            throw ConfigLoaderError.MalformedMnemonic(reason)
+        }
+
+        return mnemonic
     }
 
     public func getNetworkAuth() -> String? {

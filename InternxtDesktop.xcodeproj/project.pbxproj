@@ -57,6 +57,9 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F30305D1B8F00D67D12 /* NIOCore */; };
+		47008F33305D1B9000D67D12 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F32305D1B9000D67D12 /* NIOPosix */; };
+		47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F35305D1C0D00D67D12 /* NIOExtras */; };
 		475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */; };
 		4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3733052AED600DAD486 /* InternxtSwiftCore */; };
 		4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D37F3052B07400DAD486 /* InternxtSwiftCore */; };
@@ -844,6 +847,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
+				47008F33305D1B9000D67D12 /* NIOPosix in Frameworks */,
 				AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
@@ -851,7 +855,9 @@
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
+				47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */,
 				4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */,
 				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
@@ -1728,6 +1734,9 @@
 				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
 				AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */,
 				4778D3733052AED600DAD486 /* InternxtSwiftCore */,
+				47008F30305D1B8F00D67D12 /* NIOCore */,
+				47008F32305D1B9000D67D12 /* NIOPosix */,
+				47008F35305D1C0D00D67D12 /* NIOExtras */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1810,6 +1819,8 @@
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */,
+				47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */,
+				47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -3264,6 +3275,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.65.0;
+			};
+		};
+		47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-extras.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.35.1;
+			};
+		};
 		4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
@@ -3315,6 +3342,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		47008F30305D1B8F00D67D12 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		47008F32305D1B9000D67D12 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		47008F35305D1C0D00D67D12 /* NIOExtras */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */;
+			productName = NIOExtras;
+		};
 		4778D3733052AED600DAD486 /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
