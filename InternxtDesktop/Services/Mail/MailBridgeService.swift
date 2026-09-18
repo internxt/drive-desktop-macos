@@ -259,7 +259,7 @@ final class MailBridgeService: ObservableObject {
 
             // Order matters:
             // 1. Create the socket
-            try controlServer.listen()
+            try await controlServer.listen()
         
             // 2. Start the process (Mail Bridge daemon)
             try bridgeProcess.start()

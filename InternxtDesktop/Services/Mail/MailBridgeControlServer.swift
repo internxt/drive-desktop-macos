@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import NIOCore
+import NIOPosix
+import NIOExtras
 
 // MARK: - Wire format
 
@@ -52,6 +55,14 @@ struct MailBridgeReady: Decodable {
     }
 }
 
+struct MailBridgeControlReply: Decodable {
+    let type: String
+    let ready: MailBridgeReady?
+    let error: ControlErrorPayload?
+
+    struct ControlErrorPayload: Decodable { let code: String }
+}
+
 enum MailBridgeControlError: Error, LocalizedError {
     case socketFailed(String)
     case pathTooLong(Int)
@@ -77,242 +88,250 @@ enum MailBridgeControlError: Error, LocalizedError {
     }
 }
 
+// MARK: - Pipeline
+
+final class MailBridgeControlHandler: ChannelInboundHandler {
+    typealias InboundIn = ByteBuffer
+
+    private let onReply: (Result<MailBridgeControlReply, Error>) -> Void
+
+    init(onReply: @escaping (Result<MailBridgeControlReply, Error>) -> Void) {
+        self.onReply = onReply
+    }
+
+    func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+        var buffer = unwrapInboundIn(data)
+        guard let bytes = buffer.readBytes(length: buffer.readableBytes) else { return }
+
+        do {
+            onReply(.success(try JSONDecoder().decode(MailBridgeControlReply.self, from: Data(bytes))))
+        } catch {
+            onReply(.failure(MailBridgeControlError.malformedFrame("\(error)")))
+        }
+    }
+
+    func channelInactive(context: ChannelHandlerContext) {
+        onReply(.failure(MailBridgeControlError.connectionClosed))
+        context.fireChannelInactive()
+    }
+
+    func errorCaught(context: ChannelHandlerContext, error: Error) {
+        onReply(.failure(error))
+        context.close(promise: nil)
+    }
+}
+
+enum MailBridgeControlPipeline {
+    static let maxFrameSize = 1 << 20
+
+    static func handlers(onReply: @escaping (Result<MailBridgeControlReply, Error>) -> Void) -> [ChannelHandler] {
+        [
+            ByteToMessageHandler(
+                LengthFieldBasedFrameDecoder(lengthFieldLength: .four, lengthFieldEndianness: .big),
+                maximumBufferSize: maxFrameSize
+            ),
+            LengthFieldPrepender(lengthFieldLength: .four, lengthFieldEndianness: .big),
+            MailBridgeControlHandler(onReply: onReply),
+        ]
+    }
+}
+
 // MARK: - Server
 
 final class MailBridgeControlServer {
-
-    private static let handshakeTimeout: Duration = .seconds(60)
-    private static let maxFrameSize = 1 << 20
-
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridge")
-    private let queue = DispatchQueue(label: "com.internxt.mailbridge.control")
-
+    private static let handshakeTimeout: TimeAmount = .seconds(60)
+    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeControlServer")
+    private let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     private let socketURL: URL
-    private var listenerDescriptor: Int32?
-    private var connectionDescriptor: Int32?
+    private var serverChannel: Channel?
+    private var connection: Channel?
+    private var connected: EventLoopPromise<Channel>?
+    private var ready: EventLoopPromise<MailBridgeReady>?
+    private var timeout: Scheduled<Void>?
 
     init(socketURL: URL) {
         self.socketURL = socketURL
     }
 
-    func listen() throws {
-        try queue.sync {
-            guard listenerDescriptor == nil else { return }
+    /// Creates the socket. Must run **before** the daemon is spawned: it dials once and does not retry. 
+    /// Idempotent — calling it with a live socket does nothing.
+    func listen() async throws {
+        guard serverChannel == nil else { return }
 
-            let path = socketURL.path
-            let pathBytes = Array(path.utf8)
+        try assertPathFitsInSunPath()
+        try createSocketDirectoryOwnerOnly()
+        awaitDaemonOnFreshPromises()
 
-            var address = sockaddr_un()
-            let capacity = MemoryLayout.size(ofValue: address.sun_path)
-            guard pathBytes.count < capacity else {
-                throw MailBridgeControlError.pathTooLong(pathBytes.count)
-            }
-
-            try FileManager.default.createDirectory(
-                at: socketURL.deletingLastPathComponent(),
-                withIntermediateDirectories: true,
-                attributes: [.posixPermissions: 0o700]
-            )
-
-            unlink(path)
-
-            let descriptor = socket(AF_UNIX, SOCK_STREAM, 0)
-            guard descriptor >= 0 else {
-                throw MailBridgeControlError.socketFailed("socket(): \(errnoText())")
-            }
-
-            address.sun_family = sa_family_t(AF_UNIX)
-            withUnsafeMutablePointer(to: &address.sun_path) { rawPath in
-                rawPath.withMemoryRebound(to: CChar.self, capacity: capacity) { destination in
-                    for (index, byte) in pathBytes.enumerated() {
-                        destination[index] = CChar(bitPattern: byte)
-                    }
-                    destination[pathBytes.count] = 0
-                }
-            }
-
-            let size = socklen_t(MemoryLayout<sockaddr_un>.size)
-            let bound = withUnsafePointer(to: &address) { rawAddress in
-                rawAddress.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                    bind(descriptor, $0, size)
-                }
-            }
-            guard bound == 0 else {
-                close(descriptor)
-                throw MailBridgeControlError.socketFailed("bind(): \(errnoText())")
-            }
-
-            guard Darwin.listen(descriptor, 1) == 0 else {
-                close(descriptor)
-                throw MailBridgeControlError.socketFailed("listen(): \(errnoText())")
-            }
-
-            listenerDescriptor = descriptor
-            logger.info("Control socket listening at \(path)")
+        do {
+            serverChannel = try await bindListener()
+        } catch {
+            let failure = MailBridgeControlError.socketFailed("bind(): \(error)")
+            releaseHandshakePromises(failingAnyPending: failure)
+            throw failure
         }
+
+        logger.info("Control socket listening at \(socketURL.path)")
     }
 
+    /// Waits for the daemon to dial in, sends it the session, and returns what it reports.
     func handshake(session: MailBridgeSession) async throws -> MailBridgeReady {
-        try await withThrowingTaskGroup(of: MailBridgeReady.self) { group in
-            group.addTask { [weak self] in
-                guard let self else { throw MailBridgeControlError.connectionClosed }
-                return try await self.runHandshake(session: session)
-            }
-            group.addTask { [weak self] in
-                try await Task.sleep(for: Self.handshakeTimeout)
-                // Closing the descriptors unblocks accept()/read() in the sibling task.
-                self?.stop()
-                throw MailBridgeControlError.timedOut
-            }
-
-            defer { group.cancelAll() }
-            guard let ready = try await group.next() else {
-                throw MailBridgeControlError.connectionClosed
-            }
-            return ready
-        }
-    }
-    
-    func resync() throws {
-        try self.performResync()
-    }
-
-    func stop() {
-        queue.sync {
-            if let connection = connectionDescriptor { close(connection) }
-            if let listener = listenerDescriptor { close(listener) }
-            connectionDescriptor = nil
-            listenerDescriptor = nil
-            unlink(socketURL.path)
-        }
-    }
-
-    // MARK: - Handle Handshake
-
-    private func runHandshake(session: MailBridgeSession) async throws -> MailBridgeReady {
-        try await withCheckedThrowingContinuation { continuation in
-            queue.async { [weak self] in
-                guard let self else {
-                    continuation.resume(throwing: MailBridgeControlError.connectionClosed)
-                    return
-                }
-                do {
-                    continuation.resume(returning: try self.performHandshake(session: session))
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
-    private func performHandshake(session: MailBridgeSession) throws -> MailBridgeReady {
-        guard let listener = listenerDescriptor else {
+        guard let connected, let ready else {
             throw MailBridgeControlError.socketFailed("the control socket is not listening")
         }
 
-        let connection = accept(listener, nil, nil)
-        guard connection >= 0 else {
-            throw MailBridgeControlError.socketFailed("accept(): \(errnoText())")
-        }
-        connectionDescriptor = connection
+        scheduleHandshakeTimeout(failing: connected, and: ready)
+        defer { finishHandshake() }
+
+        let channel = try await connected.futureResult.get()
+        connection = channel
         logger.info("Mail Bridge daemon connected to the control socket")
 
-        try writeFrame(StartSessionMessage(session: session), to: connection)
+        try await send(StartSessionMessage(session: session), over: channel)
+        return try await ready.futureResult.get()
+    }
 
-        let reply = try readFrame(from: connection)
-        if reply.type == "error", let code = reply.error?.code {
-            throw MailBridgeControlError.daemonRefused(code: code)
+    /// Asks the daemon to sync now. Fire-and-forget by design: it answers with its own messages on its own schedule, never with a reply to this.
+    func resync() throws {
+        guard let connection, connection.isActive else {
+            throw MailBridgeControlError.connectionClosed
         }
-        guard reply.type == "ready", let ready = reply.ready else {
-            throw MailBridgeControlError.malformedFrame("expected ready, got \(reply.type)")
-        }
+        sendAndForget(ResyncMessage(), over: connection)
+    }
 
-        return ready
+    func stop() {
+        finishHandshake()
+        closeChannels()
+        removeStaleSocketFile()
+    }
+
+    // MARK: - Opening the socket
+    
+    private func assertPathFitsInSunPath() throws {
+        let length = socketURL.path.utf8.count
+        guard length < 104 else { throw MailBridgeControlError.pathTooLong(length) }
     }
     
-    // MARK: - Performing the resync
-    
-    
-    private func performResync() throws {
-        try queue.sync {
-            guard let connection = connectionDescriptor else {
-                throw MailBridgeControlError.connectionClosed
+    private func createSocketDirectoryOwnerOnly() throws {
+        try FileManager.default.createDirectory(
+            at: socketURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true,
+            attributes: [.posixPermissions: 0o700]
+        )
+    }
+
+    private func awaitDaemonOnFreshPromises() {
+        let loop = group.next()
+        connected = loop.makePromise(of: Channel.self)
+        ready = loop.makePromise(of: MailBridgeReady.self)
+    }
+
+    private func bindListener() async throws -> Channel {
+        let connected = self.connected
+        let ready = self.ready
+
+        return try await ServerBootstrap(group: group)
+            .serverChannelOption(ChannelOptions.backlog, value: 1)
+            .childChannelInitializer { channel in
+                channel.pipeline
+                    .addHandlers(MailBridgeControlPipeline.handlers { reply in
+                        ready.map { Self.settleHandshake(with: reply, on: $0) }
+                    })
+                    .map { connected?.succeed(channel) }
             }
-            try writeFrame(ResyncMessage(), to: connection)
+            .bind(unixDomainSocketPath: socketURL.path, cleanupExistingSocketFile: true)
+            .get()
+    }
+
+    // MARK: - Tearing it down
+
+
+    private func scheduleHandshakeTimeout(failing connected: EventLoopPromise<Channel>, and ready: EventLoopPromise<MailBridgeReady>) {
+        timeout = group.next().scheduleTask(in: Self.handshakeTimeout) {
+            connected.fail(MailBridgeControlError.timedOut)
+            ready.fail(MailBridgeControlError.timedOut)
         }
     }
 
-    // MARK: - Framing: 4-byte big-endian length, then one JSON value
+    private func cancelHandshakeTimeout() {
+        timeout?.cancel()
+        timeout = nil
+    }
+
+    private func finishHandshake() {
+        cancelHandshakeTimeout()
+        releaseHandshakePromises(failingAnyPending: .connectionClosed)
+    }
+    
+    private func releaseHandshakePromises(failingAnyPending error: MailBridgeControlError) {
+        connected?.fail(error)
+        ready?.fail(error)
+        connected = nil
+        ready = nil
+    }
+
+    private func closeChannels() {
+        connection?.close(promise: nil)
+        serverChannel?.close(promise: nil)
+        connection = nil
+        serverChannel = nil
+    }
+
+    /// NIO removes the socket file it created on close, but one abandoned by a previous run would otherwise outlive us.
+    private func removeStaleSocketFile() {
+        unlink(socketURL.path)
+    }
+
+    // MARK: - Writing
 
     private struct StartSessionMessage: Encodable {
         let type = "start_session"
         let session: MailBridgeSession
     }
-    
+
     private struct ResyncMessage: Encodable {
         let type = "resync"
     }
 
-    private struct ControlReply: Decodable {
-        let type: String
-        let ready: MailBridgeReady?
-        let error: ControlErrorPayload?
-
-        struct ControlErrorPayload: Decodable { let code: String }
+    private func send(_ message: some Encodable, over channel: Channel) async throws {
+        let flushed = channel.eventLoop.makePromise(of: Void.self)
+        enqueue(message, over: channel, flushed: flushed)
+        try await flushed.futureResult.get()
     }
 
-    private func writeFrame(_ message: some Encodable, to descriptor: Int32) throws {
-        let payload = try JSONEncoder().encode(message)
-        guard !payload.isEmpty, payload.count <= Self.maxFrameSize else {
-            throw MailBridgeControlError.malformedFrame("outgoing frame is \(payload.count) bytes")
-        }
-
-        var header = UInt32(payload.count).bigEndian
-        try withUnsafeBytes(of: &header) { try writeAll(Data($0), to: descriptor) }
-        try writeAll(payload, to: descriptor)
+    private func sendAndForget(_ message: some Encodable, over channel: Channel) {
+        enqueue(message, over: channel, flushed: nil)
     }
 
-    private func readFrame(from descriptor: Int32) throws -> ControlReply {
-        let header = try readExactly(4, from: descriptor)
-        let size = header.withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-        guard size > 0, size <= UInt32(Self.maxFrameSize) else {
-            throw MailBridgeControlError.malformedFrame("incoming frame is \(size) bytes")
-        }
-
-        let payload = try readExactly(Int(size), from: descriptor)
-        return try JSONDecoder().decode(ControlReply.self, from: payload)
-    }
-
-    private func writeAll(_ data: Data, to descriptor: Int32) throws {
-        var remaining = data
-        while !remaining.isEmpty {
-            let written = remaining.withUnsafeBytes { buffer in
-                write(descriptor, buffer.baseAddress, buffer.count)
-            }
-            guard written > 0 else {
-                throw MailBridgeControlError.socketFailed("write(): \(errnoText())")
-            }
-            remaining = remaining.dropFirst(written)
+    private func enqueue(_ message: some Encodable, over channel: Channel, flushed: EventLoopPromise<Void>?) {
+        do {
+            let payload = try JSONEncoder().encode(message)
+            var buffer = channel.allocator.buffer(capacity: payload.count)
+            buffer.writeBytes(payload)
+            channel.writeAndFlush(buffer, promise: flushed)
+        } catch {
+            flushed?.fail(error)
         }
     }
 
-    private func readExactly(_ count: Int, from descriptor: Int32) throws -> Data {
-        var buffer = [UInt8](repeating: 0, count: count)
-        var offset = 0
-        while offset < count {
-            let read = buffer[offset...].withUnsafeMutableBytes { destination in
-                Darwin.read(descriptor, destination.baseAddress, count - offset)
-            }
-            if read == 0 { throw MailBridgeControlError.connectionClosed }
-            guard read > 0 else {
-                throw MailBridgeControlError.socketFailed("read(): \(errnoText())")
-            }
-            offset += read
+    /// The daemon answers the handshake once, so every later frame lands on a promise that is already settled. `succeed`/`fail` on a settled promise is a no-op, which is what
+    /// lets the sync-event frames flow past here untouched once that read loop exists.
+    private static func settleHandshake(with result: Result<MailBridgeControlReply, Error>, on promise: EventLoopPromise<MailBridgeReady>) {
+        switch result {
+        case .failure(let error):
+            promise.fail(error)
+
+        case .success(let reply):
+            promise.completeWith(readyOrFailure(from: reply))
         }
-        return Data(buffer)
     }
 
-    private func errnoText() -> String {
-        String(cString: strerror(errno))
+    private static func readyOrFailure(from reply: MailBridgeControlReply) -> Result<MailBridgeReady, Error> {
+        if reply.type == "error", let code = reply.error?.code {
+            return .failure(MailBridgeControlError.daemonRefused(code: code))
+        }
+        guard reply.type == "ready", let ready = reply.ready else {
+            return .failure(MailBridgeControlError.malformedFrame("expected ready, got \(reply.type)"))
+        }
+        return .success(ready)
     }
 }

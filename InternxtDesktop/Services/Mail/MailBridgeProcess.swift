@@ -118,8 +118,8 @@ final class MailBridgeProcess: NSObject {
         var environment = ProcessInfo.processInfo.environment
         let loaded = config.get()
 
-        if let mailAPIURL = loaded.MAIL_API_URL, !mailAPIURL.isEmpty {
-            environment["MAIL_API_URL"] = mailAPIURL
+        if !loaded.MAIL_API_URL.isEmpty {
+            environment["MAIL_API_URL"] = loaded.MAIL_API_URL
         } else {
             // !TODO: We need to fail manually the daemon if the variables or any needed value is not set
             // Then, we will handle those errors here
