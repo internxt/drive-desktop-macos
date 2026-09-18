@@ -279,8 +279,8 @@ final class MailBridgeService: ObservableObject {
     }
 
     private func createSession() async throws -> MailBridgeSession {
-        guard let mnemonic = config.getMnemonic(), !mnemonic.isEmpty,
-              let token = config.getAuthToken(), !token.isEmpty else {
+        let mnemonic = try config.getValidMnemonic()
+        guard let token = config.getAuthToken(), !token.isEmpty else {
             throw MailBridgeServiceError.notSignedIn
         }
 
