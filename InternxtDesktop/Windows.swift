@@ -14,7 +14,7 @@ import Sparkle
 /// windows will be available without needing to explicitly
 /// creating them
 func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager, antivirusManager: AntivirusManager,
-                    cleanerService: CleanerService, issuesManager: IssuesManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
+                    cleanerService: CleanerService, mailBridgeService: MailBridgeService, issuesManager: IssuesManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
                     fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState, storageFullState: StorageFullState) -> [WindowConfig] {
     let windows = [
         WindowConfig(
@@ -34,6 +34,7 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
                     .environmentObject(scheduleManager)
                     .environmentObject(antivirusManager)
                     .environmentObject(cleanerService)
+                    .environmentObject(mailBridgeService)
             }),
             title: "Internxt",
             id: "settings",

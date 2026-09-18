@@ -26,6 +26,8 @@ public struct JSONConfig: Codable {
     public let AUTH_TOKEN: String?
     public let GATEWAY_API_URL: String
     public let HEADER_KEY_GATEWAY: String
+    public let MAIL_API_URL: String
+    public let MAIL_SERVER_PUBLIC_KEY: String?
 }
 
 enum ConfigLoaderError: Error {
@@ -43,6 +45,21 @@ enum ConfigLoaderError: Error {
     case CannotSavePrivateKey
     case CannotSaveMailBridgePassword
     case CannotSaveWorkspaceMnemonic
+    case MnemonicNotFound
+    case MalformedMnemonic(BIP39Error)
+}
+
+extension ConfigLoaderError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .MnemonicNotFound:
+            return "This device has no mnemonic stored — sign in again"
+        case .MalformedMnemonic(let reason):
+            return "The stored mnemonic is not usable: \(reason.localizedDescription)"
+        default:
+            return "\(self)"
+        }
+    }
 }
 
 
@@ -115,6 +132,21 @@ public struct ConfigLoader {
     
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: ConfigLoader.MNEMONIC_TOKEN_KEY)
+    }
+
+    public func getValidMnemonic() throws -> String {
+        guard let mnemonic = getMnemonic()?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !mnemonic.isEmpty else {
+            throw ConfigLoaderError.MnemonicNotFound
+        }
+
+        do {
+            _ = try CryptoUtils().mnemonicToEntropy(mnemonic)
+        } catch let reason as BIP39Error {
+            throw ConfigLoaderError.MalformedMnemonic(reason)
+        }
+
+        return mnemonic
     }
 
     public func getNetworkAuth() -> String? {

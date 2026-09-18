@@ -57,6 +57,10 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F30305D1B8F00D67D12 /* NIOCore */; };
+		47008F33305D1B9000D67D12 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F32305D1B9000D67D12 /* NIOPosix */; };
+		47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F35305D1C0D00D67D12 /* NIOExtras */; };
+		475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */; };
 		4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3733052AED600DAD486 /* InternxtSwiftCore */; };
 		4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D37F3052B07400DAD486 /* InternxtSwiftCore */; };
 		4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3813052B07D00DAD486 /* InternxtSwiftCore */; };
@@ -68,6 +72,8 @@
 		4792C7D0085055470098B744 /* MailBridgeActiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0075055470098B744 /* MailBridgeActiveView.swift */; };
 		4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */; };
 		4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0115055470098B744 /* MailBridgeService.swift */; };
+		4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7E1015055470098B744 /* MailBridgeProcess.swift */; };
+		4792C7E1045055470098B744 /* MailBridgeResources/mail-bridge in Copy Mail Bridge daemon */ = {isa = PBXBuildFile; fileRef = 4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
@@ -436,6 +442,17 @@
 			name = "Embed XPC Services";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4792C7E1055055470098B744 /* Copy Mail Bridge daemon */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = MailBridgeResources;
+			dstSubfolderSpec = 7;
+			files = (
+				4792C7E1045055470098B744 /* MailBridgeResources/mail-bridge in Copy Mail Bridge daemon */,
+			);
+			name = "Copy Mail Bridge daemon";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAA6667A2D4068E100C2B9DF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -552,6 +569,7 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeControlServer.swift; sourceTree = "<group>"; };
 		4792C7C1305055550098B744 /* MailBridgeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeTabView.swift; sourceTree = "<group>"; };
 		4792C7D0015055470098B744 /* MailBridgeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeComponents.swift; sourceTree = "<group>"; };
 		4792C7D0035055470098B744 /* MailBridgeLockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeLockedView.swift; sourceTree = "<group>"; };
@@ -559,6 +577,8 @@
 		4792C7D0075055470098B744 /* MailBridgeActiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeActiveView.swift; sourceTree = "<group>"; };
 		4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeSettingsDialogView.swift; sourceTree = "<group>"; };
 		4792C7D0115055470098B744 /* MailBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeService.swift; sourceTree = "<group>"; };
+		4792C7E1015055470098B744 /* MailBridgeProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeProcess.swift; sourceTree = "<group>"; };
+		4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "MailBridgeResources/mail-bridge"; sourceTree = "<group>"; };
 		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
@@ -827,6 +847,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
+				47008F33305D1B9000D67D12 /* NIOPosix in Frameworks */,
 				AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
 				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
@@ -834,7 +855,9 @@
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
+				47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */,
 				4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */,
 				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
@@ -913,6 +936,16 @@
 				4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */,
 			);
 			path = MailBridge;
+			sourceTree = "<group>";
+		};
+		4792C7EE005055470098B744 /* Mail */ = {
+			isa = PBXGroup;
+			children = (
+				475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */,
+				4792C7D0115055470098B744 /* MailBridgeService.swift */,
+				4792C7E1015055470098B744 /* MailBridgeProcess.swift */,
+			);
+			path = Mail;
 			sourceTree = "<group>";
 		};
 		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
@@ -1457,6 +1490,7 @@
 			isa = PBXGroup;
 			children = (
 				AAA6666B2D40680700C2B9DF /* ClamAVResources */,
+				4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */,
 				E17DB7082C5399CB0031B465 /* ViewModels */,
 				E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */,
 				E1FB2D942A76D01B00473AE1 /* Info.plist */,
@@ -1489,6 +1523,7 @@
 			isa = PBXGroup;
 			children = (
 				E17AA0222A8A70C100C7EE6E /* Auth */,
+				4792C7EE005055470098B744 /* Mail */,
 				E16310562A8E66F70072989E /* URLDictionary.swift */,
 				E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */,
 				E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */,
@@ -1496,7 +1531,6 @@
 				E1A0AC552AB48B7F005E71D6 /* WindowsManager.swift */,
 				317EE5C82BABC221008CDBD1 /* SettingsTabManager.swift */,
 				AA40B3C02D3ED74400FC1FC3 /* AntivirusManager.swift */,
-				4792C7D0115055470098B744 /* MailBridgeService.swift */,
 				AA94CA6D2E99E8CE007CEBDF /* NotificationsManager.swift */,
 				AACC83A32F7E06770084FFB6 /* ClamAVDatabaseService.swift */,
 				AACC83A52F7E068E0084FFB6 /* ClamAVScannerService.swift */,
@@ -1677,6 +1711,8 @@
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
 				31DEAEBF2B75139400E76D53 /* Embed XPC Services */,
 				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
+				4792C7E1065055470098B744 /* Fetch Mail Bridge daemon */,
+				4792C7E1055055470098B744 /* Copy Mail Bridge daemon */,
 				AAA6667A2D4068E100C2B9DF /* CopyFiles */,
 				AAA6667D2D4068FE00C2B9DF /* CopyFiles */,
 				AAA6F63B2E5F9BB7000082ED /* CopyFiles */,
@@ -1698,6 +1734,9 @@
 				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
 				AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */,
 				4778D3733052AED600DAD486 /* InternxtSwiftCore */,
+				47008F30305D1B8F00D67D12 /* NIOCore */,
+				47008F32305D1B9000D67D12 /* NIOPosix */,
+				47008F35305D1C0D00D67D12 /* NIOExtras */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1780,6 +1819,8 @@
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */,
+				47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */,
+				47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1860,6 +1901,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4792C7E1065055470098B744 /* Fetch Mail Bridge daemon */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fetch Mail Bridge daemon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Builds or downloads the mail-bridge daemon into InternxtDesktop/MailBridgeResources before it is copied into the bundle.\n# No-op when the pinned binary is already in place.\n\"${SRCROOT}/scripts/fetch-mail-bridge.sh\" --from-local \"${MAIL_BRIDGE_LOCAL_REPO:-$HOME/Projects/Internxt/mail-bridge-desktop}\"\n";
+		};
 		E1ADD04D2AA8BAC200D95694 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -2077,6 +2137,7 @@
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */,
+				475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */,
 				AA8B5F67302A2E2600F28F39 /* IssueRowView.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
@@ -2149,6 +2210,7 @@
 				4792C7D0085055470098B744 /* MailBridgeActiveView.swift in Sources */,
 				4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */,
 				4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */,
+				4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				AA13E02C2E61071E00DD47CB /* CleanerHelperTool.swift in Sources */,
@@ -3213,6 +3275,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.65.0;
+			};
+		};
+		47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-extras.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.35.1;
+			};
+		};
 		4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/internxt/swift-core";
@@ -3264,6 +3342,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		47008F30305D1B8F00D67D12 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		47008F32305D1B9000D67D12 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		47008F35305D1C0D00D67D12 /* NIOExtras */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */;
+			productName = NIOExtras;
+		};
 		4778D3733052AED600DAD486 /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;

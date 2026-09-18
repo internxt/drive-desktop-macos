@@ -11,8 +11,6 @@ struct MailBridgeSettingsDialogView: View {
     @ObservedObject var service: MailBridgeService
     let onClose: () -> Void
 
-    @State private var imapText: String = ""
-    @State private var smtpText: String = ""
     @State private var autostart: Bool = false
 
     var body: some View {
@@ -40,28 +38,6 @@ struct MailBridgeSettingsDialogView: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.leading, 28)
                     .padding(.top, 3)
-
-                MailBridgeDivider().padding(.vertical, 16)
-
-                AppText("MAIL_BRIDGE_LOCAL_PORTS")
-                    .font(.SMSemibold)
-                    .foregroundColor(.Gray100)
-                AppText("MAIL_BRIDGE_LOCAL_PORTS_NOTE")
-                    .font(.XSRegular)
-                    .foregroundColor(.Gray50)
-                    .padding(.top, 3)
-
-                HStack(spacing: 10) {
-                    MailBridgePortField(titleKey: "MAIL_BRIDGE_IMAP", text: $imapText)
-                    MailBridgePortField(titleKey: "MAIL_BRIDGE_SMTP", text: $smtpText)
-                }
-                .padding(.top, 11)
-
-                AppText("MAIL_BRIDGE_RESTART_NOTE")
-                    .font(.XSRegular)
-                    .foregroundColor(.Gray50)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 10)
             }
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
 
@@ -83,17 +59,11 @@ struct MailBridgeSettingsDialogView: View {
         )
         .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
         .onAppear {
-            imapText = String(service.imapPort)
-            smtpText = String(service.smtpPort)
             autostart = service.activateAtLaunch
         }
     }
 
     private func save() {
-        service.applyPorts(
-            imap: Int(imapText) ?? service.imapPort,
-            smtp: Int(smtpText) ?? service.smtpPort
-        )
         service.activateAtLaunch = autostart
         onClose()
     }

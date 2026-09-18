@@ -46,6 +46,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var scheduledManager: ScheduledBackupManager!
     let antivirusManager = AntivirusManager()
     let cleanerService = CleanerService()
+    @MainActor let mailBridgeService = MailBridgeService()
     let notificationsManager = NotificationsManager.shared
     let issuesManager = IssuesManager()
     var popover: NSPopover?
@@ -126,7 +127,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
@@ -443,6 +444,12 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     } else {
                         self.logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
                     }
+
+                    if FeaturesService.shared.mailEnabled {
+                        await self.mailBridgeService.startIfNeeded()
+                    } else {
+                        self.logger.info("⚠️ Mail Bridge autostart skipped (feature disabled)")
+                    }
                 }
                 
                 group.addTask {
@@ -499,6 +506,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func logoutSuccess() {
         FeaturesService.shared.clearCachedFeatures()
+        Task { @MainActor in self.mailBridgeService.reset() }
         FileLimitsService.shared.stopPolling()
         FileLimitsService.shared.clearCache()
         self.windowsManager.displayDockIcon()

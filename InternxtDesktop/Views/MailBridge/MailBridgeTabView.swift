@@ -30,20 +30,6 @@ struct MailBridgeTabView: View {
         .frame(width: 630, height: 430)
         .background(Color.Gray1)
         .animation(.easeInOut, value: service.viewState)
-        .onAppear {
-            determineViewState()
-        }
-        .onChange(of: featuresService.mailEnabled) { _ in
-            determineViewState()
-        }
-    }
-
-    private func determineViewState() {
-        if !featuresService.mailEnabled {
-            service.viewState = .locked
-        } else if service.viewState == .locked {
-            service.viewState = .inactive
-        }
     }
 
     private var loadingView: some View {
