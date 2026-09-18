@@ -12,7 +12,6 @@ struct MailBridgeActiveView: View {
     @ObservedObject var service: MailBridgeService
     let onOpenSettings: () -> Void
 
-    @State private var selectedClient: MailClient = .appleMail
     @State private var manualSettingsExpanded: Bool = true
     @State private var revealPassword: Bool = false
     @State private var copiedRowID: String?
@@ -22,8 +21,6 @@ struct MailBridgeActiveView: View {
         ScrollView(.vertical, showsIndicators: true) {
             VStack(alignment: .leading, spacing: 0) {
                 statusCard
-                clientHeader
-                clientPicker
                 actionRow
 
                 if manualSettingsExpanded {
@@ -42,12 +39,6 @@ struct MailBridgeActiveView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
-    private var setupAutomaticallyTitle: String {
-        String(
-            format: NSLocalizedString("MAIL_BRIDGE_SETUP_AUTOMATICALLY_%@", comment: "Configure the selected mail client"),
-            selectedClient.displayName
-        )
-    }
 
     // MARK: - Clipboard
 
@@ -165,43 +156,9 @@ struct MailBridgeActiveView: View {
         }
     }
 
-    // MARK: - Mail client
-
-    private var clientHeader: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            AppText("MAIL_BRIDGE_CONNECT_CLIENT_TITLE")
-                .font(.SMSemibold)
-                .foregroundColor(.Gray100)
-            AppText("MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE")
-                .font(.XSRegular)
-                .foregroundColor(.Gray50)
-        }
-        .padding(.top, 20)
-    }
-
-    private var clientPicker: some View {
-        HStack(spacing: 8) {
-            ForEach(MailClient.allCases) { client in
-                MailBridgeClientChip(
-                    client: client,
-                    isSelected: selectedClient == client,
-                    onSelect: { selectedClient = client }
-                )
-            }
-        }
-        .padding(.top, 12)
-    }
 
     private var actionRow: some View {
         HStack(spacing: 14) {
-            Button(action: { service.configureAutomatically(selectedClient) }) {
-                HStack(spacing: 8) {
-                    Image(systemName: "bolt.fill").font(.system(size: 12))
-                    Text(setupAutomaticallyTitle)
-                }
-            }
-            .buttonStyle(PrimaryAppButtonStyle(size: .MD, isEnabled: true, isExpanded: false))
-
             Button {
                 withAnimation(.easeOut(duration: 0.16)) { manualSettingsExpanded.toggle() }
             } label: {

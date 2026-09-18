@@ -20,14 +20,18 @@ struct MailBridgeTabView: View {
                 switch service.viewState {
                 case .locked:
                     MailBridgeLockedView(service: service)
-                case .identitySetup:
-                    MailBridgeIdentitySetupView(service: service)
-                case .failed:
-                    MailBridgeErrorView(service: service)
-                case .inactive:
-                    MailBridgeInactiveView(service: service)
-                case .active:
-                    MailBridgeActiveView(service: service, onOpenSettings: onOpenSettings)
+
+                case .unlocked(let screen):
+                    switch screen {
+                    case .identitySetup:
+                        MailBridgeIdentitySetupView(service: service)
+                    case .inactive:
+                        MailBridgeInactiveView(service: service)
+                    case .active:
+                        MailBridgeActiveView(service: service, onOpenSettings: onOpenSettings)
+                    case .failed:
+                        MailBridgeErrorView(service: service)
+                    }
                 }
             }
         }

@@ -48,7 +48,7 @@ struct MailBridgeErrorView: View {
                     } else {
                         AppButton(
                             title: "MAIL_BRIDGE_ERROR_RETRY",
-                            onClick: { Task { await service.activate() } },
+                            onClick: { Task { await service.retryAfterFailure() } },
                             size: .SM
                         )
                     }

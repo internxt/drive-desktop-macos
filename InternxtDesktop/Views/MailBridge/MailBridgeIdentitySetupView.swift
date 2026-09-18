@@ -85,7 +85,7 @@ struct MailBridgeIdentitySetupView: View {
             .padding(.top, 20)
 
             HStack(spacing: 12) {
-                if service.isActivatingMailBridge {
+                if service.isCheckingMailbox {
                     ProgressView()
                         .controlSize(.small)
                         .frame(height: 32)
@@ -98,7 +98,7 @@ struct MailBridgeIdentitySetupView: View {
                     )
                 }
 
-                AppText(service.isActivatingMailBridge
+                AppText(service.isCheckingMailbox
                         ? "MAIL_BRIDGE_IDENTITY_CHECKING"
                         : "MAIL_BRIDGE_IDENTITY_NOT_FOUND")
                     .font(.XSRegular)

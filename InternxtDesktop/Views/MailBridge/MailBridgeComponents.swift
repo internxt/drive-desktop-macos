@@ -57,47 +57,6 @@ struct MailBridgeProgressBar: View {
     }
 }
 
-struct MailBridgeClientChip: View {
-    let client: MailClient
-    let isSelected: Bool
-    let onSelect: () -> Void
-
-    var body: some View {
-        Button(action: onSelect) {
-            HStack(spacing: 8) {
-                Text(client.initial)
-                    .font(.XSBold)
-                    .foregroundColor(.Primary)
-                    .frame(width: 24, height: 24)
-                    .background(
-                        RoundedRectangle(cornerRadius: 7, style: .continuous).fill(Color.Secondary)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 7, style: .continuous)
-                            .strokeBorder(Color.Gray10, lineWidth: 1)
-                    )
-                Text(client.displayName)
-                    .font(.XSSemibold)
-                    .foregroundColor(.Gray100)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.85)
-                Spacer(minLength: 0)
-            }
-            .padding(9)
-            .background(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isSelected ? Color.PrimaryBadge : Color.Gray5)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .strokeBorder(isSelected ? Color.Primary : Color.Gray10, lineWidth: 1)
-            )
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 struct MailBridgeCredentialRow: View {
     let row: CredentialRow
     let isRevealed: Bool

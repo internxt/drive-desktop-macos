@@ -12,38 +12,28 @@ import InternxtSwiftCore
 
 enum MailBridgeViewState: Equatable {
     case locked
-    case identitySetup
-    case failed
-    case inactive
-    case active
+    case unlocked(Unlocked)
+
+    enum Unlocked: Equatable {
+        case identitySetup
+        case inactive
+        case active
+        case failed
+    }
+
+    var isActive: Bool { self == .unlocked(.active) }
+}
+
+struct MailAccountIdentity {
+    let address: String
+    let publicKey: String
+    let privateKey: [UInt8]
 }
 
 enum MailBridgeSyncState: Equatable {
     case upToDate
     case syncing(downloaded: Int, total: Int, percent: Int)
     case interrupted(downloaded: Int, total: Int)
-}
-
-enum MailClient: String, CaseIterable, Identifiable {
-    case appleMail = "Apple Mail"
-    case outlook = "Outlook"
-    case thunderbird = "Thunderbird"
-    case other = "MAIL_BRIDGE_CLIENT_OTHER"
-
-    var id: String { rawValue }
-
-    var displayName: String {
-        self == .other ? NSLocalizedString(rawValue, comment: "Generic mail client") : rawValue
-    }
-
-    var initial: String {
-        switch self {
-        case .appleMail: return "A"
-        case .outlook: return "O"
-        case .thunderbird: return "T"
-        case .other: return "+"
-        }
-    }
 }
 
 enum ProtocolKind: String, Identifiable {
@@ -70,7 +60,6 @@ struct CredentialRow: Identifiable {
     var id: String { "\(kind.rawValue).\(labelKey)" }
 }
 
-// TODO: Refactor this Model when wiring the client with the Bridge Daemon
 struct MailboxCredentials {
     var host = "127.0.0.1"
     var imapPort = 1143
@@ -158,6 +147,8 @@ final class MailBridgeService: ObservableObject {
     private let bridgeProcess = MailBridgeProcess()
     private lazy var controlServer = MailBridgeControlServer(socketURL: MailBridgeProcess.controlSocketURL)
     private var entitlementObserver: Task<Void, Never>?
+    private var identity: MailAccountIdentity?
+    @Published private(set) var isCheckingMailbox = false
 
     @Published private(set) var isActivatingMailBridge: Bool = false
     @Published private(set) var lastError: String?
@@ -180,7 +171,6 @@ final class MailBridgeService: ObservableObject {
 
         observeEntitlement()
         observeSyncEvents()
-        observeDaemonExit()
     }
 
     deinit {
@@ -207,14 +197,14 @@ final class MailBridgeService: ObservableObject {
     }
 
     private func handleBridgeError(_ reason: String) {
-        guard viewState == .active || isActivatingMailBridge else { return }
+        guard viewState.isActive || isActivatingMailBridge else { return }
 
         Self.logger.error("Mail Bridge stopped unexpectedly: \(reason)")
         bridgeProcess.stop()
         controlServer.stop()
         syncState = .upToDate
         lastError = reason
-        withAnimation(.easeOut(duration: 0.18)) { viewState = .failed }
+        withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.failed) }
     }
 
     private func onSyncChanges(_ event: MailBridgeEvent) {
@@ -222,7 +212,7 @@ final class MailBridgeService: ObservableObject {
         case .syncStarted(let total):
             Self.logger.info("Mail Bridge sync started: \(total) new messages to download")
             syncState = .syncing(downloaded: 0, total: total, percent: 0)
-
+ 
         case .syncProgress(let downloaded, let total, let percent):
             Self.logger.info("Mail Bridge sync progress: \(downloaded)/\(total) (\(percent)%)")
             syncState = .syncing(downloaded: downloaded, total: total, percent: percent)
@@ -241,26 +231,16 @@ final class MailBridgeService: ObservableObject {
 
     /// The daemon can die without anyone asking it to. When that happens the UI has to
     /// stop claiming Bridge is active, otherwise the user copies credentials that lead nowhere.
-    private func observeDaemonExit() {
-        bridgeProcess.onTermination = { [weak self] reason in
-            guard let self else { return }
-            guard case .unexpected(let status) = reason else { return }
-
-            Self.logger.error("The Mail Bridge daemon stopped unexpectedly (status \(status))")
-            guard self.viewState == .active else { return }
-            withAnimation(.easeOut(duration: 0.18)) { self.viewState = .inactive }
-        }
-    }
-
     private func observeEntitlement() {
         entitlementObserver = Task { @MainActor [weak self] in
             for await isEnabled in FeaturesService.shared.$mailEnabled.values {
                 guard let self else { return }
                 if !isEnabled {
-                    if self.viewState == .active { self.deactivate() }
+                    if self.viewState.isActive { self.deactivate() }
+                    self.identity = nil
                     self.viewState = .locked
                 } else if self.viewState == .locked {
-                    self.viewState = .inactive
+                    await self.loadIdentity()
                 }
             }
         }
@@ -333,7 +313,7 @@ final class MailBridgeService: ObservableObject {
             viewState = .locked
             return
         }
-        guard !isActivatingMailBridge, viewState != .active else { return }
+        guard !isActivatingMailBridge, !viewState.isActive else { return }
 
         isActivatingMailBridge = true
         lastError = nil
@@ -353,7 +333,7 @@ final class MailBridgeService: ObservableObject {
             applyBridgePorts(daemonConfig)
 
             Self.logger.info("Mail Bridge is ready on \(daemonConfig.imapAddress)")
-            withAnimation(.easeOut(duration: 0.18)) { viewState = .active }
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.active) }
         } catch {
             Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
             bridgeProcess.stop()
@@ -361,48 +341,33 @@ final class MailBridgeService: ObservableObject {
 
             if case MailBridgeServiceError.mailboxNotCreated = error {
                 lastError = nil
-                withAnimation(.easeOut(duration: 0.18)) { viewState = .identitySetup }
+                withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.identitySetup) }
             } else {
                 lastError = error.localizedDescription
-                withAnimation(.easeOut(duration: 0.18)) { viewState = .failed }
+                withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.failed) }
             }
         }
     }
 
     private func createSession() async throws -> MailBridgeSession {
-        let mnemonic = try config.getValidMnemonic()
         guard let token = config.getAuthToken(), !token.isEmpty else {
             throw MailBridgeServiceError.notSignedIn
         }
 
-        let keys: MailAccountKeysResponse
-        do {
-            keys = try await APIFactory.Mail.getMailAccountKeys()
-        } catch let apiError as APIClientError where apiError.isMailNotSetUp {
-            throw MailBridgeServiceError.mailboxNotCreated
-        }
-
-        let privateKey = try MailKeystore.openEncryptionKeystore(
-            address: keys.address,
-            publicKey: keys.publicKey,
-            encryptedPrivateKey: keys.encryptionPrivateKey,
-            mnemonic: mnemonic
-        )
+        guard let identity else { throw MailBridgeServiceError.mailboxNotCreated }
 
         if credentials.password.isEmpty {
             credentials.password = loadOrCreatePassword()
         }
-        accountEmail = keys.address
-
         return MailBridgeSession(
-            accountId: keys.address,
-            addresses: [keys.address],
+            accountId: identity.address,
+            addresses: [identity.address],
             backendSession: .init(
                 token: token,
-                encryptionPrivateKey: Data(privateKey).base64EncodedString(),
-                encryptionPublicKey: keys.publicKey
+                encryptionPrivateKey: Data(identity.privateKey).base64EncodedString(),
+                encryptionPublicKey: identity.publicKey
             ),
-            mailClient: .init(username: keys.address, password: credentials.password)
+            mailClient: .init(username: identity.address, password: credentials.password)
         )
     }
 
@@ -424,7 +389,7 @@ final class MailBridgeService: ObservableObject {
         controlServer.stop()
         activateAtLaunch = false
         syncState = .upToDate
-        withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+        withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.inactive) }
     }
 
     func startIfNeeded() async {
@@ -448,19 +413,60 @@ final class MailBridgeService: ObservableObject {
         credentials.imapPort = imapPort
         credentials.smtpPort = smtpPort
         syncState = .upToDate
+        identity = nil
         viewState = .locked
     }
 
+    private func loadIdentity() async {
+        guard identity == nil else { return }
+
+        isCheckingMailbox = true
+        defer { isCheckingMailbox = false }
+        
+        do {
+            let mnemonic = try config.getValidMnemonic()
+            let keys = try await APIFactory.Mail.getMailAccountKeys()
+            let privateKey = try MailKeystore.openEncryptionKeystore(
+                address: keys.address,
+                publicKey: keys.publicKey,
+                encryptedPrivateKey: keys.encryptionPrivateKey,
+                mnemonic: mnemonic
+            )
+
+            identity = MailAccountIdentity(
+                address: keys.address,
+                publicKey: keys.publicKey,
+                privateKey: privateKey
+            )
+            accountEmail = keys.address
+            Self.logger.info("Mail identity ready")
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.inactive) }
+
+        } catch let apiError as APIClientError where apiError.isMailNotSetUp {
+            Self.logger.info("The account has no Internxt Mail address yet")
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.identitySetup) }
+
+        } catch {
+            Self.logger.warning("Could not load the mail identity: \(error)")
+            withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.inactive) }
+        }
+    }
+
+    /// Asks again after the user says they created their address — the very same load.
     func recheckUserIdentitySetup() async {
-        guard viewState == .identitySetup else { return }
-        viewState = .inactive
+        guard viewState == .unlocked(.identitySetup) else { return }
+        await loadIdentity()
+    }
+
+    func retryAfterFailure() async {
+        guard viewState == .unlocked(.failed) else { return }
         await activate()
     }
 
     func dismissFailure() {
-        guard viewState == .failed else { return }
+        guard viewState == .unlocked(.failed) else { return }
         lastError = nil
-        withAnimation(.easeOut(duration: 0.18)) { viewState = .inactive }
+        withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.inactive) }
     }
 
     func resyncMailManually() {
@@ -473,9 +479,6 @@ final class MailBridgeService: ObservableObject {
         }
     }
 
-    func configureAutomatically(_ client: MailClient) {
-        // TODO: Write the mail client profile for the given client
-    }
 
 }
 
