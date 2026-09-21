@@ -33,7 +33,7 @@ enum MailBridgeExitReason {
 final class MailBridgeProcess: NSObject {
     private static let gracefulShutdownTimeout: TimeInterval = 5
 
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeProcess")
+    private let logger = LogService.shared.createLogger(subsystem: .Mail, category: "MailBridgeProcess")
 
     private let queue = DispatchQueue(label: "com.internxt.mailbridge.process")
     private var process: Process?
@@ -104,8 +104,8 @@ final class MailBridgeProcess: NSObject {
             ]
             task.environment = childEnvironment(config: config)
 
-            let stdout = LogStream(scope: "stdout", isError: false)
-            let stderr = LogStream(scope: "stderr", isError: true)
+            let stdout = LogStream(isError: false)
+            let stderr = LogStream(isError: true)
             task.standardOutput = attach(stdout)
             task.standardError = attach(stderr)
 
@@ -170,7 +170,7 @@ final class MailBridgeProcess: NSObject {
         for stream in streams {
             let handle = stream.pipe.fileHandleForReading
             handle.readabilityHandler = nil
-            log(stream.accumulator.flush(), scope: stream.scope, isError: stream.isError)
+            log(stream.accumulator.flush(), isError: stream.isError)
             try? handle.close()
         }
         streams = []
@@ -199,23 +199,28 @@ final class MailBridgeProcess: NSObject {
 
             guard !data.isEmpty else {
                 handle.readabilityHandler = nil
-                self?.log(stream.accumulator.flush(), scope: stream.scope, isError: stream.isError)
+                self?.log(stream.accumulator.flush(), isError: stream.isError)
                 return
             }
 
-            self?.log(stream.accumulator.append(data), scope: stream.scope, isError: stream.isError)
+            self?.log(stream.accumulator.append(data), isError: stream.isError)
         }
 
         return stream.pipe
     }
 
-    private func log(_ lines: [String], scope: String, isError: Bool) {
+    private func log(_ lines: [String], isError: Bool) {
         for line in lines {
-            if isError {
-                logger.error("[bridge/\(scope)] \(line)")
-            } else {
-                logger.info("[bridge/\(scope)] \(line)")
-            }
+            let daemon = DaemonLine(line)
+            record(daemon.message, at: daemon.level ?? (isError ? .error : .info))
+        }
+    }
+
+    private func record(_ message: String, at level: DaemonLevel) {
+        switch level {
+        case .info:    logger.info("[bridge] \(message)")
+        case .warning: logger.warning("[bridge] \(message)")
+        case .error:   logger.error("[bridge] \(message)")
         }
     }
 }
@@ -223,12 +228,38 @@ final class MailBridgeProcess: NSObject {
 private final class LogStream {
     let pipe = Pipe()
     let accumulator = LineAccumulator()
-    let scope: String
     let isError: Bool
 
-    init(scope: String, isError: Bool) {
-        self.scope = scope
+    init(isError: Bool) {
         self.isError = isError
+    }
+}
+
+private enum DaemonLevel: String {
+    case info = "INFO"
+    case warning = "WARN"
+    case error = "ERROR"
+}
+
+/// One line as the daemon writes it: `2026/09/18 17:19:58 [imap] INFO  synced Inbox`.
+/// Its date and its level are already this side's job, so the line is taken apart into the
+/// level to record it at and the part that is worth keeping. A line that does not follow
+/// the shape — a Go panic, a library writing on its own — keeps no level and stays whole.
+private struct DaemonLine {
+    let level: DaemonLevel?
+    let message: String
+
+    init(_ line: String) {
+        let fields = line.split(separator: " ", maxSplits: 4, omittingEmptySubsequences: false)
+
+        guard fields.count == 5, let level = DaemonLevel(rawValue: String(fields[3])) else {
+            self.level = nil
+            self.message = line
+            return
+        }
+
+        self.level = level
+        self.message = "\(fields[2]) \(fields[4].trimmingCharacters(in: .whitespaces))"
     }
 }
 

@@ -125,7 +125,7 @@ final class MailBridgeService: ObservableObject {
         static let smtp = 2025
     }
 
-    private static let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeService")
+    private static let logger = LogService.shared.createLogger(subsystem: .Mail, category: "MailBridgeService")
 
     private let defaults: UserDefaults
     private let config: ConfigLoader
@@ -147,6 +147,7 @@ final class MailBridgeService: ObservableObject {
     private let bridgeProcess = MailBridgeProcess()
     private lazy var controlServer = MailBridgeControlServer(socketURL: MailBridgeProcess.controlSocketURL)
     private var entitlementObserver: Task<Void, Never>?
+    private var tokenObserver: Task<Void, Never>?
     private var identity: MailAccountIdentity?
     @Published private(set) var isCheckingMailbox = false
 
@@ -171,10 +172,12 @@ final class MailBridgeService: ObservableObject {
 
         observeEntitlement()
         observeSyncEvents()
+        observeTokenRefresh()
     }
 
     deinit {
         entitlementObserver?.cancel()
+        tokenObserver?.cancel()
     }
 
     private func observeSyncEvents() {
@@ -217,6 +220,9 @@ final class MailBridgeService: ObservableObject {
             Self.logger.info("Mail Bridge sync progress: \(downloaded)/\(total) (\(percent)%)")
             syncState = .syncing(downloaded: downloaded, total: total, percent: percent)
 
+        case .daemonFailed(let code):
+            handleBridgeError("the daemon rejected a control message (\(code))")
+
         case .syncFinished(let downloaded, let total, let code):
             // An empty code means the sync did everything it set out to do.
             if let code, !code.isEmpty {
@@ -229,8 +235,35 @@ final class MailBridgeService: ObservableObject {
         }
     }
 
-    /// The daemon can die without anyone asking it to. When that happens the UI has to
-    /// stop claiming Bridge is active, otherwise the user copies credentials that lead nowhere.
+    private func backendSession(token: String) throws -> MailBridgeSession.BackendSession {
+        guard let identity else { throw MailBridgeServiceError.mailboxNotCreated }
+
+        return .init(
+            token: token,
+            encryptionPrivateKey: Data(identity.privateKey).base64EncodedString(),
+            encryptionPublicKey: identity.publicKey
+        )
+    }
+
+    private func observeTokenRefresh() {
+        tokenObserver = Task { @MainActor [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: .authTokenDidChange) {
+                self?.handOverRefreshedToken()
+            }
+        }
+    }
+
+    private func handOverRefreshedToken() {
+        guard viewState.isActive, let token = config.getAuthToken(), !token.isEmpty else { return }
+
+        do {
+            try controlServer.updateSession(backendSession(token: token))
+            Self.logger.info("Token refreshed in the daemon")
+        } catch {
+            Self.logger.error("Could not hand the refreshed token to the daemon: \(error)")
+        }
+    }
+
     private func observeEntitlement() {
         entitlementObserver = Task { @MainActor [weak self] in
             for await isEnabled in FeaturesService.shared.$mailEnabled.values {
@@ -363,11 +396,7 @@ final class MailBridgeService: ObservableObject {
         return MailBridgeSession(
             accountId: identity.address,
             addresses: [identity.address],
-            backendSession: .init(
-                token: token,
-                encryptionPrivateKey: Data(identity.privateKey).base64EncodedString(),
-                encryptionPublicKey: identity.publicKey
-            ),
+            backendSession: try backendSession(token: token),
             mailClient: .init(username: identity.address, password: credentials.password)
         )
     }
