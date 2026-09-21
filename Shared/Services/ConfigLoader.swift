@@ -251,6 +251,8 @@ public struct ConfigLoader {
         if saved == false {
             throw ConfigLoaderError.CannotSaveAuthToken
         }
+
+        NotificationCenter.default.post(name: .authTokenDidChange, object: nil)
     }
     
     public func removeAuthToken() throws -> Void  {

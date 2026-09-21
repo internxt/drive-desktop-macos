@@ -9,6 +9,7 @@ import Foundation
 import NIOCore
 import NIOPosix
 import NIOExtras
+import NIOConcurrencyHelpers
 
 // MARK: - Wire format
 
@@ -62,6 +63,7 @@ enum MailBridgeEvent {
     case syncStarted(total: Int)
     case syncProgress(downloaded: Int, total: Int, percent: Int)
     case syncFinished(downloaded: Int, total: Int, code: String?)
+    case daemonFailed(code: String)
 }
 
 struct MailBridgeControlReply: Decodable {
@@ -103,6 +105,8 @@ struct MailBridgeControlReply: Decodable {
             return finished.map {
                 .syncFinished(downloaded: $0.downloaded, total: $0.total, code: $0.code)
             }
+        case "error":
+            return error.map { .daemonFailed(code: $0.code) }
         default:
             return nil
         }
@@ -186,18 +190,37 @@ enum MailBridgeControlPipeline {
 
 final class MailBridgeControlServer {
     private static let handshakeTimeout: TimeAmount = .seconds(60)
-    private let logger = LogService.shared.createLogger(subsystem: .InternxtDesktop, category: "MailBridgeControlServer")
+    private let logger = LogService.shared.createLogger(subsystem: .Mail, category: "MailBridgeControlServer")
     private let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     private let socketURL: URL
     private var serverChannel: Channel?
     private var connection: Channel?
     private var connected: EventLoopPromise<Channel>?
-    private var ready: EventLoopPromise<MailBridgeReady>?
     private var timeout: Scheduled<Void>?
 
-    /// The daemon's own reports once the handshake is done. Called from the event loop,
-    /// so whoever sets this hops to the actor it needs.
-    var onIncomingEvent: ((MailBridgeEvent) -> Void)?
+    private struct Shared {
+        var ready: EventLoopPromise<MailBridgeReady>?
+        var isStopping = false
+        var onIncomingEvent: (@Sendable (MailBridgeEvent) -> Void)?
+        var onChannelLost: (@Sendable () -> Void)?
+    }
+
+    private let shared = NIOLockedValueBox(Shared())
+
+    var onIncomingEvent: (@Sendable (MailBridgeEvent) -> Void)? {
+        get { shared.withLockedValue { $0.onIncomingEvent } }
+        set { shared.withLockedValue { $0.onIncomingEvent = newValue } }
+    }
+
+    var onChannelLost: (@Sendable () -> Void)? {
+        get { shared.withLockedValue { $0.onChannelLost } }
+        set { shared.withLockedValue { $0.onChannelLost = newValue } }
+    }
+
+    private var ready: EventLoopPromise<MailBridgeReady>? {
+        get { shared.withLockedValue { $0.ready } }
+        set { shared.withLockedValue { $0.ready = newValue } }
+    }
 
     init(socketURL: URL) {
         self.socketURL = socketURL
@@ -207,6 +230,7 @@ final class MailBridgeControlServer {
     /// Idempotent — calling it with a live socket does nothing.
     func listen() async throws {
         guard serverChannel == nil else { return }
+        shared.withLockedValue { $0.isStopping = false }
 
         try assertPathFitsInSunPath()
         try createSocketDirectoryOwnerOnly()
@@ -248,7 +272,15 @@ final class MailBridgeControlServer {
         sendAndForget(ResyncMessage(), over: connection)
     }
 
+    func updateSession(_ backendSession: MailBridgeSession.BackendSession) throws {
+        guard let connection, connection.isActive else {
+            throw MailBridgeControlError.connectionClosed
+        }
+        sendAndForget(SessionUpdateMessage(update: .init(backendSession: backendSession)), over: connection)
+    }
+
     func stop() {
+        shared.withLockedValue { $0.isStopping = true }
         finishHandshake()
         closeChannels()
         removeStaleSocketFile()
@@ -277,13 +309,14 @@ final class MailBridgeControlServer {
 
     private func bindListener() async throws -> Channel {
         let connected = self.connected
+        let shared = self.shared
 
         return try await ServerBootstrap(group: group)
             .serverChannelOption(ChannelOptions.backlog, value: 1)
-            .childChannelInitializer { [weak self] channel in
+            .childChannelInitializer { channel in
                 channel.pipeline
-                    .addHandlers(MailBridgeControlPipeline.handlers { [weak self] reply in
-                        self?.receive(reply)
+                    .addHandlers(MailBridgeControlPipeline.handlers { reply in
+                        Self.receive(reply, using: shared)
                     })
                     .map { connected?.succeed(channel) }
             }
@@ -291,14 +324,21 @@ final class MailBridgeControlServer {
             .get()
     }
 
-    /// Every frame lands here. The first one answers the handshake; the rest are the
-    /// daemon reporting on its own. Once `ready` is released the first half stops applying,
-    /// which is what lets the sync events flow past untouched.
-    private func receive(_ reply: Result<MailBridgeControlReply, Error>) {
-        ready.map { Self.settleHandshake(with: reply, on: $0) }
 
-        if case .success(let frame) = reply, let event = frame.event {
-            onIncomingEvent?(event)
+    private static func receive(_ reply: Result<MailBridgeControlReply, Error>, using shared: NIOLockedValueBox<Shared>) {
+        let state = shared.withLockedValue { $0 }
+
+        state.ready.map { Self.settleHandshake(with: reply, on: $0) }
+
+        switch reply {
+        case .success(let frame):
+            guard let event = frame.event else { break }
+
+            if case .daemonFailed = event, state.ready != nil { break }
+            state.onIncomingEvent?(event)
+
+        case .failure:
+            if state.ready == nil, !state.isStopping { state.onChannelLost?() }
         }
     }
 
@@ -350,6 +390,19 @@ final class MailBridgeControlServer {
 
     private struct ResyncMessage: Encodable {
         let type = "resync"
+    }
+
+    private struct SessionUpdateMessage: Encodable {
+        let type = "session_updated"
+        let update: Update
+
+        struct Update: Encodable {
+            let backendSession: MailBridgeSession.BackendSession
+
+            enum CodingKeys: String, CodingKey {
+                case backendSession = "backend_session"
+            }
+        }
     }
 
     private func send(_ message: some Encodable, over channel: Channel) async throws {
