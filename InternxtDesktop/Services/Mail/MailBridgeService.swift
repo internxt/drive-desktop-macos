@@ -241,6 +241,7 @@ final class MailBridgeService: ObservableObject {
                     self.viewState = .locked
                 } else if self.viewState == .locked {
                     await self.loadIdentity()
+                    await self.startIfNeeded()
                 }
             }
         }

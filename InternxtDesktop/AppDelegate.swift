@@ -444,12 +444,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     } else {
                         self.logger.info("⚠️ Cleaner helper registration skipped (feature disabled)")
                     }
-
-                    if FeaturesService.shared.mailEnabled {
-                        await self.mailBridgeService.startIfNeeded()
-                    } else {
-                        self.logger.info("⚠️ Mail Bridge autostart skipped (feature disabled)")
-                    }
                 }
                 
                 group.addTask {
