@@ -48,11 +48,13 @@ struct MailBridgeReady: Decodable {
     let imapAddress: String
     let smtpAddress: String
     let startTLS: Bool
+    let certificate: String?
 
     enum CodingKeys: String, CodingKey {
         case imapAddress = "imap_address"
         case smtpAddress = "smtp_address"
         case startTLS = "starttls"
+        case certificate
     }
 }
 

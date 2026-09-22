@@ -36,6 +36,28 @@ enum MailBridgeSyncState: Equatable {
     case interrupted(downloaded: Int, total: Int)
 }
 
+enum MailClient: String, CaseIterable, Identifiable {
+    case appleMail = "Apple Mail"
+
+    var id: String { rawValue }
+
+    var displayName: String { rawValue }
+
+    /// Used to find the client's own icon on this Mac.
+    var bundleIdentifier: String {
+        switch self {
+        case .appleMail: return "com.apple.mail"
+        }
+    }
+
+    /// Stands in for the icon when the client is not installed.
+    var initial: String {
+        switch self {
+        case .appleMail: return "A"
+        }
+    }
+}
+
 enum ProtocolKind: String, Identifiable {
     case imap = "IMAP"
     case smtp = "SMTP"
@@ -149,11 +171,11 @@ final class MailBridgeService: ObservableObject {
     private var entitlementObserver: Task<Void, Never>?
     private var tokenObserver: Task<Void, Never>?
     private var identity: MailAccountIdentity?
+    private var bridgeCertificate: Data?
+    
     @Published private(set) var isCheckingMailbox = false
-
     @Published private(set) var isActivatingMailBridge: Bool = false
     @Published private(set) var lastError: String?
-
     @Published private(set) var syncState: MailBridgeSyncState = .upToDate
 
     init(defaults: UserDefaults = .standard, config: ConfigLoader = ConfigLoader()) {
@@ -363,7 +385,7 @@ final class MailBridgeService: ObservableObject {
             try bridgeProcess.start()
 
             let daemonConfig = try await controlServer.handshake(session: session)
-            applyBridgePorts(daemonConfig)
+            applyBridgeSettings(from: daemonConfig)
 
             Self.logger.info("Mail Bridge is ready on \(daemonConfig.imapAddress)")
             withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.active) }
@@ -400,7 +422,7 @@ final class MailBridgeService: ObservableObject {
         )
     }
 
-    private func applyBridgePorts(_ ready: MailBridgeReady) {
+    private func applyBridgeSettings(from ready: MailBridgeReady) {
         if let port = Int(ready.imapAddress.split(separator: ":").last ?? "") {
             imapPort = port
             credentials.imapPort = port
@@ -411,6 +433,35 @@ final class MailBridgeService: ObservableObject {
         }
         credentials.imapSecurity = ready.startTLS ? "STARTTLS" : "None"
         credentials.smtpSecurity = ready.startTLS ? "STARTTLS" : "None"
+
+        bridgeCertificate = ready.certificate.flatMap { Data(base64Encoded: $0) }
+    }
+
+    var canConfigureClient: Bool {
+        viewState.isActive && bridgeCertificate != nil
+    }
+
+    func configureAutomatically(_ client: MailClient) {
+        guard case .appleMail = client else { return }
+
+        guard let certificate = bridgeCertificate, !accountEmail.isEmpty else {
+            Self.logger.warning("Refusing to build the Apple Mail profile: the bridge has no certificate yet")
+            return
+        }
+
+        do {
+            try MailProfile.setUpAppleMail(.init(
+                address: accountEmail,
+                password: credentials.password,
+                imapPort: credentials.imapPort,
+                smtpPort: credentials.smtpPort,
+                certificate: certificate
+            ))
+            Self.logger.info("Handed the Apple Mail profile to the system")
+        } catch {
+            lastError = error.localizedDescription
+            Self.logger.error("Could not write the Apple Mail profile: \(error)")
+        }
     }
 
     func deactivate() {
@@ -443,7 +494,9 @@ final class MailBridgeService: ObservableObject {
         credentials.smtpPort = smtpPort
         syncState = .upToDate
         identity = nil
+        bridgeCertificate = nil
         viewState = .locked
+        MailProfile.removeAppleMailSetup()
     }
 
     private func loadIdentity() async {

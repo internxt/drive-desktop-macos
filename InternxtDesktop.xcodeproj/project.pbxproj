@@ -77,6 +77,7 @@
 		4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */; };
 		4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0115055470098B744 /* MailBridgeService.swift */; };
 		4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7E1015055470098B744 /* MailBridgeProcess.swift */; };
+		4792C7E1085055470098B744 /* MailProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7E1075055470098B744 /* MailProfile.swift */; };
 		4792C7E1045055470098B744 /* MailBridgeResources/mail-bridge in Copy Mail Bridge daemon */ = {isa = PBXBuildFile; fileRef = 4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
@@ -585,6 +586,7 @@
 		4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeSettingsDialogView.swift; sourceTree = "<group>"; };
 		4792C7D0115055470098B744 /* MailBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeService.swift; sourceTree = "<group>"; };
 		4792C7E1015055470098B744 /* MailBridgeProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeProcess.swift; sourceTree = "<group>"; };
+		4792C7E1075055470098B744 /* MailProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailProfile.swift; sourceTree = "<group>"; };
 		4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "MailBridgeResources/mail-bridge"; sourceTree = "<group>"; };
 		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -953,6 +955,7 @@
 				475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */,
 				4792C7D0115055470098B744 /* MailBridgeService.swift */,
 				4792C7E1015055470098B744 /* MailBridgeProcess.swift */,
+				4792C7E1075055470098B744 /* MailProfile.swift */,
 			);
 			path = Mail;
 			sourceTree = "<group>";
@@ -2224,6 +2227,7 @@
 				4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */,
 				4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */,
 				4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */,
+				4792C7E1085055470098B744 /* MailProfile.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				AA13E02C2E61071E00DD47CB /* CleanerHelperTool.swift in Sources */,
