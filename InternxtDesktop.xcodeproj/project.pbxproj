@@ -12,7 +12,6 @@
 		3104526E2B4B1C5C00984716 /* StopBackupDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104526D2B4B1C5C00984716 /* StopBackupDialogView.swift */; };
 		311612A02B47873D003C8EE8 /* FolderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3116129F2B47873D003C8EE8 /* FolderListView.swift */; };
 		3120B55B2B84F12A00F524F1 /* BackupUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120B55A2B84F12A00F524F1 /* BackupUploadService.swift */; };
-		3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */; };
 		3120B5632B84F35100F524F1 /* ConfigLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB29582A7D5D86009036B8 /* ConfigLoader.swift */; };
 		3120B5642B84F36C00F524F1 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		3120B5652B84F37F00F524F1 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
@@ -58,6 +57,28 @@
 		31F9EF2D2B867F42007DAD86 /* ErrorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16ECC132A9508B10093D3ED /* ErrorUtils.swift */; };
 		31F9EF2E2B867FE9007DAD86 /* APIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109717E2A81143A00ABED41 /* APIFactory.swift */; };
 		31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CC520B2A98B460009DEEAA /* Bundle.swift */; };
+		47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F30305D1B8F00D67D12 /* NIOCore */; };
+		47008F33305D1B9000D67D12 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F32305D1B9000D67D12 /* NIOPosix */; };
+		47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */ = {isa = PBXBuildFile; productRef = 47008F35305D1C0D00D67D12 /* NIOExtras */; };
+		475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */; };
+		475B9365305BF76000E9F330 /* MailBridgeErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9363305BF76000E9F330 /* MailBridgeErrorView.swift */; };
+		475B9366305BF76000E9F330 /* MailBridgeIdentitySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9364305BF76000E9F330 /* MailBridgeIdentitySetupView.swift */; };
+		475B936B305BF7E500E9F330 /* APIClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B936A305BF7E500E9F330 /* APIClientError.swift */; };
+		475B936C305BF7E500E9F330 /* APIClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B936A305BF7E500E9F330 /* APIClientError.swift */; };
+		4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3733052AED600DAD486 /* InternxtSwiftCore */; };
+		4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D37F3052B07400DAD486 /* InternxtSwiftCore */; };
+		4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3813052B07D00DAD486 /* InternxtSwiftCore */; };
+		4778D3843052B08500DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3833052B08500DAD486 /* InternxtSwiftCore */; };
+		4792C7C23050555B0098B744 /* MailBridgeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7C1305055550098B744 /* MailBridgeTabView.swift */; };
+		4792C7D0025055470098B744 /* MailBridgeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0015055470098B744 /* MailBridgeComponents.swift */; };
+		4792C7D0045055470098B744 /* MailBridgeLockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0035055470098B744 /* MailBridgeLockedView.swift */; };
+		4792C7D0065055470098B744 /* MailBridgeInactiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0055055470098B744 /* MailBridgeInactiveView.swift */; };
+		4792C7D0085055470098B744 /* MailBridgeActiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0075055470098B744 /* MailBridgeActiveView.swift */; };
+		4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */; };
+		4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0115055470098B744 /* MailBridgeService.swift */; };
+		4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7E1015055470098B744 /* MailBridgeProcess.swift */; };
+		4792C7E1085055470098B744 /* MailProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7E1075055470098B744 /* MailProfile.swift */; };
+		4792C7E1045055470098B744 /* MailBridgeResources/mail-bridge in Copy Mail Bridge daemon */ = {isa = PBXBuildFile; fileRef = 4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
@@ -174,7 +195,6 @@
 		AABD3E833033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E843033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E853033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
-		AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAC188E52C222EB3007E321A /* InternxtSwiftCore */; };
 		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		AAC188EB2C222F35007E321A /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
@@ -218,7 +238,6 @@
 		E10B0FDD2A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E10B0FE02A94143F00B97874 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B0FDC2A94143F00B97874 /* Int.swift */; };
 		E112933F2A77221A003DEADF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E112933E2A77221A003DEADF /* Colors.xcassets */; };
-		E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */; };
 		E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B83962AFBBCD7009F6684 /* AppSettingsManagerView.swift */; };
 		E13B83992AFBBD50009F6684 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B83982AFBBD50009F6684 /* AppSettings.swift */; };
 		E13B839A2AFBBD50009F6684 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13B83982AFBBD50009F6684 /* AppSettings.swift */; };
@@ -240,7 +259,6 @@
 		E145E17A2A839DBF00B07E0B /* GetFolderMetaUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E1792A839DBF00B07E0B /* GetFolderMetaUseCase.swift */; };
 		E145E17C2A83A1DA00B07E0B /* RenameFolderUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17B2A83A1DA00B07E0B /* RenameFolderUseCase.swift */; };
 		E145E1802A85235A00B07E0B /* UploadFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E145E17F2A85235A00B07E0B /* UploadFileUseCase.swift */; };
-		E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = E150884D2A7C55F20089BD57 /* InternxtSwiftCore */; };
 		E1581DCA2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
 		E1581DCB2A95221D0051DD46 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DC92A95221D0051DD46 /* FileProvider.swift */; };
 		E1581DCD2A9531B10051DD46 /* RenameFileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1581DCC2A9531B10051DD46 /* RenameFileUseCase.swift */; };
@@ -387,7 +405,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		31DEAEB82B75139400E76D53 /* PBXContainerItemProxy */ = {
+		4778D3753052AFF900DAD486 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E1FB2D802A76C48600473AE1;
+			remoteInfo = SyncExtension;
+		};
+		4778D37A3052AFF900DAD486 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
 			proxyType = 1;
@@ -408,13 +433,6 @@
 			remoteGlobalIDString = E1FB2D232A76BF0200473AE1;
 			remoteInfo = InternxtDesktop;
 		};
-		E1FB2D8C2A76C48600473AE1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E1FB2D802A76C48600473AE1;
-			remoteInfo = SyncExtension;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -427,6 +445,17 @@
 				31DEAEBA2B75139400E76D53 /* XPCBackupService.xpc in Embed XPC Services */,
 			);
 			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4792C7E1055055470098B744 /* Copy Mail Bridge daemon */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = MailBridgeResources;
+			dstSubfolderSpec = 7;
+			files = (
+				4792C7E1045055470098B744 /* MailBridgeResources/mail-bridge in Copy Mail Bridge daemon */,
+			);
+			name = "Copy Mail Bridge daemon";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AAA6667A2D4068E100C2B9DF /* CopyFiles */ = {
@@ -545,6 +574,20 @@
 		31DEAEC02B75143F00E76D53 /* XPCBackupServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCBackupServiceDelegate.swift; sourceTree = "<group>"; };
 		31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBackupBannerView.swift; sourceTree = "<group>"; };
 		31ED949C2B7151E200EF699F /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
+		475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeControlServer.swift; sourceTree = "<group>"; };
+		475B9363305BF76000E9F330 /* MailBridgeErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeErrorView.swift; sourceTree = "<group>"; };
+		475B9364305BF76000E9F330 /* MailBridgeIdentitySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeIdentitySetupView.swift; sourceTree = "<group>"; };
+		475B936A305BF7E500E9F330 /* APIClientError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientError.swift; sourceTree = "<group>"; };
+		4792C7C1305055550098B744 /* MailBridgeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeTabView.swift; sourceTree = "<group>"; };
+		4792C7D0015055470098B744 /* MailBridgeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeComponents.swift; sourceTree = "<group>"; };
+		4792C7D0035055470098B744 /* MailBridgeLockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeLockedView.swift; sourceTree = "<group>"; };
+		4792C7D0055055470098B744 /* MailBridgeInactiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeInactiveView.swift; sourceTree = "<group>"; };
+		4792C7D0075055470098B744 /* MailBridgeActiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeActiveView.swift; sourceTree = "<group>"; };
+		4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeSettingsDialogView.swift; sourceTree = "<group>"; };
+		4792C7D0115055470098B744 /* MailBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeService.swift; sourceTree = "<group>"; };
+		4792C7E1015055470098B744 /* MailBridgeProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeProcess.swift; sourceTree = "<group>"; };
+		4792C7E1075055470098B744 /* MailProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailProfile.swift; sourceTree = "<group>"; };
+		4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "MailBridgeResources/mail-bridge"; sourceTree = "<group>"; };
 		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
@@ -768,10 +811,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3120B5602B84F2E800F524F1 /* InternxtSwiftCore in Frameworks */,
 				AA16C5D02E303B8100E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
 				AA16C5CE2E303B8100E1C295 /* CocoaLumberjack in Frameworks */,
+				4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,8 +845,8 @@
 			files = (
 				AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */,
 				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
+				4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */,
 				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
-				AAC188E62C222EB3007E321A /* InternxtSwiftCore in Frameworks */,
 				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -813,15 +856,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				E106D45C2AB9DB9300E3BF7A /* Sparkle in Frameworks */,
+				47008F33305D1B9000D67D12 /* NIOPosix in Frameworks */,
 				AA16C5C82E303B5B00E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				AAA666722D40684500C2B9DF /* libjson-c.5.dylib in Frameworks */,
-				E150884E2A7C55F20089BD57 /* InternxtSwiftCore in Frameworks */,
 				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
 				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
+				47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */,
+				4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */,
 				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
@@ -834,9 +880,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
+				4778D3843052B08500DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
-				E1312A4F2A7FE01E000EAA43 /* InternxtSwiftCore in Frameworks */,
 				AA16C5CA2E303B7700E1C295 /* CocoaLumberjack in Frameworks */,
 				E19639602C63CA14009EDAFB /* Realm in Frameworks */,
 			);
@@ -886,6 +932,32 @@
 				31DEAEB72B75139400E76D53 /* XPCBackupService.entitlements */,
 			);
 			path = XPCBackupService;
+			sourceTree = "<group>";
+		};
+		4792C7C0305055470098B744 /* MailBridge */ = {
+			isa = PBXGroup;
+			children = (
+				475B9363305BF76000E9F330 /* MailBridgeErrorView.swift */,
+				475B9364305BF76000E9F330 /* MailBridgeIdentitySetupView.swift */,
+				4792C7C1305055550098B744 /* MailBridgeTabView.swift */,
+				4792C7D0015055470098B744 /* MailBridgeComponents.swift */,
+				4792C7D0035055470098B744 /* MailBridgeLockedView.swift */,
+				4792C7D0055055470098B744 /* MailBridgeInactiveView.swift */,
+				4792C7D0075055470098B744 /* MailBridgeActiveView.swift */,
+				4792C7D0095055470098B744 /* MailBridgeSettingsDialogView.swift */,
+			);
+			path = MailBridge;
+			sourceTree = "<group>";
+		};
+		4792C7EE005055470098B744 /* Mail */ = {
+			isa = PBXGroup;
+			children = (
+				475B9361305AB55F00E9F330 /* MailBridgeControlServer.swift */,
+				4792C7D0115055470098B744 /* MailBridgeService.swift */,
+				4792C7E1015055470098B744 /* MailBridgeProcess.swift */,
+				4792C7E1075055470098B744 /* MailProfile.swift */,
+			);
+			path = Mail;
 			sourceTree = "<group>";
 		};
 		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
@@ -1092,6 +1164,7 @@
 		E10B0FDB2A94142A00B97874 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				475B936A305BF7E500E9F330 /* APIClientError.swift */,
 				E10B0FDC2A94143F00B97874 /* Int.swift */,
 				E1581DD32A9629790051DD46 /* Error.swift */,
 				E1CC520B2A98B460009DEEAA /* Bundle.swift */,
@@ -1430,6 +1503,7 @@
 			isa = PBXGroup;
 			children = (
 				AAA6666B2D40680700C2B9DF /* ClamAVResources */,
+				4792C7E1035055470098B744 /* MailBridgeResources/mail-bridge */,
 				E17DB7082C5399CB0031B465 /* ViewModels */,
 				E17499222A94F425002ABF65 /* InternxtDesktopDebug.entitlements */,
 				E1FB2D942A76D01B00473AE1 /* Info.plist */,
@@ -1462,6 +1536,7 @@
 			isa = PBXGroup;
 			children = (
 				E17AA0222A8A70C100C7EE6E /* Auth */,
+				4792C7EE005055470098B744 /* Mail */,
 				E16310562A8E66F70072989E /* URLDictionary.swift */,
 				E18300A12AA161ED00AD023C /* FileProviderDomainManager.swift */,
 				E1880BA32AA6973C001FC171 /* GlobalUIManager.swift */,
@@ -1489,6 +1564,7 @@
 		E1FB2D542A76C03300473AE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4792C7C0305055470098B744 /* MailBridge */,
 				AA8B5F63302A23BE00F28F39 /* Issues */,
 				AA7FC5A22E450C2A0018C333 /* Cleaner */,
 				AA40B3BB2D3B296E00FC1FC3 /* Antivirus */,
@@ -1550,10 +1626,10 @@
 			);
 			name = XPCBackupService;
 			packageProductDependencies = (
-				3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */,
 				E19639612C63CA20009EDAFB /* RealmSwift */,
 				AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */,
 				AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */,
+				4778D37F3052B07400DAD486 /* InternxtSwiftCore */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1627,11 +1703,11 @@
 			);
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
-				AAC188E52C222EB3007E321A /* InternxtSwiftCore */,
 				AAA2F8E53017FEEF00F5452C /* Realm */,
 				AAA2F8E73017FF0100F5452C /* RealmSwift */,
 				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
 				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
+				4778D3813052B07D00DAD486 /* InternxtSwiftCore */,
 			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
@@ -1648,6 +1724,8 @@
 				E1ADD04D2AA8BAC200D95694 /* ShellScript */,
 				31DEAEBF2B75139400E76D53 /* Embed XPC Services */,
 				E195325D2C5A556000CB81C3 /* Embed Frameworks */,
+				4792C7E1065055470098B744 /* Fetch Mail Bridge daemon */,
+				4792C7E1055055470098B744 /* Copy Mail Bridge daemon */,
 				AAA6667A2D4068E100C2B9DF /* CopyFiles */,
 				AAA6667D2D4068FE00C2B9DF /* CopyFiles */,
 				AAA6F63B2E5F9BB7000082ED /* CopyFiles */,
@@ -1656,12 +1734,11 @@
 			);
 			dependencies = (
 				AAA6F6412E5F9DE1000082ED /* PBXTargetDependency */,
-				E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */,
-				31DEAEB92B75139400E76D53 /* PBXTargetDependency */,
+				4778D3763052AFF900DAD486 /* PBXTargetDependency */,
+				4778D37B3052AFF900DAD486 /* PBXTargetDependency */,
 			);
 			name = InternxtDesktop;
 			packageProductDependencies = (
-				E150884D2A7C55F20089BD57 /* InternxtSwiftCore */,
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
 				E19639592C63B46C009EDAFB /* Realm */,
@@ -1669,6 +1746,10 @@
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
 				AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */,
+				4778D3733052AED600DAD486 /* InternxtSwiftCore */,
+				47008F30305D1B8F00D67D12 /* NIOCore */,
+				47008F32305D1B9000D67D12 /* NIOPosix */,
+				47008F35305D1C0D00D67D12 /* NIOExtras */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1689,11 +1770,11 @@
 			);
 			name = SyncExtension;
 			packageProductDependencies = (
-				E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */,
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
 				E196395F2C63CA14009EDAFB /* Realm */,
 				AA16C5C92E303B7700E1C295 /* CocoaLumberjack */,
 				AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */,
+				4778D3833052B08500DAD486 /* InternxtSwiftCore */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -1745,12 +1826,14 @@
 			);
 			mainGroup = E1FB2D1B2A76BF0200473AE1;
 			packageReferences = (
-				E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */,
 				E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */,
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+				4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */,
+				47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */,
+				47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1831,6 +1914,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4792C7E1065055470098B744 /* Fetch Mail Bridge daemon */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fetch Mail Bridge daemon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Builds or downloads the mail-bridge daemon into InternxtDesktop/MailBridgeResources before it is copied into the bundle.\n# No-op when the pinned binary is already in place.\n\"${SRCROOT}/scripts/fetch-mail-bridge.sh\" --from-local \"${MAIL_BRIDGE_LOCAL_REPO:-$HOME/Projects/Internxt/mail-bridge-desktop}\"\n";
+		};
 		E1ADD04D2AA8BAC200D95694 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -2011,6 +2113,8 @@
 				AA3D12952FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift in Sources */,
 				E1DB295F2A7D6A03009036B8 /* WidgetView.swift in Sources */,
 				AA13E03A2E62557A00DD47CB /* CleanerRowComponents.swift in Sources */,
+				475B9365305BF76000E9F330 /* MailBridgeErrorView.swift in Sources */,
+				475B9366305BF76000E9F330 /* MailBridgeIdentitySetupView.swift in Sources */,
 				316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */,
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				AAE87A7D2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */,
@@ -2048,6 +2152,7 @@
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
 				E1CC521C2AA0A884009DEEAA /* String.swift in Sources */,
 				3120B5742B84FC4400F524F1 /* BackupTreeNodeType.swift in Sources */,
+				475B9362305AB55F00E9F330 /* MailBridgeControlServer.swift in Sources */,
 				AA8B5F67302A2E2600F28F39 /* IssueRowView.swift in Sources */,
 				E13B83972AFBBCD7009F6684 /* AppSettingsManagerView.swift in Sources */,
 				315BC6922B3E06A5004C85D8 /* FolderSelectorView.swift in Sources */,
@@ -2082,6 +2187,7 @@
 				E1880B9C2AA625D6001FC171 /* DeviceNameView.swift in Sources */,
 				E18300A42AA1FC7700AD023C /* SettingsMenuView.swift in Sources */,
 				AA44C9C42F7CBA7800261D14 /* CleanerViewModel.swift in Sources */,
+				475B936C305BF7E500E9F330 /* APIClientError.swift in Sources */,
 				E1DB29592A7D5D86009036B8 /* ConfigLoader.swift in Sources */,
 				E1880B992AA611D3001FC171 /* GeneralTabView.swift in Sources */,
 				317EE5C92BABC221008CDBD1 /* SettingsTabManager.swift in Sources */,
@@ -2113,6 +2219,15 @@
 				AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */,
 				E1880B9E2AA6294D001FC171 /* AppCheckbox.swift in Sources */,
 				E1CC520C2A98B460009DEEAA /* Bundle.swift in Sources */,
+				4792C7C23050555B0098B744 /* MailBridgeTabView.swift in Sources */,
+				4792C7D0025055470098B744 /* MailBridgeComponents.swift in Sources */,
+				4792C7D0045055470098B744 /* MailBridgeLockedView.swift in Sources */,
+				4792C7D0065055470098B744 /* MailBridgeInactiveView.swift in Sources */,
+				4792C7D0085055470098B744 /* MailBridgeActiveView.swift in Sources */,
+				4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */,
+				4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */,
+				4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */,
+				4792C7E1085055470098B744 /* MailProfile.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
 				AA13E02C2E61071E00DD47CB /* CleanerHelperTool.swift in Sources */,
@@ -2136,6 +2251,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				475B936B305BF7E500E9F330 /* APIClientError.swift in Sources */,
 				E16310582A8E66F70072989E /* URLDictionary.swift in Sources */,
 				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
 				E17C84C72AB2FEF500A58414 /* ActivityManager.swift in Sources */,
@@ -2223,10 +2339,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		31DEAEB92B75139400E76D53 /* PBXTargetDependency */ = {
+		4778D3763052AFF900DAD486 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E1FB2D802A76C48600473AE1 /* SyncExtension */;
+			targetProxy = 4778D3753052AFF900DAD486 /* PBXContainerItemProxy */;
+		};
+		4778D37B3052AFF900DAD486 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 31DEAEAD2B75139400E76D53 /* XPCBackupService */;
-			targetProxy = 31DEAEB82B75139400E76D53 /* PBXContainerItemProxy */;
+			targetProxy = 4778D37A3052AFF900DAD486 /* PBXContainerItemProxy */;
 		};
 		AAA6F6412E5F9DE1000082ED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2237,11 +2358,6 @@
 			isa = PBXTargetDependency;
 			target = E1FB2D232A76BF0200473AE1 /* InternxtDesktop */;
 			targetProxy = E15F8C292B762B0400C60EFA /* PBXContainerItemProxy */;
-		};
-		E1FB2D8D2A76C48600473AE1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E1FB2D802A76C48600473AE1 /* SyncExtension */;
-			targetProxy = E1FB2D8C2A76C48600473AE1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3177,6 +3293,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.65.0;
+			};
+		};
+		47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-extras.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.35.1;
+			};
+		};
+		4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/internxt/swift-core";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
@@ -3201,14 +3341,6 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/internxt/swift-core";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -3228,9 +3360,39 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3120B55F2B84F2E800F524F1 /* InternxtSwiftCore */ = {
+		47008F30305D1B8F00D67D12 /* NIOCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
+			package = 47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		47008F32305D1B9000D67D12 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		47008F35305D1C0D00D67D12 /* NIOExtras */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */;
+			productName = NIOExtras;
+		};
+		4778D3733052AED600DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		4778D37F3052B07400DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		4778D3813052B07D00DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		4778D3833052B08500DAD486 /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
 			productName = InternxtSwiftCore;
 		};
 		AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */ = {
@@ -3288,25 +3450,10 @@
 			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;
 		};
-		AAC188E52C222EB3007E321A /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
-		};
-		E1312A4E2A7FE01E000EAA43 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
-		E150884D2A7C55F20089BD57 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E150884C2A7C55F20089BD57 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
 		};
 		E19639592C63B46C009EDAFB /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;

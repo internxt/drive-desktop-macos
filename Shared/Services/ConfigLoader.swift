@@ -26,6 +26,8 @@ public struct JSONConfig: Codable {
     public let AUTH_TOKEN: String?
     public let GATEWAY_API_URL: String
     public let HEADER_KEY_GATEWAY: String
+    public let MAIL_API_URL: String
+    public let MAIL_SERVER_PUBLIC_KEY: String?
 }
 
 enum ConfigLoaderError: Error {
@@ -41,7 +43,23 @@ enum ConfigLoaderError: Error {
     case CannotSaveWorkspaces
     case CannotSaveWorkspacesCredentials
     case CannotSavePrivateKey
+    case CannotSaveMailBridgePassword
     case CannotSaveWorkspaceMnemonic
+    case MnemonicNotFound
+    case MalformedMnemonic(BIP39Error)
+}
+
+extension ConfigLoaderError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .MnemonicNotFound:
+            return "This device has no mnemonic stored — sign in again"
+        case .MalformedMnemonic(let reason):
+            return "The stored mnemonic is not usable: \(reason.localizedDescription)"
+        default:
+            return "\(self)"
+        }
+    }
 }
 
 
@@ -54,6 +72,7 @@ public struct ConfigLoader {
     public static let AUTH_TOKEN_KEY = "AuthToken"
     public static let LEGACY_TOKEN_KEY = "LegacyAuthToken"
     public static let MNEMONIC_TOKEN_KEY = "Mnemonic"
+    public static let MAIL_BRIDGE_PASSWORD_KEY = "MailBridgePassword"
 
     static let shared: ConfigLoader = ConfigLoader()
     
@@ -113,6 +132,21 @@ public struct ConfigLoader {
     
     public func getMnemonic() -> String? {
         return self.getFromUserDefaults(key: ConfigLoader.MNEMONIC_TOKEN_KEY)
+    }
+
+    public func getValidMnemonic() throws -> String {
+        guard let mnemonic = getMnemonic()?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !mnemonic.isEmpty else {
+            throw ConfigLoaderError.MnemonicNotFound
+        }
+
+        do {
+            _ = try CryptoUtils().mnemonicToEntropy(mnemonic)
+        } catch let reason as BIP39Error {
+            throw ConfigLoaderError.MalformedMnemonic(reason)
+        }
+
+        return mnemonic
     }
 
     public func getNetworkAuth() -> String? {
@@ -191,12 +225,34 @@ public struct ConfigLoader {
         }
     }
     
+    public func getMailBridgePassword() -> String? {
+        return self.getFromUserDefaults(key: ConfigLoader.MAIL_BRIDGE_PASSWORD_KEY)
+    }
+
+    public func setMailBridgePassword(password: String) throws -> Void {
+        let saved = self.saveToUserDefaults(key: ConfigLoader.MAIL_BRIDGE_PASSWORD_KEY, value: password)
+
+        if saved == false {
+            throw ConfigLoaderError.CannotSaveMailBridgePassword
+        }
+    }
+
+    public func removeMailBridgePassword() throws -> Void {
+        let removed = self.removeFromUserDefaults(key: ConfigLoader.MAIL_BRIDGE_PASSWORD_KEY)
+
+        if removed == false {
+            throw ConfigLoaderError.CannotRemoveKey
+        }
+    }
+
     public func setAuthToken(authToken: String) throws -> Void {
         let saved = self.saveToUserDefaults(key: ConfigLoader.AUTH_TOKEN_KEY, value: authToken)
         
         if saved == false {
             throw ConfigLoaderError.CannotSaveAuthToken
         }
+
+        NotificationCenter.default.post(name: .authTokenDidChange, object: nil)
     }
     
     public func removeAuthToken() throws -> Void  {

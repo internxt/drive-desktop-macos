@@ -129,6 +129,7 @@ class AuthManager: ObservableObject {
         try config.removeWorkspaces()
         try config.removeWorkspaceCredentials()
         try config.removeWorkspaceMnemonicInfo()
+        try? config.removeMailBridgePassword()
         try config.removeUser()
         user = nil
         isLoggedIn = false
