@@ -189,6 +189,8 @@ final class MailBridgeProcess: NSObject {
         if let serverPublicKey = loaded.MAIL_SERVER_PUBLIC_KEY, !serverPublicKey.isEmpty {
             environment["MAIL_SERVER_PUBLIC_KEY"] = serverPublicKey
         }
+        
+        environment["BRIDGE_TLS"] = "true"
 
         return environment
     }

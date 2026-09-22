@@ -341,6 +341,9 @@
 "MAIL_BRIDGE_RUNNING" = "Mail Bridge est actif";
 "MAIL_BRIDGE_RESYNC" = "Resynchroniser";
 "MAIL_BRIDGE_TURN_OFF" = "Désactiver";
+"MAIL_BRIDGE_CONNECT_CLIENT_TITLE" = "Connecter un client de messagerie";
+"MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE" = "Choisissez votre application et Internxt configure le compte pour vous.";
+"MAIL_BRIDGE_SETUP_AUTOMATICALLY_%@" = "Configurer %@ automatiquement";
 "MAIL_BRIDGE_SHOW_MANUAL" = "Afficher les réglages manuels";
 "MAIL_BRIDGE_HIDE_MANUAL" = "Masquer les réglages manuels";
 "MAIL_BRIDGE_MANUAL_SETTINGS" = "Réglages manuels";

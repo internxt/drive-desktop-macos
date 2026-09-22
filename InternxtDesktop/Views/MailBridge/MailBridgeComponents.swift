@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppKit
 
 enum MailBridgeMetrics {
     static let cardRadius: CGFloat = 12
@@ -120,5 +121,55 @@ struct MailBridgeGlyph: View {
                     .foregroundColor(tint)
             )
             .frame(width: size, height: size)
+    }
+}
+
+struct MailBridgeClientChip: View {
+    private static let iconSize: CGFloat = 18
+
+    let client: MailClient
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    var body: some View {
+        Button(action: onSelect) {
+            HStack(spacing: 7) {
+                icon
+                Text(client.displayName)
+                    .font(.XSSemibold)
+                    .foregroundColor(.Gray100)
+                    .lineLimit(1)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(isSelected ? Color.PrimaryBadge : Color.Gray5)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(isSelected ? Color.Primary : Color.Gray10, lineWidth: 1)
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .fixedSize()
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        if let application = NSWorkspace.shared.urlForApplication(withBundleIdentifier: client.bundleIdentifier) {
+            Image(nsImage: NSWorkspace.shared.icon(forFile: application.path))
+                .resizable()
+                .frame(width: Self.iconSize, height: Self.iconSize)
+        } else {
+            Text(client.initial)
+                .font(.XSBold)
+                .foregroundColor(.Primary)
+                .frame(width: Self.iconSize, height: Self.iconSize)
+                .background(
+                    RoundedRectangle(cornerRadius: 5, style: .continuous).fill(Color.Secondary)
+                )
+        }
     }
 }
