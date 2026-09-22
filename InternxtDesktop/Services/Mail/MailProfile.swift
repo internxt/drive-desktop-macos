@@ -43,10 +43,11 @@ enum MailProfile {
         }
     }
 
-    static func setUpAppleMail(_ account: Account) throws {
+    @MainActor
+    static func setUpAppleMail(_ account: Account) async throws {
         guard let certificate = account.certificate else { throw MailProfileError.noCertificate }
 
-        try trustCertificate(certificate)
+        try await Task.detached { try trustCertificate(certificate) }.value
 
         let url = try writeProfile(for: account)
         NSWorkspace.shared.open(url)
@@ -72,6 +73,8 @@ enum MailProfile {
             throw MailProfileError.notTrusted(stored)
         }
 
+        guard !isCertificateAlreadyTrusted(certificate) else { return }
+
         let anchored = SecTrustSettingsSetTrustSettings(certificate, .user, [
             [
                 kSecTrustSettingsPolicy as String: SecPolicyCreateSSL(true, nil),
@@ -89,6 +92,11 @@ enum MailProfile {
             removeProfile()
             try? FileManager.default.removeItem(at: fileURL)
         }
+    }
+
+    private static func isCertificateAlreadyTrusted(_ certificate: SecCertificate) -> Bool {
+        var settings: CFArray?
+        return SecTrustSettingsCopyTrustSettings(certificate, .user, &settings) == errSecSuccess
     }
 
     private static func untrustCertificate() {

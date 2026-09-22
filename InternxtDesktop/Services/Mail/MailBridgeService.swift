@@ -450,18 +450,22 @@ final class MailBridgeService: ObservableObject {
             return
         }
 
-        do {
-            try MailProfile.setUpAppleMail(.init(
-                address: accountEmail,
-                password: credentials.password,
-                imapPort: credentials.imapPort,
-                smtpPort: credentials.smtpPort,
-                certificate: certificate
-            ))
-            Self.logger.info("Handed the Apple Mail profile to the system")
-        } catch {
-            lastError = error.localizedDescription
-            Self.logger.error("Could not write the Apple Mail profile: \(error)")
+        let account = MailProfile.Account(
+            address: accountEmail,
+            password: credentials.password,
+            imapPort: credentials.imapPort,
+            smtpPort: credentials.smtpPort,
+            certificate: certificate
+        )
+
+        Task {
+            do {
+                try await MailProfile.setUpAppleMail(account)
+                Self.logger.info("Handed the Apple Mail profile to the system")
+            } catch {
+                lastError = error.localizedDescription
+                Self.logger.error("Could not write the Apple Mail profile: \(error)")
+            }
         }
     }
 
