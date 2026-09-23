@@ -45,7 +45,6 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
-        env:
 
       - name: Archive logs
         uses: actions/upload-artifact@v4
