@@ -1931,7 +1931,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Builds or downloads the mail-bridge daemon into InternxtDesktop/MailBridgeResources before it is copied into the bundle.\n# No-op when the pinned binary is already in place.\n\"${SRCROOT}/scripts/fetch-mail-bridge.sh\" --from-local \"${MAIL_BRIDGE_LOCAL_REPO:-$HOME/Projects/Internxt/mail-bridge-desktop}\"\n";
+			shellScript = "# Builds or downloads the mail-bridge daemon into InternxtDesktop/MailBridgeResources before it is copied into the bundle.\n# No-op when the pinned binary is already in place.\nif [ -n \"${MAIL_BRIDGE_LOCAL_REPO:-}\" ]; then\n    \"${SRCROOT}/scripts/fetch-mail-bridge.sh\" --from-local \"${MAIL_BRIDGE_LOCAL_REPO}\"\nelse\n    \"${SRCROOT}/scripts/fetch-mail-bridge.sh\" --from-release \"${MAIL_BRIDGE_VERSION:-$(cat \"${SRCROOT}/mail-bridge.version\")}\"\nfi\n";
 		};
 		E1ADD04D2AA8BAC200D95694 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -7,14 +7,14 @@
 #
 #   --from-local <repo>     build the daemon from a checkout (what we do today,
 #                           since the daemon has no published releases yet)
-#   --from-release <ver>    download the pinned release tarball and verify it
-#                           against the manifest's sha256
+#   --from-release <ver>    download the published release archive and verify it
+#                           against the sha256 GitHub records for that asset
 #
 # Switching to --from-release also lets the daemon checkout and Go setup steps be
 # deleted from the three GitHub workflows: nothing is compiled from source any more.
 #
 # Both end up producing a tarball whose single root entry is `mail-bridge`,
-# exactly the artifact contract in the daemon's release/manifest.schema.json.
+# exactly the artifact contract documented in the daemon's README.
 
 set -euo pipefail
 
@@ -25,11 +25,8 @@ PATH="$PATH:/opt/homebrew/bin:/usr/local/bin:/usr/local/go/bin:${HOME}/go/bin"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST_DIR="$REPO_ROOT/InternxtDesktop/MailBridgeResources"
-# Created when we pin the first release: the daemon requires an exact version and
-# forbids tracking latest, so --from-release verifies the download against it.
-PIN_FILE="$REPO_ROOT/mail-bridge.pin.json"
 BINARY_NAME="mail-bridge"
-RELEASE_BASE_URL="https://github.com/internxt/mail-bridge-desktop/releases/download"
+RELEASE_API_URL="https://api.github.com/repos/internxt/mail-bridge-desktop/releases"
 
 MODE=""
 SOURCE=""
@@ -47,7 +44,6 @@ while [ $# -gt 0 ]; do
         --from-local)   MODE="local";   SOURCE="${2:-}"; shift 2 ;;
         --from-release) MODE="release"; SOURCE="${2:-}"; shift 2 ;;
         --dest)         DEST_DIR="${2:-}"; shift 2 ;;
-        --pin)          PIN_FILE="${2:-}"; shift 2 ;;
         -h|--help)      usage ;;
         *)              fail "unknown argument: $1" ;;
     esac
@@ -85,40 +81,69 @@ build_universal() {
     chmod 0755 "$out"
 }
 
+# The daemon publishes one macOS archive holding a binary for both kinds of Mac. GitHub
+# records a sha256 for every asset it serves, so the download is checked against what
+# the release itself reports rather than against a number copied into this repo.
 download_release() {
-    local version="$1" out="$2" arch tarball url work expected actual
+    local version="$1" out="$2" work asset url expected actual
+
     work="$(mktemp -d)"
     trap 'rm -rf "$work"' RETURN
 
-    # The daemon publishes one tarball per arch; we lipo them back together.
-    for arch in arm64 amd64; do
-        tarball="${BINARY_NAME}_${version}_darwin_${arch}.tar.gz"
-        url="$RELEASE_BASE_URL/v${version}/${tarball}"
-        log "downloading $tarball"
-        curl -fsSL "$url" -o "$work/$tarball" \
-            || fail "could not download $url (is darwin/$arch published for v$version?)"
+    asset="${BINARY_NAME}_${version}_darwin_universal.tar.gz"
 
-        expected="$(pin_value "sha256_darwin_${arch}")"
-        actual="$(sha256_of "$work/$tarball")"
-        [ -n "$expected" ] || fail "no sha256_darwin_${arch} in $PIN_FILE — create it when pinning a release"
-        [ "$expected" = "$actual" ] \
-            || fail "sha256 mismatch for $tarball: pinned $expected, got $actual"
+    log "asking GitHub about v$version"
+    api "$RELEASE_API_URL/tags/v${version}" "$work/release.json" \
+        || fail "could not read release v$version (is it published?)"
 
-        tar -xzf "$work/$tarball" -C "$work" "$BINARY_NAME"
-        mv "$work/$BINARY_NAME" "$work/$arch"
-    done
+    # The assets are asked for separately. The release payload carries a copy of them,
+    # but that copy is served stale: minutes after a release is published it still
+    # comes back empty, which is indistinguishable from a release that was never built.
+    api "$(release_field "$work/release.json" assets_url)?per_page=100" "$work/assets.json" \
+        || fail "could not list the assets of v$version"
 
-    lipo -create "$work/arm64" "$work/amd64" -output "$out"
+    url="$(asset_field "$work/assets.json" "$asset" url)"
+    expected="$(asset_field "$work/assets.json" "$asset" sha256)"
+    [ -n "$url" ] || fail "release v$version has no $asset"
+    [ -n "$expected" ] || fail "GitHub reports no sha256 for $asset"
+
+    log "downloading $asset"
+    curl -fsSL "$url" -o "$work/$asset" || fail "could not download $url"
+
+    actual="$(sha256_of "$work/$asset")"
+    [ "$expected" = "$actual" ] \
+        || fail "sha256 mismatch for $asset: GitHub says $expected, got $actual"
+
+    tar -xzf "$work/$asset" -C "$work" "$BINARY_NAME"
+    mv "$work/$BINARY_NAME" "$out"
     chmod 0755 "$out"
+
+    # A binary that only runs on the machine that fetched it would pass every check
+    # above and fail on the other kind of Mac, where nobody would connect it to this.
+    lipo -archs "$out" | grep -q x86_64 || fail "$asset carries no x86_64 slice"
+    lipo -archs "$out" | grep -q arm64  || fail "$asset carries no arm64 slice"
 }
 
-pin_value() {
-    [ -f "$PIN_FILE" ] || return 0
+api() {
+    curl -fsSL ${GITHUB_TOKEN:+-H "Authorization: Bearer $GITHUB_TOKEN"} "$1" -o "$2"
+}
+
+release_field() {
+    /usr/bin/python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get(sys.argv[2], ""))' "$1" "$2"
+}
+
+# Reads one field of a named asset out of GitHub's asset listing.
+asset_field() {
     /usr/bin/python3 -c 'import json,sys
-try:
-    print(json.load(open(sys.argv[1])).get(sys.argv[2], ""))
-except Exception:
-    print("")' "$PIN_FILE" "$1"
+listing, wanted, field = sys.argv[1], sys.argv[2], sys.argv[3]
+for asset in json.load(open(listing)):
+    if asset.get("name") != wanted:
+        continue
+    if field == "url":
+        print(asset.get("browser_download_url", ""))
+    else:
+        print((asset.get("digest") or "").removeprefix("sha256:"))
+    break' "$1" "$2" "$3"
 }
 
 # ---------------------------------------------------------------- main
