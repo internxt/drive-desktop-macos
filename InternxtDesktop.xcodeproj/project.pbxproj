@@ -154,7 +154,6 @@
 		AA9B1BA12FB4094D000E582A /* FileSizeLimitDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */; };
 		AA9DF5452EDF6B2E00D1FE52 /* PackageFileHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9DF5442EDF6B2E00D1FE52 /* PackageFileHandle.swift */; };
 		AAA2F8E43017FB2100F5452C /* BackupUploadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA2F8E33017FB2100F5452C /* BackupUploadServiceTests.swift */; };
-		AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E53017FEEF00F5452C /* Realm */; };
 		AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E73017FF0100F5452C /* RealmSwift */; };
 		AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8E93017FF0700F5452C /* CocoaLumberjack */; };
 		AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */; };
@@ -327,10 +326,8 @@
 		E19136942AA101DE00CAF0FA /* WidgetIconButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136932AA101DE00CAF0FA /* WidgetIconButtonView.swift */; };
 		E19136962AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
 		E19136992AA108D200CAF0FA /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19136952AA108D200CAF0FA /* View.swift */; };
-		E196395A2C63B46C009EDAFB /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E19639592C63B46C009EDAFB /* Realm */; };
 		E196395C2C63B46C009EDAFB /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E196395B2C63B46C009EDAFB /* RealmSwift */; };
 		E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E196395D2C63CA0F009EDAFB /* RealmSwift */; };
-		E19639602C63CA14009EDAFB /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E196395F2C63CA14009EDAFB /* Realm */; };
 		E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E19639612C63CA20009EDAFB /* RealmSwift */; };
 		E198B3972B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198B3962B0B696000598C16 /* UploadFileOrUpdateContentUseCase.swift */; };
 		E198D7DC2AA9E76900107753 /* GetRemoteChangesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E198D7DB2AA9E76900107753 /* GetRemoteChangesUseCase.swift */; };
@@ -846,7 +843,6 @@
 				AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */,
 				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
 				4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */,
-				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
 				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -863,7 +859,6 @@
 				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
-				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
 				47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
 				47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */,
@@ -884,7 +879,6 @@
 				AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				AA16C5CA2E303B7700E1C295 /* CocoaLumberjack in Frameworks */,
-				E19639602C63CA14009EDAFB /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1703,7 +1697,6 @@
 			);
 			name = XPCBackupServiceTests;
 			packageProductDependencies = (
-				AAA2F8E53017FEEF00F5452C /* Realm */,
 				AAA2F8E73017FF0100F5452C /* RealmSwift */,
 				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
 				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
@@ -1741,7 +1734,6 @@
 			packageProductDependencies = (
 				E1ADD03D2AA6ABE700D95694 /* LaunchAtLogin */,
 				E106D45B2AB9DB9300E3BF7A /* Sparkle */,
-				E19639592C63B46C009EDAFB /* Realm */,
 				E196395B2C63B46C009EDAFB /* RealmSwift */,
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
@@ -1771,7 +1763,6 @@
 			name = SyncExtension;
 			packageProductDependencies = (
 				E196395D2C63CA0F009EDAFB /* RealmSwift */,
-				E196395F2C63CA14009EDAFB /* Realm */,
 				AA16C5C92E303B7700E1C295 /* CocoaLumberjack */,
 				AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */,
 				4778D3833052B08500DAD486 /* InternxtSwiftCore */,
@@ -3346,7 +3337,7 @@
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = 10.49.2;
+				version = 20.0.5;
 			};
 		};
 		E1ADD03C2AA6ABE700D95694 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
@@ -3430,11 +3421,6 @@
 			package = AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */;
 			productName = ObjectivePGP;
 		};
-		AAA2F8E53017FEEF00F5452C /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
 		AAA2F8E73017FF0100F5452C /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
@@ -3455,11 +3441,6 @@
 			package = E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
 		};
-		E19639592C63B46C009EDAFB /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
 		E196395B2C63B46C009EDAFB /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
@@ -3469,11 +3450,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
-		};
-		E196395F2C63CA14009EDAFB /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
 		};
 		E19639612C63CA20009EDAFB /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
