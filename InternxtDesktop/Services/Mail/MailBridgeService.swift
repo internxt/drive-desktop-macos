@@ -435,7 +435,12 @@ final class MailBridgeService: ObservableObject {
         credentials.imapSecurity = ready.startTLS ? "STARTTLS" : "None"
         credentials.smtpSecurity = ready.startTLS ? "STARTTLS" : "None"
 
-        bridgeCertificate = ready.certificate.flatMap { Data(base64Encoded: $0) }
+        let certificate = ready.certificate.flatMap { Data(base64Encoded: $0) }
+        bridgeCertificate = certificate
+
+        if let certificate {
+            Task { await MailProfile.refreshTrustIfNeeded(certificate) }
+        }
     }
 
     var canConfigureClient: Bool {

@@ -340,6 +340,7 @@
 "MAIL_BRIDGE_LOCALHOST_NOTE" = "Bridge only ever listens on 127.0.0.1 — your keys never leave this device.";
 "MAIL_BRIDGE_RUNNING" = "Mail Bridge is running";
 "MAIL_BRIDGE_RESYNC" = "Resync";
+"MAIL_BRIDGE_RESYNC_REQUESTED" = "Requested";
 "MAIL_BRIDGE_TURN_OFF" = "Turn off";
 "MAIL_BRIDGE_CONNECT_CLIENT_TITLE" = "Connect a mail client";
 "MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE" = "Pick your app and Internxt writes the account for you.";

@@ -341,6 +341,7 @@
 "MAIL_BRIDGE_LOCALHOST_NOTE" = "Bridge solo escucha en 127.0.0.1: tus claves nunca salen de este dispositivo.";
 "MAIL_BRIDGE_RUNNING" = "Mail Bridge está en marcha";
 "MAIL_BRIDGE_RESYNC" = "Resincronizar";
+"MAIL_BRIDGE_RESYNC_REQUESTED" = "Solicitado";
 "MAIL_BRIDGE_TURN_OFF" = "Apagar";
 "MAIL_BRIDGE_CONNECT_CLIENT_TITLE" = "Conecta un cliente de correo";
 "MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE" = "Elige tu aplicación e Internxt configurará la cuenta por ti.";

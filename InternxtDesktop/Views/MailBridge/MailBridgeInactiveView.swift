@@ -13,21 +13,18 @@ struct MailBridgeInactiveView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                MailBridgeGlyph(systemName: "arrow.left.arrow.right")
+                MailBridgeGlyph(asset: "tabMailBridgeIcon")
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("MAIL_BRIDGE_OFF_TITLE")
                         .font(.LGSemibold)
                         .foregroundColor(.Gray100)
 
-                    Text(String(
-                        format: NSLocalizedString("MAIL_BRIDGE_OFF_DESCRIPTION_%@", comment: "Explains what activating the bridge does"),
-                        service.accountEmail
-                    ))
-                    .font(.SMRegular)
-                    .foregroundColor(.Gray60)
-                    .lineSpacing(3)
-                    .fixedSize(horizontal: false, vertical: true)
+                    offDescription
+                        .font(.SMRegular)
+                        .foregroundColor(.Gray60)
+                        .lineSpacing(3)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
 
@@ -49,6 +46,20 @@ struct MailBridgeInactiveView: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    private var offDescription: Text {
+        let email = service.accountEmail
+        var sentence = AttributedString(String(
+            format: NSLocalizedString("MAIL_BRIDGE_OFF_DESCRIPTION_%@", comment: "Explains what activating the bridge does"),
+            email
+        ))
+
+        if let range = sentence.range(of: email) {
+            sentence[range].font = Font.SMBold
+        }
+
+        return Text(sentence)
     }
 }
 

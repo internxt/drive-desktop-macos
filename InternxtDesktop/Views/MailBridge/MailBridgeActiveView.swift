@@ -9,6 +9,9 @@ import SwiftUI
 import AppKit
 
 struct MailBridgeActiveView: View {
+    private static let feedbackDuration: Duration = .seconds(1.4)
+    private static let copyAllFeedbackDuration: Duration = .seconds(1.6)
+
     @ObservedObject var service: MailBridgeService
     let onOpenSettings: () -> Void
 
@@ -17,6 +20,7 @@ struct MailBridgeActiveView: View {
     @State private var revealPassword: Bool = false
     @State private var copiedRowID: String?
     @State private var copiedAll: Bool = false
+    @State private var resyncRequested: Bool = false
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
@@ -84,7 +88,7 @@ struct MailBridgeActiveView: View {
         setClipboard(row.value)
         copiedRowID = row.id
         Task {
-            try? await Task.sleep(nanoseconds: 1_400_000_000)
+            try? await Task.sleep(for: Self.feedbackDuration)
             if copiedRowID == row.id { copiedRowID = nil }
         }
     }
@@ -93,8 +97,19 @@ struct MailBridgeActiveView: View {
         setClipboard(service.credentials.clipboardSummary(username: service.accountEmail))
         copiedAll = true
         Task {
-            try? await Task.sleep(nanoseconds: 1_600_000_000)
+            try? await Task.sleep(for: Self.copyAllFeedbackDuration)
             copiedAll = false
+        }
+    }
+
+    // MARK: - Resync
+
+    private func resyncManually() {
+        service.resyncMailManually()
+        resyncRequested = true
+        Task {
+            try? await Task.sleep(for: Self.feedbackDuration)
+            resyncRequested = false
         }
     }
 
@@ -120,14 +135,16 @@ struct MailBridgeActiveView: View {
 
                     Spacer(minLength: 8)
 
-                    Button(action: { service.resyncMailManually() }) {
+                    Button(action: resyncManually) {
                         HStack(spacing: 6) {
-                            Image(systemName: "arrow.triangle.2.circlepath")
+                            Image(systemName: resyncRequested ? "checkmark" : "arrow.triangle.2.circlepath")
                                 .font(.system(size: 11))
-                            AppText("MAIL_BRIDGE_RESYNC")
+                            AppText(resyncRequested ? "MAIL_BRIDGE_RESYNC_REQUESTED" : "MAIL_BRIDGE_RESYNC")
                         }
                     }
-                    .buttonStyle(SecondaryAppButtonStyle(size: .SM, isEnabled: true, isExpanded: false))
+                    .buttonStyle(SecondaryAppButtonStyle(size: .SM, isEnabled: !resyncRequested, isExpanded: false))
+                    .disabled(resyncRequested)
+                    .animation(.easeOut(duration: 0.15), value: resyncRequested)
 
                     Button(action: onOpenSettings) {
                         Image(systemName: "gearshape")
