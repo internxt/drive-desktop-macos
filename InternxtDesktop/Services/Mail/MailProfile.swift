@@ -86,6 +86,37 @@ enum MailProfile {
         }
     }
 
+    static func refreshTrustIfNeeded(_ der: Data) async {
+        let stale = existingCertificates()
+        guard !stale.isEmpty else { return }
+        guard !stale.contains(where: { (SecCertificateCopyData($0) as Data) == der }) else { return }
+
+        await Task.detached {
+            stale.forEach(forgetCertificate)
+            try? trustCertificate(der)
+        }.value
+    }
+    
+    private static func forgetCertificate(_ certificate: SecCertificate) {
+        SecTrustSettingsRemoveTrustSettings(certificate, .user)
+        SecItemDelete([
+            kSecClass as String: kSecClassCertificate,
+            kSecValueRef as String: certificate
+        ] as CFDictionary)
+    }
+
+    private static func existingCertificates() -> [SecCertificate] {
+        var found: CFTypeRef?
+        let matched = SecItemCopyMatching([
+            kSecClass as String: kSecClassCertificate,
+            kSecAttrLabel as String: certificateLabel,
+            kSecMatchLimit as String: kSecMatchLimitAll,
+            kSecReturnRef as String: true
+        ] as CFDictionary, &found)
+        guard matched == errSecSuccess, let certificates = found as? [SecCertificate] else { return [] }
+        return certificates
+    }
+
     static func removeAppleMailSetup() {
         DispatchQueue.global(qos: .utility).async {
             untrustCertificate()
@@ -100,24 +131,7 @@ enum MailProfile {
     }
 
     private static func untrustCertificate() {
-        let certificates: [String: Any] = [
-            kSecClass as String: kSecClassCertificate,
-            kSecAttrLabel as String: certificateLabel
-        ]
-
-        var found: CFTypeRef?
-        let matched = SecItemCopyMatching(certificates.merging([
-            kSecMatchLimit as String: kSecMatchLimitAll,
-            kSecReturnRef as String: true
-        ]) { current, _ in current } as CFDictionary, &found)
-
-        if matched == errSecSuccess, let anchors = found as? [SecCertificate] {
-            for anchor in anchors {
-                SecTrustSettingsRemoveTrustSettings(anchor, .user)
-            }
-        }
-
-        SecItemDelete(certificates as CFDictionary)
+        existingCertificates().forEach(forgetCertificate)
     }
 
     private static func removeProfile() {

@@ -9,6 +9,9 @@ import SwiftUI
 import AppKit
 
 struct MailBridgeActiveView: View {
+    private static let feedbackDuration: Duration = .seconds(1.4)
+    private static let copyAllFeedbackDuration: Duration = .seconds(1.6)
+
     @ObservedObject var service: MailBridgeService
     let onOpenSettings: () -> Void
 
@@ -84,7 +87,7 @@ struct MailBridgeActiveView: View {
         setClipboard(row.value)
         copiedRowID = row.id
         Task {
-            try? await Task.sleep(nanoseconds: 1_400_000_000)
+            try? await Task.sleep(for: Self.feedbackDuration)
             if copiedRowID == row.id { copiedRowID = nil }
         }
     }
@@ -93,7 +96,7 @@ struct MailBridgeActiveView: View {
         setClipboard(service.credentials.clipboardSummary(username: service.accountEmail))
         copiedAll = true
         Task {
-            try? await Task.sleep(nanoseconds: 1_600_000_000)
+            try? await Task.sleep(for: Self.copyAllFeedbackDuration)
             copiedAll = false
         }
     }
@@ -122,12 +125,17 @@ struct MailBridgeActiveView: View {
 
                     Button(action: { service.resyncMailManually() }) {
                         HStack(spacing: 6) {
-                            Image(systemName: "arrow.triangle.2.circlepath")
-                                .font(.system(size: 11))
-                            AppText("MAIL_BRIDGE_RESYNC")
+                            if service.isResyncing {
+                                ProgressView().controlSize(.mini)
+                            } else {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.system(size: 11))
+                            }
+                            AppText(service.isResyncing ? "MAIL_BRIDGE_RESYNCING" : "MAIL_BRIDGE_RESYNC")
                         }
                     }
-                    .buttonStyle(SecondaryAppButtonStyle(size: .SM, isEnabled: true, isExpanded: false))
+                    .buttonStyle(SecondaryAppButtonStyle(size: .SM, isEnabled: !service.isResyncing, isExpanded: false))
+                    .disabled(service.isResyncing)
 
                     Button(action: onOpenSettings) {
                         Image(systemName: "gearshape")

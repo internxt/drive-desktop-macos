@@ -36,7 +36,7 @@ struct SettingsMenuView: View {
                         .accessibilityIdentifier("menuItemAntivirus")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", onPress: settingsHandler(for: .Cleaner))
                         .accessibilityIdentifier("menuItemCleaner")
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION", showNew: true, onPress: settingsHandler(for: .MailBridge))
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION", showNewDot: true, onPress: settingsHandler(for: .MailBridge))
                         .accessibilityIdentifier("menuItemMailBridge")
                     
                     SettingsMenuOption(label: "WIDGET_SETTINGS_REFERRAL_OPTION", onPress: handleOpenReferralLink)
@@ -122,15 +122,17 @@ struct SettingsMenuOption: View {
     public var onPress: () -> Void
     @State private var isHovering: Bool = false
     public var showNew: Bool = false
+    public var showNewDot: Bool = false
     public var badgeCount: Int = 0
-    
-    init(label: String, showNew: Bool = false, badgeCount: Int = 0, onPress: @escaping () -> Void) {
+
+    init(label: String, showNew: Bool = false, showNewDot: Bool = false, badgeCount: Int = 0, onPress: @escaping () -> Void) {
         self.label = label
         self.showNew = showNew
+        self.showNewDot = showNewDot
         self.badgeCount = badgeCount
         self.onPress = onPress
     }
-    
+
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
             AppText(label)
@@ -163,6 +165,11 @@ struct SettingsMenuOption: View {
                             .stroke(Color.blue, lineWidth: 1)
                     )
                     .padding(.trailing, 4)
+            } else if showNewDot {
+                Circle()
+                    .fill(Color.blue)
+                    .frame(width: 6, height: 6)
+                    .padding(.trailing, 12)
             }
         }
         .contentShape(Rectangle())

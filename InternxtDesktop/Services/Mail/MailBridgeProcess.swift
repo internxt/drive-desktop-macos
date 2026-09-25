@@ -136,33 +136,34 @@ final class MailBridgeProcess: NSObject {
     }
 
     func stop() {
-        let terminated: Bool = queue.sync {
-            guard let running = process, running.isRunning else { return false }
+        let target: Process? = queue.sync {
+            guard let running = process, running.isRunning else { return nil }
             stopRequested = true
             logger.info("stopping mail-bridge (pid \(running.processIdentifier))")
             running.terminate()
-            return true
+            return running
         }
-        guard terminated else { return }
+        guard let target else { return }
 
         queue.asyncAfter(deadline: .now() + Self.gracefulShutdownTimeout) { [weak self] in
-            guard let self, let running = self.process, running.isRunning else { return }
-            self.logger.warning("mail-bridge ignored SIGTERM, sending SIGKILL (pid \(running.processIdentifier))")
-            kill(running.processIdentifier, SIGKILL)
+            guard let self, self.process === target, target.isRunning else { return }
+            self.logger.warning("mail-bridge ignored SIGTERM, sending SIGKILL (pid \(target.processIdentifier))")
+            kill(target.processIdentifier, SIGKILL)
         }
     }
 
     /// Blocks the caller until the daemon is gone, SIGKILLing it if it outstays `timeout`.
     private func waitForExit(timeout: TimeInterval) {
+        guard let target = queue.sync(execute: { process }) else { return }
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
-            guard isRunning else { return }
+            guard target.isRunning else { return }
             Thread.sleep(forTimeInterval: 0.05)
         }
         queue.sync {
-            guard let running = process, running.isRunning else { return }
-            logger.warning("mail-bridge outlived its shutdown window, sending SIGKILL (pid \(running.processIdentifier))")
-            kill(running.processIdentifier, SIGKILL)
+            guard process === target, target.isRunning else { return }
+            logger.warning("mail-bridge outlived its shutdown window, sending SIGKILL (pid \(target.processIdentifier))")
+            kill(target.processIdentifier, SIGKILL)
         }
     }
 
