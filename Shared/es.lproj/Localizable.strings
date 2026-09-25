@@ -341,7 +341,7 @@
 "MAIL_BRIDGE_LOCALHOST_NOTE" = "Bridge solo escucha en 127.0.0.1: tus claves nunca salen de este dispositivo.";
 "MAIL_BRIDGE_RUNNING" = "Mail Bridge está en marcha";
 "MAIL_BRIDGE_RESYNC" = "Resincronizar";
-"MAIL_BRIDGE_RESYNC_REQUESTED" = "Solicitado";
+"MAIL_BRIDGE_RESYNCING" = "Sincronizando…";
 "MAIL_BRIDGE_TURN_OFF" = "Apagar";
 "MAIL_BRIDGE_CONNECT_CLIENT_TITLE" = "Conecta un cliente de correo";
 "MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE" = "Elige tu aplicación e Internxt configurará la cuenta por ti.";
@@ -367,6 +367,7 @@
 "MAIL_BRIDGE_SETTINGS_SUBTITLE_%@" = "Se aplican a %@ en este dispositivo.";
 "MAIL_BRIDGE_SAVE_CHANGES" = "Guardar cambios";
 "MAIL_BRIDGE_UP_TO_DATE" = "Todo sincronizado";
+"MAIL_BRIDGE_UP_TO_DATE_AT_%@" = "Todo sincronizado · comprobado a las %@";
 "MAIL_BRIDGE_SYNCING_%d_%@_%@" = "Sincronizando tu buzón — %d %% · %@ de %@ mensajes nuevos";
 "MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@" = "Sincronización interrumpida — %@ de %@ mensajes nuevos descargados";
 "MAIL_BRIDGE_IDENTITY_TITLE" = "Primero crea tu dirección de Internxt Mail";

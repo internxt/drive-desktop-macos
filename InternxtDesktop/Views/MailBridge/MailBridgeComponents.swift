@@ -147,7 +147,7 @@ struct MailBridgeGlyph: View {
             Image(name)
                 .resizable()
                 .scaledToFit()
-                .frame(width: size * 0.62, height: size * 0.62)
+                .frame(width: size * 0.7, height: size * 0.7)
                 .foregroundColor(tint)
         }
     }

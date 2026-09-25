@@ -13,7 +13,7 @@ struct MailBridgeInactiveView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                MailBridgeGlyph(asset: "tabMailBridgeIcon")
+                MailBridgeGlyph(asset: "tabMailBridgeIcon", size: 56)
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("MAIL_BRIDGE_OFF_TITLE")

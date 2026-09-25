@@ -20,7 +20,6 @@ struct MailBridgeActiveView: View {
     @State private var revealPassword: Bool = false
     @State private var copiedRowID: String?
     @State private var copiedAll: Bool = false
-    @State private var resyncRequested: Bool = false
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
@@ -102,17 +101,6 @@ struct MailBridgeActiveView: View {
         }
     }
 
-    // MARK: - Resync
-
-    private func resyncManually() {
-        service.resyncMailManually()
-        resyncRequested = true
-        Task {
-            try? await Task.sleep(for: Self.feedbackDuration)
-            resyncRequested = false
-        }
-    }
-
     private func setClipboard(_ string: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(string, forType: .string)
@@ -135,16 +123,19 @@ struct MailBridgeActiveView: View {
 
                     Spacer(minLength: 8)
 
-                    Button(action: resyncManually) {
+                    Button(action: { service.resyncMailManually() }) {
                         HStack(spacing: 6) {
-                            Image(systemName: resyncRequested ? "checkmark" : "arrow.triangle.2.circlepath")
-                                .font(.system(size: 11))
-                            AppText(resyncRequested ? "MAIL_BRIDGE_RESYNC_REQUESTED" : "MAIL_BRIDGE_RESYNC")
+                            if service.isResyncing {
+                                ProgressView().controlSize(.mini)
+                            } else {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.system(size: 11))
+                            }
+                            AppText(service.isResyncing ? "MAIL_BRIDGE_RESYNCING" : "MAIL_BRIDGE_RESYNC")
                         }
                     }
-                    .buttonStyle(SecondaryAppButtonStyle(size: .SM, isEnabled: !resyncRequested, isExpanded: false))
-                    .disabled(resyncRequested)
-                    .animation(.easeOut(duration: 0.15), value: resyncRequested)
+                    .buttonStyle(SecondaryAppButtonStyle(size: .SM, isEnabled: !service.isResyncing, isExpanded: false))
+                    .disabled(service.isResyncing)
 
                     Button(action: onOpenSettings) {
                         Image(systemName: "gearshape")
