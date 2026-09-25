@@ -135,17 +135,10 @@ struct SettingsMenuOption: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
-            HStack(spacing: 6) {
-                AppText(label)
-                    .font(.SMRegular)
-                if showNewDot {
-                    Circle()
-                        .fill(Color.blue)
-                        .frame(width: 6, height: 6)
-                }
-            }
-            .padding(.horizontal, 12)
-            .frame(height: 32)
+            AppText(label)
+                .font(.SMRegular)
+                .padding(.horizontal, 12)
+                .frame(height: 32)
             
             Spacer()
             
@@ -172,6 +165,11 @@ struct SettingsMenuOption: View {
                             .stroke(Color.blue, lineWidth: 1)
                     )
                     .padding(.trailing, 4)
+            } else if showNewDot {
+                Circle()
+                    .fill(Color.blue)
+                    .frame(width: 6, height: 6)
+                    .padding(.trailing, 12)
             }
         }
         .contentShape(Rectangle())
