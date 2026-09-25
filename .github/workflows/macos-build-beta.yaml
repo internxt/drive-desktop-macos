@@ -19,7 +19,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      
+
       - name: Add env.json
         id: create-env-json
         uses: jsdaniell/create-json@v1.2.2

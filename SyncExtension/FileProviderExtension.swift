@@ -7,7 +7,6 @@
 
 import FileProvider
 import InternxtSwiftCore
-import Combine
 import Foundation
 import AppKit
 import PushKit
@@ -38,7 +37,6 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    private let AUTH_TOKEN_KEY = "AuthToken"
     let domain: NSFileProviderDomain
     var workspace: [AvailableWorkspace]
     var workspaceCredentials: WorkspaceCredentialsResponse?
@@ -489,6 +487,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                         }
                     }
 
+                    let relativePath = await self.resolveRelativePath(for: modifiedFilename, parentIdentifier: itemTemplate.parentItemIdentifier)
                     let useCaseProgress: Progress
 
                     if self.isWorkspaceDomain() {
@@ -521,7 +520,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
                             completionHandler: completionHandlerInternal,
                             workspace: self.workspace,
-                            workspaceCredentials: credentials
+                            workspaceCredentials: credentials,
+                            relativePath: relativePath
                         )
 
                         useCaseProgress = useCase.run()
@@ -544,7 +544,8 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                             thumbnailFileDestination: thumbnailFileDestination,
                             encryptedThumbnailFileDestination: encryptedThumbnailFileDestination,
                             completionHandler: completionHandlerInternal,
-                            parentUuid: parentUuid
+                            parentUuid: parentUuid,
+                            relativePath: relativePath
                         )
 
                         useCaseProgress = useCase.run()
@@ -596,14 +597,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         let contentModificationDateHasChanged = changedFields.contains(.contentModificationDate)
         let lastUsedDateHasChanged = changedFields.contains(.lastUsedDate)
         
-        logger.info("Modification request for item \(item.itemIdentifier.rawValue)")
+        logger.info("Modification request for item '\(item.filename)' (\(item.itemIdentifier.rawValue)) [\(item.contentType == .folder ? "folder" : "file")]")
         
         
         if folderHasBeenTrashed {
             if isWorkspaceDomain(){
                return TrashFolderWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
             }
-            return TrashFolderUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return TrashFolderUseCase(item: item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if folderHasBeenRenamed {
@@ -616,14 +617,14 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 return MoveFolderWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
             }
             
-            return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return MoveFolderUseCase(user: user, item:item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenTrashed {
             if isWorkspaceDomain(){
                 return TrashFileWorkspaceUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
             }
-            return TrashFileUseCase(item: item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return TrashFileUseCase(item: item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if fileHasBeenRenamed  {
@@ -644,7 +645,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             if isWorkspaceDomain(){
                 return MoveFileWorkspaceUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler, workspace: workspace).run()
             }
-            return MoveFileUseCase(user: user, item:item, changedFields: changedFields, completionHandler: completionHandler).run()
+            return MoveFileUseCase(user: user, item:item, changedFields: changedFields, activityManager: activityManager, completionHandler: completionHandler).run()
         }
         
         if contentHasChanged {
@@ -882,6 +883,35 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
     }
 
-            
+    private func resolveRelativePath(for itemFilename: String, parentIdentifier: NSFileProviderItemIdentifier) async -> String {
+        let rootDriveName = "InternxtDrive"
+        if parentIdentifier == .rootContainer {
+            return "\(rootDriveName)/\(itemFilename)"
+        }
+
+        do {
+            let parentURL = try await self.manager.getUserVisibleURL(for: parentIdentifier)
+            let rootURL = try await self.manager.getUserVisibleURL(for: .rootContainer)
+            let parentPath = parentURL.path
+            let rootPath = rootURL.path
+            if parentPath.hasPrefix(rootPath) {
+                let subPath = String(parentPath.dropFirst(rootPath.count)).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+                if !subPath.isEmpty {
+                    return "\(rootDriveName)/\(subPath)/\(itemFilename)"
+                }
+            }
+        } catch {
+            logger.warning("Could not get visible URL for parentIdentifier: \(error.getErrorDescription())")
+        }
+
+        let parentId = parentIdentifier.rawValue
+        if let folderMeta = try? await self.driveNewAPI.getFolderMetaById(id: parentId, debug: false),
+           let plainName = folderMeta.plainName, !plainName.isEmpty {
+            return "\(rootDriveName)/\(plainName)/\(itemFilename)"
+        }
+
+        return "\(rootDriveName)/\(itemFilename)"
+    }
+
 }
 

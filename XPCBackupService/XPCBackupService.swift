@@ -24,9 +24,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     private var downloadOperationQueue = OperationQueue()
     private var backupUploadStatus: BackupStatus = .Idle
     private var backupDownloadStatus: BackupStatus = .Idle
-    private let AUTH_TOKEN_KEY = "AuthToken"
-    private let LEGACY_TOKEN_KEY = "LegacyAuthToken"
-    private let MNEMONIC_TOKEN_KEY = "Mnemonic"
     @objc func uploadDeviceBackup(
         backupAt backupURLs: [String],
         networkAuth: String?,
@@ -45,6 +42,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.uploadOperationQueue = OperationQueue()
         self.uploadOperationQueue.maxConcurrentOperationCount = 5
         logger.info("Going to backup folders: \(backupURLs)")
+        BackupErrorFileQueue.shared.startNewSession()
         self.backupUploadStatus = .InProgress
         self.backupUploadProgress = Progress()
         
@@ -64,13 +62,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
 
             
-            guard let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else{
+            guard let newAuthToken = sharedDefaults.string(forKey: ConfigLoader.AUTH_TOKEN_KEY) else{
                 logger.error("Cannot get AuthToken")
                 reply(nil, "Cannot get AuthToken")
                 return
             }
             
-            guard let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else{
+            guard let mnemonic = sharedDefaults.string(forKey: ConfigLoader.MNEMONIC_TOKEN_KEY) else{
                 logger.error("Cannot get mnemonic")
                 reply(nil, "Cannot get mnemonic")
                 return
@@ -225,6 +223,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        BackupErrorFileQueue.shared.startNewSession()
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
@@ -276,7 +275,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
-        
+        BackupErrorFileQueue.shared.startNewSession()
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
@@ -350,8 +349,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     }
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
-        
-
+        BackupErrorFileQueue.shared.startNewSession()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
@@ -379,7 +377,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 logger.info("Download operations completed")
                 reply(nil, nil)
             }
-            reply(nil,nil)
         }
     }
     

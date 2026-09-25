@@ -14,6 +14,7 @@ struct WidgetHeaderView: View {
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var issuesManager: IssuesManager
     @Environment(\.colorScheme) var colorScheme
 
     @State var settingsMenuOpen = false
@@ -93,26 +94,17 @@ struct WidgetHeaderView: View {
                 .accessibilityIdentifier("openVirtualDriveFolder")
             WidgetIconButtonView(iconName: .Gear, onClick: self.openSettings)
                 .accessibilityIdentifier("openSettings")
-                .ifAvailable{view in
-                
-                if #available(macOS 12, *) {
-                    view.overlay(alignment: .bottomLeading) {
-                        SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
-                            .environmentObject(antivirusManager)
-                            .environmentObject(settingsManager).onTapBackground(enabled: settingsMenuOpen)
-                           {
-                                self.settingsMenuOpen = false
-                            }
-                    }
-                } else {
-                    view.overlay(SettingsMenuView(openSendFeedback: self.openSendFeedback).opacity((settingsMenuOpen) ? 1 : 0).environmentObject(usageManager)
+                .overlay(alignment: .bottomLeading) {
+                    SettingsMenuView(openSendFeedback: self.openSendFeedback)
+                        .opacity(settingsMenuOpen ? 1 : 0)
+                        .environmentObject(usageManager)
                         .environmentObject(antivirusManager)
                         .environmentObject(settingsManager)
-                                 ,alignment: .bottomLeading)
+                        .environmentObject(issuesManager)
+                        .onTapBackground(enabled: settingsMenuOpen) {
+                            self.settingsMenuOpen = false
+                        }
                 }
-                    
-            }
-        
         }
     }
     

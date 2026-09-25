@@ -12,9 +12,7 @@ import SwiftUI
 import FileProvider
 import InternxtSwiftCore
 import Combine
-import ServiceManagement
 import Sparkle
-import RealmSwift
 import PushKit
 import UserNotifications
 
@@ -35,7 +33,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
-    private let AUTH_TOKEN_KEY = "AuthToken"
     
     // Managers
     var windowsManager: WindowsManager! = nil
@@ -49,13 +46,14 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     var scheduledManager: ScheduledBackupManager!
     let antivirusManager = AntivirusManager()
     let cleanerService = CleanerService()
+    @MainActor let mailBridgeService = MailBridgeService()
     let notificationsManager = NotificationsManager.shared
+    let issuesManager = IssuesManager()
     var popover: NSPopover?
     var statusBarItem: NSStatusItem?
     
     var listenToLoggedIn: AnyCancellable?
     var refreshTokensTimer: AnyCancellable?
-    var signalEnumeratorTimer: AnyCancellable?
     var notificationsTimer: AnyCancellable?
     let fileSizeLimitState = FileSizeLimitState()
     let emptyFileLimitState = EmptyFileLimitState()
@@ -129,10 +127,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
+        self.issuesManager.startObserving()
 
         self.backupAlertsCoordinator = BackupAlertsCoordinator(
             fileSizeLimitState: fileSizeLimitState,
@@ -224,7 +223,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 logger.info(["📍 Push device token \(deviceTokenString) registered", result])
                 
             }catch{
-                logger.error(["Cannot sync token", error])
+                error.reportToSentry()
             }
         }
     }
@@ -501,6 +500,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     private func logoutSuccess() {
         FeaturesService.shared.clearCachedFeatures()
+        Task { @MainActor in self.mailBridgeService.reset() }
         FileLimitsService.shared.stopPolling()
         FileLimitsService.shared.clearCache()
         self.windowsManager.displayDockIcon()
@@ -524,6 +524,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     @objc func openSettingsWindow() {
         self.windowsManager.openWindow(id: "settings")
+    }
+
+    @objc func openIssuesWindow() {
+        self.windowsManager.openWindow(id: "issues")
     }
     
     @objc func openOnboardingWindow() {
@@ -579,6 +583,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 .environmentObject(self.backupsService)
                 .environmentObject(self.domainManager)
                 .environmentObject(self.antivirusManager)
+                .environmentObject(self.issuesManager)
         )
     }
     

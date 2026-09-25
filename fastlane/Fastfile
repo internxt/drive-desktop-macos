@@ -93,7 +93,6 @@ platform :mac do
 
     # Notarize the DMG file
     notarize(
-      bundle_id: "internxt.InternxtDesktop",
       package: final_dmg_path,
       api_key_path: './app_store_key.json'
     )
@@ -191,7 +190,6 @@ platform :mac do
 
     # Notarize the DMG file
     notarize(
-      bundle_id: "internxt.InternxtDesktop",
       package: final_dmg_path,
       api_key_path: './app_store_key.json'
     )

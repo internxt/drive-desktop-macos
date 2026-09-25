@@ -25,7 +25,7 @@ struct RenameFolderUseCase {
     
     func run() -> Progress {
         Task {
-            self.logger.info("Renaming folder with id \(item.itemIdentifier.rawValue)")
+            self.logger.info("Renaming folder id \(item.itemIdentifier.rawValue) to '\(item.filename)'")
             let newItem = FileProviderItem(
                 identifier: item.itemIdentifier,
                 filename: item.filename,
@@ -56,7 +56,7 @@ struct RenameFolderUseCase {
                     _ = try await driveNewAPI.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)
                 }
 
-                self.logger.info("✅ Folder with id \(item.itemIdentifier.rawValue) renamed successfully")
+                self.logger.info("✅ Folder id \(item.itemIdentifier.rawValue) renamed successfully to '\(item.filename)'")
                 completionHandler(newItem, changedFields.removing(.filename), false, nil)
             } catch {
                 error.reportToSentry()
@@ -70,12 +70,12 @@ struct RenameFolderUseCase {
                     if statusCode == 409 {
                         completionHandler(newItem, [], false, nil)
                     } else {
-                        self.logger.error("❌ Failed to rename folder: \(error.getErrorDescription())")
+                        self.logger.error("❌ Failed to rename folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)): \(error.getErrorDescription())")
                         completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                     }
                    
                 } else {
-                    self.logger.error("❌ Failed to rename folder: \(error.localizedDescription)")
+                    self.logger.error("❌ Failed to rename folder '\(item.filename)' (id: \(item.itemIdentifier.rawValue)): \(error.localizedDescription)")
                     completionHandler(nil, [], false,  NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue))
                 }
                 
