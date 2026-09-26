@@ -92,6 +92,10 @@ struct BackupAvailableDevicesView: View {
                     
                     AppButton(title: "BACKUP_TRY_AGAIN") {
                         Task {
+                            DispatchQueue.main.async {
+                                backupsService.devicesFetchingStatus = .LoadingDevices
+                            }
+                            await backupsService.addCurrentDevice()
                             await backupsService.loadAllDevices()
                         }
                     }

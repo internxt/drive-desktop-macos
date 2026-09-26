@@ -264,15 +264,18 @@ class BackupsService: ObservableObject {
             }
             
             let currentDeviceName = ConfigLoader().getDeviceName()
-            let allDevices = try await BackupsDeviceService.shared.getAllDevices(deviceName: currentDeviceName)
-            let response: Result<[Device], Error> = .success(allDevices)
-            
+            var allDevices = try await BackupsDeviceService.shared.getAllDevices(deviceName: currentDeviceName)
             
             logger.info("Got \(allDevices.count) devices successfully")
             
-            if(allDevices.isEmpty) {
-                throw BackupError.deviceCreatedButNotFound
+            if allDevices.isEmpty {
+                logger.info("No backup devices found, attempting to register current device...")
+                await self.addCurrentDevice()
+                allDevices = (try? await BackupsDeviceService.shared.getAllDevices(deviceName: currentDeviceName)) ?? []
+                logger.info("After registration attempt, got \(allDevices.count) devices")
             }
+            
+            let response: Result<[Device], Error> = .success(allDevices)
             
             DispatchQueue.main.async {
                 self.deviceResponse = response
@@ -285,7 +288,7 @@ class BackupsService: ObservableObject {
                 
                 self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt ?? "unknown") ")
                 self.currentDevice = currentDevice
-                self.devicesFetchingStatus = .Ready
+                self.devicesFetchingStatus = allDevices.isEmpty ? .Failed : .Ready
             }
         } catch {
             logger.error("Error fetching devices \(error)")
