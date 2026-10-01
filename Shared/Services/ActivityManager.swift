@@ -41,6 +41,21 @@ class ActivityManager: ObservableObject {
         }
     }
     
+
+    func cleanStaleInProgressEntries() {
+        guard let realm = getRealm() else { return }
+        do {
+            let stale = realm.objects(ActivityEntry.self)
+                .filter("status == %@", ActivityEntryStatus.inProgress.rawValue)
+            guard !stale.isEmpty else { return }
+            try realm.write {
+                realm.delete(stale)
+            }
+        } catch {
+            error.reportToSentry()
+        }
+    }
+    
     func saveActivityEntry(entry: ActivityEntry) {
         saveActivityEntries(entries: [entry])
     }

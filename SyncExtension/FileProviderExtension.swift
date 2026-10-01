@@ -114,6 +114,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             logger.error("Failed to clean TMP directory before starting")
             error.reportToSentry()
         }
+        self.activityManager.cleanStaleInProgressEntries()
 
         APIClient.onUnauthorized = { [weak self] in
             APIClient.onUnauthorized = nil
