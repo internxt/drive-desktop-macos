@@ -195,6 +195,7 @@
 		AABD3E833033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E843033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E853033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
+		AABD3E863033B65200213211 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0AC6C2AB88B5A005E71D6 /* ProcessInfo.swift */; };
 		AAC188E92C222EFF007E321A /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31ED949C2B7151E200EF699F /* DecryptUtils.swift */; };
 		AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB02B75139400E76D53 /* XPCBackupService.swift */; };
 		AAC188EB2C222F35007E321A /* XPCBackupServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DEAEB22B75139400E76D53 /* XPCBackupServiceProtocol.swift */; };
@@ -2076,6 +2077,7 @@
 				AABD3E853033B65200213211 /* BackupErrorFileQueue.swift in Sources */,
 				E15F8C3C2B762D4200C60EFA /* BackupTreeNode.swift in Sources */,
 				AAC188EA2C222F1F007E321A /* XPCBackupService.swift in Sources */,
+				AABD3E863033B65200213211 /* ProcessInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
