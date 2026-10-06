@@ -525,7 +525,9 @@ class BackupsService: ObservableObject {
         let urlsStrings = foldersToBackup.map { folderToBackup in folderToBackup.url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? "" }
 
 
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceUpload")
         xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, deviceUuid: currentDevice.uuid, bucketId: bucketId, with: { response, error in
+            PowerAssertionManager.shared.release(operation: "BackupsServiceUpload")
             if let error = error {
                 if error == "storageFull"{
                     self.showAlert()
@@ -582,12 +584,14 @@ class BackupsService: ObservableObject {
         }
         
         backupDownloadProgressTimer?.cancel()
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceDownload")
         xpcBackupService.downloadDeviceBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             deviceUuid:device.uuid,
             bucketId: deviceBucketId,
             with: {result, error in
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
                 self.backupDownloadProgressTimer?.cancel()
                 self.propagateDownloadErrors(
                     fallbackFilename: device.plainName ?? "Backup",
@@ -644,12 +648,14 @@ class BackupsService: ObservableObject {
         }
         
         backupDownloadProgressTimer?.cancel()
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceDownload")
         xpcBackupService.downloadFolderBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             folderId:folderId,
             bucketId: deviceBucketId, folderName: folderName ?? "",
             with: {result, error in
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
                 self.backupDownloadProgressTimer?.cancel()
                 DispatchQueue.main.async {
                     self.removeItem(item: itemBackup)
@@ -706,12 +712,14 @@ class BackupsService: ObservableObject {
             throw BackupError.missingNetworkAuth
         }
         
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceDownload")
         xpcBackupService.downloadFileBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             fileId:fileId,
             bucketId: deviceBucketId,
             with: {result, error in
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
                 DispatchQueue.main.async {
                     self.removeItem(item: itemBackup)
                 }
@@ -728,6 +736,7 @@ class BackupsService: ObservableObject {
 
     func stopBackupUpload() throws {
         logger.debug("Going to stop backup upload")
+        PowerAssertionManager.shared.release(operation: "BackupsServiceUpload")
         DispatchQueue.main.async {
             self.backupUploadStatus = .Idle
         }
@@ -737,6 +746,7 @@ class BackupsService: ObservableObject {
     
     func stopBackupDownload() throws {
         logger.debug("Going to stop backup download")
+        PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
         DispatchQueue.main.async {
             self.backupDownloadStatus = .Idle
         }
@@ -794,7 +804,7 @@ class BackupsService: ObservableObject {
             }
             
             if(backupStatus.status == .Done || backupStatus.status == .Failed || backupStatus.status == .Stopped) {
-                
+                PowerAssertionManager.shared.release(operation: "BackupsServiceUpload")
                 self.backupUploadProgressTimer?.cancel()
             }
         }
@@ -818,6 +828,7 @@ class BackupsService: ObservableObject {
             }
             
             if(backupDownloadStatus.status == .Done || backupDownloadStatus.status == .Failed) {
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
                 self.backupDownloadProgressTimer?.cancel()
             }
         }
