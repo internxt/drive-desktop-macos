@@ -46,17 +46,30 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         self.backupUploadStatus = .InProgress
         self.backupUploadProgress = Progress()
         
+        PowerAssertionManager.shared.acquire(operation: "BackupUpload")
+        
         Task {
+            var hasReplied = false
+            let replyLock = NSLock()
+            let sendReply: (_ result: String?, _ error: String?) -> Void = { result, error in
+                replyLock.lock()
+                defer { replyLock.unlock() }
+                if !hasReplied {
+                    hasReplied = true
+                    PowerAssertionManager.shared.release(operation: "BackupUpload")
+                    reply(result, error)
+                }
+            }
             
             guard let networkAuth = networkAuth else {
                 logger.error("Cannot get network auth")
-                reply(nil, "Cannot get network auth")
+                sendReply(nil, "Cannot get network auth")
                 return
             }
             
             guard let sharedDefaults = UserDefaults(suiteName: INTERNXT_GROUP_NAME) else {
                 logger.error("Cannot get sharedDefaults")
-                reply(nil, "Cannot get sharedDefaults")
+                sendReply(nil, "Cannot get sharedDefaults")
                 return
             }
             
@@ -64,13 +77,13 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             guard let newAuthToken = sharedDefaults.string(forKey: ConfigLoader.AUTH_TOKEN_KEY) else{
                 logger.error("Cannot get AuthToken")
-                reply(nil, "Cannot get AuthToken")
+                sendReply(nil, "Cannot get AuthToken")
                 return
             }
             
             guard let mnemonic = sharedDefaults.string(forKey: ConfigLoader.MNEMONIC_TOKEN_KEY) else{
                 logger.error("Cannot get mnemonic")
-                reply(nil, "Cannot get mnemonic")
+                sendReply(nil, "Cannot get mnemonic")
                 return
             }
 
@@ -90,7 +103,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             
             guard let backupUploadService = self.backupUploadService else {
                 logger.error("Cannot create backup upload service")
-                reply(nil, "Cannot create backup upload service")
+                sendReply(nil, "Cannot create backup upload service")
                 return
             }
 
@@ -131,16 +144,6 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
             var hasErrorOccurred = false
             let syncGroup = DispatchGroup()
-            var hasReplied = false
-            let replyLock = NSLock()
-            let sendReply: (_ result: String?, _ error: String?) -> Void = { result, error in
-                replyLock.lock()
-                defer { replyLock.unlock() }
-                if !hasReplied {
-                    hasReplied = true
-                    reply(result, error)
-                }
-            }
 
             for backupTree in trees {
                 if hasErrorOccurred {
@@ -223,6 +226,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         bucketId: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        PowerAssertionManager.shared.acquire(operation: "DownloadDeviceBackup")
         BackupErrorFileQueue.shared.startNewSession()
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
@@ -230,6 +234,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
        
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            PowerAssertionManager.shared.release(operation: "DownloadDeviceBackup")
             reply(nil, "Setup failed")
             return
         }
@@ -253,6 +258,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 self.downloadOperationQueue.addBarrierBlock {
                     logger.info("Download operations completed")
                     self.backupDownloadStatus = .Done
+                    PowerAssertionManager.shared.release(operation: "DownloadDeviceBackup")
                     reply(nil, nil)
                 }
                 
@@ -261,6 +267,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 self.backupDownloadStatus = .Failed
                 logger.error(["Failed to download backup", error])
                 error.reportToSentry()
+                PowerAssertionManager.shared.release(operation: "DownloadDeviceBackup")
                 reply(nil, error.localizedDescription)
             }
         }
@@ -275,6 +282,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         folderName: String,
         with reply: @escaping (_ result: String?, _ error: String?) -> Void
     ) {
+        PowerAssertionManager.shared.acquire(operation: "DownloadFolderBackup")
         BackupErrorFileQueue.shared.startNewSession()
         self.backupDownloadStatus = .InProgress
         self.backupDownloadProgress = Progress()
@@ -283,6 +291,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
        
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            PowerAssertionManager.shared.release(operation: "DownloadFolderBackup")
             reply(nil, "Setup failed")
             return
         }
@@ -306,6 +315,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 self.downloadOperationQueue.addBarrierBlock {
                     self.backupDownloadStatus = .Done
                     logger.info("Download operations completed")
+                    PowerAssertionManager.shared.release(operation: "DownloadFolderBackup")
                     reply(nil, nil)
                 }
                 
@@ -314,6 +324,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
                 self.backupDownloadStatus = .Failed
                 logger.error(["Failed to download folder backup", error])
                 error.reportToSentry()
+                PowerAssertionManager.shared.release(operation: "DownloadFolderBackup")
                 reply(nil, error.localizedDescription)
             }
         }
@@ -321,6 +332,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
 
     @objc func stopBackupUpload() {
         logger.debug("STOP BACKUP UPLOAD")
+        PowerAssertionManager.shared.release(operation: "BackupUpload")
         backupSessionLock.lock()
         self.currentBackupSessionId = nil
         backupSessionLock.unlock()
@@ -336,6 +348,9 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
         logger.debug("STOP BACKUP DOWNLOAD")
         self.backupDownloadStatus = .Stopped
         self.downloadOperationQueue.cancelAllOperations()
+        PowerAssertionManager.shared.release(operation: "DownloadDeviceBackup")
+        PowerAssertionManager.shared.release(operation: "DownloadFolderBackup")
+        PowerAssertionManager.shared.release(operation: "DownloadFileBackup")
     }
     
     
@@ -349,12 +364,14 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
     }
     
     @objc func downloadFileBackup(downloadAt downloadAtURL: String, networkAuth: String, fileId: String, bucketId: String, with reply: @escaping (String?, String?) -> Void) {
+        PowerAssertionManager.shared.acquire(operation: "DownloadFileBackup")
         BackupErrorFileQueue.shared.startNewSession()
         let downloadAtURL = URL(fileURLWithPath: downloadAtURL)
         
         let configManager = BackupConfigurationManager(groupName: INTERNXT_GROUP_NAME, clientName: CLIENT_NAME)
         
         guard let (backupAPI, driveNewAPI, networkFacade) = configManager.setupAPIs(networkAuth: networkAuth) else {
+            PowerAssertionManager.shared.release(operation: "DownloadFileBackup")
             reply(nil, "Setup failed")
             return
         }
@@ -375,6 +392,7 @@ public class XPCBackupService: NSObject, XPCBackupServiceProtocol {
             backupDownloadService.downloadFile(fileId: fileId, bucketId: bucketId, downloadAt: downloadAtURL)
             self.downloadOperationQueue.addBarrierBlock {
                 logger.info("Download operations completed")
+                PowerAssertionManager.shared.release(operation: "DownloadFileBackup")
                 reply(nil, nil)
             }
         }
