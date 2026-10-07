@@ -69,6 +69,12 @@ final class MailBridgeProcess: NSObject {
         stateDirectory.appendingPathComponent("control.sock")
     }
 
+    private static let bundledExecutable = Bundle.main.url(
+        forResource: "mail-bridge",
+        withExtension: nil,
+        subdirectory: "MailBridgeResources"
+    )
+
     var isRunning: Bool {
         queue.sync { process?.isRunning ?? false }
     }
@@ -79,11 +85,7 @@ final class MailBridgeProcess: NSObject {
                 throw MailBridgeProcessError.alreadyRunning
             }
 
-            guard let executable = Bundle.main.url(
-                forResource: "mail-bridge",
-                withExtension: nil,
-                subdirectory: "MailBridgeResources"
-            ) else {
+            guard let executable = Self.bundledExecutable else {
                 logger.error("mail-bridge not found in the app bundle")
                 throw MailBridgeProcessError.executableNotFound
             }
@@ -154,16 +156,85 @@ final class MailBridgeProcess: NSObject {
 
     /// Blocks the caller until the daemon is gone, SIGKILLing it if it outstays `timeout`.
     private func waitForExit(timeout: TimeInterval) {
-        guard let target = queue.sync(execute: { process }) else { return }
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            guard target.isRunning else { return }
-            Thread.sleep(forTimeInterval: 0.05)
-        }
+        guard let target = queue.sync(execute: { process }),
+              !waitUntilExited(target, timeout: timeout) else { return }
         queue.sync {
             guard process === target, target.isRunning else { return }
             logger.warning("mail-bridge outlived its shutdown window, sending SIGKILL (pid \(target.processIdentifier))")
             kill(target.processIdentifier, SIGKILL)
+        }
+    }
+
+    func wipeState() {
+        queue.async { [weak self] in
+            guard let self else { return }
+            waitForRunningDaemonToExit()
+            if !runDaemonReset() {
+                removeStateDirectory()
+            }
+        }
+    }
+
+    private func waitForRunningDaemonToExit() {
+        guard let target = process,
+              !waitUntilExited(target, timeout: Self.gracefulShutdownTimeout) else { return }
+
+        logger.warning("mail-bridge outlived its shutdown window, sending SIGKILL (pid \(target.processIdentifier))")
+        kill(target.processIdentifier, SIGKILL)
+
+        if !waitUntilExited(target, timeout: Self.gracefulShutdownTimeout) {
+            logger.error("mail-bridge (pid \(target.processIdentifier)) would not exit even after SIGKILL")
+        }
+    }
+
+    private func waitUntilExited(_ target: Process, timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while target.isRunning {
+            guard Date() < deadline else { return false }
+            Thread.sleep(forTimeInterval: 0.05)
+        }
+        return true
+    }
+
+    private func runDaemonReset() -> Bool {
+        guard let executable = Self.bundledExecutable else {
+            logger.error("mail-bridge not found in the app bundle, its keychain entries could not be cleared")
+            return false
+        }
+
+        let reset = Process()
+        reset.executableURL = executable
+        reset.arguments = ["-reset", "-state-dir", Self.stateDirectory.path]
+        let stderr = Pipe()
+        reset.standardError = stderr
+
+        do {
+            try reset.run()
+        } catch {
+            logger.error("Could not launch mail-bridge -reset, its keychain entries could not be cleared: \(error)")
+            return false
+        }
+        reset.waitUntilExit()
+
+        guard reset.terminationStatus == 0 else {
+            let message = String(data: stderr.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+            logger.error(
+                "mail-bridge -reset failed (status \(reset.terminationStatus)), its keychain entries could not be cleared: \(message)"
+            )
+            return false
+        }
+
+        logger.info("mail-bridge cleared its state directory and keychain entries")
+        return true
+    }
+
+    private func removeStateDirectory() {
+        do {
+            try FileManager.default.removeItem(at: Self.stateDirectory)
+        } catch let error as CocoaError where error.code == .fileNoSuchFile {
+            return
+        } catch {
+            logger.error("Could not remove the Mail Bridge state directory: \(error)")
         }
     }
 

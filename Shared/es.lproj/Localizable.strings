@@ -368,6 +368,7 @@
 "MAIL_BRIDGE_SAVE_CHANGES" = "Guardar cambios";
 "MAIL_BRIDGE_UP_TO_DATE" = "Todo sincronizado";
 "MAIL_BRIDGE_UP_TO_DATE_AT_%@" = "Todo sincronizado · comprobado a las %@";
+"MAIL_BRIDGE_PREPARING" = "Preparando tu buzón";
 "MAIL_BRIDGE_SYNCING_%d_%@_%@" = "Sincronizando tu buzón — %d %% · %@ de %@ mensajes nuevos";
 "MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@" = "Sincronización interrumpida — %@ de %@ mensajes nuevos descargados";
 "MAIL_BRIDGE_IDENTITY_TITLE" = "Primero crea tu dirección de Internxt Mail";

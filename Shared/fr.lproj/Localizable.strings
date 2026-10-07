@@ -365,6 +365,7 @@
 "MAIL_BRIDGE_SETTINGS_SUBTITLE_%@" = "Ils s'appliquent à %@ sur cet appareil.";
 "MAIL_BRIDGE_SAVE_CHANGES" = "Enregistrer les modifications";
 "MAIL_BRIDGE_UP_TO_DATE" = "Tout est synchronisé";
+"MAIL_BRIDGE_PREPARING" = "Préparation de votre boîte mail";
 "MAIL_BRIDGE_SYNCING_%d_%@_%@" = "Synchronisation de votre boîte — %d %% · %@ sur %@ nouveaux messages";
 "MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@" = "Synchronisation interrompue — %@ sur %@ nouveaux messages téléchargés";
 "MAIL_BRIDGE_IDENTITY_TITLE" = "Créez d'abord votre adresse Internxt Mail";
