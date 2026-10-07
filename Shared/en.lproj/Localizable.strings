@@ -367,6 +367,7 @@
 "MAIL_BRIDGE_SAVE_CHANGES" = "Save changes";
 "MAIL_BRIDGE_UP_TO_DATE" = "Everything is up to date";
 "MAIL_BRIDGE_UP_TO_DATE_AT_%@" = "Everything is up to date · checked at %@";
+"MAIL_BRIDGE_PREPARING" = "Preparing your mailbox";
 "MAIL_BRIDGE_SYNCING_%d_%@_%@" = "Syncing your mailbox — %d%% · %@ of %@ new messages";
 "MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@" = "Sync interrupted — %@ of %@ new messages downloaded";
 "MAIL_BRIDGE_IDENTITY_TITLE" = "Create your Internxt Mail address first";

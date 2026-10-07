@@ -173,7 +173,7 @@ struct MailBridgeActiveView: View {
     @ViewBuilder
     private var syncStatus: some View {
         switch service.syncState {
-        case .syncing:
+        case .syncing, .preparing:
             VStack(alignment: .leading, spacing: 6) {
                 Text(service.progressSummary)
                     .font(.XSRegular)

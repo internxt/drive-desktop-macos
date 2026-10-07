@@ -31,6 +31,7 @@ struct MailAccountIdentity {
 }
 
 enum MailBridgeSyncState: Equatable {
+    case preparing
     case upToDate
     case syncing(downloaded: Int, total: Int, percent: Int)
     case interrupted(downloaded: Int, total: Int)
@@ -176,12 +177,21 @@ final class MailBridgeService: ObservableObject {
     @Published private(set) var isCheckingMailbox = false
     @Published private(set) var isActivatingMailBridge: Bool = false
     @Published private(set) var lastError: String?
-    @Published private(set) var syncState: MailBridgeSyncState = .upToDate
+    @Published private(set) var syncState: MailBridgeSyncState = .upToDate {
+        didSet {
+            guard syncState != .preparing else { return }
+            preparingTimeout?.cancel()
+            preparingTimeout = nil
+        }
+    }
     @Published private(set) var isResyncing = false
     @Published private(set) var lastCheckedAt: Date?
-    
+
     private static let resyncResponseTimeout: Duration = .seconds(15)
     private var resyncTimeout: Task<Void, Never>?
+
+    private static let preparingResponseTimeout: Duration = .seconds(120)
+    private var preparingTimeout: Task<Void, Never>?
 
     init(defaults: UserDefaults = .standard, config: ConfigLoader = ConfigLoader()) {
         self.defaults = defaults
@@ -329,6 +339,8 @@ final class MailBridgeService: ObservableObject {
 
     var progress: Double {
         switch syncState {
+        case .preparing:
+            return 0
         case .upToDate:
             return 1
         case .syncing(_, _, let percent):
@@ -351,6 +363,9 @@ final class MailBridgeService: ObservableObject {
 
     var progressSummary: String {
         switch syncState {
+        case .preparing:
+            return NSLocalizedString("MAIL_BRIDGE_PREPARING", comment: "The mailbox is being prepared for first use")
+
         case .upToDate:
             guard let lastCheckedAt else {
                 return NSLocalizedString("MAIL_BRIDGE_UP_TO_DATE", comment: "Nothing left to sync")
@@ -404,6 +419,7 @@ final class MailBridgeService: ObservableObject {
             applyBridgeSettings(from: daemonConfig)
 
             Self.logger.info("Mail Bridge is ready on \(daemonConfig.imapAddress)")
+            startPreparing()
             withAnimation(.easeOut(duration: 0.18)) { viewState = .unlocked(.active) }
         } catch {
             Self.logger.error("Could not start the Mail Bridge daemon: \(error)")
@@ -510,6 +526,7 @@ final class MailBridgeService: ObservableObject {
 
     func reset() {
         bridgeProcess.stop()
+        bridgeProcess.wipeState()
         controlServer.stop()
         activateAtLaunch = false
         imapPort = DefaultPorts.imap
@@ -593,6 +610,17 @@ final class MailBridgeService: ObservableObject {
             try? await Task.sleep(for: Self.resyncResponseTimeout)
             guard !Task.isCancelled else { return }
             self?.endResync()
+        }
+    }
+
+    private func startPreparing() {
+        syncState = .preparing
+        preparingTimeout?.cancel()
+        preparingTimeout = Task { [weak self] in
+            try? await Task.sleep(for: Self.preparingResponseTimeout)
+            guard !Task.isCancelled, let self, self.syncState == .preparing else { return }
+            Self.logger.warning("Mail Bridge reported nothing about its first sync in time, showing it as interrupted")
+            self.syncState = .interrupted(downloaded: 0, total: 0)
         }
     }
 
