@@ -57,7 +57,7 @@ struct GetFolderMetaUseCase {
                 )
                 
                 completionHandler(folderItem, nil)
-                self.logger.info("✅ Got metadata for folder with name \(folderMeta.plainName ?? folderMeta.name)")
+                self.logger.info("✅ Got metadata for folder with name \(folderMeta.plainName ?? folderMeta.name ?? "unknown")")
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to get folder meta for \(identifier.rawValue): \(error.localizedDescription)")

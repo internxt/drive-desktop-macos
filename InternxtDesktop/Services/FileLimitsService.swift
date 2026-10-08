@@ -14,8 +14,7 @@ class FileLimitsService: ObservableObject {
     static let shared = FileLimitsService()
 
     private let config   = ConfigLoader()
-    private let logger   = LogService.shared.createLogger(
-        subsystem: .InternxtDesktop, category: "FileLimitsService")
+
 
 
     @Published private(set) var maxUploadFileSizeBytes: Int64 = Int64.max
@@ -74,8 +73,7 @@ class FileLimitsService: ObservableObject {
             maxUploadFileSizeBytes = config.getMaxFileSizeBytes()
           
         } catch {
-      
-            logger.error("❌ Failed to fetch file limits: \(error.localizedDescription)")
+            error.reportToSentry()
         }
     }
 }

@@ -96,7 +96,7 @@ class ClamAVScannerService {
                 var pendingScanned = 0
                 var pendingLineInfo = ""
 
-                pipe.fileHandleForReading.readabilityHandler = { [weak self] fileHandle in
+                pipe.fileHandleForReading.readabilityHandler = { fileHandle in
                     let data = fileHandle.availableData
                     
                     guard !data.isEmpty else {
@@ -135,7 +135,7 @@ class ClamAVScannerService {
                 }
                 
                 dispatchGroup.enter()
-                process.terminationHandler = { [weak self] proc in
+                process.terminationHandler = { proc in
         
                     pipe.fileHandleForReading.readabilityHandler = nil
                     
