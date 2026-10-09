@@ -800,7 +800,9 @@ class BackupsService: ObservableObject {
                 if backupStatus.totalSyncs > 0 {
                     self.backupUploadProgress = backupStatus.progress
                 }
-                self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced, \(self.backupUploadProgress * 100)% synced"])
+                let remainingSyncs = max(0, backupStatus.totalSyncs - backupStatus.completedSyncs)
+                let percentString = String(format: "%.1f", self.backupUploadProgress * 100)
+                self.logger.info(["Backup upload is in \(backupStatus.status) status, \(backupStatus.completedSyncs) of \(backupStatus.totalSyncs) nodes synced (\(remainingSyncs) remaining), \(percentString)% synced"])
             }
             
             if(backupStatus.status == .Done || backupStatus.status == .Failed || backupStatus.status == .Stopped) {
@@ -824,7 +826,9 @@ class BackupsService: ObservableObject {
                 }
                 self.backupDownloadedItems = backupDownloadStatus.completedSyncs
                 self.backupDownloadProgress = backupDownloadStatus.progress
-                self.logger.info("Backup download is in \(backupDownloadStatus.status) status, \(backupDownloadStatus.completedSyncs) items downloaded")
+                let remainingDownloads = max(0, backupDownloadStatus.totalSyncs - backupDownloadStatus.completedSyncs)
+                let percentString = String(format: "%.1f", backupDownloadStatus.progress * 100)
+                self.logger.info("Backup download is in \(backupDownloadStatus.status) status, \(backupDownloadStatus.completedSyncs) of \(backupDownloadStatus.totalSyncs) items downloaded (\(remainingDownloads) remaining), \(percentString)%")
             }
             
             if(backupDownloadStatus.status == .Done || backupDownloadStatus.status == .Failed) {

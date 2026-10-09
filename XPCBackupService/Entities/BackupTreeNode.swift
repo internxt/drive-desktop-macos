@@ -198,7 +198,7 @@ class BackupTreeNode {
         if let currentSyncedNodeUnwrapped = currentSyncedNode {
             try self.updateNodeAsAlreadySynced(syncedNodeRemoteId: currentSyncedNodeUnwrapped.remoteId, syncedNoteRemoteUuid: currentSyncedNodeUnwrapped.remoteUuid)
             
-            logger.info("Node \(self.name) is synced: \(currentSyncedNode != nil)")
+            logger.info("Node '\(self.name)' at path \(nodeURL.path) is already synced")
             
             return
         }
@@ -238,18 +238,18 @@ class BackupTreeNode {
                   return
                 } else if isRetryable(error: error) && syncRetries < MAX_SYNC_RETRIES {
                     syncRetries += 1
-                    logger.info("Node sync failed, scheduling retry #\(syncRetries)")
+                    logger.info("Node sync failed for '\(self.name)' at path \(nodeURL.path), scheduling retry #\(syncRetries)")
                     error.reportToSentry()
                     let baseDelay = pow(2.0, Double(syncRetries))
                     let jitter = Double.random(in: 0.0...baseDelay * 0.25)
                     let delaySeconds = baseDelay + jitter
                     let delayNanoseconds = UInt64(delaySeconds * 1_000_000_000)
-                    logger.info("Retry #\(syncRetries) — waiting \(String(format: "%.2f", delaySeconds))s (base=\(Int(baseDelay))s + jitter=\(String(format: "%.2f", jitter))s)")
+                    logger.info("Retry #\(syncRetries) for '\(self.name)' — waiting \(String(format: "%.2f", delaySeconds))s (base=\(Int(baseDelay))s + jitter=\(String(format: "%.2f", jitter))s)")
                     try await Task.sleep(nanoseconds: delayNanoseconds)
                     try await self.syncNode()
                     return
                 } else {
-                    logger.info("Node sync failed permanently for \(self.name): \(error.getErrorDescription())")
+                    logger.info("Node sync failed permanently for '\(self.name)' at path \(nodeURL.path): \(error.getErrorDescription())")
                     backupTotalPogress.completedUnitCount += 1
                     throw error
                 }

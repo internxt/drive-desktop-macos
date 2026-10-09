@@ -163,8 +163,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
 
     private func syncNodeFolder(node: BackupTreeNode, retryCount: Int = 0) async -> Result<BackupTreeNodeSyncResult, Error> {
-        self.logger.info("Creating folder")
-
         guard let nodeURL = node.url else {
             return .failure(BackupUploadError.MissingURL)
         }
@@ -172,13 +170,13 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         var remoteParentId: Int? = nil
         var remoteParentUuid: String? = nil
         let foldername = node.name
-        self.logger.info("Going to create folder \(foldername)")
+        self.logger.info("Going to create folder '\(foldername)' at path: \(nodeURL.path)")
 
         if let _ = node.parentId {
             let parentInfo = node.getRemoteParentInfo()
             guard let parentId = parentInfo.remoteParentId,
                   let parentUuid = parentInfo.remoteParentUuid else {
-                self.logger.error("Missing Parent Folder id \(foldername) - this should not happen if dependencies are correct")
+                self.logger.error("Missing Parent Folder id '\(foldername)' at path \(nodeURL.path) - this should not happen if dependencies are correct")
                 return .failure(BackupUploadError.MissingParentFolder)
             }
             
@@ -190,12 +188,12 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         }
 
         guard let safeRemoteParentId = remoteParentId else {
-            self.logger.info("Missing Parent Folder id \(foldername) ")
+            self.logger.info("Missing Parent Folder id '\(foldername)' at path \(nodeURL.path)")
             return .failure(BackupUploadError.MissingParentFolder)
         }
         
         guard let safeRemoteParentUuid = remoteParentUuid else {
-            self.logger.info("Missing parent folder uuid \(foldername)")
+            self.logger.info("Missing parent folder uuid '\(foldername)' at path \(nodeURL.path)")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
@@ -209,7 +207,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             }
 
-            self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
+            self.logger.info("✅ Folder created successfully: \(createdFolder.id) (\(nodeURL.path))")
 
             try await addSyncedNodeSafely(
                 SyncedNode(
@@ -225,7 +223,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
             return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: createdFolder.uuid))
         } catch {
-            self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
+            self.logger.error("❌ Failed to create folder '\(foldername)' at path \(nodeURL.path): \(error.getErrorDescription())")
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
                 if retryCount < 3 && self.canDoBackup && !Task.isCancelled {
@@ -242,7 +240,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     return await self.syncNodeFolder(node: node, retryCount: retryCount + 1)
                 }
 
-                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server after \(retryCount) retries. Deleting local reference from Realm")
+                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server after \(retryCount) retries for folder at \(nodeURL.path). Deleting local reference from Realm")
                 try? await SyncedNodeRepository.shared.deleteSyncedNodeByRemoteIdAsync(remoteId: safeRemoteParentId)
                 return .failure(BackupUploadError.MissingParentFolder)
             }
@@ -262,7 +260,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
 
                     guard let folder = folder else {
-                        self.logger.error("❌ CannotFindNodeInServer: searched '\(foldername)' server returned: \(existencesResponse.existentFolders.map { $0.plainName })")
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(foldername)' at path \(nodeURL.path), server returned: \(existencesResponse.existentFolders.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
@@ -280,7 +278,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: folder.uuid))
                 } catch {
-                    self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
+                    self.logger.error("❌ Failed to insert already created folder '\(foldername)' at path \(nodeURL.path) in database: \(error.getErrorDescription())")
                     return .failure(error)
                 }
             }
@@ -301,12 +299,12 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
         }
 
         let filename = (node.name as NSString)
-        self.logger.info("Starting backing up file \(filename)")
+        self.logger.info("Starting backing up file '\(filename)' at path: \(fileURL.path)")
 
         let parentInfo = node.getRemoteParentInfo()
         guard let remoteParentId = parentInfo.remoteParentId,
               let remoteParentUuid = parentInfo.remoteParentUuid else {
-            self.logger.error("Missing parent folderId \(node.name) - this should not happen if dependencies are correct")
+            self.logger.error("Missing parent folderId for file '\(node.name)' at path \(fileURL.path) - this should not happen if dependencies are correct")
             return .failure(BackupUploadError.MissingParentFolder)
         }
 
@@ -320,7 +318,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
            
             let maxUploadFileSizeBytes = ConfigLoader().getMaxFileSizeBytes()
             if uploadSize > maxUploadFileSizeBytes {
-                self.logger.warning("⛔ File '\(filename)' (\(uploadSize) bytes) exceeds backup limit (\(maxUploadFileSizeBytes) bytes) — rejecting upload")
+                self.logger.warning("⛔ File '\(filename)' at path \(fileURL.path) (\(uploadSize) bytes) exceeds backup limit (\(maxUploadFileSizeBytes) bytes) — rejecting upload")
                 
                 FileSizeLimitNotifier.postExceeded(
                     filename: filename as String,
@@ -346,11 +344,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 uploadSize = result.size
                 uploadBucketId = result.bucket
                 
-                self.logger.info("Upload completed with id \(result.id)")
+                self.logger.info("Upload completed with id \(result.id) for file: \(fileURL.path)")
             } else {
-                self.logger.info("⚠️ Skipping network upload for empty file: \(filename)")
+                self.logger.info("⚠️ Skipping network upload for empty file: '\(filename)' at path: \(fileURL.path)")
                 if let reason = emptyFileRejectReason {
-                    self.logger.warning("⛔ Empty-file already rejected (\(reason.rawValue)) — skipping API call for \(filename)")
+                    self.logger.warning("⛔ Empty-file already rejected (\(reason.rawValue)) — skipping API call for '\(filename)' at path: \(fileURL.path)")
                     EmptyFileLimitNotifier.post(filename: filename as String, reason: reason)
                     let error: BackupUploadError = reason == .planNotAllowed ? .EmptyFilePlanNotAllowed : .EmptyFileQuotaExceeded
                     return .failure(error)
@@ -370,7 +368,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     )
                 }
 
-                self.logger.info("✅ Updated file correctly with identifier \(String(describing: updatedFile.fileId))")
+                self.logger.info("✅ Updated file correctly with identifier \(String(describing: updatedFile.fileId)) at path: \(fileURL.path)")
 
 
                 // Edit date in synced database
@@ -405,7 +403,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
                 }
-                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name)")
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name) at path: \(fileURL.path)")
 
 
                 try await addSyncedNodeSafely(
@@ -441,10 +439,10 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
 
             if let uploadError = error as? UploadError, case .PartUploadFailed(let partIndex, let innerError) = uploadError {
-                self.logger.error("❌ Part upload failed at index \(partIndex): \(uploadError.localizedDescription)")
+                self.logger.error("❌ Part upload failed at index \(partIndex) for file at \(fileURL.path): \(uploadError.localizedDescription)")
                 self.logger.info("ℹ️ Inner error details: \(String(describing: innerError))")
             } else {
-                self.logger.error("❌ Failed to create file \(node.name) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
+                self.logger.error("❌ Failed to create file '\(node.name)' at path \(fileURL.path) in \(String(describing: node.remoteParentId)): \(error.getErrorDescription())")
             }
 
             if encryptedContentURL != nil {
@@ -459,7 +457,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             }
 
             if is404 {
-                self.logger.error("❌ Folder parent \(remoteParentId) not found in server (404). Deleting local reference from Realm so it can be re-created.")
+                self.logger.error("❌ Folder parent \(remoteParentId) not found in server (404) while uploading file at \(fileURL.path). Deleting local reference from Realm so it can be re-created.")
                 try? await SyncedNodeRepository.shared.deleteSyncedNodeByRemoteIdAsync(remoteId: remoteParentId)
                 return .failure(BackupUploadError.MissingParentFolder)
             }
@@ -481,7 +479,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
                 
                     guard let file = matchingFile else {
-                        self.logger.error("❌ CannotFindNodeInServer: searched '\(nodePlainName)' server returned: \(result.existentFiles.map { $0.plainName })")
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(nodePlainName)' for file at \(fileURL.path), server returned: \(result.existentFiles.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
@@ -499,7 +497,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     return .success(BackupTreeNodeSyncResult(id: file.id, uuid: file.uuid))
                 } catch {
-                    self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
+                    self.logger.error("❌ Failed to insert already created file '\(node.name)' at path \(fileURL.path) in database: \(error.getErrorDescription())")
                     return .failure(error)
                 }
             }
