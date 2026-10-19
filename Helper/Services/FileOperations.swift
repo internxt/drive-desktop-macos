@@ -34,12 +34,12 @@ final class FileOperationsManager: FileOperationsProtocol {
             return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
         }
         
-//        if shouldbeVerifyInUseFile {
-//            if isFileInUse(path) {
-//                self.logger.info("File is in use: \(path)")
-//                return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
-//            }
-//        }
+        if shouldbeVerifyInUseFile {
+            if wasModifiedWithinLastHour(fileStat) {
+                self.logger.info("File was recently modified, skipping: \(path)")
+                return FileVerification(exists: true, canDelete: false, size: 0, shouldSkip: true)
+            }
+        }
         
         let size = UInt64(fileStat.st_size)
         
@@ -124,20 +124,12 @@ final class FileOperationsManager: FileOperationsProtocol {
         await excludedPathsCache.clear()
     }
     
-    private func isFileInUse(_ path: String) -> Bool {
-        let task = Process()
-        task.launchPath = "/usr/sbin/lsof"
-        task.arguments = [path]
-        task.standardOutput = Pipe()
-        task.standardError = Pipe()
-        
-        do {
-            try task.run()
-            task.waitUntilExit()
-            return task.terminationStatus == 0
-        } catch {
-            return false
-        }
+
+    private func wasModifiedWithinLastHour(_ fileStat: stat) -> Bool {
+        let now = Date().timeIntervalSince1970
+        let mtimeSeconds = Double(fileStat.st_mtimespec.tv_sec)
+        let hoursSinceModification = (now - mtimeSeconds) / 3600
+        return hoursSinceModification <= 1
     }
 }
 

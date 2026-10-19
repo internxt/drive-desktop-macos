@@ -316,6 +316,8 @@
 "CLEANER_FREE_SPACE_GAINED" = "Espace libéré";
 "CLEANER_DEVICE_CLEAN_TITLE" = "Votre appareil est propre";
 "CLEANER_DEVICE_CLEAN_SUBTITLE" = "Aucune autre action nécessaire";
+"CLEANER_SKIPPED_FILES" = "Fichiers ignorés";
+"CLEANER_DEVICE_CLEAN_SUBTITLE_SKIPPED" = "Certains fichiers n'ont pas pu être supprimés car ils sont en cours d'utilisation.";
 "CLEANER_FINISH" = "Terminer";
 "SETTINGS_ENABLE_LOW_BANDWIDTH" = "Activer le mode de faible utilisation du réseau";
 
