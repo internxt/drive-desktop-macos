@@ -39,6 +39,7 @@ struct CleaningView: View {
 
             CleanupStatsView(
                 deletedFiles: progress?.processedFiles ?? 0,
+                skippedFiles: 0,
                 freeSpaceGained: ByteCountFormatter.string(fromByteCount: Int64(progress?.freedSpace ?? 0), countStyle: .file)
             )
 
@@ -53,8 +54,11 @@ struct CleaningView: View {
 
 struct CleanupStatsView: View {
     let deletedFiles: Int
+    let skippedFiles: Int
     let freeSpaceGained: String
     @Environment(\.colorScheme) var colorScheme
+
+    private var hasSkipped: Bool { skippedFiles > 0 }
     
     var body: some View {
         HStack(spacing: 0) {
@@ -68,6 +72,22 @@ struct CleanupStatsView: View {
                     .foregroundColor(.Gray80)
             }
             .frame(maxWidth: .infinity)
+
+           
+            if hasSkipped {
+                Divider()
+
+                VStack(spacing: 2) {
+                    Text("\(skippedFiles)")
+                        .font(.BaseMedium)
+                        .foregroundColor(.Gray100)
+
+                    AppText("CLEANER_SKIPPED_FILES")
+                        .font(.SMRegular)
+                        .foregroundColor(.Gray80)
+                }
+                .frame(maxWidth: .infinity)
+            }
             
             Divider()
             
@@ -92,7 +112,7 @@ struct CleanupStatsView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.Gray10, lineWidth: 1)
         )
-        .frame(width: 352, height: 70)
+        .frame(width: hasSkipped ? 440 : 352, height: 70)
     }
 }
 
@@ -114,10 +134,11 @@ struct ResultsCleanerView: View {
                 .font(.XXLSemibold)
                 .foregroundColor(.DefaultTextStrong)
             
-            AppText("CLEANER_DEVICE_CLEAN_SUBTITLE")
+            AppText(subtitleKey)
                  .font(.SMRegular)
                  .foregroundColor(.DefaultText)
-                 .lineLimit(2)
+                 .multilineTextAlignment(.center)
+                 .lineLimit(3)
                  .truncationMode(.tail)
                  .frame(maxWidth: .infinity)
                  .frame(height: 40)
@@ -125,6 +146,7 @@ struct ResultsCleanerView: View {
 
             CleanupStatsView(
                 deletedFiles: totalProcessedFiles,
+                skippedFiles: totalSkippedFiles,
                 freeSpaceGained: ByteCountFormatter.string(fromByteCount: Int64(totalFreedSpace), countStyle: .file)
             )
 
@@ -138,8 +160,18 @@ struct ResultsCleanerView: View {
     private var totalProcessedFiles: Int {
         cleanupResults.reduce(0) { $0 + $1.processedFiles }
     }
+
+    private var totalSkippedFiles: Int {
+        cleanupResults.reduce(0) { $0 + $1.skippedFiles }
+    }
     
     private var totalFreedSpace: UInt64 {
         cleanupResults.reduce(0) { $0 + $1.freedSpace }
+    }
+
+    private var subtitleKey: String {
+        totalSkippedFiles > 0
+            ? "CLEANER_DEVICE_CLEAN_SUBTITLE_SKIPPED"
+            : "CLEANER_DEVICE_CLEAN_SUBTITLE"
     }
 }
