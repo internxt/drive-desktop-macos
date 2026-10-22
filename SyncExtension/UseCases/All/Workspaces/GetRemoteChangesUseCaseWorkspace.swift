@@ -117,12 +117,12 @@ class GetRemoteChangesUseCaseWorkspace {
             
             if file.status == "EXISTS" {
                 guard let createdAt = Time.dateFromISOString(file.createdAt) else {
-                    self.logger.error("Cannot create createdAt date for item \(file.id) with value \(file.createdAt)")
+                    self.logger.error("Cannot create createdAt date for item \(file.uuid) with value \(file.createdAt)")
                     return
                 }
                 
                 guard let updatedAt = Time.dateFromISOString(file.updatedAt) else {
-                    self.logger.error("Cannot create updatedAt date for item \(file.id) with value \(file.updatedAt)")
+                    self.logger.error("Cannot create updatedAt date for item \(file.uuid) with value \(file.updatedAt)")
                     return
                 }
                 

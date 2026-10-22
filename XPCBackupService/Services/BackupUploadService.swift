@@ -405,12 +405,12 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
                 }
-                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name)")
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.uuid) : \(createdFile.plain_name)")
 
 
                 try await addSyncedNodeSafely(
                     SyncedNode(
-                        remoteId: createdFile.id,
+                        remoteId: 0,
                         deviceId: node.deviceId,
                         remoteUuid: createdFile.uuid,
                         url: fileURL,
@@ -429,7 +429,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     
                 }
 
-                return .success(BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid))
+                return .success(BackupTreeNodeSyncResult(id: 0, uuid: createdFile.uuid))
             }
 
         } catch {
@@ -487,7 +487,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     try await addSyncedNodeSafely(
                         SyncedNode(
-                            remoteId: file.id,
+                            remoteId: 0,
                             deviceId: node.deviceId,
                             remoteUuid: file.uuid,
                             url: fileURL,
@@ -497,7 +497,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
 
-                    return .success(BackupTreeNodeSyncResult(id: file.id, uuid: file.uuid))
+                    return .success(BackupTreeNodeSyncResult(id: 0, uuid: file.uuid))
                 } catch {
                     self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
