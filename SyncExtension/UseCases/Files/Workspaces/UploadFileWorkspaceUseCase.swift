@@ -216,7 +216,6 @@ struct UploadFileWorkspaceUseCase {
                 
                 // Respond, then process the thumbnail so we don't block the UI
                 let thumbnailUpload = await self.generateAndUploadThumbnail(
-                    driveItemId: createdFile.id,
                     fileURL: self.fileContent,
                     destinationURL: self.thumbnailFileDestination,
                     encryptedThumbnailDestination: self.encryptedThumbnailFileDestination,
@@ -248,7 +247,7 @@ struct UploadFileWorkspaceUseCase {
         
     }
     
-    func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
+    func generateAndUploadThumbnail(fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
         do {
             let thumbnailGenerationResult = try await ThumbnailGenerator.shared.generateThumbnail(
                 for: fileURL,

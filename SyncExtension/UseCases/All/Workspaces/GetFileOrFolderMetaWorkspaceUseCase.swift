@@ -54,17 +54,17 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                     }
                     let parentIsRootContainer = folderUuid == rootFolderUuid
                     guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for file \(fileMeta.id) with value \(fileMeta.createdAt)")
+                        self.logger.error("Cannot create createdAt date for file \(fileMeta.uuid) with value \(fileMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(fileMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(fileMeta.id) with value \(fileMeta.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for file \(fileMeta.uuid) with value \(fileMeta.updatedAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                     }
                     
                     guard let sizeInt = Int(fileMeta.size) else {
-                        self.logger.error("Cannot get size for file \(fileMeta.id) with size value \(fileMeta.size)")
+                        self.logger.error("Cannot get size for file \(fileMeta.uuid) with size value \(fileMeta.size)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidSize
                     }
                     

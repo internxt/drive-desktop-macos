@@ -49,7 +49,7 @@ struct GetFileOrFolderMetaUseCase {
 
                         let parentFolderId = String(fileMeta.folderId)
                         
-                        self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.id)")
+                        self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.uuid)")
                         if DeletedFolderCache.shared.isFolderDeleted(parentFolderId) {
                             self.logger.info("❌ Parent was deleted, returning error for item \(fileMeta.plainName ?? "")")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
@@ -58,17 +58,17 @@ struct GetFileOrFolderMetaUseCase {
                         let parentIsRootContainer = fileMeta.folderId == user.root_folder_id
 
                         guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
-                            self.logger.error("Cannot create createdAt date for file \(fileMeta.id) with value \(fileMeta.createdAt)")
+                            self.logger.error("Cannot create createdAt date for file \(fileMeta.uuid) with value \(fileMeta.createdAt)")
                             throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                         }
                         
                         guard let updatedAt = Time.dateFromISOString(fileMeta.updatedAt) else {
-                            self.logger.error("Cannot create updatedAt date for file \(fileMeta.id) with value \(fileMeta.updatedAt)")
+                            self.logger.error("Cannot create updatedAt date for file \(fileMeta.uuid) with value \(fileMeta.updatedAt)")
                             throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                         }
                         
                         guard let sizeInt = Int(fileMeta.size) else {
-                            self.logger.error("Cannot get size for file \(fileMeta.id) with size value \(fileMeta.size)")
+                            self.logger.error("Cannot get size for file \(fileMeta.uuid) with size value \(fileMeta.size)")
                             throw GetFileOrFolderMetaUseCaseError.InvalidSize
                         }
                         
