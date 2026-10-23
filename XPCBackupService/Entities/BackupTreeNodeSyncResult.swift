@@ -8,6 +8,11 @@
 import Foundation
 
 struct BackupTreeNodeSyncResult {
-    let id: Int
+    let id: Int?
     let uuid: String?
+
+    init(id: Int? = nil, uuid: String?) {
+        self.id = id
+        self.uuid = uuid
+    }
 }

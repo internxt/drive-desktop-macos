@@ -21,7 +21,7 @@ class SyncedNode: Object {
     @Persisted var deviceId: Int
 
     convenience init(
-        remoteId: Int,
+        remoteId: Int = 0,
         deviceId: Int,
         remoteUuid: String,
         url: URL,

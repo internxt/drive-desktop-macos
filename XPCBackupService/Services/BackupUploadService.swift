@@ -410,7 +410,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                 try await addSyncedNodeSafely(
                     SyncedNode(
-                        remoteId: 0,
                         deviceId: node.deviceId,
                         remoteUuid: createdFile.uuid,
                         url: fileURL,
@@ -429,7 +428,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     
                 }
 
-                return .success(BackupTreeNodeSyncResult(id: 0, uuid: createdFile.uuid))
+                return .success(BackupTreeNodeSyncResult(uuid: createdFile.uuid))
             }
 
         } catch {
@@ -487,7 +486,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     try await addSyncedNodeSafely(
                         SyncedNode(
-                            remoteId: 0,
                             deviceId: node.deviceId,
                             remoteUuid: file.uuid,
                             url: fileURL,
@@ -497,7 +495,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
 
-                    return .success(BackupTreeNodeSyncResult(id: 0, uuid: file.uuid))
+                    return .success(BackupTreeNodeSyncResult(uuid: file.uuid))
                 } catch {
                     self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
