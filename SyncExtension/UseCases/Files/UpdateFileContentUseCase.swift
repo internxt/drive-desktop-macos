@@ -80,7 +80,7 @@ struct UpdateFileContentUseCase {
                     )
                     try await packageService.uploadDirectoryIteratively(
                         localURL: fileContent,
-                        parentFolderId: String(folderMeta.id),
+                        parentFolderId: String(folderMeta.id ?? 0),
                         parentFolderUuid: folderUuid
                     )
 

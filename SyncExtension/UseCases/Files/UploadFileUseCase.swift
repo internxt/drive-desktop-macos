@@ -109,7 +109,7 @@ struct UploadFileUseCase {
                             folderName: item.filename,
                             debug: true
                         )
-                        createdFolderId = String(createdFolder.id)
+                        createdFolderId = String(createdFolder.id ?? 0)
                         createdFolderUuid = createdFolder.uuid
                         self.logger.info("📦 Created package folder on cloud \(item.filename)")
                     } catch {
@@ -118,7 +118,7 @@ struct UploadFileUseCase {
                             if let folder = existences.existentFolders.first(where: {
                                 $0.plainName == item.filename && $0.removed == false
                             }) {
-                                createdFolderId = String(folder.id)
+                                createdFolderId = String(folder.id ?? 0)
                                 createdFolderUuid = folder.uuid
                             } else {
                                 throw error
@@ -212,13 +212,10 @@ struct UploadFileUseCase {
                         type: filename.pathExtension,
                         bucket: uploadBucket,
                         size: uploadSize,
-                        folderId: 0,
-                        name: encryptedFilename.base64EncodedString(),
                         plainName: filename.deletingPathExtension,
                         folderUuid: parentUUID
-                        
                     ),
-                debug: true
+                    debug: true
                 )
                 
                 

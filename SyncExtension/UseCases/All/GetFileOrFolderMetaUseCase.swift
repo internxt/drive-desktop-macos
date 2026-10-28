@@ -42,16 +42,16 @@ struct GetFileOrFolderMetaUseCase {
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a file")
                     if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: identifierRaw) {
                         if fileMeta.status != "EXISTS" {
-                            self.logger.info("❌ File \(fileMeta.plainName ?? fileMeta.name) (id: \(identifierRaw)) is \(fileMeta.status), returning nonExistentItem")
+                            self.logger.info("❌ File \(fileMeta.plainName) (id: \(identifierRaw)) is \(fileMeta.status), returning nonExistentItem")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
                         }
 
-                        let parentFolderId = String(fileMeta.folderId)
+                        let parentFolderId = String(fileMeta.folderId ?? 0)
                         
                         self.logger.info("Parent ID is \(parentFolderId) for file with id \(fileMeta.uuid)")
                         if DeletedFolderCache.shared.isFolderDeleted(parentFolderId) {
-                            self.logger.info("❌ Parent was deleted, returning error for item \(fileMeta.plainName ?? "")")
+                            self.logger.info("❌ Parent was deleted, returning error for item \(fileMeta.plainName)")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
                         }
@@ -74,7 +74,7 @@ struct GetFileOrFolderMetaUseCase {
                         
                         let fileItem = FileProviderItem(
                             identifier: self.identifier,
-                            filename: FileProviderItem.getFilename(name: fileMeta.plainName ?? fileMeta.name, itemExtension: fileMeta.type),
+                            filename: FileProviderItem.getFilename(name: fileMeta.plainName, itemExtension: fileMeta.type),
                             parentId: parentIsRootContainer ? .rootContainer : NSFileProviderItemIdentifier(rawValue: parentFolderId),
                             createdAt: createdAt,
                             updatedAt: updatedAt,
@@ -84,7 +84,7 @@ struct GetFileOrFolderMetaUseCase {
                         )
 
                         completionHandler(fileItem, nil)
-                        self.logger.info("✅ Got metadata for file with name \(fileMeta.plainName ?? fileMeta.name) and id \(identifierRaw)")
+                        self.logger.info("✅ Got metadata for file with name \(fileMeta.plainName) and id \(identifierRaw)")
                         return
                     }
                 } else {
@@ -92,8 +92,8 @@ struct GetFileOrFolderMetaUseCase {
                     self.logger.info("Trying to get metadata for item \(identifierRaw) as a folder")
                     if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: identifierRaw) {
 
-                        if folderMeta.deleted == true || folderMeta.removed == true {
-                            let itemDisplayName = folderMeta.plainName ?? folderMeta.name ?? identifierRaw
+                        if folderMeta.removed == true {
+                            let itemDisplayName = folderMeta.plainName ?? identifierRaw
                             self.logger.info("❌ Folder (id: \(identifierRaw), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                             return
@@ -101,9 +101,9 @@ struct GetFileOrFolderMetaUseCase {
                         if let parentFolderId = folderMeta.parentId  {
                             
                             if DeletedFolderCache.shared.isFolderDeleted(String(parentFolderId)) {
-                                let itemDisplayName = folderMeta.plainName ?? folderMeta.name ?? identifierRaw
+                                let itemDisplayName = folderMeta.plainName ?? identifierRaw
                                 self.logger.info("❌ Parent folder (id: \(parentFolderId)) was deleted, returning error for item (id: \(identifierRaw), name: '\(itemDisplayName)')")
-                                DeletedFolderCache.shared.markFolderAsDeleted(String(folderMeta.id)) // mark this folder as deleted
+                                DeletedFolderCache.shared.markFolderAsDeleted(String(folderMeta.id ?? 0)) // mark this folder as deleted
                                 completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                                 return
                             }
@@ -113,19 +113,19 @@ struct GetFileOrFolderMetaUseCase {
 
 
                         guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
-                            self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
+                            self.logger.error("Cannot create createdAt date for folder \(folderMeta.id ?? 0) with value \(folderMeta.createdAt)")
                             throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                         }
 
                         guard let updatedAt = Time.dateFromISOString(folderMeta.updatedAt) else {
-                            self.logger.error("Cannot create updatedAt date for folder \(folderMeta.id) with value \(folderMeta.updatedAt)")
+                            self.logger.error("Cannot create updatedAt date for folder \(folderMeta.id ?? 0) with value \(folderMeta.updatedAt)")
                             throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                         }
 
                         let parentIsRootFolder = folderMeta.parentId == nil || folderMeta.parentId == user.root_folder_id
                         let parentId: NSFileProviderItemIdentifier = parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(String(folderMeta.parentId!))
 
-                        let folderName = (folderMeta.plainName ?? folderMeta.name) ?? ""
+                        let folderName = folderMeta.plainName ?? ""
                         let isPkg = FileProviderItem.isPackage(filename: folderName)
                         let ext = isPkg ? (folderName as NSString).pathExtension : nil
                         let itemType = isPkg ? RemoteItemType.file : RemoteItemType.folder

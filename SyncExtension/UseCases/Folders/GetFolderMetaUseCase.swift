@@ -48,7 +48,7 @@ struct GetFolderMetaUseCase {
                 
                 let folderItem = FileProviderItem(
                     identifier: self.identifier,
-                    filename: (folderMeta.name ?? folderMeta.plainName) ?? "",
+                    filename: folderMeta.plainName ?? "",
                     parentId: parentId ,
                     createdAt: createdAt,
                     updatedAt: updateAt,
@@ -57,7 +57,7 @@ struct GetFolderMetaUseCase {
                 )
                 
                 completionHandler(folderItem, nil)
-                self.logger.info("✅ Got metadata for folder with name \(folderMeta.plainName ?? folderMeta.name ?? "unknown")")
+                self.logger.info("✅ Got metadata for folder with name \(folderMeta.plainName ?? "unknown")")
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to get folder meta for \(identifier.rawValue): \(error.localizedDescription)")

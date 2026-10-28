@@ -209,11 +209,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             }
 
-            self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
+            self.logger.info("✅ Folder created successfully: \(createdFolder.id ?? 0)")
 
             try await addSyncedNodeSafely(
                 SyncedNode(
-                    remoteId: createdFolder.id,
+                    remoteId: createdFolder.id ?? 0,
                     deviceId: node.deviceId,
                     remoteUuid: createdFolder.uuid,
                     url: nodeURL,
@@ -223,7 +223,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             )
 
-            return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: createdFolder.uuid))
+            return .success(BackupTreeNodeSyncResult(id: createdFolder.id ?? 0, uuid: createdFolder.uuid))
         } catch {
             self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
 
@@ -268,7 +268,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     try await addSyncedNodeSafely(
                         SyncedNode(
-                            remoteId: folder.id,
+                            remoteId: folder.id ?? 0,
                             deviceId: node.deviceId,
                             remoteUuid: folder.uuid,
                             url: nodeURL,
@@ -278,7 +278,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
 
-                    return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: folder.uuid))
+                    return .success(BackupTreeNodeSyncResult(id: folder.id ?? 0, uuid: folder.uuid))
                 } catch {
                     self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
@@ -398,8 +398,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                             type: filename.pathExtension,
                             bucket: uploadBucketId,
                             size: uploadSize,
-                            folderId: remoteParentId,
-                            name: encryptedFilename.base64EncodedString(),
                             plainName: filename.deletingPathExtension,
                             folderUuid: remoteParentUuid
                         )

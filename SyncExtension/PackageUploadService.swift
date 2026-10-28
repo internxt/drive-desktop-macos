@@ -85,7 +85,7 @@ struct PackageUploadService {
                 folderName: name,
                 debug: true
             )
-            return (String(createdFolder.id), createdFolder.uuid)
+            return (String(createdFolder.id ?? 0), createdFolder.uuid)
         } catch {
             guard let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 else {
                 throw error
@@ -95,7 +95,7 @@ struct PackageUploadService {
             if let folder = existences.existentFolders.first(where: {
                 $0.plainName == name && $0.removed == false
             }) {
-                return (String(folder.id), folder.uuid)
+                return (String(folder.id ?? 0), folder.uuid)
             } else {
                 throw error
             }
@@ -176,8 +176,6 @@ struct PackageUploadService {
                     type: ext,
                     bucket: uploadBucket,
                     size: uploadSize,
-                    folderId: 0,
-                    name: encryptedFilename.base64EncodedString(),
                     plainName: plainName,
                     folderUuid: parentFolderUuid
                 ),

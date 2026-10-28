@@ -89,20 +89,20 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 
                 self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a folder")
                 if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: self.identifier.rawValue) {
-                    if folderMeta.deleted == true || folderMeta.removed == true  {
-                        let itemDisplayName = folderMeta.plainName ?? folderMeta.name ?? self.identifier.rawValue
+                    if folderMeta.removed == true {
+                        let itemDisplayName = folderMeta.plainName ?? self.identifier.rawValue
                         self.logger.info("❌ Workspace Folder (id: \(self.identifier.rawValue), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
                         completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
                         return
                     }
 
                     guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
+                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.uuid ?? "") with value \(folderMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(folderMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.id) with value \(folderMeta.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.uuid ?? "") with value \(folderMeta.updatedAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                     }
                     
@@ -116,7 +116,7 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                     let folderItem = FileProviderItem(
                         identifier: self.identifier,
                         // TODO: Decrypt the name if needed
-                        filename: (folderMeta.plainName ?? folderMeta.name) ?? "",
+                        filename: folderMeta.plainName ?? "",
                         parentId: parentId,
                         createdAt: createdAt,
                         updatedAt: updatedAt,
