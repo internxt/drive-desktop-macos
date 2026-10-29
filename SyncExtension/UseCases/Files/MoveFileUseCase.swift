@@ -50,7 +50,7 @@ struct MoveFileUseCase {
                 }
                 
                 let folderMeta = try await driveNewAPI.getFolderMetaById(id: parentFolderId)
-                let destinationName = folderMeta.plainName ?? folderMeta.name ?? item.parentItemIdentifier.rawValue
+                let destinationName = folderMeta.plainName ?? item.parentItemIdentifier.rawValue
 
                 guard let parentUuid = folderMeta.uuid  else {
                     throw UploadFileUseCaseError.InvalidParentUUID

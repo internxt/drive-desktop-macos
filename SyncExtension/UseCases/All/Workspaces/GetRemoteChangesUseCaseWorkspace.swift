@@ -139,7 +139,7 @@ class GetRemoteChangesUseCaseWorkspace {
                 
                 let item = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),
-                    filename: FileProviderItem.getFilename(name: file.plainName ?? file.name , itemExtension: file.type) ,
+                    filename: FileProviderItem.getFilename(name: file.plainName ?? "", itemExtension: file.type) ,
                     parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folderUuid),
                     createdAt: createdAt,
                     updatedAt: updatedAt,
@@ -210,7 +210,7 @@ class GetRemoteChangesUseCaseWorkspace {
                 
                 let item = FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: folderUuid),
-                    filename: FileProviderItem.getFilename(name: folder.plainName ?? folder.name , itemExtension: nil),
+                    filename: FileProviderItem.getFilename(name: folder.plainName ?? "" , itemExtension: nil),
                     parentId: parentIsRoot ? .rootContainer : NSFileProviderItemIdentifier(rawValue: folderParentUuid),
                     createdAt: createdAt,
                     updatedAt: updatedAt,

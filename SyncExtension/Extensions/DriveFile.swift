@@ -16,9 +16,9 @@ extension DriveFile {
             ErrorUtils.fatal("User not found while creating a fileProviderItem from a driveItem")
         }
         
-        let parentIsRoot = user.root_folder_id == self.folderId
+        let parentIsRoot = self.folderId != nil && user.root_folder_id == self.folderId
         
-        let filename = FileProviderItem.getFilename(name: self.plainName ?? self.name, itemExtension: self.type)
+        let filename = FileProviderItem.getFilename(name: self.plainName ?? self.name ?? "", itemExtension: self.type)
         
         func getParentId() -> NSFileProviderItemIdentifier {
             if self.status == .trashed {
@@ -28,7 +28,7 @@ extension DriveFile {
                 return .rootContainer
             }
             
-            return NSFileProviderItemIdentifier(folderId.toString())
+            return NSFileProviderItemIdentifier((self.folderId ?? 0).toString())
         }
         
         return FileProviderItem(

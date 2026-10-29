@@ -189,10 +189,8 @@ struct UploadFileWorkspaceUseCase {
                     type: filename.pathExtension,
                     bucket: uploadBucket,
                     size: uploadSize,
-                    folderId: 0,
-                    name: encryptedFilename.base64EncodedString(),
-                    plainName: filename.deletingPathExtension, folderUuid: getParentId()
-                    
+                    plainName: filename.deletingPathExtension,
+                    folderUuid: getParentId()
                 ), workspaceUuid: workspaceId)
                 
                 
