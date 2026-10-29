@@ -209,7 +209,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             }
 
-            self.logger.info("✅ Folder created successfully: \(createdFolder.id ?? 0)")
+            self.logger.info("✅ Folder created successfully: \(createdFolder.uuid)")
 
             try await addSyncedNodeSafely(
                 SyncedNode(

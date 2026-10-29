@@ -51,7 +51,7 @@ struct CreateFolderWorkspaceUseCase {
                     itemType: .folder
                 ), [], false, nil)
                 
-                self.logger.info("✅ Folder created successfully: \(createdFolder.id ?? 0)")
+                self.logger.info("✅ Folder created successfully: \(createdFolder.uuid)")
             } catch {
                 
                 if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {

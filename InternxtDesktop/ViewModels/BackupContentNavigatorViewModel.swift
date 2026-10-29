@@ -134,12 +134,13 @@ extension BackupContentNavigator {
             
             return childs.folders.map { child in
                 let name = child.plainName ?? ""
+                let itemId = child.id?.toString() ?? child.uuid ?? ""
 
                 if Self.isBundleFolderName(name) {
                     let ext = (name as NSString).pathExtension
                     let nameWithoutExt = (name as NSString).deletingPathExtension
                     return BackupContentItem(
-                        id: child.id?.toString() ?? child.uuid ?? "",
+                        id: itemId,
                         name: nameWithoutExt,
                         type: ext,
                         uuid: child.uuid!,
@@ -148,7 +149,7 @@ extension BackupContentNavigator {
                     )
                 }
                 
-                return BackupContentItem(id: child.id?.toString() ?? child.uuid ?? "", name: name, type: "folder", uuid: child.uuid!, hasFileId: true)
+                return BackupContentItem(id: itemId, name: name, type: "folder", uuid: child.uuid!, hasFileId: true)
             }
         }
         

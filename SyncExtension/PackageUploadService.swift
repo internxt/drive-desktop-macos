@@ -14,21 +14,16 @@ struct PackageUploadService {
     let encryptedFileDestination: URL
     
     private let logger = syncExtensionLogger
-    private let cryptoUtils = CryptoUtils()
-    private let encrypt: Encrypt = Encrypt()
     private let driveNewAPI = APIFactory.DriveNew
-    private let config = ConfigLoader().get()
     
-    func uploadDirectoryIteratively(localURL: URL, parentFolderId: String, parentFolderUuid: String) async throws {
+    func uploadDirectoryIteratively(localURL: URL, parentFolderUuid: String) async throws {
         struct FolderUploadTask {
             let localURL: URL
-            let cloudFolderId: String
             let cloudFolderUuid: String
         }
         
         var queue: [FolderUploadTask] = [FolderUploadTask(
             localURL: localURL,
-            cloudFolderId: parentFolderId,
             cloudFolderUuid: parentFolderUuid
         )]
         
@@ -54,12 +49,11 @@ struct PackageUploadService {
                 }
                 
                 if isDirectory {
-                    let folderInfo = try await resolveOrCreateFolder(name: name, parentFolderUuid: currentTask.cloudFolderUuid)
+                    let folderUuid = try await resolveOrCreateFolder(name: name, parentFolderUuid: currentTask.cloudFolderUuid)
                     
                     queue.append(FolderUploadTask(
                         localURL: itemURL,
-                        cloudFolderId: folderInfo.id,
-                        cloudFolderUuid: folderInfo.uuid
+                        cloudFolderUuid: folderUuid
                     ))
                 } else {
                     do {
@@ -67,7 +61,6 @@ struct PackageUploadService {
                             localURL: itemURL,
                             filename: name,
                             fileSize: fileSize,
-                            parentFolderId: currentTask.cloudFolderId,
                             parentFolderUuid: currentTask.cloudFolderUuid
                         )
                     } catch {
@@ -78,14 +71,14 @@ struct PackageUploadService {
         }
     }
     
-    private func resolveOrCreateFolder(name: String, parentFolderUuid: String) async throws -> (id: String, uuid: String) {
+    private func resolveOrCreateFolder(name: String, parentFolderUuid: String) async throws -> String {
         do {
             let createdFolder = try await driveNewAPI.createFolderNew(
                 parentFolderUuid: parentFolderUuid,
                 folderName: name,
                 debug: true
             )
-            return (String(createdFolder.id ?? 0), createdFolder.uuid)
+            return createdFolder.uuid
         } catch {
             guard let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 else {
                 throw error
@@ -95,7 +88,7 @@ struct PackageUploadService {
             if let folder = existences.existentFolders.first(where: {
                 $0.plainName == name && $0.removed == false
             }) {
-                return (String(folder.id ?? 0), folder.uuid)
+                return folder.uuid
             } else {
                 throw error
             }
@@ -124,7 +117,7 @@ struct PackageUploadService {
         return nil
     }
     
-    private func uploadPackageFile(localURL: URL, filename: String, fileSize: Int, parentFolderId: String, parentFolderUuid: String) async throws {
+    private func uploadPackageFile(localURL: URL, filename: String, fileSize: Int, parentFolderUuid: String) async throws {
         let plainName = (filename as NSString).deletingPathExtension
         let ext = (filename as NSString).pathExtension
         
@@ -163,14 +156,6 @@ struct PackageUploadService {
           
             _ = try await driveNewAPI.replaceFileId(fileUuid: fileUuid, newFileId: uploadFileId, newSize: uploadSize)
         } else {
-      
-            let encryptedFilename = try encrypt.encrypt(
-                string: plainName,
-                password: "\(config.CRYPTO_SECRET2)-\(parentFolderId)",
-                salt: cryptoUtils.hexStringToBytes(config.MAGIC_SALT_HEX),
-                iv: Data(cryptoUtils.hexStringToBytes(config.MAGIC_IV_HEX))
-            )
-            
             _ = try await driveNewAPI.createFileNew(createFile: CreateFileDataNew(
                     fileId: uploadFileId,
                     type: ext,

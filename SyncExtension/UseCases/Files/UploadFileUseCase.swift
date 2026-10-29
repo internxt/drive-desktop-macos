@@ -136,7 +136,6 @@ struct UploadFileUseCase {
                     )
                     try await packageService.uploadDirectoryIteratively(
                         localURL: fileContent,
-                        parentFolderId: createdFolderId,
                         parentFolderUuid: createdFolderUuid
                     )
                     

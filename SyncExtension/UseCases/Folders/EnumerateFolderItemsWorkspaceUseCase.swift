@@ -90,7 +90,7 @@ struct EnumerateFolderItemsWorkspaceUseCase {
                     
                     // change id by uuid
                     let item = FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: folder.uuid ?? (folder.id.map(String.init) ?? "")),
+                        identifier: NSFileProviderItemIdentifier(rawValue: folder.uuid ?? ""),
                         filename: FileProviderItem.getFilename(name: folder.plainName ?? "" , itemExtension: nil),
                         parentId: self.enumeratedItemIdentifier,
                         createdAt: createdAt,
