@@ -89,7 +89,8 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 
                 self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a folder")
                 if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: self.identifier.rawValue) {
-                    if folderMeta.removed == true {
+                    let folderStatus = DriveItemStatus(rawValue: folderMeta.status)
+                    if folderStatus == .deleted || folderStatus == .trashed || folderMeta.removed == true {
                         let itemDisplayName = folderMeta.plainName ?? self.identifier.rawValue
                         self.logger.info("❌ Workspace Folder (id: \(self.identifier.rawValue), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
                         completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))

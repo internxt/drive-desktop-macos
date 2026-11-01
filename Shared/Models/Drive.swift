@@ -8,9 +8,10 @@
 import Foundation
 
 enum DriveItemStatus: String {
-    case removed = "REMOVED"
     case exists = "EXISTS"
     case trashed = "TRASHED"
+    case deleted = "DELETED"
+    case removed = "REMOVED"
 }
 
 struct DriveFile {
