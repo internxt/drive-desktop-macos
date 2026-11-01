@@ -37,8 +37,8 @@ struct CreateFolderUseCase {
                 let createdFolder = try await driveNewAPI.createFolderNew(parentFolderUuid: parentUUID, folderName: itemTemplate.filename,debug: true)
                 
                 completionHandler(FileProviderItem(
-                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id)),
-                    filename: createdFolder.plainName ?? createdFolder.name,
+                    identifier: NSFileProviderItemIdentifier(rawValue: String(createdFolder.id ?? 0)),
+                    filename: createdFolder.plainName,
                     parentId: itemTemplate.parentItemIdentifier,
                     createdAt: Time.dateFromISOString(createdFolder.createdAt) ?? Date(),
                     updatedAt: Time.dateFromISOString(createdFolder.updatedAt) ?? Date(),
@@ -46,7 +46,7 @@ struct CreateFolderUseCase {
                     itemType: .folder
                 ), [], false, nil)
                 
-                self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
+                self.logger.info("✅ Folder created successfully: \(createdFolder.id ?? 0)")
             } catch {
                 
                 if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
@@ -59,8 +59,8 @@ struct CreateFolderUseCase {
                             $0.plainName == itemTemplate.filename && $0.removed == false
                         }) {
                             completionHandler(FileProviderItem(
-                                identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
-                                filename: folder.plainName,
+                                identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id ?? 0)),
+                                filename: folder.plainName ?? itemTemplate.filename,
                                 parentId: itemTemplate.parentItemIdentifier,
                                 createdAt: Time.dateFromISOString(folder.createdAt) ?? Date(),
                                 updatedAt: Time.dateFromISOString(folder.updatedAt) ?? Date(),
