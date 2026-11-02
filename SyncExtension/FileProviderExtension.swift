@@ -375,7 +375,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 if !self.isWorkspaceDomain() {
                      parentUuid = try await Self.folderCache.getOrFetch(for: parentId, fetch: {
                         let folderMeta = try await self.driveNewAPI.getFolderMetaById(id: parentId, debug: true)
-                        return folderMeta.uuid!
+                        return folderMeta.uuid
                     }, callId: callId)
                 }
   

@@ -98,12 +98,12 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                     }
 
                     guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.uuid ?? "") with value \(folderMeta.createdAt)")
+                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.uuid) with value \(folderMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(folderMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.uuid ?? "") with value \(folderMeta.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.uuid) with value \(folderMeta.updatedAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                     }
                     
