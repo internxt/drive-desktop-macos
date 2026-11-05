@@ -389,3 +389,11 @@
 "MAIL_BRIDGE_ERROR_VIEW_LOGS" = "View logs";
 "MAIL_BRIDGE_ERROR_CONTACT_SUPPORT" = "Contact support";
 "MAIL_BRIDGE_ERROR_DISMISS" = "Leave it off for now";
+
+/* Mandatory Update */
+"UPDATE_REQUIRED_TITLE" = "Application update required";
+"UPDATE_REQUIRED_MESSAGE" = "This version of Internxt Drive is no longer supported. Synchronization and affected operations have been paused. Please update the application to continue.";
+"UPDATE_REQUIRED_BUTTON" = "Update now";
+"WIDGET_UPDATE_REQUIRED_TITLE" = "Update Required";
+"WIDGET_UPDATE_REQUIRED_BODY" = "Synchronization is paused. Please update Internxt to resume normal operations.";
+

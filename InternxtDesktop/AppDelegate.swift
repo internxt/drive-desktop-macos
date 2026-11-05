@@ -58,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let fileSizeLimitState = FileSizeLimitState()
     let emptyFileLimitState = EmptyFileLimitState()
     let storageFullState = StorageFullState()
+    let updateRequiredState = UpdateRequiredState()
     private var backupAlertsCoordinator: BackupAlertsCoordinator!
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
@@ -89,6 +90,28 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     NotificationCenter.default.post(name: .userDidLogout, object: nil)
                 }
             }
+        }
+
+        APIClient.onUpdateRequired = {
+            DispatchQueue.main.async {
+                UpdateEnforcementManager.shared.triggerEnforcement(reason: "HTTP 426 received in main app")
+            }
+        }
+
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleMandatoryUpdateRequired()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .updateRequiredNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleMandatoryUpdateRequired()
         }
 
         DistributedNotificationCenter.default().addObserver(
@@ -127,11 +150,15 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState, updateRequiredState: updateRequiredState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
         self.issuesManager.startObserving()
+
+        if UpdateEnforcementManager.shared.isBlocked {
+            self.handleMandatoryUpdateRequired()
+        }
 
         self.backupAlertsCoordinator = BackupAlertsCoordinator(
             fileSizeLimitState: fileSizeLimitState,
@@ -524,6 +551,19 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     
     @objc func openSettingsWindow() {
         self.windowsManager.openWindow(id: "settings")
+    }
+
+    @objc func openUpdateRequiredWindow() {
+        self.windowsManager.openWindow(id: "update-required")
+    }
+
+    private func handleMandatoryUpdateRequired() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.logger.warning("🚨 Presenting mandatory update dialog")
+            self.updateRequiredState.isVisible = true
+            self.windowsManager.openWindow(id: "update-required")
+        }
     }
 
     @objc func openIssuesWindow() {

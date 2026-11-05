@@ -16,6 +16,10 @@ extension APIClientError {
         statusCode == 403 && errorCode == Self.mailNotSetUpCode
     }
 
+    var isUpdateRequiredError: Bool {
+        statusCode == 426
+    }
+
     var errorCode: String? {
         guard let body = try? JSONSerialization.jsonObject(with: responseBody) as? [String: Any] else {
             return nil

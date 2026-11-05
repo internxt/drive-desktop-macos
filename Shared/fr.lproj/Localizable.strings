@@ -387,3 +387,11 @@
 "MAIL_BRIDGE_ERROR_VIEW_LOGS" = "Voir les journaux";
 "MAIL_BRIDGE_ERROR_CONTACT_SUPPORT" = "Contacter le support";
 "MAIL_BRIDGE_ERROR_DISMISS" = "Le laisser désactivé pour l'instant";
+
+/* Mandatory Update */
+"UPDATE_REQUIRED_TITLE" = "Mise à jour de l'application requise";
+"UPDATE_REQUIRED_MESSAGE" = "Cette version d'Internxt Drive n'est plus prise en charge. La synchronisation et les opérations affectées ont été suspendues. Veuillez mettre à jour l'application pour continuer.";
+"UPDATE_REQUIRED_BUTTON" = "Mettre à jour maintenant";
+"WIDGET_UPDATE_REQUIRED_TITLE" = "Mise à jour requise";
+"WIDGET_UPDATE_REQUIRED_BODY" = "La synchronisation est suspendue. Veuillez mettre à jour Internxt pour reprendre les opérations normales.";
+
