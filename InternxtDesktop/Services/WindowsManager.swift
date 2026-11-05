@@ -105,7 +105,7 @@ class WindowsManager:NSObject, NSWindowDelegate {
     
     func windowShouldClose(_ sender: NSWindow) -> Bool {
         if sender.identifier?.rawValue == "update-required" {
-            return false
+            return !UpdateEnforcementManager.shared.isBlocked
         }
         return true
     }
@@ -137,6 +137,7 @@ class WindowsManager:NSObject, NSWindowDelegate {
     
     func closeWindow(id: String) {
         if let window = windowRefs[id] {
+            window.orderOut(nil)
             window.close()
             windowRefs[id] = nil
         } else {

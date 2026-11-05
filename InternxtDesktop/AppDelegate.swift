@@ -94,7 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
 
         APIClient.onUpdateRequired = {
             DispatchQueue.main.async {
-                UpdateEnforcementManager.shared.triggerEnforcement(reason: "HTTP 426 received in main app")
+                UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED received in main app")
             }
         }
 
@@ -112,6 +112,14 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             queue: .main
         ) { [weak self] _ in
             self?.handleMandatoryUpdateRequired()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .updateRequiredClearedNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleMandatoryUpdateCleared()
         }
 
         DistributedNotificationCenter.default().addObserver(
@@ -173,6 +181,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
         // Load the config, or die with a fatalError
         config.load()
+        
+        Task {
+            await UpdateEnforcementManager.shared.checkCompatibility()
+        }
+        UpdateEnforcementManager.shared.startPeriodicCompatibilityCheck()
         
         if(isPreview) {
             // Running in preview mode
@@ -557,12 +570,25 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         self.windowsManager.openWindow(id: "update-required")
     }
 
+    @objc func checkForUpdates() {
+        self.updaterController.updater.checkForUpdates()
+    }
+
     private func handleMandatoryUpdateRequired() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.logger.warning("🚨 Presenting mandatory update dialog")
             self.updateRequiredState.isVisible = true
             self.windowsManager.openWindow(id: "update-required")
+        }
+    }
+
+    private func handleMandatoryUpdateCleared() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.logger.info("Closing mandatory update dialog because enforcement was cleared")
+            self.updateRequiredState.isVisible = false
+            self.windowsManager.closeWindow(id: "update-required")
         }
     }
 
@@ -579,6 +605,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
+        UpdateEnforcementManager.shared.stopPeriodicCompatibilityCheck()
         destroyWidget()
         NotificationCenter.default.removeObserver(self)
     }

@@ -394,4 +394,8 @@
 "UPDATE_REQUIRED_BUTTON" = "Mettre à jour maintenant";
 "WIDGET_UPDATE_REQUIRED_TITLE" = "Mise à jour requise";
 "WIDGET_UPDATE_REQUIRED_BODY" = "La synchronisation est suspendue. Veuillez mettre à jour Internxt pour reprendre les opérations normales.";
+"WIDGET_DEPRECATED_TITLE" = "Mise à jour recommandée";
+"WIDGET_DEPRECATED_BODY_%@" = "Cette version d'Internxt Drive cessera de fonctionner le %@. Veuillez la mettre à jour pour éviter toute interruption.";
+"WIDGET_DEPRECATED_BODY_NO_DATE" = "Cette version d'Internxt Drive est obsolète. Veuillez la mettre à jour pour éviter toute interruption.";
+
 

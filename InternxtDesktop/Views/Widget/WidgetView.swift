@@ -82,6 +82,13 @@ struct WidgetView: View {
                         WidgetUpdateRequiredBannerView(onUpdate: {
                             NSApp.sendAction(#selector(AppDelegate.openUpdateRequiredWindow), to: nil, from: nil)
                         })
+                    } else if updateEnforcementManager.isDeprecated {
+                        WidgetDeprecatedBannerView(
+                            sunsetDateText: updateEnforcementManager.formattedSunsetDate,
+                            onUpdate: {
+                                NSApp.sendAction(#selector(AppDelegate.checkForUpdates), to: nil, from: nil)
+                            }
+                        )
                     } else if shouldDisplayBackupBanner() {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
