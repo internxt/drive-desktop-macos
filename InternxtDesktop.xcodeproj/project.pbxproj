@@ -199,6 +199,7 @@
 		AAB2B406309C864200A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B405309C864200A8524A /* InternxtSwiftCore */; };
 		AAB2B408309C865000A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B407309C865000A8524A /* InternxtSwiftCore */; };
 		AAB2B40A309C865600A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B409309C865600A8524A /* InternxtSwiftCore */; };
+		AAB2B40C309C866000A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B40B309C866000A8524A /* InternxtSwiftCore */; };
 		AABD3E823033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E833033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E843033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
@@ -859,6 +860,7 @@
 				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
 				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
 				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
+				AAB2B40C309C866000A8524A /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1724,6 +1726,7 @@
 				AAA2F8E73017FF0100F5452C /* RealmSwift */,
 				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
 				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
+				AAB2B40B309C866000A8524A /* InternxtSwiftCore */,
 			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
@@ -3474,6 +3477,11 @@
 			productName = InternxtSwiftCore;
 		};
 		AAB2B409309C865600A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		AAB2B40B309C866000A8524A /* InternxtSwiftCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */;
 			productName = InternxtSwiftCore;
