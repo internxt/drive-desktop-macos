@@ -390,3 +390,15 @@
 "MAIL_BRIDGE_ERROR_VIEW_LOGS" = "Ver registros";
 "MAIL_BRIDGE_ERROR_CONTACT_SUPPORT" = "Contactar con soporte";
 "MAIL_BRIDGE_ERROR_DISMISS" = "Dejarlo apagado por ahora";
+
+/* Mandatory Update */
+"UPDATE_REQUIRED_TITLE" = "Actualización de la aplicación requerida";
+"UPDATE_REQUIRED_MESSAGE" = "Esta versión de Internxt Drive ya no es compatible. La sincronización y las operaciones afectadas se han pausado. Actualiza la aplicación para continuar.";
+"UPDATE_REQUIRED_BUTTON" = "Actualizar ahora";
+"WIDGET_UPDATE_REQUIRED_TITLE" = "Actualización requerida";
+"WIDGET_UPDATE_REQUIRED_BODY" = "La sincronización está pausada. Actualiza Internxt para reanudar las operaciones normales.";
+"WIDGET_DEPRECATED_TITLE" = "Actualización recomendada";
+"WIDGET_DEPRECATED_BODY_%@" = "Esta versión de Internxt Drive dejará de funcionar el %@. Actualiza para evitar interrupciones.";
+"WIDGET_DEPRECATED_BODY_NO_DATE" = "Esta versión de Internxt Drive quedará obsoleta pronto. Actualiza para evitar interrupciones.";
+
+

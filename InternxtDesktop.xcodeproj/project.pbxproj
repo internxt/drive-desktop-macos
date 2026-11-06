@@ -65,10 +65,6 @@
 		475B9366305BF76000E9F330 /* MailBridgeIdentitySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B9364305BF76000E9F330 /* MailBridgeIdentitySetupView.swift */; };
 		475B936B305BF7E500E9F330 /* APIClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B936A305BF7E500E9F330 /* APIClientError.swift */; };
 		475B936C305BF7E500E9F330 /* APIClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475B936A305BF7E500E9F330 /* APIClientError.swift */; };
-		4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3733052AED600DAD486 /* InternxtSwiftCore */; };
-		4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D37F3052B07400DAD486 /* InternxtSwiftCore */; };
-		4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3813052B07D00DAD486 /* InternxtSwiftCore */; };
-		4778D3843052B08500DAD486 /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4778D3833052B08500DAD486 /* InternxtSwiftCore */; };
 		4792C7C23050555B0098B744 /* MailBridgeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7C1305055550098B744 /* MailBridgeTabView.swift */; };
 		4792C7D0025055470098B744 /* MailBridgeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0015055470098B744 /* MailBridgeComponents.swift */; };
 		4792C7D0045055470098B744 /* MailBridgeLockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4792C7D0035055470098B744 /* MailBridgeLockedView.swift */; };
@@ -191,6 +187,19 @@
 		AAAD0DA02CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */; };
 		AAAD0DA22CE17457003F27BB /* RenameFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */; };
 		AAAD0DA42CE18678003F27BB /* TrashFileWorkspaceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */; };
+		AAB2B3E7309AB46100A8524A /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3E6309AB46100A8524A /* AppVersion.swift */; };
+		AAB2B3E8309AB46100A8524A /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3E6309AB46100A8524A /* AppVersion.swift */; };
+		AAB2B3E9309AB46100A8524A /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3E6309AB46100A8524A /* AppVersion.swift */; };
+		AAB2B3EA309AB46100A8524A /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3E6309AB46100A8524A /* AppVersion.swift */; };
+		AAB2B3EC309AB48000A8524A /* UpdateEnforcementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3EB309AB48000A8524A /* UpdateEnforcementManager.swift */; };
+		AAB2B3F1309AB4A400A8524A /* UpdateRequiredDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3F0309AB4A400A8524A /* UpdateRequiredDialogView.swift */; };
+		AAB2B3F6309AB4CF00A8524A /* WidgetUpdateRequiredBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2B3F5309AB4CF00A8524A /* WidgetUpdateRequiredBannerView.swift */; };
+		AAB2B3FC309ABD6600A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B3FB309ABD6600A8524A /* InternxtSwiftCore */; };
+		AAB2B403309C853D00A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B402309C853D00A8524A /* InternxtSwiftCore */; };
+		AAB2B406309C864200A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B405309C864200A8524A /* InternxtSwiftCore */; };
+		AAB2B408309C865000A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B407309C865000A8524A /* InternxtSwiftCore */; };
+		AAB2B40A309C865600A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B409309C865600A8524A /* InternxtSwiftCore */; };
+		AAB2B40C309C866000A8524A /* InternxtSwiftCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAB2B40B309C866000A8524A /* InternxtSwiftCore */; };
 		AABD3E823033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E833033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
 		AABD3E843033B65200213211 /* BackupErrorFileQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */; };
@@ -654,6 +663,10 @@
 		AAAD0D9F2CE12D71003F27BB /* GetFileOrFolderMetaWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFileOrFolderMetaWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0DA12CE17457003F27BB /* RenameFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
 		AAAD0DA32CE18678003F27BB /* TrashFileWorkspaceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashFileWorkspaceUseCase.swift; sourceTree = "<group>"; };
+		AAB2B3E6309AB46100A8524A /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
+		AAB2B3EB309AB48000A8524A /* UpdateEnforcementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateEnforcementManager.swift; sourceTree = "<group>"; };
+		AAB2B3F0309AB4A400A8524A /* UpdateRequiredDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateRequiredDialogView.swift; sourceTree = "<group>"; };
+		AAB2B3F5309AB4CF00A8524A /* WidgetUpdateRequiredBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUpdateRequiredBannerView.swift; sourceTree = "<group>"; };
 		AABD3E813033B65200213211 /* BackupErrorFileQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupErrorFileQueue.swift; sourceTree = "<group>"; };
 		AAC188EE2C2231B1007E321A /* MockBackupRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupRealm.swift; sourceTree = "<group>"; };
 		AAC188F02C2231E7007E321A /* MockBackupUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBackupUploadService.swift; sourceTree = "<group>"; };
@@ -814,7 +827,7 @@
 				AA16C5D02E303B8100E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E19639622C63CA20009EDAFB /* RealmSwift in Frameworks */,
 				AA16C5CE2E303B8100E1C295 /* CocoaLumberjack in Frameworks */,
-				4778D3803052B07400DAD486 /* InternxtSwiftCore in Frameworks */,
+				AAB2B40A309C865600A8524A /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,9 +858,9 @@
 			files = (
 				AAA2F8EA3017FF0700F5452C /* CocoaLumberjack in Frameworks */,
 				AAA2F8E83017FF0100F5452C /* RealmSwift in Frameworks */,
-				4778D3823052B07D00DAD486 /* InternxtSwiftCore in Frameworks */,
 				AAA2F8E63017FEEF00F5452C /* Realm in Frameworks */,
 				AAA2F8EC301800EE00F5452C /* CocoaLumberjackSwift in Frameworks */,
+				AAB2B40C309C866000A8524A /* InternxtSwiftCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -862,12 +875,14 @@
 				AA3B49802D44886700924536 /* libfreshclam.3.0.2.dylib in Frameworks */,
 				AAA666742D40684500C2B9DF /* libcrypto.3.dylib in Frameworks */,
 				E1ADD03E2AA6ABE700D95694 /* LaunchAtLogin in Frameworks */,
+				AAB2B403309C853D00A8524A /* InternxtSwiftCore in Frameworks */,
+				AAB2B3FC309ABD6600A8524A /* InternxtSwiftCore in Frameworks */,
 				AAA666732D40684500C2B9DF /* libclamav.12.dylib in Frameworks */,
 				E196395A2C63B46C009EDAFB /* Realm in Frameworks */,
 				47008F36305D1C0D00D67D12 /* NIOExtras in Frameworks */,
 				AAA666762D40684500C2B9DF /* libssl.3.dylib in Frameworks */,
+				AAB2B406309C864200A8524A /* InternxtSwiftCore in Frameworks */,
 				47008F31305D1B8F00D67D12 /* NIOCore in Frameworks */,
-				4778D3743052AED600DAD486 /* InternxtSwiftCore in Frameworks */,
 				AA16C5C62E303B5B00E1C295 /* CocoaLumberjack in Frameworks */,
 				AAA666752D40684500C2B9DF /* libclammspack.0.dylib in Frameworks */,
 				AA755BED2D15FE7B00CE56A9 /* ObjectivePGP in Frameworks */,
@@ -880,7 +895,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E196395E2C63CA0F009EDAFB /* RealmSwift in Frameworks */,
-				4778D3843052B08500DAD486 /* InternxtSwiftCore in Frameworks */,
+				AAB2B408309C865000A8524A /* InternxtSwiftCore in Frameworks */,
 				AA16C5CC2E303B7700E1C295 /* CocoaLumberjackSwift in Frameworks */,
 				E1FB2D822A76C48600473AE1 /* UniformTypeIdentifiers.framework in Frameworks */,
 				AA16C5CA2E303B7700E1C295 /* CocoaLumberjack in Frameworks */,
@@ -1157,6 +1172,7 @@
 				AA2019662C53F8B700901B93 /* Debouncer.swift */,
 				AA9B1B9B2FB2D342000E582A /* FileSizeLimitNotifier.swift */,
 				AA3D12942FDC8D71000ECA4C /* EmptyFileLimitNotifier.swift */,
+				AAB2B3E6309AB46100A8524A /* AppVersion.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1186,6 +1202,7 @@
 				AA9B1BA02FB4094D000E582A /* FileSizeLimitDialogView.swift */,
 				AA3D129D2FE0F4C0000ECA4C /* EmptyFileLimitDialogView.swift */,
 				AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */,
+				AAB2B3F0309AB4A400A8524A /* UpdateRequiredDialogView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -1226,6 +1243,7 @@
 				E1FD8C722BA989D900C257E0 /* LogService.swift */,
 				AA8D9AEE2E7CC2370068B333 /* FeaturesService.swift */,
 				AA3D12992FE05921000ECA4C /* BackupAlertsCoordinator.swift */,
+				AAB2B3EB309AB48000A8524A /* UpdateEnforcementManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1456,6 +1474,7 @@
 				E18300AD2AA230A600AD023C /* WidgetSyncEntryView.swift */,
 				31EBEF722B32006F0017590F /* WidgetBackupBannerView.swift */,
 				E1EEB5902C21963400370D77 /* WidgetBackupDownloadEntryView.swift */,
+				AAB2B3F5309AB4CF00A8524A /* WidgetUpdateRequiredBannerView.swift */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -1629,7 +1648,7 @@
 				E19639612C63CA20009EDAFB /* RealmSwift */,
 				AA16C5CD2E303B8100E1C295 /* CocoaLumberjack */,
 				AA16C5CF2E303B8100E1C295 /* CocoaLumberjackSwift */,
-				4778D37F3052B07400DAD486 /* InternxtSwiftCore */,
+				AAB2B409309C865600A8524A /* InternxtSwiftCore */,
 			);
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
@@ -1707,7 +1726,7 @@
 				AAA2F8E73017FF0100F5452C /* RealmSwift */,
 				AAA2F8E93017FF0700F5452C /* CocoaLumberjack */,
 				AAA2F8EB301800EE00F5452C /* CocoaLumberjackSwift */,
-				4778D3813052B07D00DAD486 /* InternxtSwiftCore */,
+				AAB2B40B309C866000A8524A /* InternxtSwiftCore */,
 			);
 			productName = InternxtDesktopTests;
 			productReference = E15F8C252B762B0400C60EFA /* XPCBackupServiceTests.xctest */;
@@ -1746,10 +1765,12 @@
 				AA755BEC2D15FE7B00CE56A9 /* ObjectivePGP */,
 				AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */,
 				AA16C5C72E303B5B00E1C295 /* CocoaLumberjackSwift */,
-				4778D3733052AED600DAD486 /* InternxtSwiftCore */,
 				47008F30305D1B8F00D67D12 /* NIOCore */,
 				47008F32305D1B9000D67D12 /* NIOPosix */,
 				47008F35305D1C0D00D67D12 /* NIOExtras */,
+				AAB2B3FB309ABD6600A8524A /* InternxtSwiftCore */,
+				AAB2B402309C853D00A8524A /* InternxtSwiftCore */,
+				AAB2B405309C864200A8524A /* InternxtSwiftCore */,
 			);
 			productName = InternxtDesktop;
 			productReference = E1FB2D242A76BF0200473AE1 /* Internxt Drive.app */;
@@ -1774,7 +1795,7 @@
 				E196395F2C63CA14009EDAFB /* Realm */,
 				AA16C5C92E303B7700E1C295 /* CocoaLumberjack */,
 				AA16C5CB2E303B7700E1C295 /* CocoaLumberjackSwift */,
-				4778D3833052B08500DAD486 /* InternxtSwiftCore */,
+				AAB2B407309C865000A8524A /* InternxtSwiftCore */,
 			);
 			productName = SyncExtension;
 			productReference = E1FB2D812A76C48600473AE1 /* SyncExtension.appex */;
@@ -1831,9 +1852,9 @@
 				E19639582C63B46C009EDAFB /* XCRemoteSwiftPackageReference "realm-swift" */,
 				AA755BEB2D15FE7B00CE56A9 /* XCRemoteSwiftPackageReference "ObjectivePGP" */,
 				AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
-				4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */,
 				47008F2F305D1B5900D67D12 /* XCRemoteSwiftPackageReference "swift-nio" */,
 				47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */,
+				AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */,
 			);
 			productRefGroup = E1FB2D252A76BF0200473AE1 /* Products */;
 			projectDirPath = "";
@@ -1964,6 +1985,7 @@
 				E15F8C3E2B762E6400C60EFA /* BackupTreeNodeType.swift in Sources */,
 				E1D24AF62C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
 				E15F8C102B76292F00C60EFA /* BackupTreeGenerator.swift in Sources */,
+				AAB2B3E9309AB46100A8524A /* AppVersion.swift in Sources */,
 				3120B56A2B84F48A00F524F1 /* ErrorUtils.swift in Sources */,
 				AAA6F64A2E5FEDB6000082ED /* Cleaner.swift in Sources */,
 				AA5EABE82BFD762D00BA0145 /* ProcessInfo.swift in Sources */,
@@ -2046,6 +2068,7 @@
 			files = (
 				E15F8C392B762D3400C60EFA /* BackupTreeGenerator.swift in Sources */,
 				E1D24AF72C0468AF0009EC83 /* AsyncOperation.swift in Sources */,
+				AAB2B3E8309AB46100A8524A /* AppVersion.swift in Sources */,
 				31F9EF2F2B867FED007DAD86 /* Bundle.swift in Sources */,
 				AAA2F8EF301803A300F5452C /* Device.swift in Sources */,
 				AAA2F8F2301803DF00F5452C /* BackupsDeviceService.swift in Sources */,
@@ -2102,6 +2125,7 @@
 				E18300A22AA161ED00AD023C /* FileProviderDomainManager.swift in Sources */,
 				AA94CA6E2E99E8CE007CEBDF /* NotificationsManager.swift in Sources */,
 				AACC83A62F7E068E0084FFB6 /* ClamAVScannerService.swift in Sources */,
+				AAB2B3F1309AB4A400A8524A /* UpdateRequiredDialogView.swift in Sources */,
 				3185496F2B698AAC00D559E1 /* Device.swift in Sources */,
 				AA2019672C53F8B700901B93 /* Debouncer.swift in Sources */,
 				AA93BEC22E7230C500F12334 /* ScanOperationService.swift in Sources */,
@@ -2115,6 +2139,7 @@
 				AA13E03A2E62557A00DD47CB /* CleanerRowComponents.swift in Sources */,
 				475B9365305BF76000E9F330 /* MailBridgeErrorView.swift in Sources */,
 				475B9366305BF76000E9F330 /* MailBridgeIdentitySetupView.swift in Sources */,
+				AAB2B3EC309AB48000A8524A /* UpdateEnforcementManager.swift in Sources */,
 				316DC7EC2B59837D00FDC746 /* BackupsDeviceService.swift in Sources */,
 				E17C84AE2AB2232000A58414 /* OnboardingView.swift in Sources */,
 				AAE87A7D2E6A00EF00FD9708 /* CleanupEngine.swift in Sources */,
@@ -2147,6 +2172,7 @@
 				31ABDEA02BA9FC2E00EEA7F5 /* SyncedNode.swift in Sources */,
 				AAFFBE292C50AC4F00C76528 /* GenericRepository.swift in Sources */,
 				310452692B4B05AE00984716 /* BackupConfigView.swift in Sources */,
+				AAB2B3E7309AB46100A8524A /* AppVersion.swift in Sources */,
 				E106D45E2AB9DD8200E3BF7A /* CheckForUpdatesView.swift in Sources */,
 				AA4395702C174B52003AA905 /* ScheduledBackupManager.swift in Sources */,
 				E17C84BC2AB2796F00A58414 /* OnboardingSlide5View.swift in Sources */,
@@ -2227,6 +2253,7 @@
 				4792C7D0105055470098B744 /* MailBridgeSettingsDialogView.swift in Sources */,
 				4792C7D0125055470098B744 /* MailBridgeService.swift in Sources */,
 				4792C7E1025055470098B744 /* MailBridgeProcess.swift in Sources */,
+				AAB2B3F6309AB4CF00A8524A /* WidgetUpdateRequiredBannerView.swift in Sources */,
 				4792C7E1085055470098B744 /* MailProfile.swift in Sources */,
 				AA40B3C12D3ED74400FC1FC3 /* AntivirusManager.swift in Sources */,
 				E1ADD0442AA7367800D95694 /* UsageManager.swift in Sources */,
@@ -2253,6 +2280,7 @@
 			files = (
 				475B936B305BF7E500E9F330 /* APIClientError.swift in Sources */,
 				E16310582A8E66F70072989E /* URLDictionary.swift in Sources */,
+				AAB2B3EA309AB46100A8524A /* AppVersion.swift in Sources */,
 				E1FB2D852A76C48600473AE1 /* FileProviderExtension.swift in Sources */,
 				E17C84C72AB2FEF500A58414 /* ActivityManager.swift in Sources */,
 				E1581DDA2A9654930051DD46 /* GetFileOrFolderMetaUseCase.swift in Sources */,
@@ -3309,14 +3337,6 @@
 				minimumVersion = 1.35.1;
 			};
 		};
-		4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/internxt/swift-core";
-			requirement = {
-				kind = revision;
-				revision = 5d690c44fe76550cb608409fbd6e61db59c47436;
-			};
-		};
 		AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
@@ -3331,6 +3351,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
+			};
+		};
+		AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/internxt/swift-core";
+			requirement = {
+				branch = "feature/enforce-mandatory-updates";
+				kind = branch;
 			};
 		};
 		E106D45A2AB9DB9200E3BF7A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
@@ -3374,26 +3402,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 47008F34305D1C0D00D67D12 /* XCRemoteSwiftPackageReference "swift-nio-extras" */;
 			productName = NIOExtras;
-		};
-		4778D3733052AED600DAD486 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
-		4778D37F3052B07400DAD486 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
-		4778D3813052B07D00DAD486 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
-		};
-		4778D3833052B08500DAD486 /* InternxtSwiftCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4778D3723052AD7800DAD486 /* XCRemoteSwiftPackageReference "swift-core" */;
-			productName = InternxtSwiftCore;
 		};
 		AA16C5C52E303B5B00E1C295 /* CocoaLumberjack */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3449,6 +3457,34 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AA16C5C42E303B5B00E1C295 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;
+		};
+		AAB2B3FB309ABD6600A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = InternxtSwiftCore;
+		};
+		AAB2B402309C853D00A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = InternxtSwiftCore;
+		};
+		AAB2B405309C864200A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		AAB2B407309C865000A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		AAB2B409309C865600A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
+		};
+		AAB2B40B309C866000A8524A /* InternxtSwiftCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB2B404309C864200A8524A /* XCRemoteSwiftPackageReference "swift-core" */;
+			productName = InternxtSwiftCore;
 		};
 		E106D45B2AB9DB9300E3BF7A /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;

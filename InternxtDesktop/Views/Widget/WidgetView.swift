@@ -18,6 +18,7 @@ struct WidgetView: View {
     @EnvironmentObject var domainManager: FileProviderDomainManager
     @EnvironmentObject var antivirusManager: AntivirusManager
     @EnvironmentObject var issuesManager: IssuesManager
+    @ObservedObject private var updateEnforcementManager = UpdateEnforcementManager.shared
     
     @State private var showBackupBanner = false
     var openFileProviderRoot: () -> Void
@@ -77,7 +78,18 @@ struct WidgetView: View {
                         .environmentObject(self.antivirusManager)
                         .environmentObject(self.issuesManager)
 
-                    if shouldDisplayBackupBanner() {
+                    if updateEnforcementManager.isBlocked {
+                        WidgetUpdateRequiredBannerView(onUpdate: {
+                            NSApp.sendAction(#selector(AppDelegate.openUpdateRequiredWindow), to: nil, from: nil)
+                        })
+                    } else if updateEnforcementManager.isDeprecated {
+                        WidgetDeprecatedBannerView(
+                            sunsetDateText: updateEnforcementManager.formattedSunsetDate,
+                            onUpdate: {
+                                NSApp.sendAction(#selector(AppDelegate.checkForUpdates), to: nil, from: nil)
+                            }
+                        )
+                    } else if shouldDisplayBackupBanner() {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
                         }
