@@ -98,15 +98,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             }
         }
 
-        DistributedNotificationCenter.default().addObserver(
-            forName: NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
-            object: nil,
-            queue: .main
-        ) { _ in
-
-            UpdateEnforcementManager.shared.triggerEnforcement(reason: "Update required distributed notification from extension")
-        }
-
         NotificationCenter.default.addObserver(
             forName: .updateRequiredNotification,
             object: nil,
