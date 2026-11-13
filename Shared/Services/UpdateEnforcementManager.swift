@@ -67,6 +67,16 @@ public class UpdateEnforcementManager: ObservableObject {
 
     @MainActor
     public func triggerEnforcement(reason: String) {
+        guard !isBlocked else {
+            logger.info("ℹ️ Mandatory update enforcement already active, bringing window to front.")
+            NotificationCenter.default.post(
+                name: .updateRequiredNotification,
+                object: nil,
+                userInfo: ["reason": reason]
+            )
+            return
+        }
+
         logger.warning("🚨 Triggering mandatory update enforcement: \(reason)")
         self.isBlocked = true
         sharedDefaults?.set(true, forKey: UPDATE_MANDATORY_KEY)
@@ -95,7 +105,7 @@ public class UpdateEnforcementManager: ObservableObject {
         sharedDefaults?.removeObject(forKey: blockedVersionKey)
 
         DistributedNotificationCenter.default().postNotificationName(
-            NSNotification.Name("com.internxt.drive.updateRequiredCleared"),
+            NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED_CLEARED),
             object: nil,
             userInfo: nil,
             deliverImmediately: true
