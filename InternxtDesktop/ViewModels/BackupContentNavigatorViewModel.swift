@@ -133,13 +133,14 @@ extension BackupContentNavigator {
             let childs = try await backupAPI.getBackupChilds(folderUuid:folderUuid, offset: offset, limit: limit)
             
             return childs.folders.map { child in
-                let name = child.plainName ?? self.decryptName(name: child.name, bucketId: bucketId)
+                let name = child.plainName ?? ""
+                let itemId = child.id?.toString() ?? child.uuid ?? ""
 
                 if Self.isBundleFolderName(name) {
                     let ext = (name as NSString).pathExtension
                     let nameWithoutExt = (name as NSString).deletingPathExtension
                     return BackupContentItem(
-                        id: child.id.toString(),
+                        id: itemId,
                         name: nameWithoutExt,
                         type: ext,
                         uuid: child.uuid!,
@@ -148,7 +149,7 @@ extension BackupContentNavigator {
                     )
                 }
                 
-                return BackupContentItem(id: child.id.toString(), name: name, type: "folder", uuid: child.uuid!, hasFileId: true)
+                return BackupContentItem(id: itemId, name: name, type: "folder", uuid: child.uuid!, hasFileId: true)
             }
         }
         
@@ -156,7 +157,7 @@ extension BackupContentNavigator {
             let files = try await backupAPI.getBackupFiles(folderUuid: folderUuid, offset: offset, limit: limit)
             
             return files.files.map { file in
-                let name = file.plainName ?? self.decryptName(name: file.name ?? "", bucketId: bucketId)
+                let name = file.plainName
                 let fileHasId = file.fileId != nil
                 return BackupContentItem(id: file.fileId ?? file.uuid, name: name, type: file.type ?? "", uuid: file.uuid, hasFileId: fileHasId)
             }

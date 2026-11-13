@@ -43,7 +43,7 @@ struct CreateFolderWorkspaceUseCase {
                 let createdFolder = try await driveNewAPI.createFolderWorkspace(parentFolderUuid: parentFolderUuid, folderName: filename.deletingPathExtension, workspaceUuid: workspaceId,debug: true)
                 completionHandler(FileProviderItem(
                     identifier: NSFileProviderItemIdentifier(rawValue: createdFolder.uuid),
-                    filename: createdFolder.plainName ?? createdFolder.name,
+                    filename: createdFolder.plainName,
                     parentId: itemTemplate.parentItemIdentifier,
                     createdAt: Time.dateFromISOString(createdFolder.createdAt) ?? Date(),
                     updatedAt: Time.dateFromISOString(createdFolder.updatedAt) ?? Date(),
@@ -51,7 +51,7 @@ struct CreateFolderWorkspaceUseCase {
                     itemType: .folder
                 ), [], false, nil)
                 
-                self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
+                self.logger.info("✅ Folder created successfully: \(createdFolder.uuid)")
             } catch {
                 
                 if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
@@ -65,7 +65,7 @@ struct CreateFolderWorkspaceUseCase {
                         }) {
                             completionHandler(FileProviderItem(
                                 identifier: NSFileProviderItemIdentifier(rawValue: String(folder.uuid)),
-                                filename: folder.plainName,
+                                filename: folder.plainName ?? itemTemplate.filename,
                                 parentId: itemTemplate.parentItemIdentifier,
                                 createdAt: Time.dateFromISOString(folder.createdAt) ?? Date(),
                                 updatedAt: Time.dateFromISOString(folder.updatedAt) ?? Date(),

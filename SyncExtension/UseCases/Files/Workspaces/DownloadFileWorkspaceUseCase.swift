@@ -88,7 +88,7 @@ struct DownloadFileWorkspaceUseCase {
                     
                     FileManager.default.createFile(atPath: destinationURL.path, contents: nil, attributes: nil)
                     
-                    let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                    let filename = FileProviderItem.getFilename(name: file.plainName ?? "", itemExtension: file.type)
                     let parentIsRootFolder = folderUuid == rootFolderUuid
                     let fileProviderItem = FileProviderItem(
                         identifier: itemIdentifier,
@@ -126,7 +126,7 @@ struct DownloadFileWorkspaceUseCase {
                 
                 
                 
-                let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                let filename = FileProviderItem.getFilename(name: file.plainName ?? "", itemExtension: file.type)
                 let parentIsRootFolder = folderUuid == rootFolderUuid
                 let fileProviderItem = FileProviderItem(
                     identifier: itemIdentifier,

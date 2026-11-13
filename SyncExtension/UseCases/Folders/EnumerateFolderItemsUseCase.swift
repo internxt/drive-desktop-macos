@@ -49,7 +49,7 @@ struct EnumerateFolderItemsUseCase {
                 
                 
                 let folderMeta = try await driveAPI.getFolderMetaById(id: folderId)
-                let currentFolderName = folderMeta.plainName ?? folderMeta.name ?? (self.enumeratedItemIdentifier == .rootContainer ? "Root" : self.enumeratedItemIdentifier.rawValue)
+                let currentFolderName = folderMeta.plainName ?? (self.enumeratedItemIdentifier == .rootContainer ? "Root" : self.enumeratedItemIdentifier.rawValue)
                 self.logger.info("Fetching folder content for '\(currentFolderName)' (id: \(self.enumeratedItemIdentifier.rawValue))")
 
                 guard let folderUuid = folderMeta.uuid  else {
@@ -70,23 +70,23 @@ struct EnumerateFolderItemsUseCase {
                     }
                     
                     guard let createdAt = Time.dateFromISOString(folder.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for item \(folder.id) with value \(folder.createdAt)")
+                        self.logger.error("Cannot create createdAt date for item \(folder.id ?? 0) with value \(folder.createdAt)")
                         return
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(folder.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for item \(folder.id) with value \(folder.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for item \(folder.id ?? 0) with value \(folder.updatedAt)")
                         return
                     }
                     
                     
-                    let folderName = FileProviderItem.getFilename(name: folder.plainName ?? folder.name, itemExtension: nil)
+                    let folderName = FileProviderItem.getFilename(name: folder.plainName ?? "", itemExtension: nil)
                     let isPkg = FileProviderItem.isPackage(filename: folderName)
                     let ext = isPkg ? (folderName as NSString).pathExtension : nil
                     let itemType = isPkg ? RemoteItemType.file : RemoteItemType.folder
                     
                     let item = FileProviderItem(
-                        identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id)),
+                        identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id ?? 0)),
                         filename: folderName,
                         parentId: self.enumeratedItemIdentifier,
                         createdAt: createdAt,
@@ -112,14 +112,7 @@ struct EnumerateFolderItemsUseCase {
                         return
                     }
                     
-                    guard let resolvedName = file.plainName ?? file.name else {
-                        self.logger.error("Cannot get filename for item \(file.fileId ?? "unknown"), both plainName and name are nil")
-                        return
-                    }
-                    
-                    
-                    let filename = FileProviderItem.getFilename(name: resolvedName , itemExtension: file.type
-                    )
+                    let filename = FileProviderItem.getFilename(name: file.plainName, itemExtension: file.type)
                     
                     let item = FileProviderItem(
                         identifier: NSFileProviderItemIdentifier(rawValue: String(file.uuid)),

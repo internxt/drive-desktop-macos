@@ -353,7 +353,7 @@ class BackupsService: ObservableObject {
 
         let getFoldersResponse = try await APIFactory.getNewBackupsClient().getBackupChilds(folderUuid: "\(deviceUuid)")
 
-        foldersIds = getFoldersResponse.folders.map { result in
+        foldersIds = getFoldersResponse.folders.compactMap { result in
             return result.id
         }
 
