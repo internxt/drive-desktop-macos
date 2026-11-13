@@ -103,6 +103,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             object: nil,
             queue: .main
         ) { _ in
+
             UpdateEnforcementManager.shared.triggerEnforcement(reason: "Update required distributed notification from extension")
         }
 
@@ -318,6 +319,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             }
 
             if url.host == "update-required" {
+ 
                 self.logger.warning("🚨 Received update-required deeplink — verifying App Group flag")
                 if isUpdateMandatory {
                     DispatchQueue.main.async {
