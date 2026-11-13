@@ -131,6 +131,21 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         ) { [weak self] _ in
             self?.handleUpdateRequired()
         }
+
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name("com.internxt.drive.updateRequiredCleared"),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+           logger.info("✅ SyncExtension: Mandatory update cleared notification received. Signalling enumerator.")
+            self?.manager.signalEnumerator(for: .workingSet) { error in
+                if let error = error {
+                     logger.error("Failed to signal enumerator on update cleared: \(error)")
+                } else {
+                     logger.info("✅ Signalled enumerator on update cleared successfully")
+                }
+            }
+        }
         
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
@@ -183,6 +198,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             userInfo: ["reason": "Update required in SyncExtension"],
             deliverImmediately: true
         )
+
+        DispatchQueue.main.async {
+            if let url = URL(string: "internxt://update-required") {
+                NSWorkspace.shared.open(url)
+            }
+        }
     }
     
     private func handleSessionExpired() {

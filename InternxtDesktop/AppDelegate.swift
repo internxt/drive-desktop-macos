@@ -103,7 +103,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.handleMandatoryUpdateRequired()
+            if !UpdateEnforcementManager.shared.isBlocked {
+                UpdateEnforcementManager.shared.triggerEnforcement(reason: "Update required notification received from extension")
+            } else {
+                self?.handleMandatoryUpdateRequired()
+            }
         }
 
         NotificationCenter.default.addObserver(
@@ -314,6 +318,12 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 self.logger.info("🔴 Received session-expired deeplink, performing logout")
                 NotificationCenter.default.post(name: .userDidLogout, object: nil)
                 NSApp.activate(ignoringOtherApps: true)
+                return
+            }
+
+            if url.host == "update-required" {
+                self.logger.warning("🚨 Received update-required deeplink from extension")
+                UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED in extension")
                 return
             }
             
@@ -578,6 +588,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.logger.warning("🚨 Presenting mandatory update dialog")
+            if NSApp.activationPolicy() == .accessory {
+                NSApp.setActivationPolicy(.regular)
+            }
+            NSApp.activate(ignoringOtherApps: true)
             self.updateRequiredState.isVisible = true
             self.windowsManager.openWindow(id: "update-required")
         }
@@ -589,6 +603,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self.logger.info("Closing mandatory update dialog because enforcement was cleared")
             self.updateRequiredState.isVisible = false
             self.windowsManager.closeWindow(id: "update-required")
+            if let manager = self.domainManager.manager {
+                self.signalFileProvider(manager)
+            }
         }
     }
 
