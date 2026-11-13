@@ -121,31 +121,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         }
 
         APIClient.onUpdateRequired = { [weak self] in
-            self?.handleUpdateRequired()
+            self?.handleUpdateRequiredFromAPI()
         }
 
         DistributedNotificationCenter.default().addObserver(
             forName: NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
             object: nil,
             queue: .main
-        ) { [weak self] _ in
-            self?.handleUpdateRequired()
+        ) { _ in
+            logger.info("ℹ️ SyncExtension: Received update-required distributed notification (enforcement owned by app).")
         }
 
-        DistributedNotificationCenter.default().addObserver(
-            forName: NSNotification.Name("com.internxt.drive.updateRequiredCleared"),
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-           logger.info("✅ SyncExtension: Mandatory update cleared notification received. Signalling enumerator.")
-            self?.manager.signalEnumerator(for: .workingSet) { error in
-                if let error = error {
-                     logger.error("Failed to signal enumerator on update cleared: \(error)")
-                } else {
-                     logger.info("✅ Signalled enumerator on update cleared successfully")
-                }
-            }
-        }
         
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
@@ -185,19 +171,17 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
 
     private var isUpdateRequired: Bool {
-        return UserDefaults(suiteName: INTERNXT_GROUP_NAME)?.bool(forKey: UPDATE_MANDATORY_KEY) == true
+        return isUpdateMandatory
     }
 
-    private func handleUpdateRequired() {
-        logger.warning("🚨 SyncExtension: Mandatory update required.")
-        UserDefaults(suiteName: INTERNXT_GROUP_NAME)?.set(true, forKey: UPDATE_MANDATORY_KEY)
 
-        DistributedNotificationCenter.default().postNotificationName(
-            NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
-            object: nil,
-            userInfo: ["reason": "Update required in SyncExtension"],
-            deliverImmediately: true
-        )
+    private func handleUpdateRequiredFromAPI() {
+        guard !isUpdateMandatory else {
+            logger.info("ℹ️ SyncExtension: Update already flagged, skipping duplicate signal.")
+            return
+        }
+        logger.warning("🚨 SyncExtension: CLIENT_VERSION_UNSUPPORTED — flagging mandatory update.")
+        UserDefaults(suiteName: INTERNXT_GROUP_NAME)?.set(true, forKey: UPDATE_MANDATORY_KEY)
 
         DispatchQueue.main.async {
             if let url = URL(string: "internxt://update-required") {

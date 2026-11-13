@@ -95,7 +95,7 @@ public class UpdateEnforcementManager: ObservableObject {
         sharedDefaults?.removeObject(forKey: blockedVersionKey)
 
         DistributedNotificationCenter.default().postNotificationName(
-            NSNotification.Name("com.internxt.drive.updateRequiredCleared"),
+            NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED_CLEARED),
             object: nil,
             userInfo: nil,
             deliverImmediately: true

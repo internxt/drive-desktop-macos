@@ -62,12 +62,8 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     }
     
     
-    private var isUpdateRequired: Bool {
-        return UserDefaults(suiteName: INTERNXT_GROUP_NAME)?.bool(forKey: UPDATE_MANDATORY_KEY) == true
-    }
-
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
-        guard !isUpdateRequired else {
+        guard !isUpdateMandatory else {
             self.logger.warning("⚠️ Skipping enumerateChanges: mandatory update required.")
             observer.finishEnumeratingWithError(
                 NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application update required"])

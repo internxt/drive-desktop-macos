@@ -102,12 +102,8 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             forName: NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
             object: nil,
             queue: .main
-        ) { [weak self] _ in
-            if !UpdateEnforcementManager.shared.isBlocked {
-                UpdateEnforcementManager.shared.triggerEnforcement(reason: "Update required notification received from extension")
-            } else {
-                self?.handleMandatoryUpdateRequired()
-            }
+        ) { _ in
+            UpdateEnforcementManager.shared.triggerEnforcement(reason: "Update required distributed notification from extension")
         }
 
         NotificationCenter.default.addObserver(
@@ -322,8 +318,15 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             }
 
             if url.host == "update-required" {
-                self.logger.warning("🚨 Received update-required deeplink from extension")
-                UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED in extension")
+                self.logger.warning("🚨 Received update-required deeplink — verifying App Group flag")
+                if isUpdateMandatory {
+                    DispatchQueue.main.async {
+                        UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED confirmed via App Group flag")
+                    }
+                } else {
+                    self.logger.info("ℹ️ Deeplink received but App Group flag is not set — running compatibility check")
+                    Task { await UpdateEnforcementManager.shared.checkCompatibility() }
+                }
                 return
             }
             
@@ -603,6 +606,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self.logger.info("Closing mandatory update dialog because enforcement was cleared")
             self.updateRequiredState.isVisible = false
             self.windowsManager.closeWindow(id: "update-required")
+            if NSApp.activationPolicy() == .regular {
+                NSApp.setActivationPolicy(.accessory)
+            }
             if let manager = self.domainManager.manager {
                 self.signalFileProvider(manager)
             }
