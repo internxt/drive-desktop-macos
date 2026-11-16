@@ -98,14 +98,6 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             }
         }
 
-        DistributedNotificationCenter.default().addObserver(
-            forName: NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.handleMandatoryUpdateRequired()
-        }
-
         NotificationCenter.default.addObserver(
             forName: .updateRequiredNotification,
             object: nil,
@@ -314,6 +306,20 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 self.logger.info("🔴 Received session-expired deeplink, performing logout")
                 NotificationCenter.default.post(name: .userDidLogout, object: nil)
                 NSApp.activate(ignoringOtherApps: true)
+                return
+            }
+
+            if url.host == "update-required" {
+ 
+                self.logger.warning("🚨 Received update-required deeplink — verifying App Group flag")
+                if isUpdateMandatory {
+                    DispatchQueue.main.async {
+                        UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED confirmed via App Group flag")
+                    }
+                } else {
+                    self.logger.info("ℹ️ Deeplink received but App Group flag is not set — running compatibility check")
+                    Task { await UpdateEnforcementManager.shared.checkCompatibility() }
+                }
                 return
             }
             
@@ -578,6 +584,10 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.logger.warning("🚨 Presenting mandatory update dialog")
+            if NSApp.activationPolicy() == .accessory {
+                NSApp.setActivationPolicy(.regular)
+            }
+            NSApp.activate(ignoringOtherApps: true)
             self.updateRequiredState.isVisible = true
             self.windowsManager.openWindow(id: "update-required")
         }
@@ -589,6 +599,12 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
             self.logger.info("Closing mandatory update dialog because enforcement was cleared")
             self.updateRequiredState.isVisible = false
             self.windowsManager.closeWindow(id: "update-required")
+            if NSApp.activationPolicy() == .regular {
+                NSApp.setActivationPolicy(.accessory)
+            }
+            if let manager = self.domainManager.manager {
+                self.signalFileProvider(manager)
+            }
         }
     }
 

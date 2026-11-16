@@ -66,7 +66,13 @@ extension ConfigLoaderError: LocalizedError {
 public let INTERNXT_GROUP_NAME = "JR4S3SY396.group.internxt.desktop"
 public let NOTIFICATION_UNAUTHORIZED = "com.internxt.drive.unauthorized"
 public let NOTIFICATION_UPDATE_REQUIRED = "com.internxt.drive.updateRequired"
+public let NOTIFICATION_UPDATE_REQUIRED_CLEARED = "com.internxt.drive.updateRequiredCleared"
 public let UPDATE_MANDATORY_KEY = "isUpdateMandatory"
+
+
+public var isUpdateMandatory: Bool {
+    return UserDefaults(suiteName: INTERNXT_GROUP_NAME)?.bool(forKey: UPDATE_MANDATORY_KEY) == true
+}
 
 public var loadedConfig: JSONConfig? = nil
 
