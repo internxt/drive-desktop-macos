@@ -343,6 +343,7 @@
 "MAIL_BRIDGE_LOCALHOST_NOTE" = "Bridge solo escucha en 127.0.0.1: tus claves nunca salen de este dispositivo.";
 "MAIL_BRIDGE_RUNNING" = "Mail Bridge está en marcha";
 "MAIL_BRIDGE_RESYNC" = "Resincronizar";
+"MAIL_BRIDGE_RESYNCING" = "Sincronizando…";
 "MAIL_BRIDGE_TURN_OFF" = "Apagar";
 "MAIL_BRIDGE_CONNECT_CLIENT_TITLE" = "Conecta un cliente de correo";
 "MAIL_BRIDGE_CONNECT_CLIENT_SUBTITLE" = "Elige tu aplicación e Internxt configurará la cuenta por ti.";
@@ -368,6 +369,8 @@
 "MAIL_BRIDGE_SETTINGS_SUBTITLE_%@" = "Se aplican a %@ en este dispositivo.";
 "MAIL_BRIDGE_SAVE_CHANGES" = "Guardar cambios";
 "MAIL_BRIDGE_UP_TO_DATE" = "Todo sincronizado";
+"MAIL_BRIDGE_UP_TO_DATE_AT_%@" = "Todo sincronizado · comprobado a las %@";
+"MAIL_BRIDGE_PREPARING" = "Preparando tu buzón";
 "MAIL_BRIDGE_SYNCING_%d_%@_%@" = "Sincronizando tu buzón — %d %% · %@ de %@ mensajes nuevos";
 "MAIL_BRIDGE_SYNC_INTERRUPTED_%@_%@" = "Sincronización interrumpida — %@ de %@ mensajes nuevos descargados";
 "MAIL_BRIDGE_IDENTITY_TITLE" = "Primero crea tu dirección de Internxt Mail";
@@ -389,3 +392,15 @@
 "MAIL_BRIDGE_ERROR_VIEW_LOGS" = "Ver registros";
 "MAIL_BRIDGE_ERROR_CONTACT_SUPPORT" = "Contactar con soporte";
 "MAIL_BRIDGE_ERROR_DISMISS" = "Dejarlo apagado por ahora";
+
+/* Mandatory Update */
+"UPDATE_REQUIRED_TITLE" = "Actualización de la aplicación requerida";
+"UPDATE_REQUIRED_MESSAGE" = "Esta versión de Internxt Drive ya no es compatible. La sincronización y las operaciones afectadas se han pausado. Actualiza la aplicación para continuar.";
+"UPDATE_REQUIRED_BUTTON" = "Actualizar ahora";
+"WIDGET_UPDATE_REQUIRED_TITLE" = "Actualización requerida";
+"WIDGET_UPDATE_REQUIRED_BODY" = "La sincronización está pausada. Actualiza Internxt para reanudar las operaciones normales.";
+"WIDGET_DEPRECATED_TITLE" = "Actualización recomendada";
+"WIDGET_DEPRECATED_BODY_%@" = "Esta versión de Internxt Drive dejará de funcionar el %@. Actualiza para evitar interrupciones.";
+"WIDGET_DEPRECATED_BODY_NO_DATE" = "Esta versión de Internxt Drive quedará obsoleta pronto. Actualiza para evitar interrupciones.";
+
+

@@ -120,6 +120,19 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
             APIClient.onUnauthorized = nil
             self?.handleSessionExpired()
         }
+
+        APIClient.onUpdateRequired = { [weak self] in
+            self?.handleUpdateRequiredFromAPI()
+        }
+
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name(NOTIFICATION_UPDATE_REQUIRED),
+            object: nil,
+            queue: .main
+        ) { _ in
+            logger.info("ℹ️ SyncExtension: Received update-required distributed notification (enforcement owned by app).")
+        }
+
         
         manager.signalEnumerator(for: .workingSet, completionHandler: {error in
             if error != nil {
@@ -156,6 +169,26 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     
     func invalidate() {
         fileProviderItemActions.clean()
+    }
+
+    private var isUpdateRequired: Bool {
+        return isUpdateMandatory
+    }
+
+
+    private func handleUpdateRequiredFromAPI() {
+        guard !isUpdateMandatory else {
+            logger.info("ℹ️ SyncExtension: Update already flagged, skipping duplicate signal.")
+            return
+        }
+        logger.warning("🚨 SyncExtension: CLIENT_VERSION_UNSUPPORTED — flagging mandatory update.")
+        UserDefaults(suiteName: INTERNXT_GROUP_NAME)?.set(true, forKey: UPDATE_MANDATORY_KEY)
+
+        DispatchQueue.main.async {
+            if let url = URL(string: "internxt://update-required") {
+                NSWorkspace.shared.open(url)
+            }
+        }
     }
     
     private func handleSessionExpired() {
@@ -262,6 +295,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
 
     
     func fetchContents(for itemIdentifier: NSFileProviderItemIdentifier, version requestedVersion: NSFileProviderItemVersion?, request: NSFileProviderRequest, completionHandler: @escaping (URL?, NSFileProviderItem?, Error?) -> Void) -> Progress {
+        guard !isUpdateRequired else {
+            logger.warning("⚠️ Skipping fetchContents: mandatory update required.")
+            completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application update required"]))
+            return Progress()
+        }
         refreshAuthTokensIfNeeded()
         let encryptedFileDestinationURL = makeTemporaryURL("encrypt", "enc")
         let destinationURL = makeTemporaryURL("plain")
@@ -323,6 +361,12 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void
     ) -> Progress {
 
+        guard !isUpdateRequired else {
+            logger.warning("⚠️ Skipping createItem: mandatory update required.")
+            completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application update required"]))
+            return Progress(totalUnitCount: 100)
+        }
+
         self.refreshAuthTokensIfNeeded()
 
         if itemTemplate.filename.hasPrefix("~$") {
@@ -375,7 +419,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
                 if !self.isWorkspaceDomain() {
                      parentUuid = try await Self.folderCache.getOrFetch(for: parentId, fetch: {
                         let folderMeta = try await self.driveNewAPI.getFolderMetaById(id: parentId, debug: true)
-                        return folderMeta.uuid!
+                        return folderMeta.uuid
                     }, callId: callId)
                 }
   
@@ -564,6 +608,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func modifyItem(_ item: NSFileProviderItem, baseVersion version: NSFileProviderItemVersion, changedFields: NSFileProviderItemFields, contents newContents: URL?, options: NSFileProviderModifyItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void) -> Progress {
+        guard !isUpdateRequired else {
+            logger.warning("⚠️ Skipping modifyItem: mandatory update required.")
+            completionHandler(nil, [], false, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application update required"]))
+            return Progress()
+        }
         
         refreshAuthTokensIfNeeded()
         if changedFields.contains(.extendedAttributes) {
@@ -752,7 +801,11 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     }
     
     func deleteItem(identifier: NSFileProviderItemIdentifier, baseVersion version: NSFileProviderItemVersion, options: NSFileProviderDeleteItemOptions = [], request: NSFileProviderRequest, completionHandler: @escaping (Error?) -> Void) -> Progress {
-        
+        guard !isUpdateRequired else {
+            logger.warning("⚠️ Skipping deleteItem: mandatory update required.")
+            completionHandler(NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application update required"]))
+            return Progress()
+        }
         return DeleteFileUseCase(identifier: identifier, completionHandler: completionHandler).run()
     }
     

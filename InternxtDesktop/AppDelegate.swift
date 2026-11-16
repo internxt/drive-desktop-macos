@@ -58,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let fileSizeLimitState = FileSizeLimitState()
     let emptyFileLimitState = EmptyFileLimitState()
     let storageFullState = StorageFullState()
+    let updateRequiredState = UpdateRequiredState()
     private var backupAlertsCoordinator: BackupAlertsCoordinator!
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
     private let driveNewAPI: DriveAPI = APIFactory.DriveNew
@@ -89,6 +90,28 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                     NotificationCenter.default.post(name: .userDidLogout, object: nil)
                 }
             }
+        }
+
+        APIClient.onUpdateRequired = {
+            DispatchQueue.main.async {
+                UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED received in main app")
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .updateRequiredNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleMandatoryUpdateRequired()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .updateRequiredClearedNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleMandatoryUpdateCleared()
         }
 
         DistributedNotificationCenter.default().addObserver(
@@ -127,11 +150,15 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState, updateRequiredState: updateRequiredState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
         self.issuesManager.startObserving()
+
+        if UpdateEnforcementManager.shared.isBlocked {
+            self.handleMandatoryUpdateRequired()
+        }
 
         self.backupAlertsCoordinator = BackupAlertsCoordinator(
             fileSizeLimitState: fileSizeLimitState,
@@ -146,6 +173,11 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
         // Load the config, or die with a fatalError
         config.load()
+        
+        Task {
+            await UpdateEnforcementManager.shared.checkCompatibility()
+        }
+        UpdateEnforcementManager.shared.startPeriodicCompatibilityCheck()
         
         if(isPreview) {
             // Running in preview mode
@@ -274,6 +306,20 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
                 self.logger.info("🔴 Received session-expired deeplink, performing logout")
                 NotificationCenter.default.post(name: .userDidLogout, object: nil)
                 NSApp.activate(ignoringOtherApps: true)
+                return
+            }
+
+            if url.host == "update-required" {
+ 
+                self.logger.warning("🚨 Received update-required deeplink — verifying App Group flag")
+                if isUpdateMandatory {
+                    DispatchQueue.main.async {
+                        UpdateEnforcementManager.shared.triggerEnforcement(reason: "CLIENT_VERSION_UNSUPPORTED confirmed via App Group flag")
+                    }
+                } else {
+                    self.logger.info("ℹ️ Deeplink received but App Group flag is not set — running compatibility check")
+                    Task { await UpdateEnforcementManager.shared.checkCompatibility() }
+                }
                 return
             }
             
@@ -526,6 +572,42 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         self.windowsManager.openWindow(id: "settings")
     }
 
+    @objc func openUpdateRequiredWindow() {
+        self.windowsManager.openWindow(id: "update-required")
+    }
+
+    @objc func checkForUpdates() {
+        self.updaterController.updater.checkForUpdates()
+    }
+
+    private func handleMandatoryUpdateRequired() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.logger.warning("🚨 Presenting mandatory update dialog")
+            if NSApp.activationPolicy() == .accessory {
+                NSApp.setActivationPolicy(.regular)
+            }
+            NSApp.activate(ignoringOtherApps: true)
+            self.updateRequiredState.isVisible = true
+            self.windowsManager.openWindow(id: "update-required")
+        }
+    }
+
+    private func handleMandatoryUpdateCleared() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.logger.info("Closing mandatory update dialog because enforcement was cleared")
+            self.updateRequiredState.isVisible = false
+            self.windowsManager.closeWindow(id: "update-required")
+            if NSApp.activationPolicy() == .regular {
+                NSApp.setActivationPolicy(.accessory)
+            }
+            if let manager = self.domainManager.manager {
+                self.signalFileProvider(manager)
+            }
+        }
+    }
+
     @objc func openIssuesWindow() {
         self.windowsManager.openWindow(id: "issues")
     }
@@ -539,6 +621,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
+        UpdateEnforcementManager.shared.stopPeriodicCompatibilityCheck()
         destroyWidget()
         NotificationCenter.default.removeObserver(self)
     }

@@ -53,9 +53,7 @@ extension BackupContentNavigator {
             if needsMoreFiles || needsMoreChilds {
                 let folderMeta = try await backupAPI.getBackupFolderMeta(folderId: folderId.toString())
                 
-                guard let folderUuid = folderMeta.uuid else {
-                    return
-                }
+                let folderUuid = folderMeta.uuid
                 
                 if needsMoreFiles {
                     moreFiles = try await self.getFolderFilesAsBackupContentItems(folderUuid: folderUuid, bucketId: bucketId, offset: currentFiles.count, limit: LIMIT_PER_REQUEST)
@@ -79,9 +77,7 @@ extension BackupContentNavigator {
                 
                 let folderMeta = try await backupAPI.getBackupFolderMeta(folderId: folderId.toString())
 
-                guard let folderUuid = folderMeta.uuid  else {
-                    return
-                }
+                let folderUuid = folderMeta.uuid
                 
                 let levelExistsAlready = navigationLevels.contains{$0.id == folderId.toString()}
                 if levelExistsAlready {

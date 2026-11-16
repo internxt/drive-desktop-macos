@@ -48,9 +48,7 @@ struct RenameFolderUseCase {
                    
                     let folderMeta = try await driveNewAPI.getFolderMetaById(id: item.itemIdentifier.rawValue)
                     
-                    guard let parentUuid = folderMeta.uuid else {
-                        throw UploadFileUseCaseError.InvalidParentUUID
-                    }
+                    let parentUuid = folderMeta.uuid
                     folderUuid = parentUuid
                     
                     _ = try await driveNewAPI.updateFolderNew(folderUuid: folderUuid, folderName:item.filename, debug: true)

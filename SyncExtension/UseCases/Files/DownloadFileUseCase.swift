@@ -162,7 +162,7 @@ struct DownloadFileUseCase {
                     }
                     
                     try await downloadFolderIteratively(
-                        initialFolderUuid: folder.uuid!,
+                        initialFolderUuid: folder.uuid,
                         localFolderURL: destinationURL
                     )
                     

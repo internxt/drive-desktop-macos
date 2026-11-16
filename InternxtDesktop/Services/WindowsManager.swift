@@ -17,6 +17,7 @@ struct WindowConfig {
     public var height: Int = 300
     public var fixedToFront: Bool = true
     public var backgroundColor = Color.Surface
+    public var closable: Bool = true
 }
 
 enum WindowsManagerError: Error {
@@ -52,9 +53,13 @@ class WindowsManager:NSObject, NSWindowDelegate {
     func createWindow(config: WindowConfig) {
         
         let windowView = config.view
+        var styleMask: NSWindow.StyleMask = [.titled, .fullSizeContentView]
+        if config.closable {
+            styleMask.insert(.closable)
+        }
         let newWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: config.width, height: config.height),
-            styleMask: [.titled, .closable, .fullSizeContentView],
+            styleMask: styleMask,
             backing: .buffered,
             defer: false
         )
@@ -98,6 +103,13 @@ class WindowsManager:NSObject, NSWindowDelegate {
         }
     }
     
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        if sender.identifier?.rawValue == "update-required" {
+            return !UpdateEnforcementManager.shared.isBlocked
+        }
+        return true
+    }
+
     func windowWillClose(_ notification: Notification) {
         let window = (notification.object as? NSWindow)
         if let id = window?.identifier {
@@ -125,6 +137,7 @@ class WindowsManager:NSObject, NSWindowDelegate {
     
     func closeWindow(id: String) {
         if let window = windowRefs[id] {
+            window.orderOut(nil)
             window.close()
             windowRefs[id] = nil
         } else {

@@ -52,9 +52,7 @@ struct EnumerateFolderItemsUseCase {
                 let currentFolderName = folderMeta.plainName ?? (self.enumeratedItemIdentifier == .rootContainer ? "Root" : self.enumeratedItemIdentifier.rawValue)
                 self.logger.info("Fetching folder content for '\(currentFolderName)' (id: \(self.enumeratedItemIdentifier.rawValue))")
 
-                guard let folderUuid = folderMeta.uuid  else {
-                    throw UploadFileUseCaseError.InvalidParentUUID
-                }
+                let folderUuid = folderMeta.uuid
      
                 let folders = try await driveAPI.getFolderFolders(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
                 let files = try await driveAPI.getFolderFilesV2(folderUuid: folderUuid, offset: self.getOffset(), limit: limit)
