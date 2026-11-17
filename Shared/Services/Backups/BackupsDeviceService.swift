@@ -39,7 +39,7 @@ struct BackupsDeviceService {
 
         
         let devicesToReturn = devices.filter { device in
-            return !(device.removed == true || device.deleted == true)
+            return DriveItemStatus(rawValue: device.status) == .exists
         }
         
        
@@ -92,10 +92,7 @@ struct BackupsDeviceService {
             plainName: "Macbook Pro",
             bucket: "bucket123",
             encryptVersion: nil,
-            deleted: false,
-            deletedAt: nil,
-            removed: false,
-            removedAt: nil,
+            status: "EXISTS",
             createdAt: "",
             updatedAt: "",
             userId: 123,
