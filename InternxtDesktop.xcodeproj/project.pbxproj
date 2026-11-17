@@ -257,6 +257,7 @@
 		E13DBC6A2BCD4F2900F6B43E /* UsageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ADD0432AA7367800D95694 /* UsageManager.swift */; };
 		E140C32A2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
 		E140C32D2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
+		E140C32E2AC376AE00A88B9F /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3292AC376AE00A88B9F /* Drive.swift */; };
 		E140C3302AC3778200A88B9F /* DriveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C32F2AC3778200A88B9F /* DriveFile.swift */; };
 		E140C3332AC379AA00A88B9F /* DriveFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3322AC379AA00A88B9F /* DriveFileService.swift */; };
 		E140C3342AC379AA00A88B9F /* DriveFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140C3322AC379AA00A88B9F /* DriveFileService.swift */; };
@@ -2003,6 +2004,7 @@
 				AA8D9AF12E7CC3300068B333 /* FeaturesService.swift in Sources */,
 				AAE7975C2C875F5000AEFDEF /* URLDictionary.swift in Sources */,
 				3120B5672B84F45600F524F1 /* Device.swift in Sources */,
+				E140C32E2AC376AE00A88B9F /* Drive.swift in Sources */,
 				E15F8C432B7669F600C60EFA /* URL.swift in Sources */,
 				E15F8C412B762EFF00C60EFA /* BackupTreeNodeSyncStatus.swift in Sources */,
 				319436922B9B8293006F4600 /* SyncedNodeRepository.swift in Sources */,

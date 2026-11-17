@@ -258,7 +258,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     }
 
                     let folder = existencesResponse.existentFolders.first { currentFolder in
-                        currentFolder.plainName == foldername && currentFolder.removed == false
+                        currentFolder.plainName == foldername && DriveItemStatus(rawValue: currentFolder.status) == .exists
                     }
 
                     guard let folder = folder else {
