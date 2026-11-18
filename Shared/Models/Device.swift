@@ -17,20 +17,17 @@ struct Device: Codable, Identifiable {
     var plainName: String?
     let bucket: String?
     let encryptVersion: String?
-    let deleted: Bool
-    let deletedAt: String?
-    let removed: Bool
-    let removedAt: String?
+    let status: String
     let createdAt: String
     let updatedAt: String
     let userId: Int?
     var hasBackups: Bool = false
 
     var isCurrentDevice: Bool {
-        return ConfigLoader().getDeviceName() == self.plainName && self.deleted != true && self.removed != true
+        return ConfigLoader().getDeviceName() == self.plainName && DriveItemStatus(rawValue: self.status) == .exists
     }
 
-    init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plainName: String? = nil, bucket: String?, encryptVersion: String?, deleted: Bool, deletedAt: String?, removed: Bool, removedAt: String?, createdAt: String, updatedAt: String, userId: Int?, hasBackups: Bool) {
+    init(id: Int, uuid: String, parentId: String?, parentUuid: String?, name: String?, plainName: String? = nil, bucket: String?, encryptVersion: String?, status: String = "EXISTS", createdAt: String, updatedAt: String, userId: Int?, hasBackups: Bool) {
         let decrypt = Decrypt()
 
         self.id = id
@@ -50,10 +47,7 @@ struct Device: Codable, Identifiable {
         }
         self.bucket = bucket
         self.encryptVersion = encryptVersion
-        self.deleted = deleted
-        self.deletedAt = deletedAt
-        self.removed = removed
-        self.removedAt = removedAt
+        self.status = status
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.userId = userId
@@ -80,10 +74,7 @@ struct Device: Codable, Identifiable {
         }
         self.bucket = deviceAsFolder.bucket
         self.encryptVersion = deviceAsFolder.encrypt_version
-        self.deleted = deviceAsFolder.deleted
-        self.deletedAt = deviceAsFolder.deletedAt
-        self.removed = deviceAsFolder.removed
-        self.removedAt = deviceAsFolder.removedAt
+        self.status = deviceAsFolder.status
         self.createdAt = deviceAsFolder.createdAt
         self.updatedAt = deviceAsFolder.updatedAt
         self.userId = deviceAsFolder.user_id ?? deviceAsFolder.userId

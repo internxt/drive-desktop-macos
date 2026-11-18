@@ -86,7 +86,7 @@ struct PackageUploadService {
             
             let existences = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentFolderUuid, folderName: name)
             if let folder = existences.existentFolders.first(where: {
-                $0.plainName == name && $0.removed == false
+                $0.plainName == name && DriveItemStatus(rawValue: $0.status) == .exists
             }) {
                 return folder.uuid
             } else {
