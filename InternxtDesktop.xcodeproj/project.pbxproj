@@ -2421,6 +2421,13 @@
 				INFOPLIST_FILE = XPCBackupService/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = XPCBackupService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+					"@loader_path/../../../../Frameworks",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.7.1;
@@ -2455,6 +2462,13 @@
 				INFOPLIST_FILE = XPCBackupService/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = XPCBackupService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+					"@loader_path/../../../../Frameworks",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.7.1;
@@ -2488,6 +2502,13 @@
 				INFOPLIST_FILE = XPCBackupService/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = XPCBackupService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+					"@loader_path/../../../../Frameworks",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 2.7.1;
