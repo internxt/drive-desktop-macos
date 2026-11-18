@@ -59,6 +59,7 @@ class BackupsService: ObservableObject {
     @Published var foldersToBackup: [FolderToBackup] = []
     @Published var currentDeviceHasBackup = false
     private var xpcBackupService: XPCBackupServiceProtocol? = nil
+    private var xpcConnection: NSXPCConnection? = nil
     @Published var selectedDevice: Device? = nil
     @Published var backupUploadProgress: Double = 0.0
     @Published var backupDownloadedItems: Int64 = 0
@@ -95,6 +96,8 @@ class BackupsService: ObservableObject {
             self.currentDeviceHasBackup = false
             self.selectedDevice = nil
             self.xpcBackupService = nil
+            self.xpcConnection?.invalidate()
+            self.xpcConnection = nil
             self.deviceResponse = nil
             self.devicesFetchingStatus = .LoadingDevices
             self.backupsItemsInprogress = []
@@ -758,31 +761,33 @@ class BackupsService: ObservableObject {
         if let service = self.xpcBackupService {
             return service
         }
-        return try await withCheckedThrowingContinuation{continuation in
-            let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
-            connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
-            connectionToService.interruptionHandler = {
-                appLogger.error("Connection with XPCBackupsService interrupted")
-                onConnectionIssue()
-            }
-            connectionToService.invalidationHandler = {
-                appLogger.error("Connection with XPCBackupsService interrupted")
-                onConnectionIssue()
-            }
-            connectionToService.resume()
 
-            
-            guard let service = connectionToService.remoteObjectProxyWithErrorHandler({ error in
-                continuation.resume(throwing: error)
-            }) as? XPCBackupServiceProtocol else {
-                return continuation.resume(throwing: BackupError.cannotInitializeXPCService)
-            }
-            
-            self.xpcBackupService = service
-            
-            continuation.resume(returning: service)
+        let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
+        connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
+        connectionToService.interruptionHandler = { [weak self] in
+            appLogger.error("Connection with XPCBackupsService interrupted")
+            self?.xpcBackupService = nil
+            onConnectionIssue()
         }
-        
+        connectionToService.invalidationHandler = { [weak self] in
+            appLogger.error("Connection with XPCBackupsService invalidated")
+            self?.xpcBackupService = nil
+            self?.xpcConnection = nil
+            onConnectionIssue()
+        }
+        connectionToService.resume()
+
+        guard let service = connectionToService.remoteObjectProxyWithErrorHandler({ [weak self] error in
+            appLogger.error("XPCBackupService error: \(error.localizedDescription)")
+            self?.xpcBackupService = nil
+            onConnectionIssue()
+        }) as? XPCBackupServiceProtocol else {
+            throw BackupError.cannotInitializeXPCService
+        }
+
+        self.xpcConnection = connectionToService
+        self.xpcBackupService = service
+        return service
     }
              
     private func checkBackupUploadProgress() {
