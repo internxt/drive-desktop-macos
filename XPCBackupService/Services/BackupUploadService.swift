@@ -34,6 +34,20 @@ enum BackupUploadError: Error {
     case EmptyFileQuotaExceeded
     case EmptyFilePlanNotAllowed
     case StorageFull
+    case fileNotDownloadedFromCloud
+}
+
+extension BackupUploadError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .fileNotDownloadedFromCloud:
+            return "This file is currently in the cloud and not on your Mac. Please download it first to back it up."
+        case .StorageFull:
+            return "Storage is full."
+        default:
+            return "An unexpected backup error occurred (\(self))."
+        }
+    }
 }
 
 enum BackupDownloadError: Error {
@@ -83,6 +97,10 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
     private lazy var backupNewAPI: BackupAPI = {
         BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }()
+
+    private lazy var driveAPI: DriveAPI = {
+        DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
     }()
 
 
@@ -144,7 +162,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     
 
 
-    private func syncNodeFolder(node: BackupTreeNode) async -> Result<BackupTreeNodeSyncResult, Error> {
+    private func syncNodeFolder(node: BackupTreeNode, retryCount: Int = 0) async -> Result<BackupTreeNodeSyncResult, Error> {
         self.logger.info("Creating folder")
 
         guard let nodeURL = node.url else {
@@ -191,11 +209,11 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             }
 
-            self.logger.info("✅ Folder created successfully: \(createdFolder.id)")
+            self.logger.info("✅ Folder created successfully: \(createdFolder.uuid)")
 
             try await addSyncedNodeSafely(
                 SyncedNode(
-                    remoteId: createdFolder.id,
+                    remoteId: createdFolder.id ?? 0,
                     deviceId: node.deviceId,
                     remoteUuid: createdFolder.uuid,
                     url: nodeURL,
@@ -205,12 +223,26 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                 )
             )
 
-            return .success(BackupTreeNodeSyncResult(id: createdFolder.id, uuid: createdFolder.uuid))
+            return .success(BackupTreeNodeSyncResult(id: createdFolder.id ?? 0, uuid: createdFolder.uuid))
         } catch {
             self.logger.error("❌ Failed to create folder: \(error.getErrorDescription())")
 
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 404 {
-                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server . Deleting local reference from Realm")
+                if retryCount < 3 && self.canDoBackup && !Task.isCancelled {
+                    let delaySeconds = pow(2.0, Double(retryCount)) * 0.5
+                    self.logger.warning("⏳ Folder parent \(safeRemoteParentId) not found yet (404), retrying in \(delaySeconds)s (attempt \(retryCount + 1)/3)...")
+                    do {
+                        try await Task.sleep(nanoseconds: UInt64(delaySeconds * 1_000_000_000))
+                    } catch {
+                        return .failure(BackupUploadError.BackupStoppedManually)
+                    }
+                    guard self.canDoBackup && !Task.isCancelled else {
+                        return .failure(BackupUploadError.BackupStoppedManually)
+                    }
+                    return await self.syncNodeFolder(node: node, retryCount: retryCount + 1)
+                }
+
+                self.logger.error("❌ Folder parent \(safeRemoteParentId) not found in server after \(retryCount) retries. Deleting local reference from Realm")
                 try? await SyncedNodeRepository.shared.deleteSyncedNodeByRemoteIdAsync(remoteId: safeRemoteParentId)
                 return .failure(BackupUploadError.MissingParentFolder)
             }
@@ -218,23 +250,27 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
             if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                 // Handle duplicated folder error
                 do {
-                    let parentChilds = try await withAPIThrottle {
-                        try await self.backupNewAPI.getBackupChilds(folderUuid: "\(safeRemoteParentUuid)")
+                    let existencesResponse = try await withAPIThrottle {
+                        try await self.driveAPI.getFolderExistencesInFolder(
+                            folderParentUuid: safeRemoteParentUuid, 
+                            folderName: foldername
+                        )
                     }
 
-                    let folder = parentChilds.folders.first { currentFolder in
+                    let folder = existencesResponse.existentFolders.first { currentFolder in
                         currentFolder.plainName == foldername && currentFolder.removed == false
                     }
 
                     guard let folder = folder else {
+                        self.logger.error("❌ CannotFindNodeInServer: searched '\(foldername)' server returned: \(existencesResponse.existentFolders.map { $0.plainName })")
                         return .failure(BackupUploadError.CannotFindNodeInServer)
                     }
 
                     try await addSyncedNodeSafely(
                         SyncedNode(
-                            remoteId: folder.id,
+                            remoteId: folder.id ?? 0,
                             deviceId: node.deviceId,
-                            remoteUuid: folder.uuid ?? "",
+                            remoteUuid: folder.uuid,
                             url: nodeURL,
                             rootBackupFolder: node.rootBackupFolder,
                             parentId: node.parentId,
@@ -242,7 +278,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
 
-                    return .success(BackupTreeNodeSyncResult(id: folder.id, uuid: folder.uuid))
+                    return .success(BackupTreeNodeSyncResult(id: folder.id ?? 0, uuid: folder.uuid))
                 } catch {
                     self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)
@@ -334,7 +370,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     )
                 }
 
-                self.logger.info("✅ Updated file correctly with identifier \(updatedFile.fileId)")
+                self.logger.info("✅ Updated file correctly with identifier \(String(describing: updatedFile.fileId))")
 
 
                 // Edit date in synced database
@@ -362,19 +398,16 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                             type: filename.pathExtension,
                             bucket: uploadBucketId,
                             size: uploadSize,
-                            folderId: remoteParentId,
-                            name: encryptedFilename.base64EncodedString(),
                             plainName: filename.deletingPathExtension,
                             folderUuid: remoteParentUuid
                         )
                     )
                 }
-                self.logger.info("✅ Created file correctly with identifier \(createdFile.id) : \(createdFile.plain_name)")
+                self.logger.info("✅ Created file correctly with identifier \(createdFile.uuid) : \(createdFile.plain_name)")
 
 
                 try await addSyncedNodeSafely(
                     SyncedNode(
-                        remoteId: createdFile.id,
                         deviceId: node.deviceId,
                         remoteUuid: createdFile.uuid,
                         url: fileURL,
@@ -393,7 +426,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                     
                 }
 
-                return .success(BackupTreeNodeSyncResult(id: createdFile.id, uuid: createdFile.uuid))
+                return .success(BackupTreeNodeSyncResult(uuid: createdFile.uuid))
             }
 
         } catch {
@@ -451,7 +484,6 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
 
                     try await addSyncedNodeSafely(
                         SyncedNode(
-                            remoteId: file.id,
                             deviceId: node.deviceId,
                             remoteUuid: file.uuid,
                             url: fileURL,
@@ -461,7 +493,7 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
                         )
                     )
 
-                    return .success(BackupTreeNodeSyncResult(id: file.id, uuid: file.uuid))
+                    return .success(BackupTreeNodeSyncResult(uuid: file.uuid))
                 } catch {
                     self.logger.error("❌ Failed to insert already created folder in database: \(error.getErrorDescription())")
                     return .failure(error)

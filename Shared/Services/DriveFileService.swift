@@ -44,12 +44,12 @@ struct DriveFileService {
         return DriveFile(
             uuid: fileMeta.uuid,
             plainName: fileMeta.plainName,
-            name: fileMeta.name,
+            name: fileMeta.plainName,
             type: fileMeta.type,
             size: Int(fileMeta.size) ?? 0,
             createdAt: createdAt,
             updatedAt: updatedAt,
-            folderId: fileMeta.folderId,
+            folderId: nil,
             status: .trashed,
             fileId: fileMeta.fileId
         )
@@ -80,12 +80,12 @@ struct DriveFileService {
         return DriveFile(
             uuid: fileMeta.uuid,
             plainName: updated.plainName,
-            name: fileMeta.name,
+            name: updated.plainName,
             type: fileMeta.type,
             size: Int(fileMeta.size) ?? 0,
             createdAt: createdAt,
             updatedAt: updatedAt,
-            folderId: fileMeta.folderId,
+            folderId: nil,
             status: DriveItemStatus(rawValue: fileMeta.status) ?? .exists,
             fileId: fileMeta.fileId
         )

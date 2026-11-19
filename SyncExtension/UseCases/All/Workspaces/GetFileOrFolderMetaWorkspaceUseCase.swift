@@ -41,6 +41,11 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 let rootFolderUuid = workspace[0].workspaceUser.rootFolderId
                
                 if let fileMeta = await self.getFileMetaOrNil(maybeFileUuid: self.identifier.rawValue) {
+                    if fileMeta.status != "EXISTS" {
+                        self.logger.info("❌ Workspace File (id: \(self.identifier.rawValue)) is \(fileMeta.status), returning nonExistentItem")
+                        completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                        return
+                    }
                     
                     guard let folderUuid = fileMeta.folderUuid else {
                         
@@ -49,17 +54,17 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                     }
                     let parentIsRootContainer = folderUuid == rootFolderUuid
                     guard let createdAt = Time.dateFromISOString(fileMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for file \(fileMeta.id) with value \(fileMeta.createdAt)")
+                        self.logger.error("Cannot create createdAt date for file \(fileMeta.uuid) with value \(fileMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(fileMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(fileMeta.id) with value \(fileMeta.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for file \(fileMeta.uuid) with value \(fileMeta.updatedAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                     }
                     
                     guard let sizeInt = Int(fileMeta.size) else {
-                        self.logger.error("Cannot get size for file \(fileMeta.id) with size value \(fileMeta.size)")
+                        self.logger.error("Cannot get size for file \(fileMeta.uuid) with size value \(fileMeta.size)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidSize
                     }
                     
@@ -84,13 +89,21 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 
                 self.logger.info("Trying to get metadata for item \(self.identifier.rawValue) as a folder")
                 if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: self.identifier.rawValue) {
+                    let folderStatus = DriveItemStatus(rawValue: folderMeta.status)
+                    if folderStatus == .deleted || folderStatus == .trashed || folderMeta.removed == true {
+                        let itemDisplayName = folderMeta.plainName ?? self.identifier.rawValue
+                        self.logger.info("❌ Workspace Folder (id: \(self.identifier.rawValue), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
+                        completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
+                        return
+                    }
+
                     guard let createdAt = Time.dateFromISOString(folderMeta.createdAt) else {
-                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.id) with value \(folderMeta.createdAt)")
+                        self.logger.error("Cannot create createdAt date for folder \(folderMeta.uuid) with value \(folderMeta.createdAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidCreatedAt
                     }
                     
                     guard let updatedAt = Time.dateFromISOString(folderMeta.updatedAt) else {
-                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.id) with value \(folderMeta.updatedAt)")
+                        self.logger.error("Cannot create updatedAt date for file \(folderMeta.uuid) with value \(folderMeta.updatedAt)")
                         throw GetFileOrFolderMetaUseCaseError.InvalidUpdatedAt
                     }
                     
@@ -104,7 +117,7 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                     let folderItem = FileProviderItem(
                         identifier: self.identifier,
                         // TODO: Decrypt the name if needed
-                        filename: (folderMeta.plainName ?? folderMeta.name) ?? "",
+                        filename: folderMeta.plainName ?? "",
                         parentId: parentId,
                         createdAt: createdAt,
                         updatedAt: updatedAt,
@@ -120,6 +133,9 @@ struct GetFileOrFolderMetaWorkspaceUseCase {
                 if (itemFound == true){ return }
                 // If we reached this, there was no way to found the file/folder
                 throw GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound
+            } catch GetFileOrFolderMetaUseCaseError.FileOrFolderMetaNotFound {
+                self.logger.info("Item \(identifier.rawValue) was not found on the server, signaling nonExistentItem to stop retries")
+                completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: identifier))
             } catch {
                 error.reportToSentry()
                 self.logger.error("❌ Failed to get folder meta for \(identifier.rawValue): \(error.getErrorDescription())")

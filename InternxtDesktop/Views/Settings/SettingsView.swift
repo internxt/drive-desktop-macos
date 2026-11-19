@@ -14,6 +14,7 @@ enum TabView {
     case Backup
     case Antivirus
     case Cleaner
+    case MailBridge
 }
 struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -24,6 +25,7 @@ struct SettingsView: View {
     @EnvironmentObject var scheduleManager: ScheduledBackupManager
     @EnvironmentObject var antivirusManager: AntivirusManager
     @EnvironmentObject var cleanerService: CleanerService
+    @EnvironmentObject var mailBridgeService: MailBridgeService
     public var updater: SPUUpdater? = nil
     @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
@@ -31,6 +33,7 @@ struct SettingsView: View {
     @State private var showDeleteBackupDialog = false
     @State private var isEditingSelectedFolders: Bool = false
     @State private var showBackupContentNavigator: Bool = false
+    @State private var showMailBridgeSettings: Bool = false
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -40,7 +43,8 @@ struct SettingsView: View {
                         TabItem(iconName: .At, label: "SETTINGS_TAB_ACCOUNT_TITLE", id: .Account)
                         TabItem(iconName: .ClockCounterClockwise, label: "SETTINGS_TAB_BACKUPS_TITLE", id: .Backup)
                         TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus)
-                        TabItem(iconName: .Cleaner, label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner, iscleanerTab: true)
+                        TabItem(assetName: "tabCleanerIcon", label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner)
+                        TabItem(assetName: "tabMailBridgeIcon", label: "SETTINGS_TAB_MAIL_BRIDGE_TITLE", id: .MailBridge)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
@@ -71,7 +75,7 @@ struct SettingsView: View {
             if showBackupContentNavigator {
                 if let device = self.selectedDevice,
                     self.showBackupContentNavigator,
-                    let bucketId = device.bucket {
+                    device.bucket != nil {
                     BackupContentNavigator(
                         device: device,
                         onClose: {
@@ -81,6 +85,18 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.Gray40.opacity(0.4))
                 }
+            }
+
+            // mail bridge settings dialog
+            if showMailBridgeSettings {
+                VStack {
+                    MailBridgeSettingsDialogView(
+                        service: mailBridgeService,
+                        onClose: { showMailBridgeSettings = false }
+                    )
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.Gray40.opacity(0.4))
             }
 
             // stop ongoing backup dialog
@@ -153,18 +169,24 @@ struct SettingsView: View {
         case .Cleaner:
             CleanerTabView(cleanerService: cleanerService)
                 .accessibilityIdentifier("itemSettingsCleaner")
- 
+        case .MailBridge:
+            MailBridgeTabView(
+                service: mailBridgeService,
+                onOpenSettings: { showMailBridgeSettings = true }
+            )
+            .accessibilityIdentifier("itemSettingsMailBridge")
         }
     }
+
     @ViewBuilder
-    func TabItem(iconName: AppIconName, label: String, id: TabView, iscleanerTab: Bool = false) -> some View {
+    func TabItem(iconName: AppIconName? = nil, assetName: String? = nil, label: String, id: TabView) -> some View {
         VStack(alignment: .center, spacing: 2) {
-            if iscleanerTab {
-                Image("tabCleanerIcon")
+            if let assetName = assetName {
+                Image(assetName)
                     .renderingMode(.template)
                     .foregroundColor(.DefaultText)
                     .frame(width: 28, height: 28)
-            } else {
+            } else if let iconName = iconName {
                 AppIcon(iconName: iconName, size: 28, color: Color("Gray100"))
             }
             AppText(label).font(.XSMedium)

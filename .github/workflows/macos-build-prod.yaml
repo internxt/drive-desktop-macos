@@ -15,11 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.3'
+
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      
+
       - name: Add env.json
         id: create-env-json
         uses: jsdaniell/create-json@v1.2.2

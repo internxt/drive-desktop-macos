@@ -69,9 +69,7 @@ struct UpdateFileContentUseCase {
                     self.logger.info("📦 Starting package update for file \(item.filename)")
                     let folderMeta = try await driveNewAPI.getFolderMetaById(id: self.fileUuid)
 
-                    guard let folderUuid = folderMeta.uuid else {
-                        throw UploadFileUseCaseError.InvalidParentUUID
-                    }
+                    let folderUuid = folderMeta.uuid
 
                     let packageService = PackageUploadService(
                         networkFacade: networkFacade,
@@ -80,7 +78,6 @@ struct UpdateFileContentUseCase {
                     )
                     try await packageService.uploadDirectoryIteratively(
                         localURL: fileContent,
-                        parentFolderId: String(folderMeta.id),
                         parentFolderUuid: folderUuid
                     )
 

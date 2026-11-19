@@ -31,6 +31,7 @@ struct UploadFileWorkspaceUseCase {
     private let progress: Progress
     private let workspace: [AvailableWorkspace]
     private let workspaceCredentials: WorkspaceCredentialsResponse
+    private let relativePath: String?
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -43,8 +44,8 @@ struct UploadFileWorkspaceUseCase {
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
         progress: Progress,
         workspace: [AvailableWorkspace],
-        workspaceCredentials: WorkspaceCredentialsResponse
-        
+        workspaceCredentials: WorkspaceCredentialsResponse,
+        relativePath: String? = nil
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -58,6 +59,7 @@ struct UploadFileWorkspaceUseCase {
         self.progress = progress
         self.workspace = workspace
         self.workspaceCredentials = workspaceCredentials
+        self.relativePath = relativePath
     }
     
    
@@ -123,7 +125,7 @@ struct UploadFileWorkspaceUseCase {
         Task {
            
             let inProgressId = ObjectId.generate()
-            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress, relativePath: self.relativePath))
             
             do {
                 let parentIdIsRootFolder = FileProviderItem.parentIdIsRootFolder(identifier: item.parentItemIdentifier)
@@ -187,10 +189,8 @@ struct UploadFileWorkspaceUseCase {
                     type: filename.pathExtension,
                     bucket: uploadBucket,
                     size: uploadSize,
-                    folderId: 0,
-                    name: encryptedFilename.base64EncodedString(),
-                    plainName: filename.deletingPathExtension, folderUuid: getParentId()
-                    
+                    plainName: filename.deletingPathExtension,
+                    folderUuid: getParentId()
                 ), workspaceUuid: workspaceId)
                 
                 
@@ -214,7 +214,6 @@ struct UploadFileWorkspaceUseCase {
                 
                 // Respond, then process the thumbnail so we don't block the UI
                 let thumbnailUpload = await self.generateAndUploadThumbnail(
-                    driveItemId: createdFile.id,
                     fileURL: self.fileContent,
                     destinationURL: self.thumbnailFileDestination,
                     encryptedThumbnailDestination: self.encryptedThumbnailFileDestination,
@@ -228,12 +227,12 @@ struct UploadFileWorkspaceUseCase {
                 }
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished, relativePath: self.relativePath)
                 
             } catch {
                 self.trackError(processIdentifier: trackId, error: error)
                 error.reportToSentry()
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed, errorMessage: error.getErrorDescription(), relativePath: self.relativePath)
                 self.logger.error("❌ Failed to create file: \(error.getErrorDescription())")
                 completionHandler(nil, [], false, error.toFileProviderError())
             }
@@ -246,7 +245,7 @@ struct UploadFileWorkspaceUseCase {
         
     }
     
-    func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
+    func generateAndUploadThumbnail(fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
         do {
             let thumbnailGenerationResult = try await ThumbnailGenerator.shared.generateThumbnail(
                 for: fileURL,

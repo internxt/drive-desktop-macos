@@ -78,7 +78,7 @@ class FileProviderDomainManager: ObservableObject {
             for domain in activeDomains {
                 do {
                     let preservedURL = try await NSFileProviderManager.remove(domain, mode: .preserveDirtyUserData)
-                    self.logger.info("📁 Domain '\(domain.displayName)' removed — unsynced files preserved at: \(preservedURL)")
+                    self.logger.info("📁 Domain '\(domain.displayName)' removed — unsynced files preserved at: \(preservedURL?.path ?? "none")")
                 } catch {
                     self.logger.error("❌ Failed to remove domain '\(domain.displayName)'")
                     try? await NSFileProviderManager.remove(domain)

@@ -18,11 +18,13 @@ class FeaturesService: ObservableObject {
         static let backupEnabled = "FeaturesService.backupEnabled"
         static let antivirusEnabled = "FeaturesService.antivirusEnabled"
         static let cleanerEnabled = "FeaturesService.cleanerEnabled"
+        static let mailEnabled = "FeaturesService.mailEnabled"
     }
     
     @Published var backupEnabled: Bool = false
     @Published var antivirusEnabled: Bool = false
     @Published var cleanerEnabled: Bool = false
+    @Published var mailEnabled: Bool = false
     @Published var isLoading: Bool = false
    
     
@@ -34,31 +36,24 @@ class FeaturesService: ObservableObject {
     @MainActor
     func fetchFeaturesStatus() async {
         isLoading = true
+        defer { isLoading = false }
         
         do {
             logger.info("Fetching features status from payment info")
             let paymentInfo = try await APIFactory.Payment.getPaymentInfo()
+            let featuresPerService = paymentInfo.featuresPerService
+            backupEnabled = featuresPerService.backups ?? false
+            antivirusEnabled = featuresPerService.antivirus ?? false
+            cleanerEnabled = featuresPerService.cleaner ?? false
+            mailEnabled = featuresPerService.mail ?? false
             
-            // Update backup status
-            if let backupStatus = paymentInfo.featuresPerService.backups {
-                backupEnabled = backupStatus
-                logger.info("Backup feature status: \(backupStatus)")
-            } else {
-                backupEnabled = false
-                logger.warning("No backup information found in payment info")
-            }
-            
-            antivirusEnabled = paymentInfo.featuresPerService.antivirus
-            logger.info("Antivirus feature status: \(antivirusEnabled)")
-            
-            // Update cleaner status
-            if let cleanerStatus = paymentInfo.featuresPerService.cleaner {
-                cleanerEnabled = cleanerStatus
-                logger.info("Cleaner feature status: \(cleanerStatus)")
-            } else {
-                cleanerEnabled = false
-                logger.warning("No cleaner information found in payment info")
-            }
+            logger.info("""
+                Status for user tier features:
+                - Backups enabled: \(backupEnabled)
+                - Antivirus enabled: \(antivirusEnabled)
+                - Cleaner enabled: \(cleanerEnabled)
+                - Mail enabled: \(mailEnabled)
+                """)
             
             persistFeaturesToCache()
             logger.info("Features status updated successfully")
@@ -71,8 +66,6 @@ class FeaturesService: ObservableObject {
                 logger.info("Payment info not found (404), disabling all features and clearing cache")
             }
         }
-        
-        isLoading = false
     }
     
     var backupState: BackupState {
@@ -86,13 +79,18 @@ class FeaturesService: ObservableObject {
     var cleanerState: CleanerFeatureState {
         return cleanerEnabled ? .active : .locked
     }
+
+    var mailState: MailFeatureState {
+        return mailEnabled ? .active : .locked
+    }
     
     private func loadCachedFeatures() {
         let defaults = UserDefaults.standard
         backupEnabled = defaults.bool(forKey: CacheKeys.backupEnabled)
         antivirusEnabled = defaults.bool(forKey: CacheKeys.antivirusEnabled)
         cleanerEnabled = defaults.bool(forKey: CacheKeys.cleanerEnabled)
-        logger.info("Loaded cached features — backup: \(backupEnabled), antivirus: \(antivirusEnabled), cleaner: \(cleanerEnabled)")
+        mailEnabled = defaults.bool(forKey: CacheKeys.mailEnabled)
+        logger.info("Loaded cached features — backup: \(backupEnabled), antivirus: \(antivirusEnabled), cleaner: \(cleanerEnabled), mail: \(mailEnabled)")
     }
     
     private func persistFeaturesToCache() {
@@ -100,6 +98,7 @@ class FeaturesService: ObservableObject {
         defaults.set(backupEnabled, forKey: CacheKeys.backupEnabled)
         defaults.set(antivirusEnabled, forKey: CacheKeys.antivirusEnabled)
         defaults.set(cleanerEnabled, forKey: CacheKeys.cleanerEnabled)
+        defaults.set(mailEnabled, forKey: CacheKeys.mailEnabled)
         logger.info("Persisted feature flags to cache")
     }
     
@@ -108,6 +107,7 @@ class FeaturesService: ObservableObject {
         defaults.removeObject(forKey: CacheKeys.backupEnabled)
         defaults.removeObject(forKey: CacheKeys.antivirusEnabled)
         defaults.removeObject(forKey: CacheKeys.cleanerEnabled)
+        defaults.removeObject(forKey: CacheKeys.mailEnabled)
     }
 }
 
@@ -125,6 +125,11 @@ enum BackupState: Equatable {
 }
 
 enum CleanerFeatureState: Equatable {
+    case locked
+    case active
+}
+
+enum MailFeatureState: Equatable {
     case locked
     case active
 }

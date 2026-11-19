@@ -22,7 +22,7 @@ struct BackupDownloadService {
         let deviceBackupFolders = try await backupAPI.getBackupChilds(folderUuid: deviceUuid)
         backupDownloadProgress.totalUnitCount += Int64(deviceBackupFolders.folders.count)
         for deviceBackupFolder in deviceBackupFolders.folders {
-            let backupFolderName = try deviceBackupFolder.plainName ?? self.decryptName(name: deviceBackupFolder.name, bucketId: backupBucket)
+            let backupFolderName = deviceBackupFolder.plainName ?? ""
             let backupFolderURL = self.getURLForItem(baseURL: downloadAt, itemName: backupFolderName)
             let creationDate = Time.dateFromISOString(deviceBackupFolder.createdAt) ?? Date()
             try self.createFolder(folderURL: backupFolderURL, creationDate: creationDate)
@@ -48,7 +48,7 @@ struct BackupDownloadService {
         for try await backupFolder in folderStream {
             backupDownloadProgress.totalUnitCount += 1
 
-            let backupFolderName = try backupFolder.plainName ?? self.decryptName(name: backupFolder.name, bucketId: backupBucket)
+            let backupFolderName = backupFolder.plainName ?? ""
             let folderURL = self.getURLForItem(baseURL: downloadAtPath, itemName: backupFolderName)
             let creationDate = Time.dateFromISOString(backupFolder.createdAt) ?? Date()
             try self.createFolder(folderURL: folderURL, creationDate: creationDate)
@@ -75,7 +75,7 @@ struct BackupDownloadService {
         for try await backupFile in fileStream {
             backupDownloadProgress.totalUnitCount += 1
 
-            let backupFileName = try backupFile.plainName ?? self.decryptName(name: backupFile.name ?? "", bucketId: backupFile.bucket)
+            let backupFileName = backupFile.plainName
             logger.info("📄 Filename to download \(backupFileName)")
             let fileURL = self.getURLForItem(baseURL: downloadAtPath, itemName: backupFileName, itemType: backupFile.type)
             

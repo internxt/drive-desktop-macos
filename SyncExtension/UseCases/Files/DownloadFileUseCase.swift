@@ -138,6 +138,7 @@ struct DownloadFileUseCase {
             let uuidString = itemIdentifier.rawValue.replacingOccurrences(of: "-", with: "").prefix(24)
             let trackingObjectId = try? ObjectId(string: String(uuidString))
             
+            var resolvedFilename: String = itemIdentifier.rawValue
             var driveFile: DriveFile? = nil
             do {
                 
@@ -153,14 +154,15 @@ struct DownloadFileUseCase {
                 if !isUUID {
             
                     let folder = try await driveNewAPI.getFolderMetaById(id: idString)
-                    let folderName = folder.plainName ?? folder.name ?? ""
+                    let folderName = folder.plainName ?? ""
+                    resolvedFilename = folderName
                     
                     if let trackingObjectId = trackingObjectId {
                         activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: folderName, kind: .download, status: .inProgress)
                     }
                     
                     try await downloadFolderIteratively(
-                        initialFolderUuid: folder.uuid!,
+                        initialFolderUuid: folder.uuid,
                         localFolderURL: destinationURL
                     )
                     
@@ -194,7 +196,8 @@ struct DownloadFileUseCase {
                     throw DownloadFileUseCaseError.DriveFileMissing
                 }
                 
-                let currentFilename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                let currentFilename = FileProviderItem.getFilename(name: file.plainName, itemExtension: file.type)
+                resolvedFilename = currentFilename
                 if let trackingObjectId = trackingObjectId {
                     activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: currentFilename, kind: .download, status: .inProgress)
                 }
@@ -202,7 +205,7 @@ struct DownloadFileUseCase {
                 driveFile = DriveFile(
                     uuid: file.uuid,
                     plainName: file.plainName,
-                    name: file.name,
+                    name: nil,
                     type: file.type,
                     size: Int(file.size) ?? 0,
                     createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
@@ -223,12 +226,12 @@ struct DownloadFileUseCase {
                     
                     FileManager.default.createFile(atPath: destinationURL.path, contents: nil, attributes: nil)
                     
-                    let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                    let filename = FileProviderItem.getFilename(name: file.plainName, itemExtension: file.type)
                     let parentIsRootFolder = file.folderId == user.root_folder_id
                     let fileProviderItem = FileProviderItem(
                         identifier: itemIdentifier,
                         filename: filename,
-                        parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(file.folderId)),
+                        parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(file.folderId ?? 0)),
                         createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
                         updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
                         itemExtension: file.type,
@@ -256,12 +259,12 @@ struct DownloadFileUseCase {
                 
                 
                 
-                let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name, itemExtension: file.type)
+                let filename = FileProviderItem.getFilename(name: file.plainName, itemExtension: file.type)
                 let parentIsRootFolder = file.folderId == user.root_folder_id
                 let fileProviderItem = FileProviderItem(
                     identifier: itemIdentifier,
                     filename: filename,
-                    parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(file.folderId)),
+                    parentId: parentIsRootFolder ? .rootContainer : NSFileProviderItemIdentifier(rawValue: String(file.folderId ?? 0)),
                     createdAt: Time.dateFromISOString(file.createdAt) ?? Date(),
                     updatedAt: Time.dateFromISOString(file.updatedAt) ?? Date(),
                     itemExtension: file.type,
@@ -285,7 +288,7 @@ struct DownloadFileUseCase {
                 self.logger.error("❌ Failed to fetch file content for file with identifier \(itemIdentifier.rawValue): \(error.getErrorDescription())")
                 
                 if let trackingObjectId = trackingObjectId {
-                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: itemIdentifier.rawValue, kind: .download, status: .failed)
+                    activityManager.updateActivityEntryStatus(id: trackingObjectId, filename: resolvedFilename, kind: .download, status: .failed, errorMessage: error.getErrorDescription())
                 }
                 completionHandler(nil, nil, NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.cannotSynchronize.rawValue))
             }
@@ -305,7 +308,7 @@ struct DownloadFileUseCase {
             let filesResponse = try await driveNewAPI.getFolderFilesV2(folderUuid: folderUuid, offset: fileOffset, limit: limit)
             
             for file in filesResponse.files {
-                let filename = FileProviderItem.getFilename(name: file.plainName ?? file.name ?? "", itemExtension: file.type)
+                let filename = FileProviderItem.getFilename(name: file.plainName, itemExtension: file.type)
                 let localFileURL = localFolderURL.appendingPathComponent(filename)
                 
                 let encryptedFileDestination = localFolderURL.appendingPathComponent("enc-\(UUID().uuidString).enc")
@@ -355,7 +358,7 @@ struct DownloadFileUseCase {
                 let foldersResponse = try await driveNewAPI.getFolderFolders(folderUuid: currentTask.uuid, offset: folderOffset, limit: limit)
                 
                 for subFolder in foldersResponse.folders {
-                    let name = subFolder.plainName ?? subFolder.name
+                    let name = subFolder.plainName ?? ""
                     let localSubFolderURL = currentTask.localURL.appendingPathComponent(name)
                     queue.append(FolderDownloadTask(uuid: subFolder.uuid ?? "", localURL: localSubFolderURL))
                 }

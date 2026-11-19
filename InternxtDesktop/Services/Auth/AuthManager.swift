@@ -124,11 +124,12 @@ class AuthManager: ObservableObject {
     func signOut() throws {
         
         try config.removeAuthToken()
-        try config.removeLegacyAuthToken()
+        config.removeLegacyAuthToken()
         try config.removeMnemonic()
         try config.removeWorkspaces()
         try config.removeWorkspaceCredentials()
         try config.removeWorkspaceMnemonicInfo()
+        try? config.removeMailBridgePassword()
         try config.removeUser()
         user = nil
         isLoggedIn = false

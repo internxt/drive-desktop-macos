@@ -63,6 +63,14 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
     
     
     func enumerateChanges(for observer: NSFileProviderChangeObserver, from anchor: NSFileProviderSyncAnchor) {
+        guard !isUpdateMandatory else {
+            self.logger.warning("⚠️ Skipping enumerateChanges: mandatory update required.")
+            observer.finishEnumeratingWithError(
+                NSError(domain: NSFileProviderErrorDomain, code: NSFileProviderError.serverUnreachable.rawValue, userInfo: [NSLocalizedDescriptionKey: "Application update required"])
+            )
+            return
+        }
+
         let isPersonalDrive = domain.identifier.rawValue ==  user.uuid
         
         return isPersonalDrive ? GetRemoteChangesUseCase(observer: observer, anchor: anchor,user: user).run() :

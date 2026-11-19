@@ -37,6 +37,7 @@ struct UploadFileUseCase {
     private let trackId = UUID().uuidString
     private let progress: Progress
     private let parentUUID: String
+    private let relativePath: String?
     init(
         networkFacade: NetworkFacade,
         user: DriveUser,
@@ -48,7 +49,8 @@ struct UploadFileUseCase {
         encryptedThumbnailFileDestination: URL,
         completionHandler: @escaping (NSFileProviderItem?, NSFileProviderItemFields, Bool, Error?) -> Void,
         progress: Progress,
-        parentUuid: String
+        parentUuid: String,
+        relativePath: String? = nil
     ) {
         self.item = item
         self.activityManager = activityManager
@@ -61,6 +63,7 @@ struct UploadFileUseCase {
         self.user = user
         self.progress = progress
         self.parentUUID = parentUuid
+        self.relativePath = relativePath
     }
     
    
@@ -85,7 +88,7 @@ struct UploadFileUseCase {
         Task {
           
             let inProgressId = ObjectId.generate()
-            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress))
+            activityManager.saveActivityEntry(entry: ActivityEntry(_id: inProgressId, filename: item.filename, kind: .upload, status: .inProgress, relativePath: self.relativePath))
             
             do {
                 var isPackage = FileProviderItem.isPackage(filename: item.filename)
@@ -106,7 +109,7 @@ struct UploadFileUseCase {
                             folderName: item.filename,
                             debug: true
                         )
-                        createdFolderId = String(createdFolder.id)
+                        createdFolderId = String(createdFolder.id ?? 0)
                         createdFolderUuid = createdFolder.uuid
                         self.logger.info("📦 Created package folder on cloud \(item.filename)")
                     } catch {
@@ -115,7 +118,7 @@ struct UploadFileUseCase {
                             if let folder = existences.existentFolders.first(where: {
                                 $0.plainName == item.filename && $0.removed == false
                             }) {
-                                createdFolderId = String(folder.id)
+                                createdFolderId = String(folder.id ?? 0)
                                 createdFolderUuid = folder.uuid
                             } else {
                                 throw error
@@ -133,7 +136,6 @@ struct UploadFileUseCase {
                     )
                     try await packageService.uploadDirectoryIteratively(
                         localURL: fileContent,
-                        parentFolderId: createdFolderId,
                         parentFolderUuid: createdFolderUuid
                     )
                     
@@ -149,7 +151,7 @@ struct UploadFileUseCase {
                         size: 0
                     )
                     completionHandler(fileProviderItem, [], false, nil)
-                    activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .finished)
+                    activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .finished, relativePath: self.relativePath)
                     return
                 }
 
@@ -209,13 +211,10 @@ struct UploadFileUseCase {
                         type: filename.pathExtension,
                         bucket: uploadBucket,
                         size: uploadSize,
-                        folderId: 0,
-                        name: encryptedFilename.base64EncodedString(),
                         plainName: filename.deletingPathExtension,
                         folderUuid: parentUUID
-                        
                     ),
-                debug: true
+                    debug: true
                 )
                 
                 
@@ -237,8 +236,7 @@ struct UploadFileUseCase {
                 
                 
                 // Respond, then process the thumbnail so we don't block the UI
-                let thumbnailUpload = await self.generateAndUploadThumbnail(
-                    driveItemId: createdFile.id,
+                _ = await self.generateAndUploadThumbnail(
                     fileURL: self.fileContent,
                     destinationURL: self.thumbnailFileDestination,
                     encryptedThumbnailDestination: self.encryptedThumbnailFileDestination,
@@ -246,12 +244,12 @@ struct UploadFileUseCase {
                 )
                 
                 completionHandler(fileProviderItem, [], false, nil )
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: FileProviderItem.getFilename(name: createdFile.plain_name, itemExtension: createdFile.type), kind: .upload, status: .finished, relativePath: self.relativePath)
 
                 
             } catch {
                 error.reportToSentry()
-                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed)
+                activityManager.updateActivityEntryStatus(id: inProgressId, filename: item.filename, kind: .upload, status: .failed, errorMessage: error.getErrorDescription(), relativePath: self.relativePath)
                 self.logger.error("❌ Failed to create file \(item.filename) : \(error.getErrorDescription())")
                 completionHandler(nil, [], false, error.toFileProviderError())
             }
@@ -264,7 +262,7 @@ struct UploadFileUseCase {
         
     }
     
-    func generateAndUploadThumbnail(driveItemId: Int, fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
+    func generateAndUploadThumbnail(fileURL: URL, destinationURL: URL, encryptedThumbnailDestination: URL, fileUuid: String) async -> CreateThumbnailResponse? {
         do {
             let thumbnailGenerationResult = try await ThumbnailGenerator.shared.generateThumbnail(
                 for: fileURL,

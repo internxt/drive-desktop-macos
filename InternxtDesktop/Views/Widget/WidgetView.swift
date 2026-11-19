@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FileProvider
 import RealmSwift
 
 struct WidgetView: View {
@@ -18,9 +17,10 @@ struct WidgetView: View {
     @EnvironmentObject var backupsService: BackupsService
     @EnvironmentObject var domainManager: FileProviderDomainManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var issuesManager: IssuesManager
+    @ObservedObject private var updateEnforcementManager = UpdateEnforcementManager.shared
     
     @State private var showBackupBanner = false
-    var isEmpty: Bool = true
     var openFileProviderRoot: () -> Void
     var openSendFeedback: () -> Void
     let configLoader = ConfigLoader()
@@ -76,8 +76,20 @@ struct WidgetView: View {
                         .environmentObject(self.usageManager)
                         .environmentObject(self.settingsManager)
                         .environmentObject(self.antivirusManager)
+                        .environmentObject(self.issuesManager)
 
-                    if shouldDisplayBackupBanner() {
+                    if updateEnforcementManager.isBlocked {
+                        WidgetUpdateRequiredBannerView(onUpdate: {
+                            NSApp.sendAction(#selector(AppDelegate.openUpdateRequiredWindow), to: nil, from: nil)
+                        })
+                    } else if updateEnforcementManager.isDeprecated {
+                        WidgetDeprecatedBannerView(
+                            sunsetDateText: updateEnforcementManager.formattedSunsetDate,
+                            onUpdate: {
+                                NSApp.sendAction(#selector(AppDelegate.checkForUpdates), to: nil, from: nil)
+                            }
+                        )
+                    } else if shouldDisplayBackupBanner() {
                         WidgetBackupBannerView() {
                             self.showBackupBanner = false
                         }

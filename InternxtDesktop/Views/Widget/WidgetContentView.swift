@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FileProvider
 import RealmSwift
 struct WidgetContentView: View {
     @EnvironmentObject var backupsService: BackupsService

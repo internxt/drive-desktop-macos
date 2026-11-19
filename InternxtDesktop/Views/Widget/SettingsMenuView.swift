@@ -13,6 +13,7 @@ struct SettingsMenuView: View {
     @EnvironmentObject var usageManager: UsageManager
     @EnvironmentObject var settingsManager: SettingsTabManager
     @EnvironmentObject var antivirusManager: AntivirusManager
+    @EnvironmentObject var issuesManager: IssuesManager
 
     var openSendFeedback: () -> Void
     var isPreview: Bool = false;
@@ -27,12 +28,16 @@ struct SettingsMenuView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     SettingsMenuOption(label: "WIDGET_SETTINGS_PREFERENCES_OPTION", onPress: settingsHandler(for: .General))
                         .accessibilityIdentifier("menuItemPreferences")
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_ISSUES_OPTION", badgeCount: issuesManager.totalIssueCount, onPress: handleOpenIssues)
+                        .accessibilityIdentifier("menuItemIssues")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_SUPPORT_OPTION", onPress: handleOpenSupport)
                         .accessibilityIdentifier("menuItemSupport")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_ANTIVIRUS_OPTION", onPress: settingsHandler(for: .Antivirus))
                         .accessibilityIdentifier("menuItemAntivirus")
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", showNew: true, onPress:settingsHandler(for: .Cleaner))
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", onPress: settingsHandler(for: .Cleaner))
                         .accessibilityIdentifier("menuItemCleaner")
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION", showNewDot: true, onPress: settingsHandler(for: .MailBridge))
+                        .accessibilityIdentifier("menuItemMailBridge")
                     
                     SettingsMenuOption(label: "WIDGET_SETTINGS_REFERRAL_OPTION", onPress: handleOpenReferralLink)
                         .accessibilityIdentifier("menuItemRefer")
@@ -75,6 +80,10 @@ struct SettingsMenuView: View {
     }
 
     
+    func handleOpenIssues() {
+        NSApp.sendAction(#selector(AppDelegate.openIssuesWindow), to: nil, from: nil)
+    }
+
     func handleLogout() {
         Task {
             
@@ -113,13 +122,17 @@ struct SettingsMenuOption: View {
     public var onPress: () -> Void
     @State private var isHovering: Bool = false
     public var showNew: Bool = false
-    
-    init(label: String, showNew: Bool = false, onPress: @escaping () -> Void) {
+    public var showNewDot: Bool = false
+    public var badgeCount: Int = 0
+
+    init(label: String, showNew: Bool = false, showNewDot: Bool = false, badgeCount: Int = 0, onPress: @escaping () -> Void) {
         self.label = label
         self.showNew = showNew
+        self.showNewDot = showNewDot
+        self.badgeCount = badgeCount
         self.onPress = onPress
     }
-    
+
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
             AppText(label)
@@ -129,7 +142,15 @@ struct SettingsMenuOption: View {
             
             Spacer()
             
-            if showNew {
+            if badgeCount > 0 {
+                Text("\(min(badgeCount, 99))")
+                    .font(.XXSMedium)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Capsule().fill(Color.Red))
+                    .padding(.trailing, 8)
+            } else if showNew {
                 AppText("WIDGET_SETTINGS_NEW_OPTION")
                     .font(.XXSMedium)
                     .foregroundColor(.blue)
@@ -144,6 +165,11 @@ struct SettingsMenuOption: View {
                             .stroke(Color.blue, lineWidth: 1)
                     )
                     .padding(.trailing, 4)
+            } else if showNewDot {
+                Circle()
+                    .fill(Color.blue)
+                    .frame(width: 6, height: 6)
+                    .padding(.trailing, 12)
             }
         }
         .contentShape(Rectangle())

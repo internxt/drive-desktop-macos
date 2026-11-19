@@ -59,6 +59,7 @@ class BackupsService: ObservableObject {
     @Published var foldersToBackup: [FolderToBackup] = []
     @Published var currentDeviceHasBackup = false
     private var xpcBackupService: XPCBackupServiceProtocol? = nil
+    private var xpcConnection: NSXPCConnection? = nil
     @Published var selectedDevice: Device? = nil
     @Published var backupUploadProgress: Double = 0.0
     @Published var backupDownloadedItems: Int64 = 0
@@ -95,6 +96,8 @@ class BackupsService: ObservableObject {
             self.currentDeviceHasBackup = false
             self.selectedDevice = nil
             self.xpcBackupService = nil
+            self.xpcConnection?.invalidate()
+            self.xpcConnection = nil
             self.deviceResponse = nil
             self.devicesFetchingStatus = .LoadingDevices
             self.backupsItemsInprogress = []
@@ -264,15 +267,18 @@ class BackupsService: ObservableObject {
             }
             
             let currentDeviceName = ConfigLoader().getDeviceName()
-            let allDevices = try await BackupsDeviceService.shared.getAllDevices(deviceName: currentDeviceName)
-            let response: Result<[Device], Error> = .success(allDevices)
-            
+            var allDevices = try await BackupsDeviceService.shared.getAllDevices(deviceName: currentDeviceName)
             
             logger.info("Got \(allDevices.count) devices successfully")
             
-            if(allDevices.isEmpty) {
-                throw BackupError.deviceCreatedButNotFound
+            if allDevices.isEmpty {
+                logger.info("No backup devices found, attempting to register current device...")
+                await self.addCurrentDevice()
+                allDevices = (try? await BackupsDeviceService.shared.getAllDevices(deviceName: currentDeviceName)) ?? []
+                logger.info("After registration attempt, got \(allDevices.count) devices")
             }
+            
+            let response: Result<[Device], Error> = .success(allDevices)
             
             DispatchQueue.main.async {
                 self.deviceResponse = response
@@ -283,9 +289,9 @@ class BackupsService: ObservableObject {
                     self.selectedDevice = currentDevice 
                 }
                 
-                self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt) ")
+                self.logger.info("Device updated at date is: \(self.selectedDevice?.updatedAt ?? "unknown") ")
                 self.currentDevice = currentDevice
-                self.devicesFetchingStatus = .Ready
+                self.devicesFetchingStatus = allDevices.isEmpty ? .Failed : .Ready
             }
         } catch {
             logger.error("Error fetching devices \(error)")
@@ -350,7 +356,7 @@ class BackupsService: ObservableObject {
 
         let getFoldersResponse = try await APIFactory.getNewBackupsClient().getBackupChilds(folderUuid: "\(deviceUuid)")
 
-        foldersIds = getFoldersResponse.folders.map { result in
+        foldersIds = getFoldersResponse.folders.compactMap { result in
             return result.id
         }
 
@@ -396,9 +402,60 @@ class BackupsService: ObservableObject {
 
     private func propagateError(errorMessage: String) {
         logger.info("Error backing up device")
+
+      
+        let individualErrors = BackupErrorFileQueue.shared.readAndClear()
+
+        if individualErrors.isEmpty {
+            let deviceName = currentDevice?.name ?? "Backup"
+            let entry = ActivityEntry(filename: deviceName, kind: .backupUpload, status: .failed, errorMessage: errorMessage)
+            activityManager.saveActivityEntry(entry: entry)
+        } else {
+            let entries = individualErrors.map { fileError in
+                ActivityEntry(filename: fileError.filename, kind: .backupUpload, status: .failed, errorMessage: fileError.error)
+            }
+            activityManager.saveActivityEntries(entries: entries)
+        }
+
         DispatchQueue.main.async { [weak self] in
             self?.currentDeviceHasBackup = true
             self?.backupUploadStatus = .Failed
+        }
+    }
+
+    private func propagateDownloadErrors(fallbackFilename: String, error: String?, onSuccess: (() -> Void)? = nil) {
+        let individualErrors = BackupErrorFileQueue.shared.readAndClear()
+
+        if !individualErrors.isEmpty {
+            let entries = individualErrors.map { fileError in
+                ActivityEntry(
+                    filename: fileError.filename,
+                    kind: .backupDownload,
+                    status: .failed,
+                    errorMessage: fileError.error,
+                    relativePath: fileError.relativePath
+                )
+            }
+            activityManager.saveActivityEntries(entries: entries)
+            DispatchQueue.main.async { [weak self] in
+                self?.backupDownloadStatus = .Failed
+            }
+        } else if let error = error {
+            let entry = ActivityEntry(
+                filename: fallbackFilename,
+                kind: .backupDownload,
+                status: .failed,
+                errorMessage: error
+            )
+            activityManager.saveActivityEntry(entry: entry)
+            DispatchQueue.main.async { [weak self] in
+                self?.backupDownloadStatus = .Failed
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.backupDownloadStatus = .Done
+            }
+            onSuccess?()
         }
     }
 
@@ -471,7 +528,9 @@ class BackupsService: ObservableObject {
         let urlsStrings = foldersToBackup.map { folderToBackup in folderToBackup.url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? "" }
 
 
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceUpload")
         xpcBackupService.uploadDeviceBackup(backupAt: urlsStrings,networkAuth: networkAuth,deviceId: currentDevice.id, deviceUuid: currentDevice.uuid, bucketId: bucketId, with: { response, error in
+            PowerAssertionManager.shared.release(operation: "BackupsServiceUpload")
             if let error = error {
                 if error == "storageFull"{
                     self.showAlert()
@@ -496,7 +555,7 @@ class BackupsService: ObservableObject {
     func downloadBackup(device: Device, downloadAt: URL) async throws {
         self.deviceDownloading = device
         logger.info("Preparint backup for download")
-        logger.info("Device to download is \(device.plainName) with ID \(device.id)")
+        logger.info("Device to download is \(device.plainName ?? "unknown") with ID \(device.id)")
         
         DispatchQueue.main.sync {
             self.backupDownloadStatus = .InProgress
@@ -528,21 +587,22 @@ class BackupsService: ObservableObject {
         }
         
         backupDownloadProgressTimer?.cancel()
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceDownload")
         xpcBackupService.downloadDeviceBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             deviceUuid:device.uuid,
             bucketId: deviceBucketId,
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.backupDownloadStatus = .Done
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
+                self.backupDownloadProgressTimer?.cancel()
+                self.propagateDownloadErrors(
+                    fallbackFilename: device.plainName ?? "Backup",
+                    error: error,
+                    onSuccess: {
+                        self.completeBackupDownload()
                     }
-                    
-                    self.completeBackupDownload()
-                } else {
-                    self.backupDownloadStatus = .Failed
-                }
+                )
                 self.logger.info(["Received backup download response", result, error])
             }
         )
@@ -591,21 +651,26 @@ class BackupsService: ObservableObject {
         }
         
         backupDownloadProgressTimer?.cancel()
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceDownload")
         xpcBackupService.downloadFolderBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             folderId:folderId,
             bucketId: deviceBucketId, folderName: folderName ?? "",
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.removeItem(item: itemBackup)
-                        self.backupDownloadStatus = .Done
-                    }
-                    self.logger.info("Backup Folder downloaded✅")
-                } else {
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
+                self.backupDownloadProgressTimer?.cancel()
+                DispatchQueue.main.async {
                     self.removeItem(item: itemBackup)
                 }
+                let fallback = (folderName?.isEmpty == false) ? folderName! : (device.plainName ?? "Backup Folder")
+                self.propagateDownloadErrors(
+                    fallbackFilename: fallback,
+                    error: error,
+                    onSuccess: {
+                        self.logger.info("Backup Folder downloaded✅")
+                    }
+                )
                 self.logger.info(["Received backup download response", result, error])
             }
         )
@@ -650,29 +715,31 @@ class BackupsService: ObservableObject {
             throw BackupError.missingNetworkAuth
         }
         
+        PowerAssertionManager.shared.acquire(operation: "BackupsServiceDownload")
         xpcBackupService.downloadFileBackup(
             downloadAt: URLAsString,
             networkAuth: networkAuthUnwrapped,
             fileId:fileId,
             bucketId: deviceBucketId,
             with: {result, error in
-                if error == nil {
-                    DispatchQueue.main.async {
-                        self.removeItem(item: itemBackup)
-                        
-                    }
-                    self.logger.info("Backup file downloaded✅")
-                    
-                } else {
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
+                DispatchQueue.main.async {
                     self.removeItem(item: itemBackup)
-                    self.logger.info("Error to download file \(error ?? "Unknown Error")")
                 }
+                self.propagateDownloadErrors(
+                    fallbackFilename: downloadAt.lastPathComponent,
+                    error: error,
+                    onSuccess: {
+                        self.logger.info("Backup file downloaded✅")
+                    }
+                )
             }
         )
     }
 
     func stopBackupUpload() throws {
         logger.debug("Going to stop backup upload")
+        PowerAssertionManager.shared.release(operation: "BackupsServiceUpload")
         DispatchQueue.main.async {
             self.backupUploadStatus = .Idle
         }
@@ -682,6 +749,7 @@ class BackupsService: ObservableObject {
     
     func stopBackupDownload() throws {
         logger.debug("Going to stop backup download")
+        PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
         DispatchQueue.main.async {
             self.backupDownloadStatus = .Idle
         }
@@ -693,31 +761,33 @@ class BackupsService: ObservableObject {
         if let service = self.xpcBackupService {
             return service
         }
-        return try await withCheckedThrowingContinuation{continuation in
-            let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
-            connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
-            connectionToService.interruptionHandler = {
-                appLogger.error("Connection with XPCBackupsService interrupted")
-                onConnectionIssue()
-            }
-            connectionToService.invalidationHandler = {
-                appLogger.error("Connection with XPCBackupsService interrupted")
-                onConnectionIssue()
-            }
-            connectionToService.resume()
 
-            
-            guard let service = connectionToService.remoteObjectProxyWithErrorHandler({ error in
-                continuation.resume(throwing: error)
-            }) as? XPCBackupServiceProtocol else {
-                return continuation.resume(throwing: BackupError.cannotInitializeXPCService)
-            }
-            
-            self.xpcBackupService = service
-            
-            continuation.resume(returning: service)
+        let connectionToService = NSXPCConnection(serviceName: "com.internxt.XPCBackupService")
+        connectionToService.remoteObjectInterface = NSXPCInterface(with: XPCBackupServiceProtocol.self)
+        connectionToService.interruptionHandler = { [weak self] in
+            appLogger.error("Connection with XPCBackupsService interrupted")
+            self?.xpcBackupService = nil
+            onConnectionIssue()
         }
-        
+        connectionToService.invalidationHandler = { [weak self] in
+            appLogger.error("Connection with XPCBackupsService invalidated")
+            self?.xpcBackupService = nil
+            self?.xpcConnection = nil
+            onConnectionIssue()
+        }
+        connectionToService.resume()
+
+        guard let service = connectionToService.remoteObjectProxyWithErrorHandler({ [weak self] error in
+            appLogger.error("XPCBackupService error: \(error.localizedDescription)")
+            self?.xpcBackupService = nil
+            onConnectionIssue()
+        }) as? XPCBackupServiceProtocol else {
+            throw BackupError.cannotInitializeXPCService
+        }
+
+        self.xpcConnection = connectionToService
+        self.xpcBackupService = service
+        return service
     }
              
     private func checkBackupUploadProgress() {
@@ -739,7 +809,7 @@ class BackupsService: ObservableObject {
             }
             
             if(backupStatus.status == .Done || backupStatus.status == .Failed || backupStatus.status == .Stopped) {
-                
+                PowerAssertionManager.shared.release(operation: "BackupsServiceUpload")
                 self.backupUploadProgressTimer?.cancel()
             }
         }
@@ -763,6 +833,7 @@ class BackupsService: ObservableObject {
             }
             
             if(backupDownloadStatus.status == .Done || backupDownloadStatus.status == .Failed) {
+                PowerAssertionManager.shared.release(operation: "BackupsServiceDownload")
                 self.backupDownloadProgressTimer?.cancel()
             }
         }

@@ -11,8 +11,6 @@ import InternxtSwiftCore
 class BackupConfigurationManager {
     private let groupName: String
     private let clientName: String
-    private let MNEMONIC_TOKEN_KEY = "Mnemonic"
-    private let AUTH_TOKEN_KEY = "AuthToken"
     
     init(groupName: String, clientName: String) {
         self.groupName = groupName
@@ -29,7 +27,7 @@ class BackupConfigurationManager {
 
     func getAuthToken() -> String? {
         guard let sharedDefaults = setupSharedDefaults(),
-              let newAuthToken = sharedDefaults.string(forKey: AUTH_TOKEN_KEY) else {
+              let newAuthToken = sharedDefaults.string(forKey: ConfigLoader.AUTH_TOKEN_KEY) else {
             logger.error("Cannot get AuthToken")
             return nil
         }
@@ -38,7 +36,7 @@ class BackupConfigurationManager {
 
     func getMnemonic() -> String? {
         guard let sharedDefaults = setupSharedDefaults(),
-              let mnemonic = sharedDefaults.string(forKey: MNEMONIC_TOKEN_KEY) else {
+              let mnemonic = sharedDefaults.string(forKey: ConfigLoader.MNEMONIC_TOKEN_KEY) else {
             logger.error("Cannot get mnemonic")
             return nil
         }

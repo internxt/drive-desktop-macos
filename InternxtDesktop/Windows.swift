@@ -13,9 +13,9 @@ import Sparkle
 /// Return the default windows config, this
 /// windows will be available without needing to explicitly
 /// creating them
-func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager,antivirusManager : AntivirusManager ,
-                    cleanerService: CleanerService,updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
-                    fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState, storageFullState: StorageFullState) -> [WindowConfig] {
+func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManager, usageManager: UsageManager, backupsService: BackupsService, scheduleManager: ScheduledBackupManager, antivirusManager: AntivirusManager,
+                    cleanerService: CleanerService, mailBridgeService: MailBridgeService, issuesManager: IssuesManager, updater: SPUUpdater, closeSendFeedbackWindow: @escaping () -> Void, finishOrSkipOnboarding: @escaping () -> Void,
+                    fileSizeLimitState: FileSizeLimitState, emptyFileLimitState: EmptyFileLimitState, storageFullState: StorageFullState, updateRequiredState: UpdateRequiredState) -> [WindowConfig] {
     let windows = [
         WindowConfig(
             view: AnyView(AppSettingsManagerView{SignInWithBrowserView().environmentObject(authManager)}),
@@ -34,6 +34,7 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
                     .environmentObject(scheduleManager)
                     .environmentObject(antivirusManager)
                     .environmentObject(cleanerService)
+                    .environmentObject(mailBridgeService)
             }),
             title: "Internxt",
             id: "settings",
@@ -53,6 +54,20 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
             id: "send-feedback",
             width: 380,
             height: 320
+        ),
+        WindowConfig(
+            view: AnyView(
+                AppSettingsManagerView {
+                    IssuesView()
+                        .environmentObject(issuesManager)
+                }
+            ),
+            title: "Issues",
+            id: "issues",
+            width: 540,
+            height: 440,
+            fixedToFront: true,
+            backgroundColor: Color.Surface
         ),
         WindowConfig(
             view: AnyView(
@@ -89,6 +104,26 @@ func defaultWindows(settingsManager: SettingsTabManager, authManager: AuthManage
             height: 200,
             fixedToFront: true,
             backgroundColor: Color.clear
+        ),
+        WindowConfig(
+            view: AnyView(
+                UpdateRequiredWindowView(onUpdate: {
+                    let wasAccessory = (NSApp.activationPolicy() == .accessory)
+                    if wasAccessory {
+                        NSApp.setActivationPolicy(.regular)
+                    }
+                    NSApp.activate(ignoringOtherApps: true)
+                    updater.checkForUpdates()
+                })
+                .environmentObject(updateRequiredState)
+            ),
+            title: nil,
+            id: "update-required",
+            width: 420,
+            height: 200,
+            fixedToFront: true,
+            backgroundColor: Color.clear,
+            closable: false
         )
     ]
     
