@@ -95,13 +95,17 @@ class BackupUploadService:  BackupUploadServiceProtocol, ObservableObject {
     }
 
 
-    private lazy var backupNewAPI: BackupAPI = {
-        BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-    }()
+    private var currentAuthToken: String {
+        ConfigLoader().getAuthToken() ?? newAuthToken
+    }
 
-    private lazy var driveAPI: DriveAPI = {
-        DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: newAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
-    }()
+    private var backupNewAPI: BackupAPI {
+        BackupAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: currentAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+
+    private var driveAPI: DriveAPI {
+        DriveAPI(baseUrl: config.DRIVE_NEW_API_URL, authToken: currentAuthToken, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
 
 
     private let apiSemaphore = AsyncSemaphore(maxConcurrent: 6)
