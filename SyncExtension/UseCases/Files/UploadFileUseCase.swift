@@ -116,7 +116,7 @@ struct UploadFileUseCase {
                         if let apiClientError = error as? APIClientError, apiClientError.statusCode == 409 {
                             let existences = try await driveNewAPI.getFolderExistencesInFolder(folderParentUuid: parentUUID, folderName: item.filename)
                             if let folder = existences.existentFolders.first(where: {
-                                $0.plainName == item.filename && $0.removed == false
+                                $0.plainName == item.filename && DriveItemStatus(rawValue: $0.status) == .exists
                             }) {
                                 createdFolderId = String(folder.id ?? 0)
                                 createdFolderUuid = folder.uuid

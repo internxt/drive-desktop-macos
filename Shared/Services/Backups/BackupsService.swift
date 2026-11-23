@@ -283,7 +283,7 @@ class BackupsService: ObservableObject {
             DispatchQueue.main.async {
                 self.deviceResponse = response
                 let currentDevice = allDevices.first{device in
-                    return device.plainName == currentDeviceName && device.removed != true && device.deleted != true
+                    return device.plainName == currentDeviceName && DriveItemStatus(rawValue: device.status) == .exists
                 }
                 if self.selectedDevice == nil {
                     self.selectedDevice = currentDevice 

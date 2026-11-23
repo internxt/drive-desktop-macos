@@ -15,8 +15,8 @@ enum DriveFileError: Error {
 
 struct DriveFileService {
     static var shared = DriveFileService()
-    private let trashAPI: TrashAPI = APIFactory.Trash
-    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private var trashAPI: TrashAPI { APIFactory.Trash }
+    private var driveNewAPI: DriveAPI { APIFactory.DriveNew }
     
     
     /// Given a file uuid, modifies it status to **TRASHED**

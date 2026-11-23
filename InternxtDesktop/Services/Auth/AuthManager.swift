@@ -15,6 +15,42 @@ struct NeedsTokenRefreshResult {
     var authTokenCreationDate: Date
     var authTokenDaysUntilExpiration: Int
 }
+actor TokenRefreshCoordinator {
+    static let shared = TokenRefreshCoordinator()
+    private var activeRefreshTask: Task<String, Error>?
+
+    func refreshToken(using driveAPI: DriveAPI, config: ConfigLoader) async throws -> String {
+        if let existingTask = activeRefreshTask {
+            return try await existingTask.value
+        }
+
+        let task = Task<String, Error> {
+            guard let authToken = config.getAuthToken() else {
+                throw AuthError.AuthTokenNotInConfig
+            }
+
+            if let check = try? AuthManager.checkNeedsRefresh(authToken: authToken), !check.needsRefresh {
+                return authToken
+            }
+
+            let newTokensResponse = try await driveAPI.refreshTokens(currentAuthToken: authToken)
+            try config.setAuthToken(authToken: newTokensResponse.newToken)
+            return newTokensResponse.newToken
+        }
+
+        self.activeRefreshTask = task
+
+        do {
+            let newToken = try await task.value
+            self.activeRefreshTask = nil
+            return newToken
+        } catch {
+            self.activeRefreshTask = nil
+            throw error
+        }
+    }
+}
+
 class AuthManager: ObservableObject {
     let logger = Logger(subsystem: "com.internxt", category: "AuthManager")
     @Published public var isLoggedIn = false
@@ -102,14 +138,7 @@ class AuthManager: ObservableObject {
     }
     
     func refreshTokens() async throws {
-        guard let authToken = config.getAuthToken() else {
-            throw AuthError.AuthTokenNotInConfig
-        }
-        
-        let newTokensResponse = try await APIFactory.DriveNew.refreshTokens(currentAuthToken: authToken )
-        
-        
-        try config.setAuthToken(authToken: newTokensResponse.newToken)
+        _ = try await TokenRefreshCoordinator.shared.refreshToken(using: APIFactory.DriveNew, config: config)
     }
     
     func storeAuthDetails(plainMnemonic: String, authToken: String,privateKey: String) throws {
@@ -201,20 +230,24 @@ class AuthManager: ObservableObject {
     }
     
     
-    func needRefreshToken() throws -> NeedsTokenRefreshResult {
-
-        
-        guard let authToken = config.getAuthToken() else {
-            throw AuthError.AuthTokenNotInConfig
-        }
-
+    public static func checkNeedsRefresh(authToken: String, deadlineSeconds: Int = 14400) throws -> NeedsTokenRefreshResult {
         let decodedAuthToken = try JWTDecoder.decode(jwtToken: authToken)
         
-        guard let authTokenExpirationTimestamp = decodedAuthToken["exp"] as? Int else {
+        let authTokenExpirationTimestamp: Int
+        if let expInt = decodedAuthToken["exp"] as? Int {
+            authTokenExpirationTimestamp = expInt
+        } else if let expNum = decodedAuthToken["exp"] as? NSNumber {
+            authTokenExpirationTimestamp = expNum.intValue
+        } else {
             throw AuthError.InvalidTokenExp
         }
         
-        guard let authTokenCreationTimestamp = decodedAuthToken["iat"] as? Int else {
+        let authTokenCreationTimestamp: Int
+        if let iatInt = decodedAuthToken["iat"] as? Int {
+            authTokenCreationTimestamp = iatInt
+        } else if let iatNum = decodedAuthToken["iat"] as? NSNumber {
+            authTokenCreationTimestamp = iatNum.intValue
+        } else {
             throw AuthError.InvalidTokenIat
         }
         
@@ -225,7 +258,7 @@ class AuthManager: ObservableObject {
         let secondsUntilExpiration = authTokenExpirationTimestamp - currentTimestamp
         let elapsedTime = currentTimestamp - authTokenCreationTimestamp
         
-        let needsRefresh = elapsedTime >= REFRESH_TOKEN_DEADLINE_SECONDS || secondsUntilExpiration <= REFRESH_TOKEN_DEADLINE_SECONDS
+        let needsRefresh = elapsedTime >= deadlineSeconds || secondsUntilExpiration <= deadlineSeconds
         
         let daysUntilAuthTokenExpires = Date().daysUntil(authTokenExpirationDate) ?? 1
         
@@ -234,6 +267,14 @@ class AuthManager: ObservableObject {
             authTokenCreationDate: authTokenCreationDate,
             authTokenDaysUntilExpiration: daysUntilAuthTokenExpires
         )
+    }
+
+    func needRefreshToken() throws -> NeedsTokenRefreshResult {
+        guard let authToken = config.getAuthToken() else {
+            throw AuthError.AuthTokenNotInConfig
+        }
+
+        return try Self.checkNeedsRefresh(authToken: authToken, deadlineSeconds: REFRESH_TOKEN_DEADLINE_SECONDS)
     }
     
     private func saveWorkspaceMnemonic(key: String){

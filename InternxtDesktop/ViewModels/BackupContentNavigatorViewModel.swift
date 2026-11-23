@@ -32,7 +32,7 @@ let LIMIT_PER_REQUEST = 50
 extension BackupContentNavigator {
     class ViewModel: ObservableObject {
         private let decrypt = Decrypt()
-        private let backupAPI = APIFactory.BackupNew
+        private var backupAPI: BackupAPI { APIFactory.BackupNew }
         var inMemoryItems: [Int: [BackupContentItem]] = [:]
         @Published var loadingItems: Bool = false
         @Published var currentItems: [BackupContentItem] = []

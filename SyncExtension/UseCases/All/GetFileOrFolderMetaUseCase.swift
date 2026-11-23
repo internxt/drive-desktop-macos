@@ -93,7 +93,7 @@ struct GetFileOrFolderMetaUseCase {
                     if let folderMeta = await self.getFolderMetaOrNil(maybeFolderId: identifierRaw) {
 
                         let folderStatus = DriveItemStatus(rawValue: folderMeta.status)
-                        if folderStatus == .deleted || folderStatus == .trashed || folderMeta.removed == true {
+                        if folderStatus == .deleted || folderStatus == .trashed {
                             let itemDisplayName = folderMeta.plainName ?? identifierRaw
                             self.logger.info("❌ Folder (id: \(identifierRaw), name: '\(itemDisplayName)') is deleted/removed, returning nonExistentItem")
                             completionHandler(nil, NSError.fileProviderErrorForNonExistentItem(withIdentifier: self.identifier))
