@@ -17,8 +17,18 @@ struct VPNTabView: View {
                 checkingView
             case .disconnected:
                 VPNDisconnectedView(service: service)
+            case .needsApproval:
+                VPNApprovalView(service: service)
+            case .connecting(let location):
+                VPNConnectingView(phase: .connecting(location))
+            case .reconnecting(let location):
+                VPNConnectingView(phase: .reconnecting(location))
+            case .disconnecting:
+                VPNConnectingView(phase: .disconnecting)
             case .connected(let location, let exit):
                 VPNConnectedView(service: service, location: location, exit: exit)
+            case .failed(let error):
+                VPNErrorView(service: service, error: error)
             }
         }
         .frame(width: 630, height: 430)
