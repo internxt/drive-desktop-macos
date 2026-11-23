@@ -103,6 +103,14 @@ public struct ConfigLoader {
     static var isReleaseMode: Bool {
         !ConfigLoader.isDevMode
     }
+
+    static var isVPNEnabled: Bool {
+        #if DEBUG || BETA
+            return true
+        #else
+            return false
+        #endif
+    }
     
    
     

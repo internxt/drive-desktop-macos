@@ -19,7 +19,7 @@ struct MailBridgeIdentitySetupView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                MailBridgeGlyph(systemName: "at")
+                AppGlyph(systemName: "at")
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("MAIL_BRIDGE_IDENTITY_TITLE")
@@ -34,7 +34,7 @@ struct MailBridgeIdentitySetupView: View {
                 }
             }
 
-            MailBridgeCard {
+            AppCard {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 14) {
                         VStack(alignment: .leading, spacing: 3) {
@@ -58,7 +58,7 @@ struct MailBridgeIdentitySetupView: View {
                         }, size: .SM)
                     }
 
-                    MailBridgeDivider().padding(.vertical, 15)
+                    AppDivider().padding(.vertical, 15)
 
                     VStack(alignment: .leading, spacing: 9) {
                         ForEach(Array(stepKeys.enumerated()), id: \.offset) { index, key in

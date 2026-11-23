@@ -12,7 +12,7 @@ struct MailBridgeLockedView: View {
 
     var body: some View {
         VStack(spacing: 15) {
-            MailBridgeGlyph(systemName: "lock", tint: .Orange)
+            AppGlyph(systemName: "lock", tint: .Orange)
                 .padding(.top, 6)
 
             AppText("MAIL_BRIDGE_LOCKED_TITLE")

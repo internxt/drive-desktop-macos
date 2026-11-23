@@ -403,4 +403,22 @@
 "WIDGET_DEPRECATED_BODY_%@" = "Esta versión de Internxt Drive dejará de funcionar el %@. Actualiza para evitar interrupciones.";
 "WIDGET_DEPRECATED_BODY_NO_DATE" = "Esta versión de Internxt Drive quedará obsoleta pronto. Actualiza para evitar interrupciones.";
 
-
+"SETTINGS_TAB_VPN_TITLE" = "VPN";
+"VPN_CHECKING_AVAILABILITY" = "Comprobando la disponibilidad de la VPN…";
+"VPN_REGION_FR" = "Francia";
+"VPN_REGION_DE" = "Alemania";
+"VPN_REGION_PL" = "Polonia";
+"VPN_REGION_CA" = "Canadá";
+"VPN_REGION_UK" = "Reino Unido";
+"VPN_REGION_PICKER_TITLE" = "Ubicación";
+"VPN_OFF_TITLE" = "La VPN está desactivada";
+"VPN_OFF_DESCRIPTION" = "Envía el tráfico de tu Mac a través de los servidores de Internxt para ocultar tu dirección IP y navegar desde otro país.";
+"VPN_CONNECT" = "Conectar";
+"VPN_DISCONNECT" = "Desconectar";
+"VPN_UPGRADE" = "Mejorar plan";
+"VPN_FREE_PLAN_TITLE" = "Plan gratuito: velocidad limitada";
+"VPN_FREE_PLAN_DESCRIPTION" = "Mejora tu plan para tener velocidad completa y más ubicaciones.";
+"VPN_CONNECTED_TO_%@" = "Conectado a %@";
+"VPN_EXIT_IP" = "Dirección IP";
+"VPN_EXIT_LOCATION" = "Ubicación";
+"VPN_CONNECTED_TIME" = "Tiempo conectado";

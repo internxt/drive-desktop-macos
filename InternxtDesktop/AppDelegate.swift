@@ -47,6 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let antivirusManager = AntivirusManager()
     let cleanerService = CleanerService()
     @MainActor let mailBridgeService = MailBridgeService()
+    @MainActor let vpnService = VPNService()
     let notificationsManager = NotificationsManager.shared
     let issuesManager = IssuesManager()
     var popover: NSPopover?
@@ -150,7 +151,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         checkVolumeAndEjectIfNeeded()
         
         self.windowsManager = WindowsManager(
-            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState, updateRequiredState: updateRequiredState),
+            initialWindows: defaultWindows(settingsManager: settingsManager, authManager: authManager, usageManager: usageManager, backupsService: backupsService, scheduleManager: scheduledManager, antivirusManager: antivirusManager, cleanerService: cleanerService, mailBridgeService: mailBridgeService, vpnService: vpnService, issuesManager: issuesManager, updater: updaterController.updater, closeSendFeedbackWindow: closeSendFeedbackWindow, finishOrSkipOnboarding: self.finishOrSkipOnboarding, fileSizeLimitState: fileSizeLimitState, emptyFileLimitState: emptyFileLimitState, storageFullState: storageFullState, updateRequiredState: updateRequiredState),
             onWindowClose: receiveOnWindowClose
         )
         self.windowsManager.loadInitialWindows()
