@@ -56,7 +56,7 @@ struct CreateFolderUseCase {
 
                         
                         if let folder = folderResult.existentFolders.first(where: {
-                            $0.plainName == itemTemplate.filename && $0.removed == false
+                            $0.plainName == itemTemplate.filename && DriveItemStatus(rawValue: $0.status) == .exists
                         }) {
                             completionHandler(FileProviderItem(
                                 identifier: NSFileProviderItemIdentifier(rawValue: String(folder.id ?? 0)),

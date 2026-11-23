@@ -62,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     let updateRequiredState = UpdateRequiredState()
     private var backupAlertsCoordinator: BackupAlertsCoordinator!
     var usageUpdateDebouncer = Debouncer(delay: 15.0)
-    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private var driveNewAPI: DriveAPI { APIFactory.DriveNew }
     private let notificationsPollingInterval: TimeInterval = 30 * 60
     
     var isPreview: Bool {

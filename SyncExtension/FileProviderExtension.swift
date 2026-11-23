@@ -34,7 +34,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     let mnemonic: String
     let authManager: AuthManager
     let activityManager: ActivityManager
-    private let driveNewAPI: DriveAPI = APIFactory.DriveNew
+    private var driveNewAPI: DriveAPI { APIFactory.DriveNew }
     private let DEVICE_TYPE = "macos"
     var pushRegistry: PKPushRegistry!
     let domain: NSFileProviderDomain
