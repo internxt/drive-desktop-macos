@@ -4,6 +4,12 @@
 <dict>
 	<key>com.apple.developer.aps-environment</key>
 	<string>development</string>
+	<key>com.apple.developer.networking.networkextension</key>
+	<array>
+		<string>app-proxy-provider-systemextension</string>
+	</array>
+	<key>com.apple.developer.system-extension.install</key>
+	<true/>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:drive.internxt.com</string>
