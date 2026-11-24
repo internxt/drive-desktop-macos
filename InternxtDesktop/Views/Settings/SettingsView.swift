@@ -15,6 +15,7 @@ enum TabView {
     case Antivirus
     case Cleaner
     case MailBridge
+    case VPN
 }
 struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -26,6 +27,7 @@ struct SettingsView: View {
     @EnvironmentObject var antivirusManager: AntivirusManager
     @EnvironmentObject var cleanerService: CleanerService
     @EnvironmentObject var mailBridgeService: MailBridgeService
+    @EnvironmentObject var vpnService: VPNService
     public var updater: SPUUpdater? = nil
     @State private var selectedDevice: Device? = nil
     @State private var showFolderSelector = false
@@ -45,6 +47,9 @@ struct SettingsView: View {
                         TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus)
                         TabItem(assetName: "tabCleanerIcon", label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner)
                         TabItem(assetName: "tabMailBridgeIcon", label: "SETTINGS_TAB_MAIL_BRIDGE_TITLE", id: .MailBridge)
+                        if ConfigLoader.isVPNEnabled {
+                            TabItem(iconName: .Globe, label: "SETTINGS_TAB_VPN_TITLE", id: .VPN)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
@@ -175,6 +180,9 @@ struct SettingsView: View {
                 onOpenSettings: { showMailBridgeSettings = true }
             )
             .accessibilityIdentifier("itemSettingsMailBridge")
+        case .VPN:
+            VPNTabView(service: vpnService)
+                .accessibilityIdentifier("itemSettingsVPN")
         }
     }
 

@@ -13,7 +13,7 @@ struct MailBridgeErrorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                MailBridgeGlyph(systemName: "exclamationmark.triangle", tint: .TextRed)
+                AppGlyph(icon: .system("exclamationmark.triangle"), tint: .TextRed)
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("MAIL_BRIDGE_ERROR_TITLE")
@@ -28,7 +28,7 @@ struct MailBridgeErrorView: View {
                 }
             }
 
-            MailBridgeCard {
+            AppCard {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 3) {
                         AppText("MAIL_BRIDGE_ERROR_CARD_TITLE")

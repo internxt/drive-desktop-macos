@@ -28,7 +28,7 @@ struct MailBridgeSettingsDialogView: View {
             }
             .padding(EdgeInsets(top: 18, leading: 20, bottom: 14, trailing: 20))
 
-            MailBridgeDivider()
+            AppDivider()
 
             VStack(alignment: .leading, spacing: 0) {
                 AppCheckbox(label: "MAIL_BRIDGE_AUTOSTART_TITLE", checked: $autostart)
@@ -41,7 +41,7 @@ struct MailBridgeSettingsDialogView: View {
             }
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
 
-            MailBridgeDivider()
+            AppDivider()
 
             HStack(spacing: 10) {
                 Spacer()

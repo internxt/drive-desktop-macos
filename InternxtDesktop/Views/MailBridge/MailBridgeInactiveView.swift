@@ -13,7 +13,7 @@ struct MailBridgeInactiveView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                MailBridgeGlyph(asset: "tabMailBridgeIcon", size: 56)
+                AppGlyph(icon: .asset("tabMailBridgeIcon"), size: 56)
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("MAIL_BRIDGE_OFF_TITLE")
@@ -68,7 +68,7 @@ struct MailBridgeActivationCard: View {
     let isEnabled: Bool
 
     var body: some View {
-        MailBridgeCard {
+        AppCard {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 14) {
                     VStack(alignment: .leading, spacing: 3) {
@@ -112,7 +112,7 @@ struct MailBridgeActivationCard: View {
                     .padding(.top, 10)
                 }
 
-                MailBridgeDivider().padding(.vertical, 15)
+                AppDivider().padding(.vertical, 15)
 
                 VStack(alignment: .leading, spacing: 3) {
                     AppCheckbox(

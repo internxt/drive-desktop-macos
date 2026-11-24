@@ -109,7 +109,7 @@ struct MailBridgeActiveView: View {
     // MARK: - Status
 
     private var statusCard: some View {
-        MailBridgeCard(fill: .PrimaryBadge, stroke: Color.Primary.opacity(0.3)) {
+        AppCard(fill: .PrimaryBadge, stroke: Color.Primary.opacity(0.3)) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 10) {
                     Circle()
@@ -159,7 +159,7 @@ struct MailBridgeActiveView: View {
                     .truncationMode(.middle)
                     .padding(.top, 6)
 
-                MailBridgeDivider(color: Color.Primary.opacity(0.3))
+                AppDivider(color: Color.Primary.opacity(0.3))
                     .padding(.top, 13)
 
                 syncStatus
@@ -237,7 +237,7 @@ struct MailBridgeActiveView: View {
     // MARK: - Manual settings
 
     private var manualSettings: some View {
-        MailBridgeCard {
+        AppCard {
             VStack(spacing: 0) {
                 HStack(spacing: 8) {
                     AppText("MAIL_BRIDGE_MANUAL_SETTINGS")
@@ -270,7 +270,7 @@ struct MailBridgeActiveView: View {
                 }
                 .padding(EdgeInsets(top: 11, leading: 14, bottom: 11, trailing: 14))
 
-                MailBridgeDivider()
+                AppDivider()
 
                 HStack(alignment: .top, spacing: 0) {
                     credentialColumn(.imap)
