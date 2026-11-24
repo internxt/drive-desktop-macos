@@ -2,8 +2,8 @@ import XCTest
 
 final class CONNECTHandshakeTests: XCTestCase {
 
-    func testWhenATunnelIsOpenedToAHost_thenTheProxyIsAskedForThatHostWithTheRegionAndTokenAsCredentials() {
-        let request = CONNECTHandshake.request(host: "example.com", port: 443, region: "DE", token: "t")
+    func testWhenATunnelIsOpenedToAHost_thenTheProxyIsAskedForThatHostWithTheRegionAndTokenAsCredentials() throws {
+        let request = try XCTUnwrap(CONNECTHandshake.request(host: "example.com", port: 443, region: "DE", token: "t"))
 
         XCTAssertEqual(
             String(decoding: request, as: UTF8.self),
@@ -11,8 +11,8 @@ final class CONNECTHandshakeTests: XCTestCase {
         )
     }
 
-    func testWhenTheTokenContainsCharactersReservedInHeaders_thenTheCredentialsStillTravelIntact() {
-        let request = CONNECTHandshake.request(host: "example.com", port: 443, region: "FR", token: "eyJ.a+b/c")
+    func testWhenTheTokenContainsCharactersReservedInHeaders_thenTheCredentialsStillTravelIntact() throws {
+        let request = try XCTUnwrap(CONNECTHandshake.request(host: "example.com", port: 443, region: "FR", token: "eyJ.a+b/c"))
 
         XCTAssertEqual(
             String(decoding: request, as: UTF8.self),
@@ -20,13 +20,31 @@ final class CONNECTHandshakeTests: XCTestCase {
         )
     }
 
-    func testWhenTheDestinationIsAnIPv6Address_thenTheProxyReceivesItInBrackets() {
-        let request = CONNECTHandshake.request(host: "2001:db8::1", port: 443, region: "DE", token: "t")
+    func testWhenTheDestinationIsAnIPv6Address_thenTheProxyReceivesItInBrackets() throws {
+        let request = try XCTUnwrap(CONNECTHandshake.request(host: "2001:db8::1", port: 443, region: "DE", token: "t"))
 
         XCTAssertEqual(
             String(decoding: request, as: UTF8.self),
             "CONNECT [2001:db8::1]:443 HTTP/1.1\r\nHost: [2001:db8::1]:443\r\nProxy-Authorization: Basic REU6dA==\r\n\r\n"
         )
+    }
+
+    func testWhenTheHostContainsALineBreak_thenNoRequestIsBuilt() {
+        let request = CONNECTHandshake.request(host: "example.com\r\nX-Injected: 1", port: 443, region: "DE", token: "t")
+
+        XCTAssertNil(request)
+    }
+
+    func testWhenTheHostContainsASpace_thenNoRequestIsBuilt() {
+        let request = CONNECTHandshake.request(host: "example.com HTTP/1.1", port: 443, region: "DE", token: "t")
+
+        XCTAssertNil(request)
+    }
+
+    func testWhenTheHostIsEmpty_thenNoRequestIsBuilt() {
+        let request = CONNECTHandshake.request(host: "", port: 443, region: "DE", token: "t")
+
+        XCTAssertNil(request)
     }
 
     func testWhenTheProxyAcceptsTheTunnel_thenItIsEstablishedWithNothingPending() {

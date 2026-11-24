@@ -13,8 +13,12 @@ enum CONNECTHandshake {
 
     private static let headerTerminator = Data("\r\n\r\n".utf8)
     private static let supportedHTTPVersions: Set<Substring> = ["HTTP/1.1", "HTTP/1.0"]
+    private static let charactersNotAllowedInHost = CharacterSet.whitespacesAndNewlines.union(.controlCharacters)
 
-    static func request(host: String, port: Int, region: String, token: String) -> Data {
+    static func request(host: String, port: Int, region: String, token: String) -> Data? {
+        guard !host.isEmpty, host.rangeOfCharacter(from: charactersNotAllowedInHost) == nil else {
+            return nil
+        }
         let authority = "\(host.contains(":") ? "[\(host)]" : host):\(port)"
         let credentials = Data("\(region):\(token)".utf8).base64EncodedString()
         return Data("CONNECT \(authority) HTTP/1.1\r\nHost: \(authority)\r\nProxy-Authorization: Basic \(credentials)\r\n\r\n".utf8)
