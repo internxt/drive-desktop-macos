@@ -5,7 +5,7 @@
 //  Created by Xavier Abad Gomez on 23/11/2026.
 //
 
-import Foundation
+import AppKit
 import SwiftUI
 
 enum VPNLocation: String, CaseIterable {
@@ -41,14 +41,34 @@ struct ExitInfo: Equatable {
     let connectedAt: Date
 }
 
+enum VPNError: Equatable {
+    case extensionNotApproved
+    case sessionExpired
+    case zoneNotPermitted
+    case proxyUnreachable
+    case unknown
+}
+
 enum VPNViewState: Equatable {
     case checkingAvailability
     case disconnected
+    case needsApproval
+    case connecting(VPNLocation)
     case connected(VPNLocation, exit: ExitInfo?)
+    case reconnecting(VPNLocation)
+    case disconnecting
+    case failed(VPNError)
 }
 
 @MainActor
 final class VPNService: ObservableObject {
+    private static var approvalSettingsURL: URL {
+        if #available(macOS 15, *) {
+            return URL(string: "x-apple.systempreferences:com.apple.LoginItems-Settings.extension")!
+        }
+        return URL(string: "x-apple.systempreferences:com.apple.preference.security")!
+    }
+
     @Published var viewState: VPNViewState
     @Published var regions: [VPNRegion]
     @Published var selectedRegion: VPNLocation
@@ -74,7 +94,13 @@ final class VPNService: ObservableObject {
         selectedRegion = region.location
     }
 
+    func openApprovalSettings() {
+        NSWorkspace.shared.open(Self.approvalSettingsURL)
+    }
+
     func connect() {}
 
     func disconnect() {}
+
+    func retry() {}
 }
