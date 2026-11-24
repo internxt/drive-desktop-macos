@@ -13,7 +13,7 @@ struct VPNApprovalView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                AppGlyph(systemName: "checkmark.shield", tint: .Primary, size: 56)
+                AppGlyph(icon: .system("checkmark.shield"), tint: .Primary, size: 56)
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("VPN_APPROVAL_TITLE")

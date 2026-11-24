@@ -14,7 +14,7 @@ struct VPNErrorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                AppGlyph(systemName: "exclamationmark.triangle", tint: .TextRed)
+                AppGlyph(icon: .system("exclamationmark.triangle"), tint: .TextRed)
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText(titleKey)
