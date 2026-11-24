@@ -6,15 +6,11 @@
 //
 
 import AppKit
+import Combine
+import InternxtSwiftCore
 import SwiftUI
 
-enum VPNLocation: String, CaseIterable {
-    case france = "FR"
-    case germany = "DE"
-    case poland = "PL"
-    case canada = "CA"
-    case unitedKingdom = "UK"
-
+extension VPNZone {
     var nameKey: String { "VPN_REGION_\(rawValue)" }
 
     var flag: String {
@@ -29,7 +25,7 @@ enum VPNLocation: String, CaseIterable {
 }
 
 struct VPNRegion: Identifiable, Equatable {
-    let location: VPNLocation
+    let location: VPNZone
     let isAvailable: Bool
 
     var id: String { location.rawValue }
@@ -48,13 +44,17 @@ enum VPNError: Equatable {
     case unknown
 }
 
+enum VPNZonesError: Error {
+    case sessionExpired
+}
+
 enum VPNViewState: Equatable {
     case checkingAvailability
     case disconnected
     case needsApproval
-    case connecting(VPNLocation)
-    case connected(VPNLocation, since: Date, exit: ExitInfo?)
-    case reconnecting(VPNLocation)
+    case connecting(VPNZone)
+    case connected(VPNZone, since: Date, exit: ExitInfo?)
+    case reconnecting(VPNZone)
     case disconnecting
     case failed(VPNError)
 }
@@ -62,6 +62,8 @@ enum VPNViewState: Equatable {
 @MainActor
 final class VPNService: ObservableObject {
     private static let logger = LogService.shared.createLogger(subsystem: .VPN, category: "VPNService")
+    private static let lastRegionKey = "VPNService.lastRegion"
+    private static let freeZones: Set<VPNZone> = [.france]
 
     private static var approvalSettingsURL: URL {
         if #available(macOS 15, *) {
@@ -72,7 +74,7 @@ final class VPNService: ObservableObject {
 
     @Published var viewState: VPNViewState
     @Published var regions: [VPNRegion]
-    @Published var selectedRegion: VPNLocation
+    @Published var selectedRegion: VPNZone
     @Published var isFreePlan: Bool
 
     private let tunnel: VPNTunnel
@@ -81,23 +83,31 @@ final class VPNService: ObservableObject {
     private let authToken: () -> String?
     private let proxyURL: () -> URL?
     private let now: () -> Date
+    private let defaults: UserDefaults
+    private let vpnEntitlement: AnyPublisher<Bool, Never>
+    private let fetchZones: () async throws -> [VPNZone]
 
     private var session: VPNSession?
     private var attempt: Task<Void, Never>?
     private var pendingStop: Task<Void, Never>?
     private var tokenObserver: Task<Void, Never>?
+    private var entitlementObserver: Task<Void, Never>?
+    private var hasVPNPlan = false
 
     init(
         viewState: VPNViewState = .disconnected,
-        regions: [VPNRegion] = VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) },
-        selectedRegion: VPNLocation = .france,
+        regions: [VPNRegion] = VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) },
+        selectedRegion: VPNZone = .france,
         isFreePlan: Bool = true,
         tunnel: VPNTunnel = SystemVPNTunnel(),
         isEnabled: Bool = ConfigLoader.isVPNEnabled,
         connectTimeout: Duration = .seconds(30),
         authToken: @escaping () -> String? = { ConfigLoader().getAuthToken() },
         proxyURL: @escaping () -> URL? = { ConfigLoader().get().VPN_PROXY_URL.flatMap { URL(string: $0) } },
-        now: @escaping () -> Date = Date.init
+        now: @escaping () -> Date = Date.init,
+        defaults: UserDefaults = .standard,
+        vpnEntitlement: AnyPublisher<Bool, Never> = FeaturesService.shared.$vpnEnabled.eraseToAnyPublisher(),
+        fetchZones: @escaping () async throws -> [VPNZone] = VPNService.fetchZonesFromBackend
     ) {
         self.viewState = viewState
         self.regions = regions
@@ -109,17 +119,29 @@ final class VPNService: ObservableObject {
         self.authToken = authToken
         self.proxyURL = proxyURL
         self.now = now
+        self.defaults = defaults
+        self.vpnEntitlement = vpnEntitlement
+        self.fetchZones = fetchZones
 
         tunnel.onFailure = { [weak self] failure in self?.tunnelFailed(failure) }
         tunnel.onUnexpectedStop = { [weak self] in self?.tunnelStoppedOnItsOwn() }
-        if isEnabled {
-            observeTokenRefresh()
-        }
     }
 
     deinit {
         tokenObserver?.cancel()
+        entitlementObserver?.cancel()
         attempt?.cancel()
+    }
+
+    func start() {
+        guard isEnabled, entitlementObserver == nil else { return }
+
+        if let stored = defaults.string(forKey: Self.lastRegionKey).flatMap(VPNZone.init(rawValue:)) {
+            selectedRegion = stored
+        }
+        viewState = .checkingAvailability
+        observeTokenRefresh()
+        observeEntitlement()
     }
 
     func select(_ region: VPNRegion) {
@@ -127,7 +149,26 @@ final class VPNService: ObservableObject {
             URLDictionary.UPGRADE_PLAN.open()
             return
         }
+        guard region.location != selectedRegion else { return }
+
         selectedRegion = region.location
+        defaults.set(region.location.rawValue, forKey: Self.lastRegionKey)
+        if case .connected = viewState {
+            switchRegion()
+        }
+    }
+
+    func refreshRegions() async {
+        guard let zones = await availableZones() else { return }
+
+        regions = VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: zones.contains($0)) }
+        isFreePlan = !hasVPNPlan
+        if !zones.contains(selectedRegion) {
+            selectedRegion = .france
+        }
+        if viewState == .checkingAvailability {
+            viewState = .disconnected
+        }
     }
 
     func openApprovalSettings() {
@@ -147,7 +188,10 @@ final class VPNService: ObservableObject {
             viewState = .failed(.proxyUnreachable)
             return
         }
+        beginConnection(token: token, proxyHost: host, proxyPort: port)
+    }
 
+    private func beginConnection(token: String, proxyHost host: String, proxyPort port: UInt16) {
         let session = VPNSession(proxyHost: host, proxyPort: port, location: selectedRegion, token: token)
         Self.logger.info("Connecting the VPN to \(session.location.rawValue)")
         viewState = .connecting(session.location)
@@ -179,7 +223,7 @@ final class VPNService: ObservableObject {
     }
 
     func disconnectLeftoverTunnel() async {
-        guard isEnabled, await tunnel.isRunning(), viewState == .disconnected else { return }
+        guard isEnabled, await tunnel.isRunning(), attempt == nil, session == nil else { return }
         Self.logger.info("Disconnecting a VPN tunnel left over from a previous session")
         stopTunnelInBackground()
         await pendingStop?.value
@@ -188,6 +232,11 @@ final class VPNService: ObservableObject {
     func reset() {
         guard isEnabled else { return }
         stopNow()
+        defaults.removeObject(forKey: Self.lastRegionKey)
+        selectedRegion = .france
+        hasVPNPlan = false
+        isFreePlan = true
+        regions = VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: Self.freeZones.contains($0)) }
         viewState = .disconnected
     }
 
@@ -253,6 +302,58 @@ final class VPNService: ObservableObject {
         session = nil
         viewState = .failed(Self.viewError(for: failure))
         stopTunnelInBackground()
+        if failure == .zoneNotAllowed {
+            Task { [weak self] in
+                await self?.refreshRegions()
+            }
+        }
+    }
+
+    private func switchRegion() {
+        guard let current = session else { return }
+        Self.logger.info("Switching the VPN to \(selectedRegion.rawValue)")
+        attempt?.cancel()
+        session = nil
+        viewState = .connecting(selectedRegion)
+        attempt = Task { [weak self] in
+            await self?.tunnel.stop()
+            guard !Task.isCancelled else { return }
+            self?.beginConnection(token: current.token, proxyHost: current.proxyHost, proxyPort: current.proxyPort)
+        }
+    }
+
+    private func observeEntitlement() {
+        entitlementObserver = Task { [weak self, vpnEntitlement] in
+            for await isEnabled in vpnEntitlement.values {
+                guard let self else { return }
+                self.hasVPNPlan = isEnabled
+                await self.refreshRegions()
+            }
+        }
+    }
+
+    private func availableZones() async -> Set<VPNZone>? {
+        guard hasVPNPlan else { return Self.freeZones }
+        do {
+            return Set(try await fetchZones())
+        } catch VPNZonesError.sessionExpired {
+            Self.logger.error("Could not load the VPN regions: session expired")
+            if viewState.acceptsConnect || viewState == .checkingAvailability {
+                viewState = .failed(.sessionExpired)
+            }
+            return nil
+        } catch {
+            Self.logger.error("Could not load the VPN regions, falling back to the free ones: \(error)")
+            return Self.freeZones
+        }
+    }
+
+    nonisolated static func fetchZonesFromBackend() async throws -> [VPNZone] {
+        do {
+            return try await APIFactory.VPN.getUser().zones
+        } catch let error as APIClientError where error.statusCode == 401 {
+            throw VPNZonesError.sessionExpired
+        }
     }
 
     private func tunnelStoppedOnItsOwn() {

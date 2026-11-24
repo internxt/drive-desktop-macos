@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import InternxtSwiftCore
 import NetworkExtension
 import SystemExtensions
 
 struct VPNSession: Equatable {
     let proxyHost: String
     let proxyPort: UInt16
-    let location: VPNLocation
+    let location: VPNZone
     let token: String
 
     var startOptions: [String: NSObject] {

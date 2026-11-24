@@ -5,12 +5,13 @@
 //  Created by Xavier Abad Gomez on 23/11/2026.
 //
 
+import InternxtSwiftCore
 import SwiftUI
 
 struct VPNConnectingView: View {
     enum Phase {
-        case connecting(VPNLocation)
-        case reconnecting(VPNLocation)
+        case connecting(VPNZone)
+        case reconnecting(VPNZone)
         case disconnecting
     }
 
@@ -61,7 +62,7 @@ struct VPNConnectingView: View {
         }
     }
 
-    private func regionName(_ location: VPNLocation) -> String {
+    private func regionName(_ location: VPNZone) -> String {
         NSLocalizedString(location.nameKey, comment: "Region name")
     }
 }

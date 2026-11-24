@@ -156,6 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         )
         self.windowsManager.loadInitialWindows()
         self.issuesManager.startObserving()
+        self.vpnService.start()
         Task { await self.vpnService.disconnectLeftoverTunnel() }
 
         if UpdateEnforcementManager.shared.isBlocked {

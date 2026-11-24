@@ -5,6 +5,8 @@
 //  Created by Xavier Abad Gomez on 24/11/2026.
 //
 
+import Combine
+import InternxtSwiftCore
 import XCTest
 @testable import Internxt
 
@@ -14,11 +16,168 @@ final class VPNServiceTests: XCTestCase {
     private var tunnel: FakeVPNTunnel!
     private var token: String?
     private var proxyURL: URL?
+    private var defaults: UserDefaults!
+    private var defaultsSuite: String!
+    private var vpnEntitlement: CurrentValueSubject<Bool, Never>!
+    private var zones: Result<[VPNZone], Error> = .success([.france])
+    private var zoneFetches = 0
 
     override func setUp() async throws {
         tunnel = FakeVPNTunnel()
         token = "token-1"
         proxyURL = URL(string: "http://203.0.113.7:8082")
+        defaultsSuite = "VPNServiceTests.\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: defaultsSuite)
+        vpnEntitlement = CurrentValueSubject(false)
+        zones = .success([.france])
+        zoneFetches = 0
+    }
+
+    override func tearDown() async throws {
+        defaults.removePersistentDomain(forName: defaultsSuite)
+    }
+
+    func test_paidPlan_unlocksTheZonesOfThePlanAndLocksTheRest() async {
+        vpnEntitlement.value = true
+        zones = .success([.france, .germany, .poland])
+        let service = makeService()
+
+        await startAndWaitUntilReady(service)
+
+        XCTAssertEqual(availableZones(service), [.france, .germany, .poland])
+        XCTAssertFalse(service.isFreePlan)
+    }
+
+    func test_planWithoutVPN_onlyAllowsFranceAndShowsTheFreePlanNotice() async {
+        zones = .success([.france, .germany])
+        let service = makeService()
+
+        await startAndWaitUntilReady(service)
+
+        XCTAssertEqual(availableZones(service), [.france])
+        XCTAssertTrue(service.isFreePlan)
+        XCTAssertEqual(zoneFetches, 0)
+    }
+
+    func test_zonesThatCannotBeLoaded_fallBackToFrance() async {
+        vpnEntitlement.value = true
+        zones = .failure(URLError(.badServerResponse))
+        let service = makeService()
+
+        await startAndWaitUntilReady(service)
+
+        XCTAssertEqual(availableZones(service), [.france])
+    }
+
+    func test_zonesRequestWithExpiredSession_showsSessionExpired() async {
+        vpnEntitlement.value = true
+        zones = .failure(VPNZonesError.sessionExpired)
+        let service = makeService()
+
+        service.start()
+
+        await waitUntil { service.viewState == .failed(.sessionExpired) }
+    }
+
+    func test_upgradingThePlan_reloadsTheZones() async {
+        zones = .success([.france, .canada])
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+
+        vpnEntitlement.value = true
+
+        await waitUntil { self.availableZones(service) == [.france, .canada] }
+        XCTAssertFalse(service.isFreePlan)
+    }
+
+    func test_chosenRegion_isRememberedForTheNextLaunch() async {
+        vpnEntitlement.value = true
+        zones = .success([.france, .germany])
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+
+        let relaunched = makeService()
+        await startAndWaitUntilReady(relaunched)
+        XCTAssertEqual(relaunched.selectedRegion, .germany)
+    }
+
+    func test_rememberedRegionNoLongerInThePlan_fallsBackToFrance() async {
+        defaults.set("DE", forKey: "VPNService.lastRegion")
+        let service = makeService()
+
+        await startAndWaitUntilReady(service)
+
+        XCTAssertEqual(service.selectedRegion, .france)
+    }
+
+    func test_zonesThatCannotBeLoaded_keepTheRememberedRegionForTheNextLaunch() async {
+        defaults.set("DE", forKey: "VPNService.lastRegion")
+        vpnEntitlement.value = true
+        zones = .failure(URLError(.timedOut))
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+        XCTAssertEqual(service.selectedRegion, .france)
+
+        zones = .success([.france, .germany])
+        let relaunched = makeService()
+        await startAndWaitUntilReady(relaunched)
+
+        XCTAssertEqual(relaunched.selectedRegion, .germany)
+    }
+
+    func test_logout_forgetsThePlanOfThePreviousUser() async {
+        vpnEntitlement.value = true
+        zones = .success([.france, .germany])
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+        XCTAssertFalse(service.isFreePlan)
+
+        service.reset()
+
+        XCTAssertTrue(service.isFreePlan)
+        XCTAssertEqual(availableZones(service), [.france])
+    }
+
+    func test_changingRegionWhileConnected_reconnectsToTheNewRegion() async {
+        vpnEntitlement.value = true
+        zones = .success([.france, .germany])
+        let service = await connectedService()
+
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+
+        await waitUntil { service.viewState == .connected(.germany, since: self.connectedAt, exit: nil) }
+        XCTAssertEqual(tunnel.stopCount, 1)
+        XCTAssertEqual(tunnel.startedSessions.map(\.location), [.france, .germany])
+    }
+
+    func test_changingRegionWhileDisconnected_doesNotConnect() async {
+        vpnEntitlement.value = true
+        zones = .success([.france, .germany])
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+
+        XCTAssertEqual(service.selectedRegion, .germany)
+        XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+    }
+
+    func test_extensionReportingZoneNotAllowed_reloadsTheZones() async {
+        vpnEntitlement.value = true
+        zones = .success([.france, .germany])
+        let service = await connectedService()
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+        await waitUntil { service.viewState == .connected(.germany, since: self.connectedAt, exit: nil) }
+        zones = .success([.france])
+
+        tunnel.onFailure?(.zoneNotAllowed)
+
+        XCTAssertEqual(service.viewState, .failed(.zoneNotPermitted))
+        await waitUntil { self.availableZones(service) == [.france] }
+        XCTAssertEqual(service.selectedRegion, .france)
     }
 
     func test_connect_withApprovedExtension_endsConnectedToFranceThroughTheConfiguredProxy() async {
@@ -306,6 +465,16 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertEqual(service.viewState, .disconnected)
     }
 
+    func test_launch_whileTheRegionsAreStillLoading_stopsTheLeftoverTunnel() async {
+        tunnel.running = true
+        let service = makeService()
+
+        service.start()
+        await service.disconnectLeftoverTunnel()
+
+        XCTAssertEqual(tunnel.stopCount, 1)
+    }
+
     func test_launch_whenTheUserAlreadyStartedConnecting_leavesTheTunnelAlone() async {
         tunnel.running = true
         tunnel.startBehavior = .hangs
@@ -341,12 +510,28 @@ final class VPNServiceTests: XCTestCase {
             connectTimeout: connectTimeout,
             authToken: { [unowned self] in self.token },
             proxyURL: { [unowned self] in self.proxyURL },
-            now: { [connectedAt] in connectedAt }
+            now: { [connectedAt] in connectedAt },
+            defaults: defaults,
+            vpnEntitlement: vpnEntitlement.eraseToAnyPublisher(),
+            fetchZones: { [unowned self] in
+                self.zoneFetches += 1
+                return try self.zones.get()
+            }
         )
+    }
+
+    private func startAndWaitUntilReady(_ service: VPNService) async {
+        service.start()
+        await waitUntil { service.viewState == .disconnected }
+    }
+
+    private func availableZones(_ service: VPNService) -> Set<VPNZone> {
+        Set(service.regions.filter(\.isAvailable).map(\.location))
     }
 
     private func connectedService() async -> VPNService {
         let service = makeService()
+        await startAndWaitUntilReady(service)
         service.connect()
         await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
         return service
