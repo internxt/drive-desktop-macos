@@ -51,6 +51,17 @@
                ReferencedContainer = "container:InternxtDesktop.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3534A8402157FC383C21D6CA"
+               BuildableName = "VPNExtensionTests.xctest"
+               BlueprintName = "VPNExtensionTests"
+               ReferencedContainer = "container:InternxtDesktop.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

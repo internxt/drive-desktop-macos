@@ -82,6 +82,8 @@
 		74FC23FA5E316F8F652B6173 /* VPNConnectingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90173602421348225E927C4D /* VPNConnectingView.swift */; };
 		8E4FF419CDD916BA7663BA5A /* AppCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9EC8313E5F65611881FE559 /* AppCard.swift */; };
 		A3C24DDFC2B4DFBECC09721A /* VPNApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7285C4DF6B62C463A261FB0 /* VPNApprovalView.swift */; };
+		5351C819EDB3F37B088CB57F /* CONNECTHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47676468D9D412CDBDEF2C5B /* CONNECTHandshake.swift */; };
+		5B3F7BCA3DCC2B1C617FA565 /* CONNECTHandshakeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7E80B1D1C90D67DD0F6F42 /* CONNECTHandshakeTests.swift */; };
 		AA0424162FE36A22001E29EF /* StorageFullDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */; };
 		AA0889102C4AF27C00D5CC40 /* SyncExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */; };
 		AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */; };
@@ -600,6 +602,7 @@
 		475B9363305BF76000E9F330 /* MailBridgeErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeErrorView.swift; sourceTree = "<group>"; };
 		475B9364305BF76000E9F330 /* MailBridgeIdentitySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeIdentitySetupView.swift; sourceTree = "<group>"; };
 		475B936A305BF7E500E9F330 /* APIClientError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientError.swift; sourceTree = "<group>"; };
+		47676468D9D412CDBDEF2C5B /* CONNECTHandshake.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CONNECTHandshake.swift; sourceTree = "<group>"; };
 		4792C7C1305055550098B744 /* MailBridgeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeTabView.swift; sourceTree = "<group>"; };
 		4792C7D0015055470098B744 /* MailBridgeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeComponents.swift; sourceTree = "<group>"; };
 		4792C7D0035055470098B744 /* MailBridgeLockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailBridgeLockedView.swift; sourceTree = "<group>"; };
@@ -613,6 +616,7 @@
 		6C21CD2E67E29B088E6013DC /* VPNConnectedView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNConnectedView.swift; sourceTree = "<group>"; };
 		90173602421348225E927C4D /* VPNConnectingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNConnectingView.swift; sourceTree = "<group>"; };
 		9E84DE1446949651C171FF7B /* VPNTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNTabView.swift; sourceTree = "<group>"; };
+		7D7E80B1D1C90D67DD0F6F42 /* CONNECTHandshakeTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CONNECTHandshakeTests.swift; sourceTree = "<group>"; };
 		AA0424152FE36A22001E29EF /* StorageFullDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageFullDialogView.swift; sourceTree = "<group>"; };
 		AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA08890F2C4AF27C00D5CC40 /* SyncExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensionTests.swift; sourceTree = "<group>"; };
@@ -839,9 +843,17 @@
 		E5FF0F84C9B28AF55ABBFE8A /* VPNDisconnectedView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNDisconnectedView.swift; sourceTree = "<group>"; };
 		F2B73207643DFEA1A0CFDA54 /* VPNService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNService.swift; sourceTree = "<group>"; };
 		F9EC8313E5F65611881FE559 /* AppCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppCard.swift; sourceTree = "<group>"; };
+		E296C908D90E50E2FC337C28 /* VPNExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VPNExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2749B70AD440985211881281 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		31DEAEAB2B75139400E76D53 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -968,6 +980,15 @@
 			path = XPCBackupService;
 			sourceTree = "<group>";
 		};
+		3841CC57FD621B358C5C6954 /* VPNExtensionTests */ = {
+			isa = PBXGroup;
+			children = (
+				7D7E80B1D1C90D67DD0F6F42 /* CONNECTHandshakeTests.swift */,
+			);
+			name = VPNExtensionTests;
+			path = VPNExtensionTests;
+			sourceTree = "<group>";
+		};
 		4792C7C0305055470098B744 /* MailBridge */ = {
 			isa = PBXGroup;
 			children = (
@@ -1017,6 +1038,15 @@
 			);
 			name = VPN;
 			path = VPN;
+			sourceTree = "<group>";
+		};
+		5D7E5E8678F3D2A98F8D4D22 /* VPNExtension */ = {
+			isa = PBXGroup;
+			children = (
+				47676468D9D412CDBDEF2C5B /* CONNECTHandshake.swift */,
+			);
+			name = VPNExtension;
+			path = VPNExtension;
 			sourceTree = "<group>";
 		};
 		AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
@@ -1543,6 +1573,8 @@
 				AA08890E2C4AF27C00D5CC40 /* SyncExtensionTests */,
 				AA08891A2C4AF29F00D5CC40 /* InternxtDesktopTests */,
 				AAA6F6382E5F9AA6000082ED /* Helper */,
+				5D7E5E8678F3D2A98F8D4D22 /* VPNExtension */,
+				3841CC57FD621B358C5C6954 /* VPNExtensionTests */,
 				E1FB2D6B2A76C3EC00473AE1 /* Frameworks */,
 				E1FB2D252A76BF0200473AE1 /* Products */,
 				E15F8C332B762BAE00C60EFA /* InternxtDesktopTests-Bridging-Header.h */,
@@ -1559,6 +1591,7 @@
 				AA08890D2C4AF27C00D5CC40 /* SyncExtensionTests.xctest */,
 				AA0889192C4AF29F00D5CC40 /* InternxtDesktopTests.xctest */,
 				AAA6F62F2E5F9A9D000082ED /* Helper */,
+				E296C908D90E50E2FC337C28 /* VPNExtensionTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1700,6 +1733,23 @@
 			productName = XPCBackupService;
 			productReference = 31DEAEAE2B75139400E76D53 /* XPCBackupService.xpc */;
 			productType = "com.apple.product-type.xpc-service";
+		};
+		3534A8402157FC383C21D6CA /* VPNExtensionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA1D0869ACE7EF39FAB272F6 /* Build configuration list for PBXNativeTarget "VPNExtensionTests" */;
+			buildPhases = (
+				F18D72B94769FD850D2F3D55 /* Sources */,
+				2749B70AD440985211881281 /* Frameworks */,
+				640FF726E29B63702309E0E8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VPNExtensionTests;
+			productName = VPNExtensionTests;
+			productReference = E296C908D90E50E2FC337C28 /* VPNExtensionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		AA08890C2C4AF27C00D5CC40 /* SyncExtensionTests */ = {
 			isa = PBXNativeTarget;
@@ -1911,6 +1961,7 @@
 				AA08890C2C4AF27C00D5CC40 /* SyncExtensionTests */,
 				AA0889182C4AF29F00D5CC40 /* InternxtDesktopTests */,
 				AAA6F62E2E5F9A9D000082ED /* Helper */,
+				3534A8402157FC383C21D6CA /* VPNExtensionTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1921,6 +1972,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				3120B5782B85296400F524F1 /* env.local.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		640FF726E29B63702309E0E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2421,6 +2479,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F18D72B94769FD850D2F3D55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B3F7BCA3DCC2B1C617FA565 /* CONNECTHandshakeTests.swift in Sources */,
+				5351C819EDB3F37B088CB57F /* CONNECTHandshake.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2460,6 +2527,23 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		139BEBC0743068691C40D6E8 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.VPNExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Beta;
+		};
 		31DEAEBC2B75139400E76D53 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2581,6 +2665,40 @@
 				SWIFT_VERSION = 5.0;
 			};
 			name = Beta;
+		};
+		8E7B21B31DD0DC7CA954AA0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.VPNExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		906FB6972234F9E1744AB73C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JR4S3SY396;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = internxt.VPNExtensionTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
 		};
 		AA0889112C4AF27C00D5CC40 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3393,6 +3511,16 @@
 				E1FB2D902A76C48600473AE1 /* Debug */,
 				E1FB2D912A76C48600473AE1 /* Release */,
 				E17AA0292A8A7EDD00C7EE6E /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA1D0869ACE7EF39FAB272F6 /* Build configuration list for PBXNativeTarget "VPNExtensionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				906FB6972234F9E1744AB73C /* Release */,
+				8E7B21B31DD0DC7CA954AA0A /* Debug */,
+				139BEBC0743068691C40D6E8 /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
