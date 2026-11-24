@@ -13,7 +13,7 @@ struct VPNDisconnectedView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                AppGlyph(systemName: "network.slash", size: 56)
+                AppGlyph(icon: .system("network.slash"), size: 56)
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("VPN_OFF_TITLE")

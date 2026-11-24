@@ -19,7 +19,7 @@ struct MailBridgeIdentitySetupView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 14) {
-                AppGlyph(systemName: "at")
+                AppGlyph(icon: .system("at"))
 
                 VStack(alignment: .leading, spacing: 6) {
                     AppText("MAIL_BRIDGE_IDENTITY_TITLE")
