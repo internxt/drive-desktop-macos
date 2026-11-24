@@ -22,11 +22,11 @@ struct VPNTabView: View {
             case .connecting(let location):
                 VPNConnectingView(phase: .connecting(location))
             case .reconnecting(let location):
-                VPNConnectingView(phase: .reconnecting(location))
+                VPNConnectingView(phase: .reconnecting(location), onDisconnect: { service.disconnect() })
             case .disconnecting:
                 VPNConnectingView(phase: .disconnecting)
-            case .connected(let location, let exit):
-                VPNConnectedView(service: service, location: location, exit: exit)
+            case .connected(let location, let since, let exit):
+                VPNConnectedView(service: service, location: location, since: since, exit: exit)
             case .failed(let error):
                 VPNErrorView(service: service, error: error)
             }

@@ -62,6 +62,17 @@
                ReferencedContainer = "container:InternxtDesktop.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AA0889182C4AF29F00D5CC40"
+               BuildableName = "InternxtDesktopTests.xctest"
+               BlueprintName = "InternxtDesktopTests"
+               ReferencedContainer = "container:InternxtDesktop.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

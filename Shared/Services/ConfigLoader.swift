@@ -28,6 +28,9 @@ public struct JSONConfig: Codable {
     public let HEADER_KEY_GATEWAY: String
     public let MAIL_API_URL: String
     public let MAIL_SERVER_PUBLIC_KEY: String?
+    public let VPN_API_URL: String?
+    public let VPN_PROXY_URL: String?
+    public let VPN_IP_API_URL: String?
 }
 
 enum ConfigLoaderError: Error {

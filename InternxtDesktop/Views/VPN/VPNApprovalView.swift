@@ -34,8 +34,9 @@ struct VPNApprovalView: View {
                     step(number: 2, key: "VPN_APPROVAL_STEP_ALLOW")
                     step(number: 3, key: "VPN_APPROVAL_STEP_RETURN")
 
-                    HStack {
+                    HStack(spacing: 10) {
                         Spacer(minLength: 0)
+                        AppButton(title: "COMMON_CANCEL", onClick: { service.disconnect() }, type: .secondary)
                         AppButton(title: "VPN_APPROVAL_OPEN_SETTINGS", onClick: { service.openApprovalSettings() })
                     }
                     .padding(.top, 4)

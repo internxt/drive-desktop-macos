@@ -15,6 +15,7 @@ struct VPNConnectingView: View {
     }
 
     let phase: Phase
+    var onDisconnect: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 14) {
@@ -32,6 +33,11 @@ struct VPNConnectingView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: 420)
+            }
+
+            if let onDisconnect {
+                AppButton(title: "VPN_DISCONNECT", onClick: onDisconnect, type: .secondary, size: .SM)
+                    .padding(.top, 6)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
