@@ -35,26 +35,14 @@ struct AppDivider: View {
 }
 
 struct AppGlyph: View {
-    private enum Source {
+    enum Icon {
         case system(String)
         case asset(String)
     }
 
-    private let source: Source
+    let icon: Icon
     var tint: Color = .Gray50
     var size: CGFloat = 42
-
-    init(systemName: String, tint: Color = .Gray50, size: CGFloat = 42) {
-        self.source = .system(systemName)
-        self.tint = tint
-        self.size = size
-    }
-
-    init(asset: String, tint: Color = .Gray50, size: CGFloat = 42) {
-        self.source = .asset(asset)
-        self.tint = tint
-        self.size = size
-    }
 
     var body: some View {
         RoundedRectangle(cornerRadius: 11, style: .continuous)
@@ -63,13 +51,13 @@ struct AppGlyph: View {
                 RoundedRectangle(cornerRadius: 11, style: .continuous)
                     .strokeBorder(Color.Gray10, lineWidth: 1)
             )
-            .overlay(icon)
+            .overlay(image)
             .frame(width: size, height: size)
     }
 
     @ViewBuilder
-    private var icon: some View {
-        switch source {
+    private var image: some View {
+        switch icon {
         case .system(let name):
             Image(systemName: name)
                 .font(.system(size: size * 0.4))
