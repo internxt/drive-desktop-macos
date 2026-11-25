@@ -17,6 +17,7 @@ struct VPNConnectedView: View {
 
     @ObservedObject var service: VPNService
     let location: VPNLocation
+    let since: Date
     let exit: ExitInfo?
 
     var body: some View {
@@ -89,7 +90,7 @@ struct VPNConnectedView: View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             detail(
                 labelKey: "VPN_CONNECTED_TIME",
-                value: exit.flatMap { Self.elapsedFormatter.string(from: $0.connectedAt, to: context.date) }
+                value: Self.elapsedFormatter.string(from: since, to: context.date)
             )
         }
     }
@@ -113,7 +114,7 @@ struct VPNConnectedView: View {
 
 #Preview("Connected") {
     VPNTabView(service: VPNService(
-        viewState: .connected(.germany, exit: ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Germany", connectedAt: Date().addingTimeInterval(-754))),
+        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), exit: ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Germany")),
         regions: VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: true) },
         selectedRegion: .germany,
         isFreePlan: false
@@ -121,5 +122,5 @@ struct VPNConnectedView: View {
 }
 
 #Preview("Connected, free plan, exit unknown") {
-    VPNTabView(service: VPNService(viewState: .connected(.france, exit: nil)))
+    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), exit: nil)))
 }
