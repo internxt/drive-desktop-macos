@@ -5,7 +5,7 @@ import os
 
 struct ProxyConfiguration {
     let proxyHost: String
-    let proxyPort: UInt16
+    let proxyPort: Network.NWEndpoint.Port
     let region: String
     let token: String
 
@@ -13,7 +13,8 @@ struct ProxyConfiguration {
         guard
             let options,
             let proxyHost = options["proxyHost"] as? String, !proxyHost.isEmpty,
-            let proxyPort = (options["proxyPort"] as? NSNumber)?.uint16Value, proxyPort > 0,
+            let rawProxyPort = (options["proxyPort"] as? NSNumber).flatMap({ UInt16(exactly: $0.intValue) }), rawProxyPort > 0,
+            let proxyPort = Network.NWEndpoint.Port(rawValue: rawProxyPort),
             let region = options["region"] as? String, !region.isEmpty,
             let token = options["token"] as? String, !token.isEmpty
         else {
@@ -83,7 +84,7 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
         guard
             let tcpFlow = flow as? NEAppProxyTCPFlow,
             let endpoint = tcpFlow.remoteEndpoint as? NWHostEndpoint,
-            let port = Int(endpoint.port),
+            let port = Network.NWEndpoint.Port(endpoint.port),
             let configuration = lock.withLock({ configuration })
         else {
             return false
@@ -119,7 +120,7 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
     }
 
     private static func proxyRule(for configuration: ProxyConfiguration) -> NENetworkRule {
-        let proxy = NWHostEndpoint(hostname: configuration.proxyHost, port: String(configuration.proxyPort))
+        let proxy = NWHostEndpoint(hostname: configuration.proxyHost, port: String(configuration.proxyPort.rawValue))
         if IPv4Address(configuration.proxyHost) != nil {
             return NENetworkRule(destinationNetwork: proxy, prefix: 32, protocol: .TCP)
         }

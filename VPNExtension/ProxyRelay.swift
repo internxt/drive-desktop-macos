@@ -11,7 +11,7 @@ final class ProxyRelay {
 
     private let flow: NEAppProxyTCPFlow
     private let host: String
-    private let port: Int
+    private let port: Network.NWEndpoint.Port
     private let configuration: ProxyConfiguration
     private let connection: NWConnection
     private let queue = DispatchQueue(label: "com.internxt.vpn.relay")
@@ -25,7 +25,7 @@ final class ProxyRelay {
     init(
         flow: NEAppProxyTCPFlow,
         host: String,
-        port: Int,
+        port: Network.NWEndpoint.Port,
         configuration: ProxyConfiguration,
         onFinish: @escaping (ProxyRelay) -> Void
     ) {
@@ -39,7 +39,7 @@ final class ProxyRelay {
         tcp.connectionTimeout = Self.connectTimeoutSeconds
         self.connection = NWConnection(
             host: .init(configuration.proxyHost),
-            port: .init(rawValue: configuration.proxyPort) ?? .http,
+            port: configuration.proxyPort,
             using: NWParameters(tls: nil, tcp: tcp)
         )
     }
