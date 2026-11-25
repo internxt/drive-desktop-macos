@@ -25,18 +25,20 @@ final class VPNServiceTests: XCTestCase {
         let service = makeService()
 
         service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemConnects()
 
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
         XCTAssertEqual(tunnel.startedSessions, [VPNSession(proxyHost: "203.0.113.7", proxyPort: 8082, location: .france, token: "token-1")])
     }
 
-    func test_connect_showsConnectingWhileTheTunnelStarts() async {
-        tunnel.startBehavior = .hangs
+    func test_connect_showsConnectingUntilTheSystemReportsConnected() async {
         let service = makeService()
 
         service.connect()
-
         await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemReports(.connecting)
+
         XCTAssertEqual(service.viewState, .connecting(.france))
     }
 
@@ -45,13 +47,14 @@ final class VPNServiceTests: XCTestCase {
         let service = makeService()
 
         service.connect()
-
         await waitUntil { service.viewState == .needsApproval }
         XCTAssertTrue(tunnel.startedSessions.isEmpty)
 
         tunnel.approve()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemConnects()
 
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
     }
 
     func test_cancel_whileWaitingForApproval_returnsToDisconnectedAndCanConnectAgain() async {
@@ -62,13 +65,86 @@ final class VPNServiceTests: XCTestCase {
 
         service.disconnect()
 
-        await waitUntil { service.viewState == .disconnected }
-        XCTAssertEqual(tunnel.stopCount, 1)
+        XCTAssertEqual(service.viewState, .disconnected)
+        try? await Task.sleep(for: .milliseconds(50))
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
 
         tunnel.requiresApproval = false
         service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+    }
 
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
+    func test_disconnect_rightAfterTheApprovalArrives_endsDisconnectedWithoutStarting() async {
+        tunnel.requiresApproval = true
+        let service = makeService()
+        service.connect()
+        await waitUntil { service.viewState == .needsApproval }
+
+        tunnel.approve()
+        service.disconnect()
+        try? await Task.sleep(for: .milliseconds(50))
+
+        XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+    }
+
+    func test_cancel_whileWaitingForApproval_andConnectingAgainAtOnce_connects() async {
+        tunnel.requiresApproval = true
+        let service = makeService()
+        service.connect()
+        await waitUntil { service.viewState == .needsApproval }
+
+        tunnel.requiresApproval = false
+        service.disconnect()
+        service.connect()
+
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        XCTAssertEqual(service.viewState, .connecting(.france))
+    }
+
+    func test_logout_whileTheSystemAsksToAllowTheConfiguration_ignoresItsAnswer() async {
+        tunnel.holdsPreparation = true
+        let service = makeService()
+        service.connect()
+        await waitUntil { self.tunnel.preparedSessions.count == 1 }
+
+        service.reset()
+        tunnel.finishPreparation()
+        try? await Task.sleep(for: .milliseconds(50))
+
+        XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+    }
+
+    func test_connectingAgain_whileTheSystemStillAsksToAllowTheConfiguration_waitsForThatAnswer() async {
+        tunnel.holdsPreparation = true
+        let service = makeService()
+        service.connect()
+        await waitUntil { self.tunnel.preparedSessions.count == 1 }
+        service.reset()
+
+        token = "token-2"
+        service.connect()
+        try? await Task.sleep(for: .milliseconds(50))
+        XCTAssertEqual(tunnel.preparedSessions.count, 1)
+
+        tunnel.finishPreparation()
+
+        await waitUntil { self.tunnel.startedSessions.map(\.token) == ["token-2"] }
+    }
+
+    func test_connectingAgain_whileTheSystemStillAsksToAllowTheConfiguration_failsIfItIsDenied() async {
+        tunnel.holdsPreparation = true
+        let service = makeService()
+        service.connect()
+        await waitUntil { self.tunnel.preparedSessions.count == 1 }
+        service.reset()
+        service.connect()
+
+        tunnel.finishPreparation(throwing: VPNTunnelError.notApproved)
+
+        await waitUntil { service.viewState == .failed(.extensionNotApproved) }
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
     }
 
     func test_connect_whileWaitingForApproval_doesNotTimeOut() async {
@@ -82,59 +158,54 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertEqual(service.viewState, .needsApproval)
     }
 
-    func test_connect_thatNeverFinishes_failsAsProxyUnreachableAndStopsTheTunnel() async {
-        tunnel.startBehavior = .hangs
+    func test_connect_whileTheSystemAsksToAllowTheConfiguration_doesNotTimeOut() async {
+        tunnel.holdsPreparation = true
+        let service = makeService(connectTimeout: .milliseconds(20))
+
+        service.connect()
+        await waitUntil { self.tunnel.preparedSessions.count == 1 }
+        try? await Task.sleep(for: .milliseconds(100))
+
+        XCTAssertEqual(service.viewState, .connecting(.france))
+        XCTAssertEqual(tunnel.stopCount, 0)
+    }
+
+    func test_connect_thatNeverConnects_failsAsProxyUnreachableAndStopsTheTunnel() async {
         let service = makeService(connectTimeout: .milliseconds(50))
 
         service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemReports(.connecting)
 
-        await waitUntil { service.viewState == .failed(.proxyUnreachable) }
-        await waitUntil { self.tunnel.stopCount == 1 }
+        await waitUntil { service.viewState == .disconnecting }
+        XCTAssertEqual(tunnel.stopCount, 1)
+        tunnel.systemStops()
+        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
     }
 
-    func test_retry_whileTheTimedOutTunnelIsStillStopping_waitsForItBeforeStartingAgain() async {
-        tunnel.startBehavior = .hangs
-        tunnel.stopHangs = true
-        let service = makeService(connectTimeout: .milliseconds(50))
-        service.connect()
-        await waitUntil { service.viewState == .failed(.proxyUnreachable) && self.tunnel.stopCount == 1 }
-
-        tunnel.startBehavior = .connects
-        service.retry()
-        try? await Task.sleep(for: .milliseconds(50))
-        XCTAssertEqual(tunnel.startedSessions.count, 1)
-
-        tunnel.finishStop()
-
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
-        XCTAssertEqual(tunnel.startedSessions.count, 2)
-    }
-
-    func test_logout_whileAFailedConnectionIsStillStopping_endsDisconnected() async {
-        tunnel.startBehavior = .fails(VPNTunnelError.failedToStart)
-        tunnel.stopHangs = true
+    func test_connect_whenTheTunnelStopsBeforeConnecting_failsAsProxyUnreachable() async {
         let service = makeService()
         service.connect()
-        await waitUntil { self.tunnel.stopCount == 1 }
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
 
-        service.reset()
-        tunnel.finishStop()
-        try? await Task.sleep(for: .milliseconds(50))
+        tunnel.systemReports(.connecting)
+        tunnel.systemReports(.disconnected)
 
-        XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
     }
 
     func test_connect_whenTheProxyConfigurationIsDenied_showsExtensionNotApproved() async {
-        tunnel.startBehavior = .fails(VPNTunnelError.notApproved)
+        tunnel.prepareError = VPNTunnelError.notApproved
         let service = makeService()
 
         service.connect()
 
         await waitUntil { service.viewState == .failed(.extensionNotApproved) }
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
     }
 
-    func test_connect_whenTheTunnelFailsToStart_showsProxyUnreachable() async {
-        tunnel.startBehavior = .fails(VPNTunnelError.failedToStart)
+    func test_connect_whenTheSystemRefusesToStart_showsProxyUnreachable() async {
+        tunnel.startError = StartRefused()
         let service = makeService()
 
         service.connect()
@@ -142,14 +213,15 @@ final class VPNServiceTests: XCTestCase {
         await waitUntil { service.viewState == .failed(.proxyUnreachable) }
     }
 
-    func test_connect_withoutSessionToken_failsAsSessionExpiredWithoutStartingTheTunnel() async {
+    func test_connect_withoutSessionToken_failsAsSessionExpiredWithoutPreparing() async {
         token = nil
         let service = makeService()
 
         service.connect()
 
         XCTAssertEqual(service.viewState, .failed(.sessionExpired))
-        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+        try? await Task.sleep(for: .milliseconds(50))
+        XCTAssertTrue(tunnel.preparedSessions.isEmpty)
     }
 
     func test_connect_withoutProxyAddress_failsAsProxyUnreachable() async {
@@ -159,51 +231,128 @@ final class VPNServiceTests: XCTestCase {
         service.connect()
 
         XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
-        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+    }
+
+    func test_connect_withProxyPortZero_failsAsProxyUnreachable() async {
+        proxyURL = URL(string: "http://203.0.113.7:0")
+        let service = makeService()
+
+        service.connect()
+
+        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
     }
 
     func test_connect_whenTheFeatureIsDisabled_doesNothing() async {
         let service = makeService(isEnabled: false)
 
         service.connect()
+        try? await Task.sleep(for: .milliseconds(50))
 
         XCTAssertEqual(service.viewState, .disconnected)
-        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+        XCTAssertTrue(tunnel.preparedSessions.isEmpty)
     }
 
-    func test_disconnect_whileConnected_stopsTheTunnelAndShowsDisconnected() async {
+    func test_connect_whileAnOldTunnelIsStillUp_stopsItAndStartsOnceItHasStopped() async {
+        tunnel.requiresApproval = true
+        let service = makeService()
+        service.connect()
+        await waitUntil { service.viewState == .needsApproval }
+        tunnel.systemReports(.connected)
+
+        tunnel.approve()
+        await waitUntil { self.tunnel.stopCount == 1 }
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+        XCTAssertEqual(service.viewState, .connecting(.france))
+
+        tunnel.systemStops()
+
+        XCTAssertEqual(tunnel.startedSessions.count, 1)
+        XCTAssertEqual(service.viewState, .connecting(.france))
+    }
+
+    func test_connect_afterAbandoningAnAttempt_isNotFailedByTheAbandonedAttemptsTimeout() async {
+        tunnel.requiresApproval = true
+        let service = makeService(connectTimeout: .milliseconds(400))
+        let firstAttempt = Date()
+        service.connect()
+        await waitUntil { service.viewState == .needsApproval }
+        tunnel.approve()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        service.disconnect()
+        try? await Task.sleep(for: .milliseconds(200))
+
+        tunnel.requiresApproval = false
+        service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 2 }
+        let untilAfterTheFirstTimeout = 520 - Int(Date().timeIntervalSince(firstAttempt) * 1000)
+        try? await Task.sleep(for: .milliseconds(max(untilAfterTheFirstTimeout, 0)))
+
+        XCTAssertEqual(service.viewState, .connecting(.france))
+    }
+
+    func test_disconnect_whileConnected_showsDisconnectingUntilTheSystemStops() async {
         let service = await connectedService()
 
         service.disconnect()
 
-        XCTAssertEqual(service.viewState, .disconnecting)
-        await waitUntil { service.viewState == .disconnected }
         XCTAssertEqual(tunnel.stopCount, 1)
-        XCTAssertFalse(tunnel.running)
+        XCTAssertEqual(service.viewState, .disconnecting)
+
+        tunnel.systemStops()
+
+        XCTAssertEqual(service.viewState, .disconnected)
+    }
+
+    func test_disconnect_whileConnecting_stopsTheTunnel() async {
+        let service = makeService()
+        service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemReports(.connecting)
+
+        service.disconnect()
+        tunnel.systemStops()
+
+        XCTAssertEqual(tunnel.stopCount, 1)
+        XCTAssertEqual(service.viewState, .disconnected)
+    }
+
+    func test_disconnect_whileReconnecting_stopsTheTunnelAndShowsDisconnected() async {
+        let service = await connectedService()
+        tunnel.systemReports(.reconnecting)
+        XCTAssertEqual(service.viewState, .reconnecting(.france))
+
+        service.disconnect()
+        tunnel.systemStops()
+
+        XCTAssertEqual(tunnel.stopCount, 1)
+        XCTAssertEqual(service.viewState, .disconnected)
     }
 
     func test_extensionReportingSessionExpired_showsTheErrorAndStopsTheTunnel() async {
         let service = await connectedService()
 
         tunnel.onFailure?(.sessionExpired)
+        tunnel.systemStops()
 
         XCTAssertEqual(service.viewState, .failed(.sessionExpired))
-        await waitUntil { self.tunnel.stopCount == 1 }
+        XCTAssertEqual(tunnel.stopCount, 1)
     }
 
     func test_extensionReportingProxyUnreachable_showsTheErrorAndStopsTheTunnel() async {
         let service = await connectedService()
 
         tunnel.onFailure?(.proxyUnreachable)
+        tunnel.systemStops()
 
         XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
-        await waitUntil { self.tunnel.stopCount == 1 }
+        XCTAssertEqual(tunnel.stopCount, 1)
     }
 
     func test_extensionReportingZoneNotAllowed_showsZoneNotPermitted() async {
         let service = await connectedService()
 
         tunnel.onFailure?(.zoneNotAllowed)
+        tunnel.systemStops()
 
         XCTAssertEqual(service.viewState, .failed(.zoneNotPermitted))
     }
@@ -211,20 +360,41 @@ final class VPNServiceTests: XCTestCase {
     func test_extensionFailureWhileDisconnected_isIgnored() async {
         let service = makeService()
 
-        tunnel.onFailure?(.sessionExpired)
+        tunnel.onFailure?(.proxyUnreachable)
 
         XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertEqual(tunnel.stopCount, 0)
     }
 
     func test_retry_afterAFailure_connectsAgain() async {
         let service = await connectedService()
         tunnel.onFailure?(.proxyUnreachable)
-        await waitUntil { self.tunnel.stopCount == 1 }
+        tunnel.systemStops()
 
         service.retry()
+        await waitUntil { self.tunnel.startedSessions.count == 2 }
+        tunnel.systemConnects()
 
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
-        XCTAssertEqual(tunnel.startedSessions.count, 2)
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
+    }
+
+    func test_changingLocation_whileConnected_switchesTheExtensionWithoutReconnecting() async {
+        let service = await connectedService(regions: VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: true) })
+
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+
+        XCTAssertEqual(tunnel.updatedSessions.map(\.location), [.germany])
+        XCTAssertEqual(tunnel.stopCount, 0)
+        XCTAssertEqual(service.viewState, .connected(.germany, since: connectedAt, exit: nil))
+    }
+
+    func test_changingLocation_whileDisconnected_onlyChangesTheSelection() async {
+        let service = makeService(regions: VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: true) })
+
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+
+        XCTAssertEqual(service.selectedRegion, .germany)
+        XCTAssertTrue(tunnel.updatedSessions.isEmpty)
     }
 
     func test_tokenRefresh_whileConnected_handsTheNewTokenToTheExtensionWithoutDisconnecting() async {
@@ -234,29 +404,27 @@ final class VPNServiceTests: XCTestCase {
         NotificationCenter.default.post(name: .authTokenDidChange, object: nil)
 
         await waitUntil { self.tunnel.updatedSessions.map(\.token) == ["token-2"] }
-        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
         XCTAssertEqual(tunnel.stopCount, 0)
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
     }
 
-    func test_tokenRefresh_whileConnecting_reachesTheExtensionOnceConnected() async {
-        tunnel.startBehavior = .hangs
+    func test_tokenRefresh_whileWaitingForApproval_startsWithTheNewToken() async {
+        tunnel.requiresApproval = true
         let service = makeService()
         service.connect()
-        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        await waitUntil { service.viewState == .needsApproval }
 
         token = "token-2"
         NotificationCenter.default.post(name: .authTokenDidChange, object: nil)
-        try? await Task.sleep(for: .milliseconds(300))
-        tunnel.finishHangingStart()
+        try? await Task.sleep(for: .milliseconds(50))
+        tunnel.approve()
 
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
-        await waitUntil { self.tunnel.updatedSessions.map(\.token) == ["token-2"] }
+        await waitUntil { self.tunnel.startedSessions.map(\.token) == ["token-2"] }
     }
 
     func test_tokenRefresh_whileDisconnected_doesNotReachTheExtension() async {
         let service = makeService()
 
-        token = "token-2"
         NotificationCenter.default.post(name: .authTokenDidChange, object: nil)
         try? await Task.sleep(for: .milliseconds(50))
 
@@ -264,78 +432,90 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertEqual(service.viewState, .disconnected)
     }
 
-    func test_logout_whileConnected_stopsTheTunnelAndShowsDisconnected() async {
+    func test_logout_whileConnected_stopsTheTunnelAndEndsDisconnected() async {
         let service = await connectedService()
 
         service.reset()
-
-        XCTAssertEqual(service.viewState, .disconnected)
-        XCTAssertEqual(tunnel.immediateStopCount, 1)
-        XCTAssertFalse(tunnel.running)
-    }
-
-    func test_logout_whileConnecting_abandonsTheAttempt() async {
-        tunnel.startBehavior = .hangs
-        let service = makeService()
-        service.connect()
-        await waitUntil { self.tunnel.startedSessions.count == 1 }
-
-        service.reset()
-        tunnel.finishHangingStart()
-        try? await Task.sleep(for: .milliseconds(50))
-
-        XCTAssertEqual(service.viewState, .disconnected)
-    }
-
-    func test_quit_whileConnected_stopsTheTunnelBeforeReturning() async {
-        let service = await connectedService()
-
-        service.shutdown()
-
-        XCTAssertEqual(tunnel.immediateStopCount, 1)
-        XCTAssertFalse(tunnel.running)
-    }
-
-    func test_launch_withATunnelLeftFromAPreviousSession_stopsIt() async {
-        tunnel.running = true
-        let service = makeService()
-
-        await service.disconnectLeftoverTunnel()
+        tunnel.systemStops()
 
         XCTAssertEqual(tunnel.stopCount, 1)
         XCTAssertEqual(service.viewState, .disconnected)
     }
 
-    func test_launch_whenTheUserAlreadyStartedConnecting_leavesTheTunnelAlone() async {
-        tunnel.running = true
-        tunnel.startBehavior = .hangs
+    func test_logout_whileWaitingForApproval_neverStartsTheTunnel() async {
+        tunnel.requiresApproval = true
         let service = makeService()
         service.connect()
-        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        await waitUntil { service.viewState == .needsApproval }
 
-        await service.disconnectLeftoverTunnel()
+        service.reset()
+        tunnel.approve()
+        try? await Task.sleep(for: .milliseconds(50))
 
-        XCTAssertEqual(tunnel.stopCount, 0)
+        XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+    }
+
+    func test_logout_afterAFailure_clearsTheError() async {
+        tunnel.prepareError = VPNTunnelError.notApproved
+        let service = makeService()
+        service.connect()
+        await waitUntil { service.viewState == .failed(.extensionNotApproved) }
+
+        service.reset()
+
+        XCTAssertEqual(service.viewState, .disconnected)
+    }
+
+    func test_quit_whileConnected_stopsTheTunnel() async {
+        let service = await connectedService()
+
+        service.shutdown()
+
+        XCTAssertEqual(tunnel.stopCount, 1)
+    }
+
+    func test_launch_withATunnelLeftFromAPreviousSession_stopsIt() async {
+        tunnel.savedStatus = .connected
+        let service = makeService()
+
+        await service.syncWithSystem()
+
+        XCTAssertEqual(tunnel.stopCount, 1)
+        XCTAssertEqual(service.viewState, .disconnecting)
+
+        tunnel.systemStops()
+
+        XCTAssertEqual(service.viewState, .disconnected)
     }
 
     func test_launch_withoutALeftoverTunnel_stopsNothing() async {
         let service = makeService()
 
-        await service.disconnectLeftoverTunnel()
+        await service.syncWithSystem()
 
         XCTAssertEqual(tunnel.stopCount, 0)
+        XCTAssertEqual(service.viewState, .disconnected)
     }
 
     func test_tunnelStoppingOnItsOwn_whileConnected_showsDisconnected() async {
         let service = await connectedService()
 
-        tunnel.onUnexpectedStop?()
+        tunnel.systemReports(.disconnecting)
+        XCTAssertEqual(service.viewState, .disconnecting)
+        tunnel.systemReports(.disconnected)
 
         XCTAssertEqual(service.viewState, .disconnected)
+        XCTAssertEqual(tunnel.stopCount, 0)
     }
 
-    private func makeService(isEnabled: Bool = true, connectTimeout: Duration = .seconds(5)) -> VPNService {
+    private func makeService(
+        isEnabled: Bool = true,
+        connectTimeout: Duration = .seconds(5),
+        regions: [VPNRegion] = VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) }
+    ) -> VPNService {
         VPNService(
+            regions: regions,
             tunnel: tunnel,
             isEnabled: isEnabled,
             connectTimeout: connectTimeout,
@@ -345,10 +525,14 @@ final class VPNServiceTests: XCTestCase {
         )
     }
 
-    private func connectedService() async -> VPNService {
-        let service = makeService()
+    private func connectedService(
+        regions: [VPNRegion] = VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) }
+    ) async -> VPNService {
+        let service = makeService(regions: regions)
         service.connect()
-        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: nil) }
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemConnects()
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
         return service
     }
 
@@ -365,34 +549,52 @@ final class VPNServiceTests: XCTestCase {
     }
 }
 
+private struct StartRefused: Error {}
+
 @MainActor
 private final class FakeVPNTunnel: VPNTunnel {
-    enum StartBehavior {
-        case connects
-        case fails(Error)
-        case hangs
-    }
-
+    private(set) var status = VPNTunnelStatus.disconnected
+    var onStatusChange: ((VPNTunnelStatus) -> Void)?
     var onFailure: ((VPNTunnelFailure) -> Void)?
-    var onUnexpectedStop: (() -> Void)?
 
+    var savedStatus = VPNTunnelStatus.disconnected
     var requiresApproval = false
-    var startBehavior = StartBehavior.connects
-    var running = false
-    var stopHangs = false
+    var holdsPreparation = false
+    var prepareError: Error?
+    var startError: Error?
+    private(set) var preparedSessions: [VPNSession] = []
     private(set) var startedSessions: [VPNSession] = []
     private(set) var updatedSessions: [VPNSession] = []
     private(set) var stopCount = 0
-    private(set) var immediateStopCount = 0
 
     private var pendingApproval: CheckedContinuation<Void, Error>?
-    private var hangingStart: CheckedContinuation<Void, Error>?
-    private var hangingStop: CheckedContinuation<Void, Never>?
+    private var heldPreparation: CheckedContinuation<Void, Error>?
 
-    func activateExtension(onNeedsApproval: @escaping @MainActor () -> Void) async throws {
-        guard requiresApproval else { return }
-        onNeedsApproval()
-        try await withCheckedThrowingContinuation { pendingApproval = $0 }
+    func load() async {
+        systemReports(savedStatus)
+    }
+
+    func prepare(_ session: VPNSession, onNeedsApproval: @escaping @MainActor () -> Void) async throws {
+        preparedSessions.append(session)
+        if let prepareError {
+            throw prepareError
+        }
+        if requiresApproval {
+            onNeedsApproval()
+            try await withCheckedThrowingContinuation { pendingApproval = $0 }
+        }
+        if holdsPreparation {
+            try await withCheckedThrowingContinuation { heldPreparation = $0 }
+        }
+    }
+
+    func finishPreparation(throwing error: Error? = nil) {
+        if let error {
+            heldPreparation?.resume(throwing: error)
+        } else {
+            heldPreparation?.resume()
+        }
+        heldPreparation = nil
     }
 
     func approve() {
@@ -400,49 +602,37 @@ private final class FakeVPNTunnel: VPNTunnel {
         pendingApproval = nil
     }
 
-    func start(_ session: VPNSession) async throws {
-        startedSessions.append(session)
-        switch startBehavior {
-        case .connects:
-            running = true
-        case .fails(let error):
-            throw error
-        case .hangs:
-            try await withCheckedThrowingContinuation { hangingStart = $0 }
-            running = true
+    func start(_ session: VPNSession) throws {
+        if let startError {
+            throw startError
         }
+        guard !status.isActive else { return }
+        startedSessions.append(session)
     }
 
-    func finishHangingStart() {
-        hangingStart?.resume()
-        hangingStart = nil
-    }
-
-    func updateSession(_ session: VPNSession) {
+    func update(_ session: VPNSession) {
         updatedSessions.append(session)
     }
 
-    func stop() async {
+    func stop() {
         stopCount += 1
-        running = false
-        hangingStart?.resume(throwing: CancellationError())
-        hangingStart = nil
-        if stopHangs {
-            await withCheckedContinuation { hangingStop = $0 }
-        }
+        pendingApproval?.resume(throwing: CancellationError())
+        pendingApproval = nil
     }
 
-    func finishStop() {
-        hangingStop?.resume()
-        hangingStop = nil
+    func systemReports(_ status: VPNTunnelStatus) {
+        guard status != self.status else { return }
+        self.status = status
+        onStatusChange?(status)
     }
 
-    func stopImmediately() {
-        immediateStopCount += 1
-        running = false
+    func systemConnects() {
+        systemReports(.connecting)
+        systemReports(.connected)
     }
 
-    func isRunning() async -> Bool {
-        running
+    func systemStops() {
+        systemReports(.disconnecting)
+        systemReports(.disconnected)
     }
 }

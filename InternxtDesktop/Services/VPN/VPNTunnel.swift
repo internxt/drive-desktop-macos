@@ -12,8 +12,8 @@ import SystemExtensions
 struct VPNSession: Equatable {
     let proxyHost: String
     let proxyPort: UInt16
-    let location: VPNLocation
-    let token: String
+    var location: VPNLocation
+    var token: String
 
     var startOptions: [String: NSObject] {
         [
@@ -22,10 +22,6 @@ struct VPNSession: Equatable {
             VPNStartOption.region: location.rawValue as NSString,
             VPNStartOption.token: token as NSString,
         ]
-    }
-
-    func refreshed(with token: String) -> VPNSession {
-        VPNSession(proxyHost: proxyHost, proxyPort: proxyPort, location: location, token: token)
     }
 }
 
