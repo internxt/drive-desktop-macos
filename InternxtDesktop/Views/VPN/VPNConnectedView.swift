@@ -19,7 +19,7 @@ struct VPNConnectedView: View {
     @ObservedObject var service: VPNService
     let location: VPNZone
     let since: Date
-    let exit: ExitInfo?
+    let exit: VPNExit
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
@@ -70,8 +70,8 @@ struct VPNConnectedView: View {
                     .padding(.top, 13)
 
                 HStack(alignment: .top, spacing: 0) {
-                    detail(labelKey: "VPN_EXIT_IP", value: exit?.ip)
-                    detail(labelKey: "VPN_EXIT_LOCATION", value: exit?.location)
+                    detail(labelKey: "VPN_EXIT_IP", value: exitValue(\.ip))
+                    detail(labelKey: "VPN_EXIT_LOCATION", value: exitValue(\.location))
                     elapsedDetail
                 }
                 .padding(.top, 12)
@@ -85,6 +85,20 @@ struct VPNConnectedView: View {
             format: NSLocalizedString("VPN_CONNECTED_TO_%@", comment: "Connected to a region"),
             NSLocalizedString(location.nameKey, comment: "Region name")
         )
+    }
+
+    private static let unavailable = NSLocalizedString("VPN_EXIT_UNAVAILABLE", comment: "Exit IP or location could not be found")
+
+    private func exitValue(_ field: KeyPath<ExitInfo, String>) -> String? {
+        switch exit {
+        case .loading:
+            return nil
+        case .unavailable:
+            return Self.unavailable
+        case .known(let info):
+            let value = info[keyPath: field]
+            return value.isEmpty ? Self.unavailable : value
+        }
     }
 
     private var elapsedDetail: some View {
@@ -115,13 +129,17 @@ struct VPNConnectedView: View {
 
 #Preview("Connected") {
     VPNTabView(service: VPNService(
-        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), exit: ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Germany")),
+        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), exit: .known(ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Germany"))),
         regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) },
         selectedRegion: .germany,
         isFreePlan: false
     ))
 }
 
-#Preview("Connected, free plan, exit unknown") {
-    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), exit: nil)))
+#Preview("Connected, free plan, exit loading") {
+    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), exit: .loading)))
+}
+
+#Preview("Connected, exit unavailable") {
+    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), exit: .unavailable)))
 }

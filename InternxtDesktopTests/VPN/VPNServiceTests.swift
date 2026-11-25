@@ -21,6 +21,8 @@ final class VPNServiceTests: XCTestCase {
     private var vpnEntitlement: CurrentValueSubject<Bool, Never>!
     private var zones: Result<[VPNZone], Error>!
     private var zoneFetches = 0
+    private var exitLookups = 0
+    private var exit: () async throws -> ExitInfo = { try await Task.sleep(for: .seconds(3600)); throw CancellationError() }
     private var holdsZones = false
     private var heldZones: CheckedContinuation<Void, Never>?
 
@@ -33,10 +35,94 @@ final class VPNServiceTests: XCTestCase {
         vpnEntitlement = CurrentValueSubject(false)
         zones = .success([.france])
         zoneFetches = 0
+        exitLookups = 0
+        exit = { try await Task.sleep(for: .seconds(3600)); throw CancellationError() }
     }
 
     override func tearDown() async throws {
         defaults.removePersistentDomain(forName: defaultsSuite)
+    }
+
+    func test_connected_showsTheExitAddressOnceFound() async {
+        let frankfurt = ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Hesse, Germany")
+        exit = { frankfurt }
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+
+        service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemConnects()
+
+        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: .known(frankfurt)) }
+    }
+
+    func test_connected_whenTheIPServiceFails_staysConnectedWithTheAddressUnavailable() async {
+        exit = { throw URLError(.timedOut) }
+        let service = makeService()
+        await startAndWaitUntilReady(service)
+
+        service.connect()
+        await waitUntil { self.tunnel.startedSessions.count == 1 }
+        tunnel.systemConnects()
+
+        await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, exit: .unavailable) }
+        XCTAssertEqual(tunnel.stopCount, 0)
+    }
+
+    func test_ipServiceAnswer_isReadAsCityRegionAndCountry() throws {
+        let body = Data(#"{"ip":"185.201.12.44","city":"Frankfurt","region":"Hesse","country":"Germany","org":"x"}"#.utf8)
+
+        let info = try JSONDecoder().decode(ExitInfo.self, from: body)
+
+        XCTAssertEqual(info, ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Hesse, Germany"))
+    }
+
+    func test_ipServiceAnswerWithoutCity_skipsTheMissingParts() throws {
+        let body = Data(#"{"ip":"185.201.12.44","city":"","country":"Germany"}"#.utf8)
+
+        let info = try JSONDecoder().decode(ExitInfo.self, from: body)
+
+        XCTAssertEqual(info.location, "Germany")
+    }
+
+    func test_networkLost_whileConnected_showsReconnectingUntilTheSystemIsBack() async {
+        let service = await connectedService()
+        await waitUntil { self.exitLookups == 1 }
+
+        tunnel.systemReports(.reconnecting)
+        XCTAssertEqual(service.viewState, .reconnecting(.france))
+
+        tunnel.systemReports(.connected)
+
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: .loading))
+        await waitUntil { self.exitLookups == 2 }
+        XCTAssertEqual(tunnel.stopCount, 0)
+    }
+
+    func test_proxyUnreachable_whileTheNetworkIsDown_keepsTheVPNReconnecting() async {
+        let service = await connectedService()
+        tunnel.systemReports(.reconnecting)
+
+        tunnel.onFailure?(.proxyUnreachable)
+
+        XCTAssertEqual(service.viewState, .reconnecting(.france))
+        XCTAssertEqual(tunnel.stopCount, 0)
+    }
+
+    func test_ipServiceAnswerWithoutIP_isNotAnAddress() {
+        let body = Data(#"{"ip":"","country":"Germany"}"#.utf8)
+
+        XCTAssertThrowsError(try JSONDecoder().decode(ExitInfo.self, from: body))
+    }
+
+    func test_changingRegionWhileConnected_looksUpTheNewExitAddress() async {
+        let service = await connectedService(regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) })
+        await waitUntil { self.exitLookups == 1 }
+
+        service.select(VPNRegion(location: .germany, isAvailable: true))
+
+        await waitUntil { self.exitLookups == 2 }
+        XCTAssertEqual(service.viewState, .connected(.germany, since: connectedAt, exit: .loading))
     }
 
     func test_paidPlan_unlocksTheZonesOfThePlanAndLocksTheRest() async {
@@ -216,7 +302,7 @@ final class VPNServiceTests: XCTestCase {
         await waitUntil { self.tunnel.startedSessions.count == 1 }
         tunnel.systemConnects()
 
-        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: .loading))
         XCTAssertEqual(tunnel.startedSessions, [VPNSession(proxyHost: "203.0.113.7", proxyPort: 8082, location: .france, token: "token-1")])
     }
 
@@ -242,7 +328,7 @@ final class VPNServiceTests: XCTestCase {
         await waitUntil { self.tunnel.startedSessions.count == 1 }
         tunnel.systemConnects()
 
-        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: .loading))
     }
 
     func test_cancel_whileWaitingForApproval_returnsToDisconnectedAndCanConnectAgain() async {
@@ -563,7 +649,7 @@ final class VPNServiceTests: XCTestCase {
         await waitUntil { self.tunnel.startedSessions.count == 2 }
         tunnel.systemConnects()
 
-        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: .loading))
     }
 
     func test_changingLocation_whileConnected_switchesTheExtensionWithoutReconnecting() async {
@@ -573,7 +659,7 @@ final class VPNServiceTests: XCTestCase {
 
         XCTAssertEqual(tunnel.updatedSessions.map(\.location), [.germany])
         XCTAssertEqual(tunnel.stopCount, 0)
-        XCTAssertEqual(service.viewState, .connected(.germany, since: connectedAt, exit: nil))
+        XCTAssertEqual(service.viewState, .connected(.germany, since: connectedAt, exit: .loading))
     }
 
     func test_changingLocation_whileDisconnected_onlyChangesTheSelection() async {
@@ -593,7 +679,7 @@ final class VPNServiceTests: XCTestCase {
 
         await waitUntil { self.tunnel.updatedSessions.map(\.token) == ["token-2"] }
         XCTAssertEqual(tunnel.stopCount, 0)
-        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: .loading))
     }
 
     func test_tokenRefresh_whileWaitingForApproval_startsWithTheNewToken() async {
@@ -719,6 +805,10 @@ final class VPNServiceTests: XCTestCase {
                     await withCheckedContinuation { self.heldZones = $0 }
                 }
                 return try self.zones.get()
+            },
+            fetchExit: { [unowned self] in
+                self.exitLookups += 1
+                return try await self.exit()
             }
         )
     }
@@ -740,7 +830,7 @@ final class VPNServiceTests: XCTestCase {
         service.connect()
         await waitUntil { self.tunnel.startedSessions.count == 1 }
         tunnel.systemConnects()
-        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: nil))
+        XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, exit: .loading))
         return service
     }
 

@@ -426,6 +426,7 @@
 "VPN_CONNECTED_TO_%@" = "Conectado a %@";
 "VPN_EXIT_IP" = "Dirección IP";
 "VPN_EXIT_LOCATION" = "Ubicación";
+"VPN_EXIT_UNAVAILABLE" = "No disponible";
 "VPN_CONNECTED_TIME" = "Tiempo conectado";
 "VPN_APPROVAL_TITLE" = "Permite la VPN en Ajustes del Sistema";
 "VPN_APPROVAL_DESCRIPTION" = "macOS necesita tu permiso para que Internxt pueda enviar tu tráfico. Solo tienes que hacerlo una vez.";

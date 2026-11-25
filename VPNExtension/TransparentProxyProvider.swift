@@ -48,6 +48,8 @@ final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXP
     private var configuration: ProxyConfiguration?
     private var relays: [ObjectIdentifier: ProxyRelay] = [:]
     private var lastReports: [VPNTunnelFailure: Date] = [:]
+    private var pathMonitor: NWPathMonitor?
+    private var isNetworkAvailable = true
 
     override func startProxy(options: [String: Any]?, completionHandler: @escaping (Error?) -> Void) {
         guard let configuration = ProxyConfiguration(options: options) else {
@@ -64,17 +66,22 @@ final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXP
                 Self.logger.info("Proxy started for region \(configuration.region, privacy: .public)")
                 AppLink.shared.serve(self)
                 self.cancelIfAppNeverConnects()
+                self.monitorNetwork()
             }
             completionHandler(error)
         }
     }
 
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        let activeRelays = lock.withLock {
+        let (activeRelays, monitor) = lock.withLock {
             configuration = nil
-            defer { relays.removeAll() }
-            return Array(relays.values)
+            defer {
+                relays.removeAll()
+                pathMonitor = nil
+            }
+            return (Array(relays.values), pathMonitor)
         }
+        monitor?.cancel()
         activeRelays.forEach { $0.cancel() }
         AppLink.shared.stopServing(self)
         Self.logger.info("Proxy stopped (reason \(reason.rawValue, privacy: .public))")
@@ -111,10 +118,36 @@ final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXP
         }
     }
 
+    private func monitorNetwork() {
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] path in
+            self?.networkChanged(isAvailable: path.status == .satisfied)
+        }
+        lock.withLock {
+            pathMonitor?.cancel()
+            pathMonitor = monitor
+            isNetworkAvailable = true
+        }
+        monitor.start(queue: DispatchQueue(label: "com.internxt.vpn.path"))
+    }
+
+    private func networkChanged(isAvailable: Bool) {
+        let changed = lock.withLock { () -> Bool in
+            defer { isNetworkAvailable = isAvailable }
+            return isNetworkAvailable != isAvailable
+        }
+        guard changed else { return }
+        Self.logger.info("Network \(isAvailable ? "restored" : "lost", privacy: .public)")
+        reasserting = !isAvailable
+    }
+
     private func report(_ failure: VPNTunnelFailure) {
         guard AppLink.shared.isAppConnected else { return }
         let now = Date()
         let shouldReport = lock.withLock { () -> Bool in
+            if failure == .proxyUnreachable, !isNetworkAvailable {
+                return false
+            }
             if let last = lastReports[failure], now.timeIntervalSince(last) < Self.failureReportInterval {
                 return false
             }

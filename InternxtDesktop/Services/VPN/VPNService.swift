@@ -31,9 +31,36 @@ struct VPNRegion: Identifiable, Equatable {
     var id: String { location.rawValue }
 }
 
-struct ExitInfo: Equatable {
+struct ExitInfo: Equatable, Decodable {
     let ip: String
     let location: String
+
+    private enum CodingKeys: String, CodingKey {
+        case ip, city, region, country
+    }
+
+    init(ip: String, location: String) {
+        self.ip = ip
+        self.location = location
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        ip = try container.decode(String.self, forKey: .ip)
+        guard !ip.isEmpty else {
+            throw DecodingError.dataCorruptedError(forKey: .ip, in: container, debugDescription: "Empty IP")
+        }
+        location = [CodingKeys.city, .region, .country]
+            .compactMap { try? container.decodeIfPresent(String.self, forKey: $0) }
+            .filter { !$0.isEmpty }
+            .joined(separator: ", ")
+    }
+}
+
+enum VPNExit: Equatable {
+    case loading
+    case unavailable
+    case known(ExitInfo)
 }
 
 enum VPNError: Equatable {
@@ -49,7 +76,7 @@ enum VPNViewState: Equatable {
     case disconnected
     case needsApproval
     case connecting(VPNZone)
-    case connected(VPNZone, since: Date, exit: ExitInfo?)
+    case connected(VPNZone, since: Date, exit: VPNExit)
     case reconnecting(VPNZone)
     case disconnecting
     case failed(VPNError)
@@ -95,6 +122,7 @@ final class VPNService: ObservableObject {
     private let defaults: UserDefaults
     private let vpnEntitlement: AnyPublisher<Bool, Never>
     private let fetchZones: () async throws -> [VPNZone]
+    private let fetchExit: () async throws -> ExitInfo
 
     private var goal = Goal.off
     private var zones: Set<VPNZone>? = VPNService.freeZones
@@ -104,6 +132,8 @@ final class VPNService: ObservableObject {
     private var preparation: Task<Void, Never>?
     private var tokenObserver: Task<Void, Never>?
     private var entitlementObserver: Task<Void, Never>?
+    private var exit = VPNExit.loading
+    private var exitLookup: Task<Void, Never>?
 
     init(
         viewState: VPNViewState = .disconnected,
@@ -118,7 +148,8 @@ final class VPNService: ObservableObject {
         now: @escaping () -> Date = Date.init,
         defaults: UserDefaults = .standard,
         vpnEntitlement: AnyPublisher<Bool, Never> = FeaturesService.shared.$vpnEnabled.eraseToAnyPublisher(),
-        fetchZones: @escaping () async throws -> [VPNZone] = { try await APIFactory.VPN.getUser().zones }
+        fetchZones: @escaping () async throws -> [VPNZone] = { try await APIFactory.VPN.getUser().zones },
+        fetchExit: @escaping () async throws -> ExitInfo = VPNService.fetchExitFromIPService
     ) {
         self.viewState = viewState
         self.regions = regions
@@ -133,6 +164,7 @@ final class VPNService: ObservableObject {
         self.defaults = defaults
         self.vpnEntitlement = vpnEntitlement
         self.fetchZones = fetchZones
+        self.fetchExit = fetchExit
 
         tunnel.onStatusChange = { [weak self] status in self?.tunnelChanged(to: status) }
         tunnel.onFailure = { [weak self] failure in self?.extensionFailed(failure) }
@@ -142,6 +174,7 @@ final class VPNService: ObservableObject {
         tokenObserver?.cancel()
         entitlementObserver?.cancel()
         connectDeadline?.cancel()
+        exitLookup?.cancel()
     }
 
     func start() {
@@ -166,6 +199,9 @@ final class VPNService: ObservableObject {
             session.location = region.location
             goal = .on(session, step)
             tunnel.update(session)
+            if case .up = step {
+                lookUpExit()
+            }
         }
         render()
     }
@@ -287,13 +323,16 @@ final class VPNService: ObservableObject {
                 goal = .on(session, .up(since: now()))
                 Self.logger.info("VPN connected to \(session.location.rawValue)")
                 handOverRefreshedToken()
+                lookUpExit()
             } else if status == .disconnected {
                 Self.logger.error("The VPN stopped before connecting")
                 turnOff(failing: .proxyUnreachable)
                 return
             }
         case .on(_, .up):
-            if status == .disconnected {
+            if status == .connected {
+                lookUpExit()
+            } else if status == .disconnected {
                 Self.logger.info("The VPN stopped without the app asking")
                 goal = .off
             }
@@ -305,6 +344,7 @@ final class VPNService: ObservableObject {
 
     private func extensionFailed(_ failure: VPNTunnelFailure) {
         guard case .on = goal else { return }
+        if failure == .proxyUnreachable, tunnel.status == .reconnecting { return }
         Self.logger.error("VPN extension reported a failure: \(failure.rawValue)")
         turnOff(failing: Self.viewError(for: failure))
         if failure == .zoneNotAllowed {
@@ -312,6 +352,21 @@ final class VPNService: ObservableObject {
                 await self?.loadZones()
             }
         }
+    }
+
+    nonisolated static func fetchExitFromIPService() async throws -> ExitInfo {
+        guard let base = ConfigLoader().get().VPN_IP_API_URL, let baseURL = URL(string: base) else {
+            throw URLError(.badURL)
+        }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForResource = 15
+        let session = URLSession(configuration: configuration)
+        defer { session.finishTasksAndInvalidate() }
+        let (data, response) = try await session.data(from: baseURL.appendingPathComponent("json"))
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+        return try JSONDecoder().decode(ExitInfo.self, from: data)
     }
 
     private func observeEntitlement() {
@@ -355,8 +410,26 @@ final class VPNService: ObservableObject {
         render()
     }
 
+    private func lookUpExit() {
+        exitLookup?.cancel()
+        exit = .loading
+        exitLookup = Task { [weak self, fetchExit] in
+            let found: VPNExit
+            do {
+                found = .known(try await fetchExit())
+            } catch {
+                Self.logger.error("Could not look up the VPN exit address: \(error)")
+                found = .unavailable
+            }
+            guard !Task.isCancelled, let self, case .on(_, .up) = self.goal else { return }
+            self.exit = found
+            self.render()
+        }
+    }
+
     private func turnOff(failing error: VPNError? = nil) {
         connectDeadline?.cancel()
+        exitLookup?.cancel()
         goal = .off
         failure = error
         tunnel.stop()
@@ -396,7 +469,7 @@ final class VPNService: ObservableObject {
             switch tunnel.status {
             case .reconnecting: viewState = .reconnecting(session.location)
             case .disconnecting: viewState = .disconnecting
-            default: viewState = .connected(session.location, since: since, exit: nil)
+            default: viewState = .connected(session.location, since: since, exit: exit)
             }
         case .on(let session, _):
             viewState = .connecting(session.location)
