@@ -73,6 +73,12 @@ final class ProxyRelay {
         }
     }
 
+    func reset() {
+        queue.async { [weak self] in
+            self?.abort()
+        }
+    }
+
     private func connectionChanged(to state: NWConnection.State, sending tunnelRequest: Data) {
         switch state {
         case .ready:
