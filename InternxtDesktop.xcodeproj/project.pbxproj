@@ -429,6 +429,10 @@
 		E1FE2B2A2BC539810073B26D /* BackupRemoteSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FE2B292BC539810073B26D /* BackupRemoteSync.swift */; };
 		F705FE69CD1E28C490370E62 /* VPNFreePlanBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FB73EFE22B2352836D4457 /* VPNFreePlanBanner.swift */; };
 		FD414BA4ABF6FB2A648722FA /* internxt.InternxtDesktop.vpn.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 3638DED34673E61A65CFC6AE /* internxt.InternxtDesktop.vpn.systemextension */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8E78D94C83AB338FE5F96B9B /* VPNExtensionXPCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FE2750394CFC4CB858F319 /* VPNExtensionXPCProtocol.swift */; };
+		5EF05514FFCF00C54F6CFAD4 /* VPNExtensionXPCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FE2750394CFC4CB858F319 /* VPNExtensionXPCProtocol.swift */; };
+		259351F00C3E296E56C07718 /* AppLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D917DC57D78C0F0C38CC1B /* AppLink.swift */; };
+		25B98721725B95F29AAC7F57 /* VPNTunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216A8E8788620BAFDFAC476C /* VPNTunnel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -873,6 +877,9 @@
 		F2B73207643DFEA1A0CFDA54 /* VPNService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNService.swift; sourceTree = "<group>"; };
 		F9EC8313E5F65611881FE559 /* AppCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppCard.swift; sourceTree = "<group>"; };
 		E296C908D90E50E2FC337C28 /* VPNExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VPNExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3FE2750394CFC4CB858F319 /* VPNExtensionXPCProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNExtensionXPCProtocol.swift; sourceTree = "<group>"; };
+		60D917DC57D78C0F0C38CC1B /* AppLink.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppLink.swift; sourceTree = "<group>"; };
+		216A8E8788620BAFDFAC476C /* VPNTunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNTunnel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1070,6 +1077,7 @@
 		9AD69BCE4630796DAE7812C4 /* VPN */ = {
 			isa = PBXGroup;
 			children = (
+				216A8E8788620BAFDFAC476C /* VPNTunnel.swift */,
 				F2B73207643DFEA1A0CFDA54 /* VPNService.swift */,
 			);
 			name = VPN;
@@ -1079,6 +1087,7 @@
 		5D7E5E8678F3D2A98F8D4D22 /* VPNExtension */ = {
 			isa = PBXGroup;
 			children = (
+				60D917DC57D78C0F0C38CC1B /* AppLink.swift */,
 				8A9F317EF73F992F36B9A8CC /* main.swift */,
 				BD219E31034C573340ABE291 /* TransparentProxyProvider.swift */,
 				804995D99335F8B273672A5A /* ProxyRelay.swift */,
@@ -1470,6 +1479,7 @@
 		E163105D2A8F8A570072989E /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				B3FE2750394CFC4CB858F319 /* VPNExtensionXPCProtocol.swift */,
 				AAFFBE272C50AC2B00C76528 /* Repository */,
 				E140C3312AC3798B00A88B9F /* Services */,
 				E140C3282AC3769C00A88B9F /* Models */,
@@ -2150,6 +2160,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				259351F00C3E296E56C07718 /* AppLink.swift in Sources */,
+				5EF05514FFCF00C54F6CFAD4 /* VPNExtensionXPCProtocol.swift in Sources */,
 				394AC5970DB2AF62184C6021 /* main.swift in Sources */,
 				B1F7A77C3B1C8C5CF2500B42 /* TransparentProxyProvider.swift in Sources */,
 				66C11AF36E922AC076CFE54B /* ProxyRelay.swift in Sources */,
@@ -2298,6 +2310,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25B98721725B95F29AAC7F57 /* VPNTunnel.swift in Sources */,
+				8E78D94C83AB338FE5F96B9B /* VPNExtensionXPCProtocol.swift in Sources */,
 				AAA6F6492E5FEDB6000082ED /* Cleaner.swift in Sources */,
 				E1D0D4172AF55C1500CF1F7F /* AnalyticsEvents.swift in Sources */,
 				E17DB7072C5288430031B465 /* BackupContentNavigator.swift in Sources */,

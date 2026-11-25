@@ -6,8 +6,8 @@ import os
 struct ProxyConfiguration {
     let proxyHost: String
     let proxyPort: Network.NWEndpoint.Port
-    let region: String
-    let token: String
+    var region: String
+    var token: String
 
     init?(options: [String: Any]?) {
         guard
@@ -27,9 +27,11 @@ struct ProxyConfiguration {
     }
 }
 
-final class TransparentProxyProvider: NETransparentProxyProvider {
+final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXPCProtocol {
     private static let logger = Logger(subsystem: "com.internxt.vpn", category: "TransparentProxyProvider")
     private static let quicPort = "443"
+    private static let appConnectionDeadline: DispatchTimeInterval = .seconds(15)
+    private static let failureReportInterval: TimeInterval = 5
     private static let localNetworks: [(address: String, prefix: Int)] = [
         ("10.0.0.0", 8),
         ("100.64.0.0", 10),
@@ -45,6 +47,7 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
     private let lock = NSLock()
     private var configuration: ProxyConfiguration?
     private var relays: [ObjectIdentifier: ProxyRelay] = [:]
+    private var lastReports: [VPNTunnelFailure: Date] = [:]
 
     override func startProxy(options: [String: Any]?, completionHandler: @escaping (Error?) -> Void) {
         guard let configuration = ProxyConfiguration(options: options) else {
@@ -59,6 +62,8 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
                 Self.logger.error("Proxy network settings rejected: \(error.localizedDescription, privacy: .public)")
             } else {
                 Self.logger.info("Proxy started for region \(configuration.region, privacy: .public)")
+                AppLink.shared.serve(self)
+                self.cancelIfAppNeverConnects()
             }
             completionHandler(error)
         }
@@ -71,8 +76,45 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
             return Array(relays.values)
         }
         activeRelays.forEach { $0.cancel() }
+        AppLink.shared.stopServing(self)
         Self.logger.info("Proxy stopped (reason \(reason.rawValue, privacy: .public))")
         completionHandler()
+    }
+
+    func updateSession(token: String, region: String) {
+        lock.withLock {
+            configuration?.token = token
+            configuration?.region = region
+        }
+        Self.logger.info("Session updated for region \(region, privacy: .public)")
+    }
+
+    func appWentAway() {
+        guard lock.withLock({ configuration != nil }) else { return }
+        Self.logger.info("Stopping the proxy because the app is gone")
+        cancelProxyWithError(nil)
+    }
+
+    private func cancelIfAppNeverConnects() {
+        DispatchQueue.global().asyncAfter(deadline: .now() + Self.appConnectionDeadline) { [weak self] in
+            guard let self, self.lock.withLock({ self.configuration != nil }), !AppLink.shared.isAppConnected else { return }
+            Self.logger.error("Stopping the proxy because the app never connected")
+            self.cancelProxyWithError(nil)
+        }
+    }
+
+    private func report(_ failure: VPNTunnelFailure) {
+        guard AppLink.shared.isAppConnected else { return }
+        let now = Date()
+        let shouldReport = lock.withLock { () -> Bool in
+            if let last = lastReports[failure], now.timeIntervalSince(last) < Self.failureReportInterval {
+                return false
+            }
+            lastReports[failure] = now
+            return true
+        }
+        guard shouldReport else { return }
+        AppLink.shared.report(failure)
     }
 
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
@@ -98,6 +140,7 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
             host: tcpFlow.remoteHostname ?? endpoint.hostname,
             port: port,
             configuration: configuration,
+            onFailure: { [weak self] failure in self?.report(failure) },
             onFinish: { [weak self] relay in self?.forget(relay) }
         )
         lock.withLock { relays[ObjectIdentifier(relay)] = relay }

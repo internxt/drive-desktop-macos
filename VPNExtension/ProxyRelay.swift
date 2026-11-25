@@ -15,6 +15,7 @@ final class ProxyRelay {
     private let configuration: ProxyConfiguration
     private let connection: NWConnection
     private let queue = DispatchQueue(label: "com.internxt.vpn.relay")
+    private let onFailure: (VPNTunnelFailure) -> Void
     private let onFinish: (ProxyRelay) -> Void
 
     private var handshakeBuffer = Data()
@@ -27,12 +28,14 @@ final class ProxyRelay {
         host: String,
         port: Network.NWEndpoint.Port,
         configuration: ProxyConfiguration,
+        onFailure: @escaping (VPNTunnelFailure) -> Void,
         onFinish: @escaping (ProxyRelay) -> Void
     ) {
         self.flow = flow
         self.host = host
         self.port = port
         self.configuration = configuration
+        self.onFailure = onFailure
         self.onFinish = onFinish
 
         let tcp = NWProtocolTCP.Options()
@@ -59,6 +62,7 @@ final class ProxyRelay {
         queue.asyncAfter(deadline: .now() + Self.handshakeTimeout) { [weak self] in
             guard let self, !self.isRelaying, !self.isFinished else { return }
             Self.logger.error("Proxy did not answer the tunnel request in time")
+            self.onFailure(.proxyUnreachable)
             self.finish(refusingFlow: true)
         }
     }
@@ -76,6 +80,9 @@ final class ProxyRelay {
         case .failed(let error), .waiting(let error):
             guard !isFinished else { return }
             Self.logger.error("Proxy connection lost: \(error.localizedDescription, privacy: .public)")
+            if !isRelaying {
+                onFailure(.proxyUnreachable)
+            }
             finish(refusingFlow: !isRelaying)
         default:
             break
@@ -86,6 +93,7 @@ final class ProxyRelay {
         connection.send(content: tunnelRequest, completion: .contentProcessed { [weak self] error in
             guard let self, !self.isFinished else { return }
             guard error == nil else {
+                self.onFailure(.proxyUnreachable)
                 self.finish(refusingFlow: true)
                 return
             }
@@ -104,14 +112,23 @@ final class ProxyRelay {
             switch response {
             case .incomplete where isComplete || error != nil:
                 Self.logger.error("Proxy closed the connection before answering the tunnel request")
+                self.onFailure(.proxyUnreachable)
                 self.finish(refusingFlow: true)
             case .incomplete:
                 self.receiveTunnelResponse()
             case .established(let leftover):
                 self.handshakeBuffer = Data()
                 self.openFlow(delivering: leftover)
-            case .sessionExpired, .zoneNotAllowed, .proxyUnavailable:
-                Self.logger.error("Proxy refused the tunnel: \(String(describing: response), privacy: .public)")
+            case .sessionExpired:
+                Self.logger.error("Proxy refused the tunnel: session expired")
+                self.onFailure(.sessionExpired)
+                self.finish(refusingFlow: true)
+            case .zoneNotAllowed:
+                Self.logger.error("Proxy refused the tunnel: zone not allowed")
+                self.onFailure(.zoneNotAllowed)
+                self.finish(refusingFlow: true)
+            case .proxyUnavailable:
+                Self.logger.error("Proxy could not open the tunnel to this destination")
                 self.finish(refusingFlow: true)
             }
         }
