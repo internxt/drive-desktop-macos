@@ -17,10 +17,10 @@ struct VPNSession: Equatable {
 
     var startOptions: [String: NSObject] {
         [
-            "proxyHost": proxyHost as NSString,
-            "proxyPort": NSNumber(value: proxyPort),
-            "region": location.rawValue as NSString,
-            "token": token as NSString,
+            VPNStartOption.proxyHost: proxyHost as NSString,
+            VPNStartOption.proxyPort: NSNumber(value: proxyPort),
+            VPNStartOption.region: location.rawValue as NSString,
+            VPNStartOption.token: token as NSString,
         ]
     }
 

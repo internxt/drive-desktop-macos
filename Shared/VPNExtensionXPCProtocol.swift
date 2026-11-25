@@ -15,6 +15,13 @@ import Foundation
     func didFail(reason: String)
 }
 
+enum VPNStartOption {
+    static let proxyHost = "proxyHost"
+    static let proxyPort = "proxyPort"
+    static let region = "region"
+    static let token = "token"
+}
+
 enum VPNTunnelFailure: String {
     case sessionExpired
     case zoneNotAllowed

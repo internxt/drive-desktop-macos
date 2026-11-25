@@ -12,11 +12,11 @@ struct ProxyConfiguration {
     init?(options: [String: Any]?) {
         guard
             let options,
-            let proxyHost = options["proxyHost"] as? String, !proxyHost.isEmpty,
-            let rawProxyPort = (options["proxyPort"] as? NSNumber).flatMap({ UInt16(exactly: $0.intValue) }), rawProxyPort > 0,
+            let proxyHost = options[VPNStartOption.proxyHost] as? String, !proxyHost.isEmpty,
+            let rawProxyPort = (options[VPNStartOption.proxyPort] as? NSNumber).flatMap({ UInt16(exactly: $0.intValue) }), rawProxyPort > 0,
             let proxyPort = Network.NWEndpoint.Port(rawValue: rawProxyPort),
-            let region = options["region"] as? String, !region.isEmpty,
-            let token = options["token"] as? String, !token.isEmpty
+            let region = options[VPNStartOption.region] as? String, !region.isEmpty,
+            let token = options[VPNStartOption.token] as? String, !token.isEmpty
         else {
             return nil
         }
