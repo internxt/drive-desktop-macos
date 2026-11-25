@@ -87,7 +87,10 @@ final class TransparentProxyProvider: NETransparentProxyProvider {
             let port = Network.NWEndpoint.Port(endpoint.port),
             let configuration = lock.withLock({ configuration })
         else {
-            return false
+            Self.logger.error("Refusing a flow the proxy cannot relay")
+            flow.closeReadWithError(NEAppProxyFlowError(.refused))
+            flow.closeWriteWithError(NEAppProxyFlowError(.refused))
+            return true
         }
 
         let relay = ProxyRelay(
