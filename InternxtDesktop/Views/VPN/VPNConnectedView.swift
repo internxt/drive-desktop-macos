@@ -19,7 +19,7 @@ struct VPNConnectedView: View {
     @ObservedObject var service: VPNService
     let location: VPNZone
     let since: Date
-    let exit: VPNExit
+    let publicAddress: PublicAddressLookup
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
@@ -70,8 +70,8 @@ struct VPNConnectedView: View {
                     .padding(.top, 13)
 
                 HStack(alignment: .top, spacing: 0) {
-                    detail(labelKey: "VPN_EXIT_IP", value: exitValue(\.ip))
-                    detail(labelKey: "VPN_EXIT_LOCATION", value: exitValue(\.location))
+                    detail(labelKey: "VPN_EXIT_IP", value: publicAddressValue(\.ip))
+                    detail(labelKey: "VPN_EXIT_LOCATION", value: publicAddressValue(\.location))
                     elapsedDetail
                 }
                 .padding(.top, 12)
@@ -87,15 +87,15 @@ struct VPNConnectedView: View {
         )
     }
 
-    private static let unavailable = NSLocalizedString("VPN_EXIT_UNAVAILABLE", comment: "Exit IP or location could not be found")
+    private static let unavailable = NSLocalizedString("VPN_PUBLIC_ADDRESS_UNAVAILABLE", comment: "Public IP or location could not be found")
 
-    private func exitValue(_ field: KeyPath<ExitInfo, String>) -> String? {
-        switch exit {
+    private func publicAddressValue(_ field: KeyPath<PublicAddress, String>) -> String? {
+        switch publicAddress {
         case .loading:
             return nil
         case .unavailable:
             return Self.unavailable
-        case .known(let info):
+        case .found(let info):
             let value = info[keyPath: field]
             return value.isEmpty ? Self.unavailable : value
         }
@@ -129,17 +129,17 @@ struct VPNConnectedView: View {
 
 #Preview("Connected") {
     VPNTabView(service: VPNService(
-        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), exit: .known(ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Germany"))),
+        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), publicAddress: .found(PublicAddress(ip: "185.201.12.44", location: "Frankfurt, Germany"))),
         regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) },
         selectedRegion: .germany,
         isFreePlan: false
     ))
 }
 
-#Preview("Connected, free plan, exit loading") {
-    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), exit: .loading)))
+#Preview("Connected, free plan, address loading") {
+    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), publicAddress: .loading)))
 }
 
-#Preview("Connected, exit unavailable") {
-    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), exit: .unavailable)))
+#Preview("Connected, address unavailable") {
+    VPNTabView(service: VPNService(viewState: .connected(.france, since: Date().addingTimeInterval(-42), publicAddress: .unavailable)))
 }
