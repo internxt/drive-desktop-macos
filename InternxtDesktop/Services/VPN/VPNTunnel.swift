@@ -64,6 +64,7 @@ final class SystemVPNTunnel: VPNTunnel {
     private var session: VPNSession?
     private var pendingStart: CheckedContinuation<Void, Error>?
     private var startHasProgressed = false
+    private var startAttempt = 0
     private var pendingStops: [CheckedContinuation<Void, Never>] = []
     private var stopDeadline: Task<Void, Never>?
 
@@ -71,14 +72,25 @@ final class SystemVPNTunnel: VPNTunnel {
 
     func activateExtension(onNeedsApproval: @escaping @MainActor () -> Void) async throws {
         cancelPendingActivation()
-        try await withCheckedThrowingContinuation { continuation in
-            let activation = ExtensionActivation(continuation: continuation, onNeedsApproval: onNeedsApproval)
-            self.activation = activation
-            let request = OSSystemExtensionRequest.activationRequest(forExtensionWithIdentifier: Self.extensionIdentifier, queue: .main)
-            request.delegate = activation
-            OSSystemExtensionManager.shared.submitRequest(request)
+        let activation = ExtensionActivation(onNeedsApproval: onNeedsApproval)
+        self.activation = activation
+        defer {
+            if self.activation === activation {
+                self.activation = nil
+            }
         }
-        activation = nil
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                activation.continuation = continuation
+                let request = OSSystemExtensionRequest.activationRequest(forExtensionWithIdentifier: Self.extensionIdentifier, queue: .main)
+                request.delegate = activation
+                OSSystemExtensionManager.shared.submitRequest(request)
+            }
+        } onCancel: {
+            Task { @MainActor in
+                activation.cancel()
+            }
+        }
     }
 
     func start(_ session: VPNSession) async throws {
@@ -96,18 +108,31 @@ final class SystemVPNTunnel: VPNTunnel {
         } catch let error as NEVPNError where error.code == .configurationReadWriteFailed {
             throw VPNTunnelError.notApproved
         }
+        try Task.checkCancellation()
 
         self.manager = manager
         observeStatus(of: manager.connection)
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            pendingStart = continuation
-            startHasProgressed = false
-            do {
-                try manager.connection.startVPNTunnel(options: session.startOptions)
-            } catch {
-                resumeStart(throwing: error)
+        startAttempt += 1
+        let attempt = startAttempt
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                pendingStart = continuation
+                startHasProgressed = false
+                do {
+                    try manager.connection.startVPNTunnel(options: session.startOptions)
+                } catch {
+                    resumeStart(throwing: error)
+                }
             }
+        } onCancel: {
+            Task { @MainActor [weak self] in
+                self?.abandonStart(attempt)
+            }
+        }
+        if Task.isCancelled {
+            manager.connection.stopVPNTunnel()
+            throw CancellationError()
         }
 
         self.session = session
@@ -206,6 +231,12 @@ final class SystemVPNTunnel: VPNTunnel {
         }
     }
 
+    private func abandonStart(_ attempt: Int) {
+        guard attempt == startAttempt, pendingStart != nil else { return }
+        manager?.connection.stopVPNTunnel()
+        resumeStart(throwing: CancellationError())
+    }
+
     private func resumeStart(throwing error: Error?) {
         guard let pendingStart else { return }
         self.pendingStart = nil
@@ -294,11 +325,10 @@ private final class ExtensionEvents: NSObject, VPNAppXPCProtocol {
 }
 
 private final class ExtensionActivation: NSObject, OSSystemExtensionRequestDelegate {
-    private var continuation: CheckedContinuation<Void, Error>?
+    var continuation: CheckedContinuation<Void, Error>?
     private let onNeedsApproval: @MainActor () -> Void
 
-    init(continuation: CheckedContinuation<Void, Error>, onNeedsApproval: @escaping @MainActor () -> Void) {
-        self.continuation = continuation
+    init(onNeedsApproval: @escaping @MainActor () -> Void) {
         self.onNeedsApproval = onNeedsApproval
     }
 
