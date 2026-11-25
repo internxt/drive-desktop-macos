@@ -20,7 +20,7 @@ struct VPNTabView: View {
             case .needsApproval:
                 VPNApprovalView(service: service)
             case .connecting(let location):
-                VPNConnectingView(phase: .connecting(location))
+                VPNConnectingView(phase: .connecting(location), onDisconnect: { service.disconnect() })
             case .reconnecting(let location):
                 VPNConnectingView(phase: .reconnecting(location), onDisconnect: { service.disconnect() })
             case .disconnecting:
