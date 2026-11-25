@@ -82,11 +82,19 @@ final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXP
     }
 
     func updateSession(token: String, region: String) {
-        lock.withLock {
-            configuration?.token = token
-            configuration?.region = region
+        let staleRelays = lock.withLock { () -> [ProxyRelay]? in
+            guard var current = configuration, current.token != token || current.region != region else { return nil }
+            let regionChanged = current.region != region
+            current.token = token
+            current.region = region
+            configuration = current
+            guard regionChanged else { return [] }
+            defer { relays.removeAll() }
+            return Array(relays.values)
         }
-        Self.logger.info("Session updated for region \(region, privacy: .public)")
+        guard let staleRelays else { return }
+        staleRelays.forEach { $0.reset() }
+        Self.logger.info("Session updated for region \(region, privacy: .public); reset \(staleRelays.count, privacy: .public) open connections")
     }
 
     func appWentAway() {
@@ -127,25 +135,31 @@ final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXP
             let tcpFlow = flow as? NEAppProxyTCPFlow,
             let endpoint = tcpFlow.remoteEndpoint as? NWHostEndpoint,
             let port = Network.NWEndpoint.Port(endpoint.port),
-            let configuration = lock.withLock({ configuration })
+            let relay = registerRelay(for: tcpFlow, host: tcpFlow.remoteHostname ?? endpoint.hostname, port: port)
         else {
             Self.logger.error("Refusing a flow the proxy cannot relay")
             flow.closeReadWithError(NEAppProxyFlowError(.refused))
             flow.closeWriteWithError(NEAppProxyFlowError(.refused))
             return true
         }
-
-        let relay = ProxyRelay(
-            flow: tcpFlow,
-            host: tcpFlow.remoteHostname ?? endpoint.hostname,
-            port: port,
-            configuration: configuration,
-            onFailure: { [weak self] failure in self?.report(failure) },
-            onFinish: { [weak self] relay in self?.forget(relay) }
-        )
-        lock.withLock { relays[ObjectIdentifier(relay)] = relay }
         relay.start()
         return true
+    }
+
+    private func registerRelay(for flow: NEAppProxyTCPFlow, host: String, port: Network.NWEndpoint.Port) -> ProxyRelay? {
+        lock.withLock {
+            guard let configuration else { return nil }
+            let relay = ProxyRelay(
+                flow: flow,
+                host: host,
+                port: port,
+                configuration: configuration,
+                onFailure: { [weak self] failure in self?.report(failure) },
+                onFinish: { [weak self] relay in self?.forget(relay) }
+            )
+            relays[ObjectIdentifier(relay)] = relay
+            return relay
+        }
     }
 
     private func forget(_ relay: ProxyRelay) {
