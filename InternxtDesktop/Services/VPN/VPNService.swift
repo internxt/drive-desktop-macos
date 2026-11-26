@@ -31,17 +31,14 @@ struct VPNRegion: Identifiable, Equatable {
     var id: String { location.rawValue }
 }
 
-struct PublicAddress: Equatable, Decodable {
+struct PublicAddress: Equatable {
     let ip: String
     let location: String
+}
 
+extension PublicAddress: Decodable {
     private enum CodingKeys: String, CodingKey {
         case ip, city, region, country
-    }
-
-    init(ip: String, location: String) {
-        self.ip = ip
-        self.location = location
     }
 
     init(from decoder: Decoder) throws {
@@ -122,7 +119,7 @@ final class VPNService: ObservableObject {
     private let defaults: UserDefaults
     private let vpnEntitlement: AnyPublisher<Bool, Never>
     private let fetchZones: () async throws -> [VPNZone]
-    private let fetchPublicAddress: () async throws -> PublicAddress
+    private let fetchPublicAddress: (URL) async throws -> PublicAddress
 
     private var goal = Goal.off
     private var zones: Set<VPNZone>? = VPNService.freeZones
@@ -149,7 +146,7 @@ final class VPNService: ObservableObject {
         defaults: UserDefaults = .standard,
         vpnEntitlement: AnyPublisher<Bool, Never> = FeaturesService.shared.$vpnEnabled.eraseToAnyPublisher(),
         fetchZones: @escaping () async throws -> [VPNZone] = { try await APIFactory.VPN.getUser().zones },
-        fetchPublicAddress: @escaping () async throws -> PublicAddress = VPNService.fetchPublicAddressFromIPService
+        fetchPublicAddress: @escaping (URL) async throws -> PublicAddress = VPNService.fetchPublicAddressFromIPService(at:)
     ) {
         self.viewState = viewState
         self.regions = regions
@@ -340,7 +337,6 @@ final class VPNService: ObservableObject {
 
     private func extensionFailed(_ failure: VPNTunnelFailure) {
         guard case .on = goal else { return }
-        if failure == .proxyUnreachable, tunnel.status == .reconnecting { return }
         Self.logger.error("VPN extension reported a failure: \(failure.rawValue)")
         turnOff(failing: Self.viewError(for: failure))
         if failure == .zoneNotAllowed {
@@ -350,10 +346,7 @@ final class VPNService: ObservableObject {
         }
     }
 
-    nonisolated static func fetchPublicAddressFromIPService() async throws -> PublicAddress {
-        guard let base = ConfigLoader().get().VPN_IP_API_URL, let baseURL = URL(string: base) else {
-            throw URLError(.badURL)
-        }
+    nonisolated static func fetchPublicAddressFromIPService(at baseURL: URL) async throws -> PublicAddress {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForResource = 15
         let session = URLSession(configuration: configuration)
@@ -409,10 +402,11 @@ final class VPNService: ObservableObject {
     private func lookUpPublicAddress() {
         publicAddressRequest?.cancel()
         publicAddress = .loading
+        let ipAPIURL = configuration().ipAPIURL
         publicAddressRequest = Task { [weak self, fetchPublicAddress] in
             let found: PublicAddressLookup
             do {
-                found = .found(try await fetchPublicAddress())
+                found = .found(try await fetchPublicAddress(ipAPIURL))
             } catch {
                 Self.logger.error("Could not look up the VPN public address: \(error)")
                 found = .unavailable

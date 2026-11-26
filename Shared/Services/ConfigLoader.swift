@@ -37,14 +37,16 @@ struct VPNConfiguration: Equatable {
     let proxyHost: String
     let proxyPort: UInt16
     let apiURL: URL
+    let ipAPIURL: URL
 
-    init(proxyHost: String, proxyPort: UInt16, apiURL: URL) {
+    init(proxyHost: String, proxyPort: UInt16, apiURL: URL, ipAPIURL: URL) {
         self.proxyHost = proxyHost
         self.proxyPort = proxyPort
         self.apiURL = apiURL
+        self.ipAPIURL = ipAPIURL
     }
 
-    init(proxyURL: String?, apiURL: String?) throws {
+    init(proxyURL: String?, apiURL: String?, ipAPIURL: String?) throws {
         guard let proxyURL, !proxyURL.isEmpty else {
             throw VPNConfigurationError.missing("VPN_PROXY_URL")
         }
@@ -53,13 +55,22 @@ struct VPNConfiguration: Equatable {
               let port = url.port.flatMap(UInt16.init(exactly:)), port > 0 else {
             throw VPNConfigurationError.invalid("VPN_PROXY_URL")
         }
-        guard let apiURL, !apiURL.isEmpty else {
-            throw VPNConfigurationError.missing("VPN_API_URL")
+        self.init(
+            proxyHost: host,
+            proxyPort: port,
+            apiURL: try Self.serviceURL(apiURL, key: "VPN_API_URL"),
+            ipAPIURL: try Self.serviceURL(ipAPIURL, key: "VPN_IP_API_URL")
+        )
+    }
+
+    private static func serviceURL(_ value: String?, key: String) throws -> URL {
+        guard let value, !value.isEmpty else {
+            throw VPNConfigurationError.missing(key)
         }
-        guard let api = URL(string: apiURL), api.scheme != nil, api.host?.isEmpty == false else {
-            throw VPNConfigurationError.invalid("VPN_API_URL")
+        guard let url = URL(string: value), url.scheme != nil, url.host?.isEmpty == false else {
+            throw VPNConfigurationError.invalid(key)
         }
-        self.init(proxyHost: host, proxyPort: port, apiURL: api)
+        return url
     }
 }
 
@@ -383,7 +394,7 @@ public struct ConfigLoader {
     func getVPNConfiguration() -> VPNConfiguration {
         do {
             let config = get()
-            return try VPNConfiguration(proxyURL: config.VPN_PROXY_URL, apiURL: config.VPN_API_URL)
+            return try VPNConfiguration(proxyURL: config.VPN_PROXY_URL, apiURL: config.VPN_API_URL, ipAPIURL: config.VPN_IP_API_URL)
         } catch {
             fatalError(error.localizedDescription)
         }

@@ -70,8 +70,8 @@ struct VPNConnectedView: View {
                     .padding(.top, 13)
 
                 HStack(alignment: .top, spacing: 0) {
-                    detail(labelKey: "VPN_EXIT_IP", value: publicAddressValue(\.ip))
-                    detail(labelKey: "VPN_EXIT_LOCATION", value: publicAddressValue(\.location))
+                    detail(labelKey: "VPN_PUBLIC_IP", value: publicAddressValue(\.ip))
+                    detail(labelKey: "VPN_PUBLIC_LOCATION", value: publicAddressValue(\.location))
                     elapsedDetail
                 }
                 .padding(.top, 12)

@@ -423,8 +423,8 @@
 "VPN_RECONNECTING_DESCRIPTION" = "Your Mac lost its network connection. The VPN will reconnect as soon as it's back.";
 "VPN_DISCONNECTING" = "Disconnecting…";
 "VPN_CONNECTED_TO_%@" = "Connected to %@";
-"VPN_EXIT_IP" = "IP address";
-"VPN_EXIT_LOCATION" = "Location";
+"VPN_PUBLIC_IP" = "IP address";
+"VPN_PUBLIC_LOCATION" = "Location";
 "VPN_PUBLIC_ADDRESS_UNAVAILABLE" = "Not available";
 "VPN_CONNECTED_TIME" = "Connected for";
 "VPN_APPROVAL_TITLE" = "Allow the VPN in System Settings";

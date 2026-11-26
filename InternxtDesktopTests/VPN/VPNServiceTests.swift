@@ -22,21 +22,21 @@ final class VPNServiceTests: XCTestCase {
     private var zones: Result<[VPNZone], Error>!
     private var zoneFetches = 0
     private var publicAddressRequests = 0
-    private var publicAddress: () async throws -> PublicAddress = { try await Task.sleep(for: .seconds(3600)); throw CancellationError() }
+    private var publicAddress: ((URL) async throws -> PublicAddress)!
     private var holdsZones = false
     private var heldZones: CheckedContinuation<Void, Never>?
 
     override func setUp() async throws {
         tunnel = FakeVPNTunnel()
         token = "token-1"
-        configuration = VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082, apiURL: URL(string: "https://vpn-api.example")!)
+        configuration = VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082, apiURL: URL(string: "https://vpn-api.example")!, ipAPIURL: URL(string: "https://ip.example")!)
         defaultsSuite = "VPNServiceTests.\(UUID().uuidString)"
         defaults = UserDefaults(suiteName: defaultsSuite)
         vpnEntitlement = CurrentValueSubject(false)
         zones = .success([.france])
         zoneFetches = 0
         publicAddressRequests = 0
-        publicAddress = { try await Task.sleep(for: .seconds(3600)); throw CancellationError() }
+        publicAddress = { _ in try await Task.sleep(for: .seconds(3600)); throw CancellationError() }
     }
 
     override func tearDown() async throws {
@@ -45,7 +45,10 @@ final class VPNServiceTests: XCTestCase {
 
     func test_connected_showsThePublicAddressOnceFound() async {
         let frankfurt = PublicAddress(ip: "185.201.12.44", location: "Frankfurt, Hesse, Germany")
-        publicAddress = { frankfurt }
+        publicAddress = { url in
+            guard url == URL(string: "https://ip.example")! else { throw URLError(.badURL) }
+            return frankfurt
+        }
         let service = makeService()
         await startAndWaitUntilReady(service)
 
@@ -57,7 +60,7 @@ final class VPNServiceTests: XCTestCase {
     }
 
     func test_connected_whenTheIPServiceFails_staysConnectedWithTheAddressUnavailable() async {
-        publicAddress = { throw URLError(.timedOut) }
+        publicAddress = { _ in throw URLError(.timedOut) }
         let service = makeService()
         await startAndWaitUntilReady(service)
 
@@ -85,6 +88,12 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertEqual(info.location, "Germany")
     }
 
+    func test_ipServiceAnswerWithoutIP_isNotAnAddress() {
+        let body = Data(#"{"ip":"","country":"Germany"}"#.utf8)
+
+        XCTAssertThrowsError(try JSONDecoder().decode(PublicAddress.self, from: body))
+    }
+
     func test_networkLost_whileConnected_showsReconnectingUntilTheSystemIsBack() async {
         let service = await connectedService()
         await waitUntil { self.publicAddressRequests == 1 }
@@ -97,22 +106,6 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertEqual(service.viewState, .connected(.france, since: connectedAt, publicAddress: .loading))
         await waitUntil { self.publicAddressRequests == 2 }
         XCTAssertEqual(tunnel.stopCount, 0)
-    }
-
-    func test_proxyUnreachable_whileTheNetworkIsDown_keepsTheVPNReconnecting() async {
-        let service = await connectedService()
-        tunnel.systemReports(.reconnecting)
-
-        tunnel.onFailure?(.proxyUnreachable)
-
-        XCTAssertEqual(service.viewState, .reconnecting(.france))
-        XCTAssertEqual(tunnel.stopCount, 0)
-    }
-
-    func test_ipServiceAnswerWithoutIP_isNotAnAddress() {
-        let body = Data(#"{"ip":"","country":"Germany"}"#.utf8)
-
-        XCTAssertThrowsError(try JSONDecoder().decode(PublicAddress.self, from: body))
     }
 
     func test_changingRegionWhileConnected_looksUpTheNewPublicAddress() async {
@@ -499,14 +492,14 @@ final class VPNServiceTests: XCTestCase {
     }
 
     func test_configuration_readsTheProxyHostAndPort() throws {
-        let configuration = try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: "https://vpn-api.example")
+        let configuration = try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: "https://vpn-api.example", ipAPIURL: "https://ip.example")
 
-        XCTAssertEqual(configuration, VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082, apiURL: URL(string: "https://vpn-api.example")!))
+        XCTAssertEqual(configuration, VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082, apiURL: URL(string: "https://vpn-api.example")!, ipAPIURL: URL(string: "https://ip.example")!))
     }
 
     func test_configuration_withoutProxyAddress_isMissing() {
         for value in [nil, ""] as [String?] {
-            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value, apiURL: "https://vpn-api.example")) { error in
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value, apiURL: "https://vpn-api.example", ipAPIURL: "https://ip.example")) { error in
                 XCTAssertEqual(error as? VPNConfigurationError, .missing("VPN_PROXY_URL"))
             }
         }
@@ -514,7 +507,7 @@ final class VPNServiceTests: XCTestCase {
 
     func test_configuration_withoutVPNAPIAddress_isMissing() {
         for value in [nil, ""] as [String?] {
-            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: value)) { error in
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: value, ipAPIURL: "https://ip.example")) { error in
                 XCTAssertEqual(error as? VPNConfigurationError, .missing("VPN_API_URL"))
             }
         }
@@ -522,15 +515,31 @@ final class VPNServiceTests: XCTestCase {
 
     func test_configuration_withAnUnusableVPNAPIAddress_isInvalid() {
         for value in ["vpn-api.example", "not a url"] {
-            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: value)) { error in
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: value, ipAPIURL: "https://ip.example")) { error in
                 XCTAssertEqual(error as? VPNConfigurationError, .invalid("VPN_API_URL"))
+            }
+        }
+    }
+
+    func test_configuration_withoutIPServiceAddress_isMissing() {
+        for value in [nil, ""] as [String?] {
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: "https://vpn-api.example", ipAPIURL: value)) { error in
+                XCTAssertEqual(error as? VPNConfigurationError, .missing("VPN_IP_API_URL"))
+            }
+        }
+    }
+
+    func test_configuration_withAnUnusableIPServiceAddress_isInvalid() {
+        for value in ["ip.example", "not a url"] {
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: "https://vpn-api.example", ipAPIURL: value)) { error in
+                XCTAssertEqual(error as? VPNConfigurationError, .invalid("VPN_IP_API_URL"))
             }
         }
     }
 
     func test_configuration_withAnUnusableProxyAddress_isInvalid() {
         for value in ["http://203.0.113.7:0", "http://203.0.113.7", "203.0.113.7:8082", "not a url"] {
-            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value, apiURL: "https://vpn-api.example")) { error in
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value, apiURL: "https://vpn-api.example", ipAPIURL: "https://ip.example")) { error in
                 XCTAssertEqual(error as? VPNConfigurationError, .invalid("VPN_PROXY_URL"))
             }
         }
@@ -841,9 +850,9 @@ final class VPNServiceTests: XCTestCase {
                 }
                 return try self.zones.get()
             },
-            fetchPublicAddress: { [unowned self] in
+            fetchPublicAddress: { [unowned self] url in
                 self.publicAddressRequests += 1
-                return try await self.publicAddress()
+                return try await self.publicAddress(url)
             }
         )
     }
