@@ -15,7 +15,7 @@ final class VPNServiceTests: XCTestCase {
     private let connectedAt = Date(timeIntervalSince1970: 1_800_000_000)
     private var tunnel: FakeVPNTunnel!
     private var token: String?
-    private var proxyURL: URL?
+    private var configuration: VPNConfiguration!
     private var defaultsSuite: String!
     private var defaults: UserDefaults!
     private var vpnEntitlement: CurrentValueSubject<Bool, Never>!
@@ -27,7 +27,7 @@ final class VPNServiceTests: XCTestCase {
     override func setUp() async throws {
         tunnel = FakeVPNTunnel()
         token = "token-1"
-        proxyURL = URL(string: "http://203.0.113.7:8082")
+        configuration = VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082)
         defaultsSuite = "VPNServiceTests.\(UUID().uuidString)"
         defaults = UserDefaults(suiteName: defaultsSuite)
         vpnEntitlement = CurrentValueSubject(false)
@@ -412,22 +412,26 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertTrue(tunnel.preparedSessions.isEmpty)
     }
 
-    func test_connect_withoutProxyAddress_failsAsProxyUnreachable() async {
-        proxyURL = nil
-        let service = makeService()
+    func test_configuration_readsTheProxyHostAndPort() throws {
+        let configuration = try VPNConfiguration(proxyURL: "http://203.0.113.7:8082")
 
-        service.connect()
-
-        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
+        XCTAssertEqual(configuration, VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082))
     }
 
-    func test_connect_withProxyPortZero_failsAsProxyUnreachable() async {
-        proxyURL = URL(string: "http://203.0.113.7:0")
-        let service = makeService()
+    func test_configuration_withoutProxyAddress_isMissing() {
+        for value in [nil, ""] as [String?] {
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value)) { error in
+                XCTAssertEqual(error as? VPNConfigurationError, .missing("VPN_PROXY_URL"))
+            }
+        }
+    }
 
-        service.connect()
-
-        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
+    func test_configuration_withAnUnusableProxyAddress_isInvalid() {
+        for value in ["http://203.0.113.7:0", "http://203.0.113.7", "203.0.113.7:8082", "not a url"] {
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value)) { error in
+                XCTAssertEqual(error as? VPNConfigurationError, .invalid("VPN_PROXY_URL"))
+            }
+        }
     }
 
     func test_connect_whenTheFeatureIsDisabled_doesNothing() async {
@@ -456,6 +460,21 @@ final class VPNServiceTests: XCTestCase {
 
         XCTAssertEqual(tunnel.startedSessions.count, 1)
         XCTAssertEqual(service.viewState, .connecting(.france))
+    }
+
+    func test_connect_whenTheOldTunnelNeverStops_failsAsProxyUnreachable() async {
+        tunnel.requiresApproval = true
+        let service = makeService(connectTimeout: .milliseconds(50))
+        service.connect()
+        await waitUntil { service.viewState == .needsApproval }
+        tunnel.systemReports(.connected)
+
+        tunnel.approve()
+
+        await waitUntil { service.viewState == .disconnecting }
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+        tunnel.systemStops()
+        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
     }
 
     func test_connect_afterAbandoningAnAttempt_isNotFailedByTheAbandonedAttemptsTimeout() async {
@@ -709,7 +728,7 @@ final class VPNServiceTests: XCTestCase {
             isEnabled: isEnabled,
             connectTimeout: connectTimeout,
             authToken: { [unowned self] in self.token },
-            proxyURL: { [unowned self] in self.proxyURL },
+            configuration: { [unowned self] in self.configuration },
             now: { [connectedAt] in connectedAt },
             defaults: defaults,
             vpnEntitlement: vpnEntitlement.eraseToAnyPublisher(),
