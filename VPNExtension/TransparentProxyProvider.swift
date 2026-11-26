@@ -88,20 +88,24 @@ final class TransparentProxyProvider: NETransparentProxyProvider, VPNExtensionXP
         completionHandler()
     }
 
-    func updateSession(token: String, region: String) {
+    func updateSession(token: String, region: String, reply: @escaping (_ regionSwitched: Bool) -> Void) {
         let staleRelays = lock.withLock { () -> [ProxyRelay]? in
-            guard var current = configuration, current.token != token || current.region != region else { return nil }
+            guard var current = configuration else { return nil }
             let regionChanged = current.region != region
             current.token = token
             current.region = region
             configuration = current
-            guard regionChanged else { return [] }
+            guard regionChanged else { return nil }
             defer { relays.removeAll() }
             return Array(relays.values)
         }
-        guard let staleRelays else { return }
+        guard let staleRelays else {
+            reply(false)
+            return
+        }
         staleRelays.forEach { $0.reset() }
         Self.logger.info("Session updated for region \(region, privacy: .public); reset \(staleRelays.count, privacy: .public) open connections")
+        reply(true)
     }
 
     func appWentAway() {

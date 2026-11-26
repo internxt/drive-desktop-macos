@@ -58,6 +58,7 @@ enum VPNTunnelError: Error {
 protocol VPNTunnel: AnyObject {
     var status: VPNTunnelStatus { get }
     var onStatusChange: ((VPNTunnelStatus) -> Void)? { get set }
+    var onRegionSwitched: (() -> Void)? { get set }
     var onFailure: ((VPNTunnelFailure) -> Void)? { get set }
 
     func load() async
@@ -74,6 +75,7 @@ final class SystemVPNTunnel: VPNTunnel {
 
     private(set) var status: VPNTunnelStatus = .disconnected
     var onStatusChange: ((VPNTunnelStatus) -> Void)?
+    var onRegionSwitched: (() -> Void)?
     var onFailure: ((VPNTunnelFailure) -> Void)?
 
     private var activation: ExtensionActivation?
@@ -232,7 +234,12 @@ final class SystemVPNTunnel: VPNTunnel {
         let remote = appLink?.remoteObjectProxyWithErrorHandler { error in
             Self.logger.error("Could not reach the extension: \(error.localizedDescription)")
         } as? VPNExtensionXPCProtocol
-        remote?.updateSession(token: session.token, region: session.location.rawValue)
+        remote?.updateSession(token: session.token, region: session.location.rawValue) { [weak self] regionSwitched in
+            guard regionSwitched else { return }
+            Task { @MainActor [weak self] in
+                self?.onRegionSwitched?()
+            }
+        }
     }
 
     private func closeAppLink() {
