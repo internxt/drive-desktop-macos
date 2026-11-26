@@ -20,7 +20,8 @@ platform :mac do
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.vpn"
       ],
     )
 
@@ -57,7 +58,8 @@ platform :mac do
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.vpn"
       ],
     )
   
@@ -155,7 +157,8 @@ platform :mac do
       app_identifier: [
         "internxt.InternxtDesktop",
         "internxt.InternxtDesktop.sync",
-        "com.internxt.XPCBackupService"
+        "com.internxt.XPCBackupService",
+        "internxt.InternxtDesktop.vpn"
       ],
     )
 
