@@ -27,7 +27,7 @@ final class VPNServiceTests: XCTestCase {
     override func setUp() async throws {
         tunnel = FakeVPNTunnel()
         token = "token-1"
-        configuration = VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082)
+        configuration = VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082, apiURL: URL(string: "https://vpn-api.example")!)
         defaultsSuite = "VPNServiceTests.\(UUID().uuidString)"
         defaults = UserDefaults(suiteName: defaultsSuite)
         vpnEntitlement = CurrentValueSubject(false)
@@ -413,22 +413,38 @@ final class VPNServiceTests: XCTestCase {
     }
 
     func test_configuration_readsTheProxyHostAndPort() throws {
-        let configuration = try VPNConfiguration(proxyURL: "http://203.0.113.7:8082")
+        let configuration = try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: "https://vpn-api.example")
 
-        XCTAssertEqual(configuration, VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082))
+        XCTAssertEqual(configuration, VPNConfiguration(proxyHost: "203.0.113.7", proxyPort: 8082, apiURL: URL(string: "https://vpn-api.example")!))
     }
 
     func test_configuration_withoutProxyAddress_isMissing() {
         for value in [nil, ""] as [String?] {
-            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value)) { error in
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value, apiURL: "https://vpn-api.example")) { error in
                 XCTAssertEqual(error as? VPNConfigurationError, .missing("VPN_PROXY_URL"))
+            }
+        }
+    }
+
+    func test_configuration_withoutVPNAPIAddress_isMissing() {
+        for value in [nil, ""] as [String?] {
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: value)) { error in
+                XCTAssertEqual(error as? VPNConfigurationError, .missing("VPN_API_URL"))
+            }
+        }
+    }
+
+    func test_configuration_withAnUnusableVPNAPIAddress_isInvalid() {
+        for value in ["vpn-api.example", "not a url"] {
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: "http://203.0.113.7:8082", apiURL: value)) { error in
+                XCTAssertEqual(error as? VPNConfigurationError, .invalid("VPN_API_URL"))
             }
         }
     }
 
     func test_configuration_withAnUnusableProxyAddress_isInvalid() {
         for value in ["http://203.0.113.7:0", "http://203.0.113.7", "203.0.113.7:8082", "not a url"] {
-            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value)) { error in
+            XCTAssertThrowsError(try VPNConfiguration(proxyURL: value, apiURL: "https://vpn-api.example")) { error in
                 XCTAssertEqual(error as? VPNConfigurationError, .invalid("VPN_PROXY_URL"))
             }
         }
