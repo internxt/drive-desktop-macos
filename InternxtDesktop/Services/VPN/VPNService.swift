@@ -88,7 +88,6 @@ final class VPNService: ObservableObject {
     @Published var isFreePlan: Bool
 
     private let tunnel: VPNTunnel
-    private let isEnabled: Bool
     private let connectTimeout: Duration
     private let authToken: () -> String?
     private let configuration: () -> VPNConfiguration
@@ -115,7 +114,6 @@ final class VPNService: ObservableObject {
         selectedRegion: VPNZone = .france,
         isFreePlan: Bool = true,
         tunnel: VPNTunnel = SystemVPNTunnel(),
-        isEnabled: Bool = ConfigLoader.isVPNEnabled,
         connectTimeout: Duration = .seconds(30),
         authToken: @escaping () -> String? = { ConfigLoader().getAuthToken() },
         configuration: @escaping () -> VPNConfiguration = { ConfigLoader().getVPNConfiguration() },
@@ -132,7 +130,6 @@ final class VPNService: ObservableObject {
         self.selectedRegion = selectedRegion
         self.isFreePlan = isFreePlan
         self.tunnel = tunnel
-        self.isEnabled = isEnabled
         self.connectTimeout = connectTimeout
         self.authToken = authToken
         self.configuration = configuration
@@ -155,7 +152,7 @@ final class VPNService: ObservableObject {
     }
 
     func start() {
-        guard isEnabled, entitlementObserver == nil else { return }
+        guard entitlementObserver == nil else { return }
         zones = nil
         render()
         observeTokenRefresh()
@@ -189,7 +186,7 @@ final class VPNService: ObservableObject {
     }
 
     func connect() {
-        guard isEnabled, viewState.acceptsConnect else { return }
+        guard viewState.acceptsConnect else { return }
 
         guard let token = authToken(), !token.isEmpty else {
             Self.logger.error("Cannot connect the VPN without a session token")
@@ -210,7 +207,7 @@ final class VPNService: ObservableObject {
     }
 
     func disconnect() {
-        guard isEnabled, viewState.acceptsDisconnect else { return }
+        guard viewState.acceptsDisconnect else { return }
         Self.logger.info("Disconnecting the VPN")
         turnOff()
     }
@@ -221,7 +218,6 @@ final class VPNService: ObservableObject {
     }
 
     func reset() {
-        guard isEnabled else { return }
         turnOff()
         defaults.removeObject(forKey: Self.preferredRegionKey)
         hasVPNPlan = false
@@ -229,7 +225,6 @@ final class VPNService: ObservableObject {
     }
 
     func shutdown() {
-        guard isEnabled else { return }
         goal = .off
         tunnel.stop()
     }

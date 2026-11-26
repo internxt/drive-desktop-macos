@@ -527,16 +527,6 @@ final class VPNServiceTests: XCTestCase {
         }
     }
 
-    func test_connect_whenTheFeatureIsDisabled_doesNothing() async {
-        let service = makeService(isEnabled: false)
-
-        service.connect()
-        try? await Task.sleep(for: .milliseconds(50))
-
-        XCTAssertEqual(service.viewState, .disconnected)
-        XCTAssertTrue(tunnel.preparedSessions.isEmpty)
-    }
-
     func test_connect_whileAnOldTunnelIsStillUp_stopsItAndStartsOnceItHasStopped() async {
         tunnel.requiresApproval = true
         let service = makeService()
@@ -811,14 +801,12 @@ final class VPNServiceTests: XCTestCase {
     }
 
     private func makeService(
-        isEnabled: Bool = true,
         connectTimeout: Duration = .seconds(5),
         regions: [VPNRegion] = VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) }
     ) -> VPNService {
         VPNService(
             regions: regions,
             tunnel: tunnel,
-            isEnabled: isEnabled,
             connectTimeout: connectTimeout,
             authToken: { [unowned self] in self.token },
             configuration: { [unowned self] in self.configuration },
