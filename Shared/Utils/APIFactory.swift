@@ -114,9 +114,9 @@ struct APIFactory {
 
     static var VPN: VPNAPI {
         let configLoader = ConfigLoader()
-        let config = configLoader.get()
+        let baseUrl = configLoader.getVPNConfiguration().apiURL.absoluteString
         let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
-        return VPNAPI(baseUrl: config.VPN_API_URL ?? "", authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+        return VPNAPI(baseUrl: baseUrl, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
     }
 
     static var Payment: DriveAPI {
