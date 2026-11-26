@@ -175,9 +175,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
         // Load the config, or die with a fatalError
         config.load()
-        if ConfigLoader.isVPNEnabled {
-            _ = config.getVPNConfiguration()
-        }
+        _ = config.getVPNConfiguration()
         
         Task {
             await UpdateEnforcementManager.shared.checkCompatibility()

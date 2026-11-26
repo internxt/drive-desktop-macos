@@ -8,7 +8,7 @@
 import Foundation
 
 @objc protocol VPNExtensionXPCProtocol {
-    func updateSession(token: String, region: String)
+    func updateSession(token: String, region: String, reply: @escaping (_ regionSwitched: Bool) -> Void)
 }
 
 @objc protocol VPNAppXPCProtocol {

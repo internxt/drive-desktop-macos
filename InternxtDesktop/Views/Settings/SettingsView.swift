@@ -47,9 +47,7 @@ struct SettingsView: View {
                         TabItem(iconName: .Shield, label: "SETTINGS_TAB_ANTIVIRUS_TITLE", id: .Antivirus)
                         TabItem(assetName: "tabCleanerIcon", label: "SETTINGS_TAB_CLEANER_TITLE", id: .Cleaner)
                         TabItem(assetName: "tabMailBridgeIcon", label: "SETTINGS_TAB_MAIL_BRIDGE_TITLE", id: .MailBridge)
-                        if ConfigLoader.isVPNEnabled {
-                            TabItem(iconName: .Globe, label: "SETTINGS_TAB_VPN_TITLE", id: .VPN)
-                        }
+                        TabItem(iconName: .Globe, label: "SETTINGS_TAB_VPN_TITLE", id: .VPN)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
