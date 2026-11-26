@@ -36,13 +36,15 @@ public struct JSONConfig: Codable {
 struct VPNConfiguration: Equatable {
     let proxyHost: String
     let proxyPort: UInt16
+    let apiURL: URL
 
-    init(proxyHost: String, proxyPort: UInt16) {
+    init(proxyHost: String, proxyPort: UInt16, apiURL: URL) {
         self.proxyHost = proxyHost
         self.proxyPort = proxyPort
+        self.apiURL = apiURL
     }
 
-    init(proxyURL: String?) throws {
+    init(proxyURL: String?, apiURL: String?) throws {
         guard let proxyURL, !proxyURL.isEmpty else {
             throw VPNConfigurationError.missing("VPN_PROXY_URL")
         }
@@ -51,7 +53,13 @@ struct VPNConfiguration: Equatable {
               let port = url.port.flatMap(UInt16.init(exactly:)), port > 0 else {
             throw VPNConfigurationError.invalid("VPN_PROXY_URL")
         }
-        self.init(proxyHost: host, proxyPort: port)
+        guard let apiURL, !apiURL.isEmpty else {
+            throw VPNConfigurationError.missing("VPN_API_URL")
+        }
+        guard let api = URL(string: apiURL), api.scheme != nil, api.host?.isEmpty == false else {
+            throw VPNConfigurationError.invalid("VPN_API_URL")
+        }
+        self.init(proxyHost: host, proxyPort: port, apiURL: api)
     }
 }
 
@@ -374,7 +382,8 @@ public struct ConfigLoader {
 
     func getVPNConfiguration() -> VPNConfiguration {
         do {
-            return try VPNConfiguration(proxyURL: get().VPN_PROXY_URL)
+            let config = get()
+            return try VPNConfiguration(proxyURL: config.VPN_PROXY_URL, apiURL: config.VPN_API_URL)
         } catch {
             fatalError(error.localizedDescription)
         }

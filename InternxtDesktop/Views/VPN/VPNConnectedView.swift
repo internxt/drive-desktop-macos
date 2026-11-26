@@ -5,6 +5,7 @@
 //  Created by Xavier Abad Gomez on 23/11/2026.
 //
 
+import InternxtSwiftCore
 import SwiftUI
 
 struct VPNConnectedView: View {
@@ -16,7 +17,7 @@ struct VPNConnectedView: View {
     }()
 
     @ObservedObject var service: VPNService
-    let location: VPNLocation
+    let location: VPNZone
     let since: Date
     let exit: ExitInfo?
 
@@ -115,7 +116,7 @@ struct VPNConnectedView: View {
 #Preview("Connected") {
     VPNTabView(service: VPNService(
         viewState: .connected(.germany, since: Date().addingTimeInterval(-754), exit: ExitInfo(ip: "185.201.12.44", location: "Frankfurt, Germany")),
-        regions: VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: true) },
+        regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) },
         selectedRegion: .germany,
         isFreePlan: false
     ))

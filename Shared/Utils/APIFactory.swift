@@ -112,6 +112,13 @@ struct APIFactory {
         return MailAPI(baseUrl: config.MAIL_API_URL, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion(), gatewayHeader: config.HEADER_KEY_GATEWAY)
     }
 
+    static var VPN: VPNAPI {
+        let configLoader = ConfigLoader()
+        let baseUrl = configLoader.getVPNConfiguration().apiURL.absoluteString
+        let token = configLoader.getAuthToken() ?? "MISSING_TOKEN"
+        return VPNAPI(baseUrl: baseUrl, authToken: token, clientName: CLIENT_NAME, clientVersion: getVersion())
+    }
+
     static var Payment: DriveAPI {
         let configLoader = ConfigLoader()
 

@@ -19,12 +19,14 @@ class FeaturesService: ObservableObject {
         static let antivirusEnabled = "FeaturesService.antivirusEnabled"
         static let cleanerEnabled = "FeaturesService.cleanerEnabled"
         static let mailEnabled = "FeaturesService.mailEnabled"
+        static let vpnEnabled = "FeaturesService.vpnEnabled"
     }
     
     @Published var backupEnabled: Bool = false
     @Published var antivirusEnabled: Bool = false
     @Published var cleanerEnabled: Bool = false
     @Published var mailEnabled: Bool = false
+    @Published var vpnEnabled: Bool = false
     @Published var isLoading: Bool = false
    
     
@@ -46,6 +48,7 @@ class FeaturesService: ObservableObject {
             antivirusEnabled = featuresPerService.antivirus ?? false
             cleanerEnabled = featuresPerService.cleaner ?? false
             mailEnabled = featuresPerService.mail ?? false
+            vpnEnabled = featuresPerService.vpn ?? false
             
             logger.info("""
                 Status for user tier features:
@@ -53,6 +56,7 @@ class FeaturesService: ObservableObject {
                 - Antivirus enabled: \(antivirusEnabled)
                 - Cleaner enabled: \(cleanerEnabled)
                 - Mail enabled: \(mailEnabled)
+                - VPN enabled: \(vpnEnabled)
                 """)
             
             persistFeaturesToCache()
@@ -63,6 +67,7 @@ class FeaturesService: ObservableObject {
             
             if let apiError = error as? APIClientError, apiError.statusCode == 404 {
                 clearCachedFeatures()
+                vpnEnabled = false
                 logger.info("Payment info not found (404), disabling all features and clearing cache")
             }
         }
@@ -90,7 +95,8 @@ class FeaturesService: ObservableObject {
         antivirusEnabled = defaults.bool(forKey: CacheKeys.antivirusEnabled)
         cleanerEnabled = defaults.bool(forKey: CacheKeys.cleanerEnabled)
         mailEnabled = defaults.bool(forKey: CacheKeys.mailEnabled)
-        logger.info("Loaded cached features — backup: \(backupEnabled), antivirus: \(antivirusEnabled), cleaner: \(cleanerEnabled), mail: \(mailEnabled)")
+        vpnEnabled = defaults.bool(forKey: CacheKeys.vpnEnabled)
+        logger.info("Loaded cached features — backup: \(backupEnabled), antivirus: \(antivirusEnabled), cleaner: \(cleanerEnabled), mail: \(mailEnabled), vpn: \(vpnEnabled)")
     }
     
     private func persistFeaturesToCache() {
@@ -99,6 +105,7 @@ class FeaturesService: ObservableObject {
         defaults.set(antivirusEnabled, forKey: CacheKeys.antivirusEnabled)
         defaults.set(cleanerEnabled, forKey: CacheKeys.cleanerEnabled)
         defaults.set(mailEnabled, forKey: CacheKeys.mailEnabled)
+        defaults.set(vpnEnabled, forKey: CacheKeys.vpnEnabled)
         logger.info("Persisted feature flags to cache")
     }
     
@@ -108,6 +115,7 @@ class FeaturesService: ObservableObject {
         defaults.removeObject(forKey: CacheKeys.antivirusEnabled)
         defaults.removeObject(forKey: CacheKeys.cleanerEnabled)
         defaults.removeObject(forKey: CacheKeys.mailEnabled)
+        defaults.removeObject(forKey: CacheKeys.vpnEnabled)
     }
 }
 

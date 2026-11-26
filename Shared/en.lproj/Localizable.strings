@@ -325,6 +325,7 @@
 "MAIL_BRIDGE_CHECKING_AVAILABILITY" = "Checking feature availability...";
 "SETTINGS_TAB_MAIL_BRIDGE_TITLE" = "Mail Bridge";
 "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION" = "Mail Bridge";
+"WIDGET_SETTINGS_VPN_OPTION" = "VPN";
 "MAIL_BRIDGE_LOCKED_TITLE" = "Mail Bridge is part of Ultimate";
 "MAIL_BRIDGE_LOCKED_SUBTITLE" = "Bridge decrypts your Internxt mailbox locally so you can read and send it from Apple Mail, Outlook or Thunderbird. Upgrade to the Ultimate plan to use it.";
 "MAIL_BRIDGE_UPGRADE_ULTIMATE" = "Upgrade to Ultimate";

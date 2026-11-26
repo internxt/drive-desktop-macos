@@ -156,7 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         )
         self.windowsManager.loadInitialWindows()
         self.issuesManager.startObserving()
-        Task { await self.vpnService.syncWithSystem() }
+        self.vpnService.start()
 
         if UpdateEnforcementManager.shared.isBlocked {
             self.handleMandatoryUpdateRequired()

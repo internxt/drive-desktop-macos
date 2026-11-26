@@ -5,6 +5,7 @@
 //  Created by Xavier Abad Gomez on 23/11/2026.
 //
 
+import InternxtSwiftCore
 import SwiftUI
 
 struct VPNRegionPicker: View {
@@ -85,7 +86,7 @@ private struct VPNRegionChip: View {
 
 #Preview("All regions") {
     VPNRegionPicker(service: VPNService(
-        regions: VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: true) },
+        regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) },
         selectedRegion: .germany,
         isFreePlan: false
     ))

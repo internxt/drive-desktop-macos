@@ -6,15 +6,11 @@
 //
 
 import AppKit
+import Combine
+import InternxtSwiftCore
 import SwiftUI
 
-enum VPNLocation: String, CaseIterable {
-    case france = "FR"
-    case germany = "DE"
-    case poland = "PL"
-    case canada = "CA"
-    case unitedKingdom = "UK"
-
+extension VPNZone {
     var nameKey: String { "VPN_REGION_\(rawValue)" }
 
     var flag: String {
@@ -29,7 +25,7 @@ enum VPNLocation: String, CaseIterable {
 }
 
 struct VPNRegion: Identifiable, Equatable {
-    let location: VPNLocation
+    let location: VPNZone
     let isAvailable: Bool
 
     var id: String { location.rawValue }
@@ -52,9 +48,9 @@ enum VPNViewState: Equatable {
     case checkingAvailability
     case disconnected
     case needsApproval
-    case connecting(VPNLocation)
-    case connected(VPNLocation, since: Date, exit: ExitInfo?)
-    case reconnecting(VPNLocation)
+    case connecting(VPNZone)
+    case connected(VPNZone, since: Date, exit: ExitInfo?)
+    case reconnecting(VPNZone)
     case disconnecting
     case failed(VPNError)
 }
@@ -62,6 +58,8 @@ enum VPNViewState: Equatable {
 @MainActor
 final class VPNService: ObservableObject {
     private static let logger = LogService.shared.createLogger(subsystem: .VPN, category: "VPNService")
+    private static let preferredRegionKey = "VPNService.lastRegion"
+    private static let freeZones: Set<VPNZone> = [.france]
 
     private static var approvalSettingsURL: URL {
         if #available(macOS 15, *) {
@@ -85,7 +83,7 @@ final class VPNService: ObservableObject {
 
     @Published var viewState: VPNViewState
     @Published var regions: [VPNRegion]
-    @Published var selectedRegion: VPNLocation
+    @Published var selectedRegion: VPNZone
     @Published var isFreePlan: Bool
 
     private let tunnel: VPNTunnel
@@ -94,24 +92,33 @@ final class VPNService: ObservableObject {
     private let authToken: () -> String?
     private let configuration: () -> VPNConfiguration
     private let now: () -> Date
+    private let defaults: UserDefaults
+    private let vpnEntitlement: AnyPublisher<Bool, Never>
+    private let fetchZones: () async throws -> [VPNZone]
 
     private var goal = Goal.off
+    private var zones: Set<VPNZone>? = VPNService.freeZones
+    private var hasVPNPlan = false
     private var failure: VPNError?
     private var connectDeadline: Task<Void, Never>?
     private var preparation: Task<Void, Never>?
     private var tokenObserver: Task<Void, Never>?
+    private var entitlementObserver: Task<Void, Never>?
 
     init(
         viewState: VPNViewState = .disconnected,
-        regions: [VPNRegion] = VPNLocation.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) },
-        selectedRegion: VPNLocation = .france,
+        regions: [VPNRegion] = VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: $0 == .france) },
+        selectedRegion: VPNZone = .france,
         isFreePlan: Bool = true,
         tunnel: VPNTunnel = SystemVPNTunnel(),
         isEnabled: Bool = ConfigLoader.isVPNEnabled,
         connectTimeout: Duration = .seconds(30),
         authToken: @escaping () -> String? = { ConfigLoader().getAuthToken() },
         configuration: @escaping () -> VPNConfiguration = { ConfigLoader().getVPNConfiguration() },
-        now: @escaping () -> Date = Date.init
+        now: @escaping () -> Date = Date.init,
+        defaults: UserDefaults = .standard,
+        vpnEntitlement: AnyPublisher<Bool, Never> = FeaturesService.shared.$vpnEnabled.eraseToAnyPublisher(),
+        fetchZones: @escaping () async throws -> [VPNZone] = { try await APIFactory.VPN.getUser().zones }
     ) {
         self.viewState = viewState
         self.regions = regions
@@ -123,22 +130,29 @@ final class VPNService: ObservableObject {
         self.authToken = authToken
         self.configuration = configuration
         self.now = now
+        self.defaults = defaults
+        self.vpnEntitlement = vpnEntitlement
+        self.fetchZones = fetchZones
 
         tunnel.onStatusChange = { [weak self] status in self?.tunnelChanged(to: status) }
         tunnel.onFailure = { [weak self] failure in self?.extensionFailed(failure) }
-        if isEnabled {
-            observeTokenRefresh()
-        }
     }
 
     deinit {
         tokenObserver?.cancel()
+        entitlementObserver?.cancel()
         connectDeadline?.cancel()
     }
 
-    func syncWithSystem() async {
-        guard isEnabled else { return }
-        await tunnel.load()
+    func start() {
+        guard isEnabled, entitlementObserver == nil else { return }
+        zones = nil
+        render()
+        observeTokenRefresh()
+        observeEntitlement()
+        Task { [weak self] in
+            await self?.tunnel.load()
+        }
     }
 
     func select(_ region: VPNRegion) {
@@ -146,12 +160,13 @@ final class VPNService: ObservableObject {
             URLDictionary.UPGRADE_PLAN.open()
             return
         }
+        defaults.set(region.location.rawValue, forKey: Self.preferredRegionKey)
         selectedRegion = region.location
-        guard case .on(let session, let step) = goal, session.location != region.location else { return }
-        var relocated = session
-        relocated.location = region.location
-        goal = .on(relocated, step)
-        tunnel.update(relocated)
+        if case .on(var session, let step) = goal, session.location != region.location {
+            session.location = region.location
+            goal = .on(session, step)
+            tunnel.update(session)
+        }
         render()
     }
 
@@ -194,6 +209,9 @@ final class VPNService: ObservableObject {
     func reset() {
         guard isEnabled else { return }
         turnOff()
+        defaults.removeObject(forKey: Self.preferredRegionKey)
+        hasVPNPlan = false
+        apply(Self.freeZones)
     }
 
     func shutdown() {
@@ -285,6 +303,52 @@ final class VPNService: ObservableObject {
         guard case .on = goal else { return }
         Self.logger.error("VPN extension reported a failure: \(failure.rawValue)")
         turnOff(failing: Self.viewError(for: failure))
+        if failure == .zoneNotAllowed {
+            Task { [weak self] in
+                await self?.loadZones()
+            }
+        }
+    }
+
+    private func observeEntitlement() {
+        entitlementObserver = Task { [weak self, vpnEntitlement] in
+            for await hasPlan in vpnEntitlement.values {
+                guard let self else { return }
+                self.hasVPNPlan = hasPlan
+                await self.loadZones()
+            }
+        }
+    }
+
+    private func loadZones() async {
+        guard hasVPNPlan else {
+            apply(Self.freeZones)
+            return
+        }
+        do {
+            let fetched = try await fetchZones()
+            guard hasVPNPlan else { return }
+            apply(Set(fetched))
+        } catch {
+            guard hasVPNPlan else { return }
+            Self.logger.error("Could not load the VPN regions: \(error)")
+            apply(zones ?? Self.freeZones)
+        }
+    }
+
+    private func apply(_ planZones: Set<VPNZone>) {
+        let available = planZones.union(Self.freeZones)
+        zones = available
+        regions = VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: available.contains($0)) }
+        isFreePlan = !hasVPNPlan
+        let preferred = defaults.string(forKey: Self.preferredRegionKey).flatMap(VPNZone.init(rawValue:))
+        selectedRegion = preferred.flatMap { available.contains($0) ? $0 : nil } ?? .france
+        if case .on(let session, _) = goal, !available.contains(session.location) {
+            Self.logger.error("The VPN region \(session.location.rawValue) is no longer in the plan")
+            turnOff(failing: .zoneNotPermitted)
+            return
+        }
+        render()
     }
 
     private func turnOff(failing error: VPNError? = nil) {
@@ -317,6 +381,8 @@ final class VPNService: ObservableObject {
                 viewState = .disconnecting
             } else if let failure {
                 viewState = .failed(failure)
+            } else if zones == nil {
+                viewState = .checkingAvailability
             } else {
                 viewState = .disconnected
             }

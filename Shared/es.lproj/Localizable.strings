@@ -326,6 +326,7 @@
 "MAIL_BRIDGE_CHECKING_AVAILABILITY" = "Comprobando disponibilidad de la función...";
 "SETTINGS_TAB_MAIL_BRIDGE_TITLE" = "Mail Bridge";
 "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION" = "Mail Bridge";
+"WIDGET_SETTINGS_VPN_OPTION" = "VPN";
 "MAIL_BRIDGE_LOCKED_TITLE" = "Mail Bridge forma parte de Ultimate";
 "MAIL_BRIDGE_LOCKED_SUBTITLE" = "Bridge descifra tu buzón de Internxt en local para que puedas leerlo y enviar correo desde Apple Mail, Outlook o Thunderbird. Mejora al plan Ultimate para usarlo.";
 "MAIL_BRIDGE_UPGRADE_ULTIMATE" = "Mejorar a Ultimate";

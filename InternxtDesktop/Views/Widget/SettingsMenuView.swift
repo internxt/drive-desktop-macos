@@ -36,8 +36,12 @@ struct SettingsMenuView: View {
                         .accessibilityIdentifier("menuItemAntivirus")
                     SettingsMenuOption(label: "WIDGET_SETTINGS_CLEANER_OPTION", onPress: settingsHandler(for: .Cleaner))
                         .accessibilityIdentifier("menuItemCleaner")
-                    SettingsMenuOption(label: "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION", showNewDot: true, onPress: settingsHandler(for: .MailBridge))
+                    SettingsMenuOption(label: "WIDGET_SETTINGS_MAIL_BRIDGE_OPTION", onPress: settingsHandler(for: .MailBridge))
                         .accessibilityIdentifier("menuItemMailBridge")
+                    if ConfigLoader.isVPNEnabled {
+                        SettingsMenuOption(label: "WIDGET_SETTINGS_VPN_OPTION", showNewDot: true, onPress: settingsHandler(for: .VPN))
+                            .accessibilityIdentifier("menuItemVPN")
+                    }
                     
                     SettingsMenuOption(label: "WIDGET_SETTINGS_REFERRAL_OPTION", onPress: handleOpenReferralLink)
                         .accessibilityIdentifier("menuItemRefer")
