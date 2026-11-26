@@ -92,7 +92,7 @@ final class VPNService: ObservableObject {
     private let isEnabled: Bool
     private let connectTimeout: Duration
     private let authToken: () -> String?
-    private let proxyURL: () -> URL?
+    private let configuration: () -> VPNConfiguration
     private let now: () -> Date
 
     private var goal = Goal.off
@@ -110,7 +110,7 @@ final class VPNService: ObservableObject {
         isEnabled: Bool = ConfigLoader.isVPNEnabled,
         connectTimeout: Duration = .seconds(30),
         authToken: @escaping () -> String? = { ConfigLoader().getAuthToken() },
-        proxyURL: @escaping () -> URL? = { ConfigLoader().get().VPN_PROXY_URL.flatMap { URL(string: $0) } },
+        configuration: @escaping () -> VPNConfiguration = { ConfigLoader().getVPNConfiguration() },
         now: @escaping () -> Date = Date.init
     ) {
         self.viewState = viewState
@@ -121,7 +121,7 @@ final class VPNService: ObservableObject {
         self.isEnabled = isEnabled
         self.connectTimeout = connectTimeout
         self.authToken = authToken
-        self.proxyURL = proxyURL
+        self.configuration = configuration
         self.now = now
 
         tunnel.onStatusChange = { [weak self] status in self?.tunnelChanged(to: status) }
@@ -167,13 +167,8 @@ final class VPNService: ObservableObject {
             turnOff(failing: .sessionExpired)
             return
         }
-        guard let proxy = proxyURL(), let host = proxy.host, let port = proxy.port.flatMap(UInt16.init(exactly:)), port > 0 else {
-            Self.logger.error("Cannot connect the VPN: the proxy address is not configured")
-            turnOff(failing: .proxyUnreachable)
-            return
-        }
-
-        let session = VPNSession(proxyHost: host, proxyPort: port, location: selectedRegion, token: token)
+        let proxy = configuration()
+        let session = VPNSession(proxyHost: proxy.proxyHost, proxyPort: proxy.proxyPort, location: selectedRegion, token: token)
         Self.logger.info("Connecting the VPN to \(session.location.rawValue)")
         failure = nil
         goal = .on(session, .preparing)
