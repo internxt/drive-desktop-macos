@@ -274,6 +274,21 @@ final class VPNServiceTests: XCTestCase {
         XCTAssertEqual(service.viewState, .connecting(.france))
     }
 
+    func test_connect_whenTheOldTunnelNeverStops_failsAsProxyUnreachable() async {
+        tunnel.requiresApproval = true
+        let service = makeService(connectTimeout: .milliseconds(50))
+        service.connect()
+        await waitUntil { service.viewState == .needsApproval }
+        tunnel.systemReports(.connected)
+
+        tunnel.approve()
+
+        await waitUntil { service.viewState == .disconnecting }
+        XCTAssertTrue(tunnel.startedSessions.isEmpty)
+        tunnel.systemStops()
+        XCTAssertEqual(service.viewState, .failed(.proxyUnreachable))
+    }
+
     func test_connect_afterAbandoningAnAttempt_isNotFailedByTheAbandonedAttemptsTimeout() async {
         tunnel.requiresApproval = true
         let service = makeService(connectTimeout: .milliseconds(400))

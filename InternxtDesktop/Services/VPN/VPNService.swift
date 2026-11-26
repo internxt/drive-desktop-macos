@@ -229,6 +229,7 @@ final class VPNService: ObservableObject {
             start(current)
         } else {
             goal = .on(current, .awaitingStop)
+            startConnectDeadline()
             tunnel.stop()
             render()
         }
@@ -304,7 +305,7 @@ final class VPNService: ObservableObject {
     }
 
     private func connectionTimedOut() {
-        guard case .on(_, .starting) = goal else { return }
+        guard case .on(_, let step) = goal, step == .awaitingStop || step == .starting else { return }
         Self.logger.error("VPN connection timed out")
         turnOff(failing: .proxyUnreachable)
     }
