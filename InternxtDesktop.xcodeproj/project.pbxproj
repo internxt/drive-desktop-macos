@@ -433,6 +433,7 @@
 		5EF05514FFCF00C54F6CFAD4 /* VPNExtensionXPCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FE2750394CFC4CB858F319 /* VPNExtensionXPCProtocol.swift */; };
 		259351F00C3E296E56C07718 /* AppLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D917DC57D78C0F0C38CC1B /* AppLink.swift */; };
 		25B98721725B95F29AAC7F57 /* VPNTunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216A8E8788620BAFDFAC476C /* VPNTunnel.swift */; };
+		3432AC5592BF0F20D6A21E47 /* VPNServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A9DC49817EF40CE5C95600 /* VPNServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -465,6 +466,13 @@
 			remoteInfo = Helper;
 		};
 		E15F8C292B762B0400C60EFA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E1FB2D232A76BF0200473AE1;
+			remoteInfo = InternxtDesktop;
+		};
+		0FC49ACBDA9E46C879E75508 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E1FB2D1C2A76BF0200473AE1 /* Project object */;
 			proxyType = 1;
@@ -880,6 +888,7 @@
 		B3FE2750394CFC4CB858F319 /* VPNExtensionXPCProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNExtensionXPCProtocol.swift; sourceTree = "<group>"; };
 		60D917DC57D78C0F0C38CC1B /* AppLink.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppLink.swift; sourceTree = "<group>"; };
 		216A8E8788620BAFDFAC476C /* VPNTunnel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNTunnel.swift; sourceTree = "<group>"; };
+		62A9DC49817EF40CE5C95600 /* VPNServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPN/VPNServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1110,6 +1119,7 @@
 		AA08891A2C4AF29F00D5CC40 /* InternxtDesktopTests */ = {
 			isa = PBXGroup;
 			children = (
+				62A9DC49817EF40CE5C95600 /* VPNServiceTests.swift */,
 				AA08891B2C4AF29F00D5CC40 /* InternxtDesktopTests.swift */,
 			);
 			path = InternxtDesktopTests;
@@ -1848,6 +1858,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				38845CCFAB2C6ACDCA7ED6A9 /* PBXTargetDependency */,
 			);
 			name = InternxtDesktopTests;
 			productName = InternxtDesktopTests;
@@ -2238,6 +2249,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3432AC5592BF0F20D6A21E47 /* VPNServiceTests.swift in Sources */,
 				AA08891C2C4AF29F00D5CC40 /* InternxtDesktopTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2611,6 +2623,11 @@
 			target = E1FB2D232A76BF0200473AE1 /* InternxtDesktop */;
 			targetProxy = E15F8C292B762B0400C60EFA /* PBXContainerItemProxy */;
 		};
+		38845CCFAB2C6ACDCA7ED6A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E1FB2D232A76BF0200473AE1 /* InternxtDesktop */;
+			targetProxy = 0FC49ACBDA9E46C879E75508 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -2942,6 +2959,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -2949,16 +2967,16 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Internxt.InternxtDesktopTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Internxt Drive.app/Contents/MacOS/Internxt Drive";
 			};
 			name = Debug;
 		};
@@ -2966,21 +2984,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Internxt.InternxtDesktopTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Internxt Drive.app/Contents/MacOS/Internxt Drive";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2989,21 +3008,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Internxt.InternxtDesktopTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Internxt Drive.app/Contents/MacOS/Internxt Drive";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Beta;

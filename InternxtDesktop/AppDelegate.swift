@@ -156,6 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         )
         self.windowsManager.loadInitialWindows()
         self.issuesManager.startObserving()
+        Task { await self.vpnService.syncWithSystem() }
 
         if UpdateEnforcementManager.shared.isBlocked {
             self.handleMandatoryUpdateRequired()
@@ -174,6 +175,9 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
         
         // Load the config, or die with a fatalError
         config.load()
+        if ConfigLoader.isVPNEnabled {
+            _ = config.getVPNConfiguration()
+        }
         
         Task {
             await UpdateEnforcementManager.shared.checkCompatibility()
@@ -548,6 +552,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     private func logoutSuccess() {
         FeaturesService.shared.clearCachedFeatures()
         Task { @MainActor in self.mailBridgeService.reset() }
+        Task { @MainActor in self.vpnService.reset() }
         FileLimitsService.shared.stopPolling()
         FileLimitsService.shared.clearCache()
         self.windowsManager.displayDockIcon()
@@ -622,6 +627,7 @@ class AppDelegate: NSObject, NSApplicationDelegate , PKPushRegistryDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
+        vpnService.shutdown()
         UpdateEnforcementManager.shared.stopPeriodicCompatibilityCheck()
         destroyWidget()
         NotificationCenter.default.removeObserver(self)
