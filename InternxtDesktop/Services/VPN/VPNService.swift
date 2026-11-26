@@ -31,29 +31,6 @@ struct VPNRegion: Identifiable, Equatable {
     var id: String { location.rawValue }
 }
 
-struct PublicAddress: Equatable {
-    let ip: String
-    let location: String
-}
-
-extension PublicAddress: Decodable {
-    private enum CodingKeys: String, CodingKey {
-        case ip, city, region, country
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        ip = try container.decode(String.self, forKey: .ip)
-        guard !ip.isEmpty else {
-            throw DecodingError.dataCorruptedError(forKey: .ip, in: container, debugDescription: "Empty IP")
-        }
-        location = [CodingKeys.city, .region, .country]
-            .compactMap { try? container.decodeIfPresent(String.self, forKey: $0) }
-            .filter { !$0.isEmpty }
-            .joined(separator: ", ")
-    }
-}
-
 enum PublicAddressLookup: Equatable {
     case loading
     case unavailable
@@ -111,7 +88,6 @@ final class VPNService: ObservableObject {
     @Published var isFreePlan: Bool
 
     private let tunnel: VPNTunnel
-    private let isEnabled: Bool
     private let connectTimeout: Duration
     private let authToken: () -> String?
     private let configuration: () -> VPNConfiguration
@@ -119,7 +95,7 @@ final class VPNService: ObservableObject {
     private let defaults: UserDefaults
     private let vpnEntitlement: AnyPublisher<Bool, Never>
     private let fetchZones: () async throws -> [VPNZone]
-    private let fetchPublicAddress: (URL) async throws -> PublicAddress
+    private let fetchPublicAddress: () async throws -> PublicAddress
 
     private var goal = Goal.off
     private var zones: Set<VPNZone>? = VPNService.freeZones
@@ -138,7 +114,6 @@ final class VPNService: ObservableObject {
         selectedRegion: VPNZone = .france,
         isFreePlan: Bool = true,
         tunnel: VPNTunnel = SystemVPNTunnel(),
-        isEnabled: Bool = ConfigLoader.isVPNEnabled,
         connectTimeout: Duration = .seconds(30),
         authToken: @escaping () -> String? = { ConfigLoader().getAuthToken() },
         configuration: @escaping () -> VPNConfiguration = { ConfigLoader().getVPNConfiguration() },
@@ -146,14 +121,15 @@ final class VPNService: ObservableObject {
         defaults: UserDefaults = .standard,
         vpnEntitlement: AnyPublisher<Bool, Never> = FeaturesService.shared.$vpnEnabled.eraseToAnyPublisher(),
         fetchZones: @escaping () async throws -> [VPNZone] = { try await APIFactory.VPN.getUser().zones },
-        fetchPublicAddress: @escaping (URL) async throws -> PublicAddress = VPNService.fetchPublicAddressFromIPService(at:)
+        fetchPublicAddress: @escaping () async throws -> PublicAddress = {
+            try await PublicAddressAPI(baseURL: ConfigLoader().getVPNConfiguration().ipAPIURL).getPublicAddress()
+        }
     ) {
         self.viewState = viewState
         self.regions = regions
         self.selectedRegion = selectedRegion
         self.isFreePlan = isFreePlan
         self.tunnel = tunnel
-        self.isEnabled = isEnabled
         self.connectTimeout = connectTimeout
         self.authToken = authToken
         self.configuration = configuration
@@ -165,6 +141,7 @@ final class VPNService: ObservableObject {
 
         tunnel.onStatusChange = { [weak self] status in self?.tunnelChanged(to: status) }
         tunnel.onFailure = { [weak self] failure in self?.extensionFailed(failure) }
+        tunnel.onRegionSwitched = { [weak self] in self?.regionSwitched() }
     }
 
     deinit {
@@ -175,7 +152,7 @@ final class VPNService: ObservableObject {
     }
 
     func start() {
-        guard isEnabled, entitlementObserver == nil else { return }
+        guard entitlementObserver == nil else { return }
         zones = nil
         render()
         observeTokenRefresh()
@@ -197,7 +174,8 @@ final class VPNService: ObservableObject {
             goal = .on(session, step)
             tunnel.update(session)
             if case .up = step {
-                lookUpPublicAddress()
+                publicAddressRequest?.cancel()
+                publicAddress = .loading
             }
         }
         render()
@@ -208,7 +186,7 @@ final class VPNService: ObservableObject {
     }
 
     func connect() {
-        guard isEnabled, viewState.acceptsConnect else { return }
+        guard viewState.acceptsConnect else { return }
 
         guard let token = authToken(), !token.isEmpty else {
             Self.logger.error("Cannot connect the VPN without a session token")
@@ -229,7 +207,7 @@ final class VPNService: ObservableObject {
     }
 
     func disconnect() {
-        guard isEnabled, viewState.acceptsDisconnect else { return }
+        guard viewState.acceptsDisconnect else { return }
         Self.logger.info("Disconnecting the VPN")
         turnOff()
     }
@@ -240,7 +218,6 @@ final class VPNService: ObservableObject {
     }
 
     func reset() {
-        guard isEnabled else { return }
         turnOff()
         defaults.removeObject(forKey: Self.preferredRegionKey)
         hasVPNPlan = false
@@ -248,7 +225,6 @@ final class VPNService: ObservableObject {
     }
 
     func shutdown() {
-        guard isEnabled else { return }
         goal = .off
         tunnel.stop()
     }
@@ -346,18 +322,6 @@ final class VPNService: ObservableObject {
         }
     }
 
-    nonisolated static func fetchPublicAddressFromIPService(at baseURL: URL) async throws -> PublicAddress {
-        let configuration = URLSessionConfiguration.ephemeral
-        configuration.timeoutIntervalForResource = 15
-        let session = URLSession(configuration: configuration)
-        defer { session.finishTasksAndInvalidate() }
-        let (data, response) = try await session.data(from: baseURL.appendingPathComponent("json"))
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            throw URLError(.badServerResponse)
-        }
-        return try JSONDecoder().decode(PublicAddress.self, from: data)
-    }
-
     private func observeEntitlement() {
         entitlementObserver = Task { [weak self, vpnEntitlement] in
             for await hasPlan in vpnEntitlement.values {
@@ -399,15 +363,21 @@ final class VPNService: ObservableObject {
         render()
     }
 
+    private func regionSwitched() {
+        guard case .on(_, .up) = goal else { return }
+        lookUpPublicAddress()
+        render()
+    }
+
     private func lookUpPublicAddress() {
         publicAddressRequest?.cancel()
         publicAddress = .loading
-        let ipAPIURL = configuration().ipAPIURL
         publicAddressRequest = Task { [weak self, fetchPublicAddress] in
             let found: PublicAddressLookup
             do {
-                found = .found(try await fetchPublicAddress(ipAPIURL))
+                found = .found(try await fetchPublicAddress())
             } catch {
+                guard !Task.isCancelled else { return }
                 Self.logger.error("Could not look up the VPN public address: \(error)")
                 found = .unavailable
             }

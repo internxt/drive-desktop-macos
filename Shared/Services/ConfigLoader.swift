@@ -160,14 +160,6 @@ public struct ConfigLoader {
         !ConfigLoader.isDevMode
     }
 
-    static var isVPNEnabled: Bool {
-        #if DEBUG || BETA
-            return true
-        #else
-            return false
-        #endif
-    }
-    
    
     
     public static func build() -> ConfigLoader {
