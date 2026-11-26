@@ -422,7 +422,6 @@
 "VPN_DISCONNECTING" = "Déconnexion…";
 "VPN_CONNECTED_TO_%@" = "Connecté à %@";
 "VPN_PUBLIC_IP" = "Adresse IP";
-"VPN_PUBLIC_LOCATION" = "Emplacement";
 "VPN_PUBLIC_ADDRESS_UNAVAILABLE" = "Non disponible";
 "VPN_CONNECTED_TIME" = "Connecté depuis";
 "VPN_APPROVAL_TITLE" = "Autorisez le VPN dans les Réglages Système";

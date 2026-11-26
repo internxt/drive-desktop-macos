@@ -424,7 +424,6 @@
 "VPN_DISCONNECTING" = "Disconnecting…";
 "VPN_CONNECTED_TO_%@" = "Connected to %@";
 "VPN_PUBLIC_IP" = "IP address";
-"VPN_PUBLIC_LOCATION" = "Location";
 "VPN_PUBLIC_ADDRESS_UNAVAILABLE" = "Not available";
 "VPN_CONNECTED_TIME" = "Connected for";
 "VPN_APPROVAL_TITLE" = "Allow the VPN in System Settings";
