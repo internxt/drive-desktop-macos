@@ -33,6 +33,40 @@ public struct JSONConfig: Codable {
     public let VPN_IP_API_URL: String?
 }
 
+struct VPNConfiguration: Equatable {
+    let proxyHost: String
+    let proxyPort: UInt16
+
+    init(proxyHost: String, proxyPort: UInt16) {
+        self.proxyHost = proxyHost
+        self.proxyPort = proxyPort
+    }
+
+    init(proxyURL: String?) throws {
+        guard let proxyURL, !proxyURL.isEmpty else {
+            throw VPNConfigurationError.missing("VPN_PROXY_URL")
+        }
+        guard let url = URL(string: proxyURL), url.scheme != nil,
+              let host = url.host, !host.isEmpty,
+              let port = url.port.flatMap(UInt16.init(exactly:)), port > 0 else {
+            throw VPNConfigurationError.invalid("VPN_PROXY_URL")
+        }
+        self.init(proxyHost: host, proxyPort: port)
+    }
+}
+
+enum VPNConfigurationError: LocalizedError, Equatable {
+    case missing(String)
+    case invalid(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .missing(let key): return "Missing \(key) in env.json, required while the VPN is enabled"
+        case .invalid(let key): return "Invalid \(key) in env.json"
+        }
+    }
+}
+
 enum ConfigLoaderError: Error {
     case ConfigFileDoesntExists
     case CannotSaveAuthToken
@@ -336,6 +370,14 @@ public struct ConfigLoader {
             self.load()
         }
         return loadedConfig!
+    }
+
+    func getVPNConfiguration() -> VPNConfiguration {
+        do {
+            return try VPNConfiguration(proxyURL: get().VPN_PROXY_URL)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     func saveToUserDefaults(key: String, value: String) -> Bool {
