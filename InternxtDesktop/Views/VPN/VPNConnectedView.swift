@@ -70,8 +70,7 @@ struct VPNConnectedView: View {
                     .padding(.top, 13)
 
                 HStack(alignment: .top, spacing: 0) {
-                    detail(labelKey: "VPN_PUBLIC_IP", value: publicAddressValue(\.ip))
-                    detail(labelKey: "VPN_PUBLIC_LOCATION", value: publicAddressValue(\.location))
+                    detail(labelKey: "VPN_PUBLIC_IP", value: publicIP)
                     elapsedDetail
                 }
                 .padding(.top, 12)
@@ -87,17 +86,14 @@ struct VPNConnectedView: View {
         )
     }
 
-    private static let unavailable = NSLocalizedString("VPN_PUBLIC_ADDRESS_UNAVAILABLE", comment: "Public IP or location could not be found")
-
-    private func publicAddressValue(_ field: KeyPath<PublicAddress, String>) -> String? {
+    private var publicIP: String? {
         switch publicAddress {
         case .loading:
             return nil
         case .unavailable:
-            return Self.unavailable
+            return NSLocalizedString("VPN_PUBLIC_ADDRESS_UNAVAILABLE", comment: "Public IP could not be found")
         case .found(let info):
-            let value = info[keyPath: field]
-            return value.isEmpty ? Self.unavailable : value
+            return info.ip
         }
     }
 
@@ -129,7 +125,7 @@ struct VPNConnectedView: View {
 
 #Preview("Connected") {
     VPNTabView(service: VPNService(
-        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), publicAddress: .found(PublicAddress(ip: "185.201.12.44", location: "Frankfurt, Germany"))),
+        viewState: .connected(.germany, since: Date().addingTimeInterval(-754), publicAddress: .found(PublicAddress(ip: "185.201.12.44"))),
         regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) },
         selectedRegion: .germany,
         isFreePlan: false

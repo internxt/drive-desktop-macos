@@ -9,12 +9,11 @@ import Foundation
 
 struct PublicAddress: Equatable {
     let ip: String
-    let location: String
 }
 
 extension PublicAddress: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case ip, city, region, country
+        case ip
     }
 
     init(from decoder: Decoder) throws {
@@ -23,10 +22,6 @@ extension PublicAddress: Decodable {
         guard !ip.isEmpty else {
             throw DecodingError.dataCorruptedError(forKey: .ip, in: container, debugDescription: "Empty IP")
         }
-        location = [CodingKeys.city, .region, .country]
-            .compactMap { try? container.decodeIfPresent(String.self, forKey: $0) }
-            .filter { !$0.isEmpty }
-            .joined(separator: ", ")
     }
 }
 

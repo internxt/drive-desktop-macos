@@ -44,7 +44,7 @@ final class VPNServiceTests: XCTestCase {
     }
 
     func test_connected_showsThePublicAddressOnceFound() async {
-        let frankfurt = PublicAddress(ip: "185.201.12.44", location: "Frankfurt, Hesse, Germany")
+        let frankfurt = PublicAddress(ip: "185.201.12.44")
         publicAddress = { frankfurt }
         let service = makeService()
         await startAndWaitUntilReady(service)
@@ -84,7 +84,7 @@ final class VPNServiceTests: XCTestCase {
     }
 
     func test_changingRegionWhileConnected_looksUpTheNewPublicAddressOnceTheExtensionHasSwitched() async {
-        let frankfurt = PublicAddress(ip: "185.201.12.44", location: "Frankfurt, Hesse, Germany")
+        let frankfurt = PublicAddress(ip: "185.201.12.44")
         publicAddress = { frankfurt }
         let service = await connectedService(regions: VPNZone.allCases.map { VPNRegion(location: $0, isAvailable: true) })
         await waitUntil { service.viewState == .connected(.france, since: self.connectedAt, publicAddress: .found(frankfurt)) }
