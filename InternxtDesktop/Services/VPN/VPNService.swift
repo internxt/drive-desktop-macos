@@ -56,18 +56,32 @@ enum VPNViewState: Equatable {
     case failed(VPNError)
 }
 
+enum VPNApprovalGuide {
+    case networkExtensions
+    case privacyAndSecurity
+
+    static var current: VPNApprovalGuide {
+        if #available(macOS 15, *) {
+            return .networkExtensions
+        }
+        return .privacyAndSecurity
+    }
+
+    var settingsURL: URL {
+        switch self {
+        case .networkExtensions:
+            return URL(string: "x-apple.systempreferences:com.apple.ExtensionsPreferences?extensionPointIdentifier=com.apple.system_extension.network_extension.extension-point")!
+        case .privacyAndSecurity:
+            return URL(string: "x-apple.systempreferences:com.apple.preference.security")!
+        }
+    }
+}
+
 @MainActor
 final class VPNService: ObservableObject {
     private static let logger = LogService.shared.createLogger(subsystem: .VPN, category: "VPNService")
     private static let preferredRegionKey = "VPNService.lastRegion"
     private static let freeZones: Set<VPNZone> = [.france]
-
-    private static var approvalSettingsURL: URL {
-        if #available(macOS 15, *) {
-            return URL(string: "x-apple.systempreferences:com.apple.LoginItems-Settings.extension")!
-        }
-        return URL(string: "x-apple.systempreferences:com.apple.preference.security")!
-    }
 
     private enum Goal {
         case off
@@ -182,7 +196,7 @@ final class VPNService: ObservableObject {
     }
 
     func openApprovalSettings() {
-        NSWorkspace.shared.open(Self.approvalSettingsURL)
+        NSWorkspace.shared.open(VPNApprovalGuide.current.settingsURL)
     }
 
     func connect() {

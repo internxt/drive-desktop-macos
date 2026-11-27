@@ -422,13 +422,14 @@
 "VPN_DISCONNECTING" = "Déconnexion…";
 "VPN_CONNECTED_TO_%@" = "Connecté à %@";
 "VPN_PUBLIC_IP" = "Adresse IP";
-"VPN_PUBLIC_LOCATION" = "Emplacement";
 "VPN_PUBLIC_ADDRESS_UNAVAILABLE" = "Non disponible";
 "VPN_CONNECTED_TIME" = "Connecté depuis";
 "VPN_APPROVAL_TITLE" = "Autorisez le VPN dans les Réglages Système";
 "VPN_APPROVAL_DESCRIPTION" = "macOS a besoin de votre autorisation pour qu'Internxt puisse acheminer votre trafic. Vous ne devez le faire qu'une seule fois.";
-"VPN_APPROVAL_STEP_OPEN" = "Ouvrez les Réglages Système avec le bouton ci-dessous.";
-"VPN_APPROVAL_STEP_ALLOW" = "Autorisez l'extension réseau d'Internxt Drive.";
+"VPN_APPROVAL_STEP_OPEN" = "Cliquez sur « Ouvrir les Réglages Système ». La fenêtre Extensions réseau s'ouvrira.";
+"VPN_APPROVAL_STEP_TURN_ON" = "Activez Internxt Drive et cliquez sur « OK ».";
+"VPN_APPROVAL_STEP_OPEN_LEGACY" = "Cliquez sur « Ouvrir les Réglages Système ». La section Confidentialité et sécurité s'ouvrira.";
+"VPN_APPROVAL_STEP_FIND_BLOCKED_LEGACY" = "Faites défiler jusqu'à « Sécurité » et cliquez sur « Autoriser » à côté du message d'Internxt Drive.";
 "VPN_APPROVAL_STEP_RETURN" = "Revenez ici : le VPN se connectera automatiquement.";
 "VPN_APPROVAL_OPEN_SETTINGS" = "Ouvrir les Réglages Système";
 "VPN_ERROR_RETRY" = "Réessayer";
