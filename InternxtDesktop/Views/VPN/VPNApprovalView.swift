@@ -30,9 +30,9 @@ struct VPNApprovalView: View {
 
             AppCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    step(number: 1, key: "VPN_APPROVAL_STEP_OPEN")
-                    step(number: 2, key: "VPN_APPROVAL_STEP_ALLOW")
-                    step(number: 3, key: "VPN_APPROVAL_STEP_RETURN")
+                    ForEach(Array(Self.steps.enumerated()), id: \.offset) { index, key in
+                        step(number: index + 1, key: key)
+                    }
 
                     HStack(spacing: 10) {
                         Spacer(minLength: 0)
@@ -49,6 +49,23 @@ struct VPNApprovalView: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    private static var steps: [String] {
+        switch VPNApprovalGuide.current {
+        case .networkExtensions:
+            return [
+                "VPN_APPROVAL_STEP_OPEN",
+                "VPN_APPROVAL_STEP_TURN_ON",
+                "VPN_APPROVAL_STEP_RETURN",
+            ]
+        case .privacyAndSecurity:
+            return [
+                "VPN_APPROVAL_STEP_OPEN_LEGACY",
+                "VPN_APPROVAL_STEP_FIND_BLOCKED_LEGACY",
+                "VPN_APPROVAL_STEP_RETURN",
+            ]
+        }
     }
 
     private func step(number: Int, key: String) -> some View {
