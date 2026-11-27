@@ -1828,6 +1828,7 @@
 				2D1ADFE4AEE0F2503AD75D8A /* Sources */,
 				2AF99945A86B502DBB51ADDF /* Frameworks */,
 				C1CDAC1F0E76DE412D4ADEC1 /* Resources */,
+				6B2C9E417D3A5F08C1E4A962 /* Stamp Debug build number */,
 			);
 			buildRules = (
 			);
@@ -2171,6 +2172,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILT_PRODUCTS_DIR}/LaunchAtLogin_LaunchAtLogin.bundle/Contents/Resources/copy-helper-swiftpm.sh\"\n";
+		};
+		6B2C9E417D3A5F08C1E4A962 /* Stamp Debug build number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Stamp Debug build number";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/stamp-debug-build-number.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3117,6 +3137,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = JR4S3SY396;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = VPNExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Internxt VPN";
